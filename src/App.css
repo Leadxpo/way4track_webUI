@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.table-container {
+  max-height: 300px; /* Adjust height as necessary */
+  overflow-y: auto;
+}
+
+.table-header {
+  position: sticky;
+  top: 0;
+  background-color: #f3f4f6; /* Adjust background */
+}

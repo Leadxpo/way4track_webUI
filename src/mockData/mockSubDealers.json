@@ -1,0 +1,42 @@
+[
+  {
+    "subDealerId": "SD001",
+    "subDealerName": "ABC Supplies",
+    "phoneNumber": "123-456-7890",
+    "productDetails": "Office Supplies",
+    "amount": 150.75,
+    "paymentStatus": "Paid"
+  },
+  {
+    "subDealerId": "SD002",
+    "subDealerName": "XYZ Electronics",
+    "phoneNumber": "987-654-3210",
+    "productDetails": "Laptops and Accessories",
+    "amount": 1200.5,
+    "paymentStatus": "Pending"
+  },
+  {
+    "subDealerId": "SD003",
+    "subDealerName": "Home Essentials",
+    "phoneNumber": "555-234-5678",
+    "productDetails": "Furniture",
+    "amount": 750.0,
+    "paymentStatus": "Partially Paid"
+  },
+  {
+    "subDealerId": "SD004",
+    "subDealerName": "Fresh Foods Co.",
+    "phoneNumber": "444-555-6666",
+    "productDetails": "Groceries",
+    "amount": 300.25,
+    "paymentStatus": "Paid"
+  },
+  {
+    "subDealerId": "SD005",
+    "subDealerName": "Tech Gadgets",
+    "phoneNumber": "333-222-1111",
+    "productDetails": "Mobile Phones",
+    "amount": 850.0,
+    "paymentStatus": "Declined"
+  }
+]

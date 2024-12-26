@@ -1,0 +1,42 @@
+[
+  {
+    "vendorId": "V001",
+    "vendorName": "ABC Supplies",
+    "phoneNumber": "123-456-7890",
+    "productDetails": "Office Supplies",
+    "amount": 150.75,
+    "paymentStatus": "Paid"
+  },
+  {
+    "vendorId": "V002",
+    "vendorName": "XYZ Electronics",
+    "phoneNumber": "987-654-3210",
+    "productDetails": "Laptops and Accessories",
+    "amount": 1200.5,
+    "paymentStatus": "Pending"
+  },
+  {
+    "vendorId": "V003",
+    "vendorName": "Home Essentials",
+    "phoneNumber": "555-234-5678",
+    "productDetails": "Furniture",
+    "amount": 750.0,
+    "paymentStatus": "Partially Paid"
+  },
+  {
+    "vendorId": "V004",
+    "vendorName": "Fresh Foods Co.",
+    "phoneNumber": "444-555-6666",
+    "productDetails": "Groceries",
+    "amount": 300.25,
+    "paymentStatus": "Paid"
+  },
+  {
+    "vendorId": "V005",
+    "vendorName": "Tech Gadgets",
+    "phoneNumber": "333-222-1111",
+    "productDetails": "Mobile Phones",
+    "amount": 850.0,
+    "paymentStatus": "Declined"
+  }
+]

@@ -1,0 +1,43 @@
+[
+    {
+      "Expenses": "Exp-12345",
+      "Purpose": "Office Supplies",
+      "Branch": "Hyderabad",
+      "Date": "2024-08-15",
+      "Amount": "$1200",
+      "Payment Mode": "Cash"
+    },
+    {
+      "Expenses": "Exp-12346",
+      "Purpose": "Maintenance",
+      "Branch": "Vishakapatnam",
+      "Date": "2024-08-20",
+      "Amount": "$800",
+      "Payment Mode": "Google Pay"
+    },
+    {
+      "Expenses": "Exp-12347",
+      "Purpose": "Client Meeting",
+      "Branch": "Hyderabad",
+      "Date": "2024-09-05",
+      "Amount": "$500",
+      "Payment Mode": "Cash"
+    },
+    {
+      "Expenses": "Exp-12348",
+      "Purpose": "Marketing",
+      "Branch": "Vijayawada",
+      "Date": "2024-09-10",
+      "Amount": "$1500",
+      "Payment Mode": "Phone Pe"
+    },
+    {
+      "Expenses": "Exp-12349",
+      "Purpose": "Client Meeting",
+      "Branch": "Kakinada",
+      "Date": "2024-09-12",
+      "Amount": "$950",
+      "Payment Mode": "Cash"
+    }
+  ]
+  

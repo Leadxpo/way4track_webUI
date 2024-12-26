@@ -1,0 +1,43 @@
+[
+    {
+      "paymentNumber": "PAY-2001",
+      "client": "ABC Corp",
+      "paymentDate": "2023-09-10",
+      "expiryDate": "2023-10-10",
+      "amount": 1500.00,
+      "status": "Accepted"
+    },
+    {
+      "paymentNumber": "PAY-2002",
+      "client": "XYZ Ltd",
+      "paymentDate": "2023-09-12",
+      "expiryDate": "2023-10-12",
+      "amount": 3000.00,
+      "status": "Declined"
+    },
+    {
+      "paymentNumber": "PAY-2003",
+      "client": "Tech Solutions",
+      "paymentDate": "2023-09-15",
+      "expiryDate": "2023-10-15",
+      "amount": 500.00,
+      "status": "Sent"
+    },
+    {
+      "paymentNumber": "PAY-2004",
+      "client": "Global Industries",
+      "paymentDate": "2023-09-18",
+      "expiryDate": "2023-10-18",
+      "amount": 4000.00,
+      "status": "Expired"
+    },
+    {
+      "paymentNumber": "PAY-2005",
+      "client": "Creative Minds",
+      "paymentDate": "2023-09-20",
+      "expiryDate": "2023-10-20",
+      "amount": 2500.00,
+      "status": "Accepted"
+    }
+  ]
+  

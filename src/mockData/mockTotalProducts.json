@@ -1,0 +1,34 @@
+[
+    {
+        "Product Name":"Bike GPS Tracker",
+        "Vizag":20,
+        "Hyd":30,
+        "Vijayawada":20,
+        "Kakinada":15,
+        "Warehouse":40
+    },
+    {
+        "Product Name":"AIS140 VLTD",
+        "Vizag":10,
+        "Hyd":31,
+        "Vijayawada":21,
+        "Kakinada":11,
+        "Warehouse":50
+    },
+    {
+        "Product Name":"Car GPS Tracker",
+        "Vizag":25,
+        "Hyd":35,
+        "Vijayawada":25,
+        "Kakinada":15,
+        "Warehouse":50
+    },
+    {
+        "Product Name":"Fuel Monitoring",
+        "Vizag":20,
+        "Hyd":30,
+        "Vijayawada":20,
+        "Kakinada":15,
+        "Warehouse":40
+    }
+]

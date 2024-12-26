@@ -1,0 +1,43 @@
+[
+    {
+      "estimateNumber": "EST-001",
+      "client": "ABC Corp",
+      "estimateDate": "2023-08-01",
+      "expiryDate": "2023-08-15",
+      "amount": 1200.00,
+      "status": "Pending"
+    },
+    {
+      "estimateNumber": "EST-002",
+      "client": "XYZ Ltd",
+      "estimateDate": "2023-08-05",
+      "expiryDate": "2023-08-20",
+      "amount": 1500.00,
+      "status": "Approved"
+    },
+    {
+      "estimateNumber": "EST-003",
+      "client": "Tech Solutions",
+      "estimateDate": "2023-08-10",
+      "expiryDate": "2023-08-25",
+      "amount": 900.00,
+      "status": "Declined"
+    },
+    {
+      "estimateNumber": "EST-004",
+      "client": "Global Industries",
+      "estimateDate": "2023-08-15",
+      "expiryDate": "2023-08-30",
+      "amount": 2000.00,
+      "status": "Pending"
+    },
+    {
+      "estimateNumber": "EST-005",
+      "client": "Creative Minds",
+      "estimateDate": "2023-08-20",
+      "expiryDate": "2023-09-04",
+      "amount": 1800.00,
+      "status": "Approved"
+    }
+  ]
+  

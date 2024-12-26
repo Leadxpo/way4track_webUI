@@ -1,0 +1,47 @@
+[
+  {
+    "serialNumber": 1,
+    "staffId": "23434564",
+    "staffContact": "98886 44553",
+    "branchName": "Hyderabad",
+    "currentExperience": "2Yrs",
+    "totalExperience": "4Yrs",
+    "salary": "15000/-"
+  },
+  {
+    "serialNumber": 2,
+    "staffId": "23434564",
+    "staffContact": "98886 44553",
+    "branchName": "Visakhapatnam",
+    "currentExperience": "1Yrs",
+    "totalExperience": "3Yrs",
+    "salary": "20000/-"
+  },
+  {
+    "serialNumber": 3,
+    "staffId": "23434564",
+    "staffContact": "98886 44553",
+    "branchName": "Hyderabad",
+    "currentExperience": "1Yrs",
+    "totalExperience": "3Yrs",
+    "salary": "15000/-"
+  },
+  {
+    "serialNumber": 4,
+    "staffId": "23434564",
+    "staffContact": "98886 44553",
+    "branchName": "Vijayawada",
+    "currentExperience": "1Yrs",
+    "totalExperience": "2Yrs",
+    "salary": "15000/-"
+  },
+  {
+    "serialNumber": 5,
+    "staffId": "23434564",
+    "staffContact": "98886 44553",
+    "branchName": "Kakinada",
+    "currentExperience": "2Yrs",
+    "totalExperience": "4Yrs",
+    "salary": "25000/-"
+  }
+]

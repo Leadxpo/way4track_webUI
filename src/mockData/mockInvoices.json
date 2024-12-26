@@ -1,0 +1,43 @@
+[
+    {
+      "invoiceNumber": "INV-1001",
+      "client": "ABC Corp",
+      "createdDate": "2023-07-15",
+      "dueDate": "2023-08-15",
+      "amount": 2500.00,
+      "status": "Paid"
+    },
+    {
+      "invoiceNumber": "INV-1002",
+      "client": "XYZ Ltd",
+      "createdDate": "2023-07-20",
+      "dueDate": "2023-08-20",
+      "amount": 3500.00,
+      "status": "Unpaid"
+    },
+    {
+      "invoiceNumber": "INV-1003",
+      "client": "Tech Solutions",
+      "createdDate": "2023-07-25",
+      "dueDate": "2023-08-25",
+      "amount": 1800.00,
+      "status": "Overdue"
+    },
+    {
+      "invoiceNumber": "INV-1004",
+      "client": "Global Industries",
+      "createdDate": "2023-08-01",
+      "dueDate": "2023-09-01",
+      "amount": 5000.00,
+      "status": "Paid"
+    },
+    {
+      "invoiceNumber": "INV-1005",
+      "client": "Creative Minds",
+      "createdDate": "2023-08-05",
+      "dueDate": "2023-09-05",
+      "amount": 2200.00,
+      "status": "Unpaid"
+    }
+  ]
+  
