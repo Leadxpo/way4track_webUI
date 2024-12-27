@@ -1,82 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const AddBranchForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const branchData = location.state?.branchDetails;
 
-  const [branchName, setBranchName] = useState(branchData?.branchName || '');
-  const [branchNumber, setBranchNumber] = useState(
-    branchData?.branchNumber || ''
-  );
-  const [managerName, setManagerName] = useState(branchData?.managerName || '');
-  const [branchAddress, setBranchAddress] = useState(
-    branchData?.branchAddress || ''
-  );
-  const [addressLine1, setAddressLine1] = useState(
-    branchData?.addressLine1 || ''
-  );
-  const [addressLine2, setAddressLine2] = useState(
-    branchData?.addressLine2 || ''
-  );
-  const [city, setCity] = useState(branchData?.city || '');
-  const [state, setState] = useState(branchData?.state || '');
-  const [pincode, setPincode] = useState(branchData?.pincode || '');
-  const [branchOpening, setBranchOpening] = useState(
-    branchData?.branchOpening || ''
-  );
-  const [email, setEmail] = useState(branchData?.email || '');
-  const [image, setImage] = useState(branchData?.branchPhoto || '');
+  // Define initial states
+  const [formData, setFormData] = useState({
+    branchName: branchData?.branchName || '',
+    branchNumber: branchData?.branchNumber || '',
+    branchAddress: branchData?.branchAddress || '',
+    addressLine1: branchData?.addressLine1 || '',
+    addressLine2: branchData?.addressLine2 || '',
+    city: branchData?.city || '',
+    state: branchData?.state || '',
+    pincode: branchData?.pincode || '',
+    branchOpening: branchData?.branchOpening || '',
+    email: branchData?.email || '',
+    photo: branchData?.photo || null,
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode
+  });
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      const imageURL = URL.createObjectURL(selectedFile);
-      setImage(imageURL);
-    }
-  };
+  const [image, setImage] = useState(branchData?.photo || '');
+  const [branchList, setBranchList] = useState([]);
 
-  const handleSubmit = async () => {
-    const payload = {
-      branchName,
-      branchNumber,
-      managerName,
-      branchAddress,
-      addressLine1,
-      addressLine2,
-      city,
-      state,
-      pincode,
-      branchOpening,
-      email,
-      branchPhoto: image,
-    };
-
-    try {
-      await ApiService.post('/branch/saveBranchDetails', payload);
-      navigate('/branches');
-    } catch (error) {
-      console.error('Failed to save branch details:', error);
-      alert('Failed to save branch details. Please try again.');
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
     if (branchData?.id) {
+      // Fetch branch details by ID
       const fetchBranchDetails = async () => {
         try {
-          const response = await ApiService.post('/branch/getBranchDetails', {
+          const response = await ApiService.post('/branch/getBranchDetailsById', {
             id: branchData.id,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
           });
-          const branch = response.data[0];
-          setBranchName(branch.branchName || '');
-          setManagerName(branch.managerName || '');
-          setBranchAddress(branch.address || '');
-          setBranchOpening(branch.branchOpening || '');
-          setCity(branch.city || '');
-          setEmail(branch.email || '');
+          const branch = response.data?.[0];
+          setFormData((prev) => ({
+            ...prev,
+            ...branch,
+          }));
+          setImage(branch?.photo || '');
         } catch (error) {
           console.error('Error fetching branch details:', error);
           alert('Failed to fetch branch details.');
@@ -86,15 +58,78 @@ const AddBranchForm = () => {
     }
   }, [branchData]);
 
+  // Fetch branch list
+  const fetchBranchList = async () => {
+    try {
+      const response = await ApiService.post('/branch/getBranchDetails', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.data.success) {
+        setBranchList(response.data.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch branch list.');
+      }
+    } catch (error) {
+      console.error('Error fetching branch list:', error);
+      alert('Failed to fetch branch list.');
+    }
+  };
+
+  useEffect(() => {
+    fetchBranchList();
+  }, []);
+
+  // Handle file change (image)
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImage(URL.createObjectURL(selectedFile));
+      setFormData((prev) => ({
+        ...prev,
+        photo: selectedFile, // Save the file object directly in `formData`
+      }));
+    }
+  };
+
+  const handleSubmit = async () => {
+    console.log('FormData before submission:', formData);
+
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'photo' && value instanceof File) {
+        payload.append(key, value);
+      } else {
+        payload.append(key, value);
+      }
+    });
+
+    try {
+      const endpoint = formData.id
+        ? `/branch/saveBranchDetails` // Edit branch
+        : `/branch/saveBranchDetails`; // Add branch (same endpoint)
+
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.data.status) {
+        alert(formData.id ? 'Branch updated successfully!' : 'Branch added successfully!');
+        navigate('/branches');
+      } else {
+        alert('Failed to save branch details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving branch details:', error);
+      alert('Failed to save branch details. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
-          <img
-            src="logo-square.png"
-            alt="Logo"
-            className="w-20 h-20 rounded shadow-lg"
-          />
+          <img src="logo-square.png" alt="Logo" className="w-20 h-20 rounded shadow-lg" />
           <h1 className="text-3xl font-bold text-green-600">
             {branchData ? 'Edit Branch' : 'New Branch'}
           </h1>
@@ -105,132 +140,161 @@ const AddBranchForm = () => {
               <label className="block font-bold mb-1">Branch Name</label>
               <input
                 type="text"
-                placeholder="Enter Branch Name"
+                name="branchName"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                value={branchName}
-                onChange={(e) => setBranchName(e.target.value)}
+                value={formData.branchName}
+                onChange={handleChange}
               />
             </div>
             <div className="flex-1">
               <label className="block font-bold mb-1">Branch Number</label>
               <input
                 type="text"
-                placeholder="Enter Branch Number"
+                name="branchNumber"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                value={branchNumber}
-                onChange={(e) => setBranchNumber(e.target.value)}
+                value={formData.branchNumber}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div>
-            <label className="block font-bold mb-1">Manager Name</label>
-            <input
-              type="text"
-              placeholder="Enter Manager Name"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={managerName}
-              onChange={(e) => setManagerName(e.target.value)}
-            />
-          </div>
+          <p className="font-semibold mb-1">Designation</p>
+          <select
+            name="designation"
+            value={formData.designation}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          >
+            <option value="">Select designation</option>
+            <option value="CEO">CEO</option>
+            <option value="HR">HR</option>
+            <option value="Accountant">Accountant</option>
+            <option value="BranchManager">Branch Manager</option>
+            <option value="SubDealer">Sub Dealer</option>
+            <option value="Technician">Technician</option>
+            <option value="SalesMan">Sales Man</option>
+            <option value="CallCenter">Call Center</option>
+            <option value="Warehouse Manager">Warehouse Manager</option>
+          </select>
+        </div>
+          {/* Address */}
           <div>
             <label className="block font-bold mb-1">Branch Address</label>
-            <input
-              type="text"
-              placeholder="Enter Address 1"
+            <textarea
+              name="branchAddress"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={addressLine1}
-              onChange={(e) => setAddressLine1(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Enter Address 2"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none mt-4"
-              value={addressLine2}
-              onChange={(e) => setAddressLine2(e.target.value)}
+              value={formData.branchAddress}
+              onChange={handleChange}
             />
           </div>
-          <div>
+          {/* Address Line 1 */}
+          <div className="flex-1">
+            <label className="block font-bold mb-1">Address Line 1</label>
+            <input
+              type="text"
+              name="addressLine1"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              value={formData.addressLine1}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Address Line 2 */}
+          <div className="flex-1">
+            <label className="block font-bold mb-1">Address Line 2</label>
+            <input
+              type="text"
+              name="addressLine2"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              value={formData.addressLine2}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* City */}
+          <div className="flex-1">
             <label className="block font-bold mb-1">City</label>
             <input
               type="text"
-              placeholder="City"
+              name="city"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
+              value={formData.city}
+              onChange={handleChange}
             />
           </div>
-          <div>
+
+          {/* State */}
+          <div className="flex-1">
             <label className="block font-bold mb-1">State</label>
             <input
               type="text"
-              placeholder="State"
+              name="state"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
+              value={formData.state}
+              onChange={handleChange}
             />
           </div>
-          <div>
+
+          {/* Pincode */}
+          <div className="flex-1">
             <label className="block font-bold mb-1">Pincode</label>
             <input
               type="text"
-              placeholder="Pincode"
+              name="pincode"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value)}
+              value={formData.pincode}
+              onChange={handleChange}
             />
           </div>
+
           <div>
-            <label className="block font-bold mb-1">Branch Opening</label>
+            <label className="block font-bold mb-1">Branch Opening Date</label>
             <input
               type="date"
+              name="branchOpening"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={branchOpening}
-              onChange={(e) => setBranchOpening(e.target.value)}
+              value={formData.branchOpening}
+              onChange={handleChange}
             />
           </div>
+
           <div>
-            <label className="block font-bold mb-1">Email ID</label>
+            <label className="block font-bold mb-1">Email</label>
             <input
               type="email"
-              placeholder="Enter Email ID"
+              name="email"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
             />
           </div>
+
           <div>
-            <label className="block font-bold mb-1">Branch Photo</label>
-            <button
-              onClick={() => document.getElementById('fileInput').click()}
-              className="mb-2 px-2 py-1 font-semibold rounded-md bg-blue-500 text-white"
-            >
-              Upload Photo
-            </button>
+            <label className="block font-bold mb-1">Upload Branch Photo</label>
             <input
               type="file"
-              id="fileInput"
-              onChange={handleFileChange}
-              className="hidden"
               accept="image/*"
+              name="photo"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              onChange={handleFileChange}
             />
-            {image && (
-              <div className="w-full h-48 border rounded-md flex items-center justify-center">
-                <img
-                  src={image}
-                  alt="Uploaded"
-                  className="h-full object-cover"
-                />
-              </div>
-            )}
+            {image && <img src={image} alt="Branch" className="w-32 h-32 mt-4" />}
           </div>
-          <div className="flex justify-center">
-            <button
-              className="bg-yellow-400 text-black font-bold py-3 px-8 rounded-md shadow-lg hover:bg-yellow-500"
-              onClick={handleSubmit}
-            >
-              {branchData ? 'Submit Changes' : 'Add Branch'}
-            </button>
-          </div>
+        </div>
+
+        <div className="mt-8 flex justify-end space-x-4">
+          <button
+            onClick={() => navigate('/branches')}
+            className="px-6 py-2 bg-gray-500 text-white rounded-lg"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="px-6 py-2 bg-green-600 text-white rounded-lg"
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>

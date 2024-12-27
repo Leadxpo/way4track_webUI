@@ -10,6 +10,8 @@ const Staff = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
 
+  
+
   const profiles = [
     {
       employeeId: 'EMP001',

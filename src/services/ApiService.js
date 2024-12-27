@@ -2,34 +2,34 @@
 
 import axios from 'axios';
 
+export const initialAuthState = {
+  userId: 4,
+  userName: 'admin',
+  companyCode: 'WAY4TRACK',
+  unitCode: 'WAY4',
+};
+
 const ApiService = (() => {
   const axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000', // Replace with your API base URL
     timeout: 10000, // Request timeout in milliseconds
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
 
   // Interceptor for handling requests
-  axiosInstance.interceptors.request.use(
-    (config) => {
-      // Add Authorization token or other headers if needed
-      const token = localStorage.getItem('authToken'); // Adjust according to your authentication method
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
+  axiosInstance.interceptors.request.use((config) => {
+    if (config.data instanceof FormData) {
+      config.headers['Content-Type'] = 'multipart/form-data'; // Set for FormData
+    } else {
+      config.headers['Content-Type'] = 'application/json'; // Default
+    }
+    return config;
+  });
 
   // Interceptor for handling responses
   axiosInstance.interceptors.response.use(
     (response) => response.data,
     (error) => {
-      // Global error handling
-      console.error('API error:', error.response || error.message);
+      console.error('API error:', error.response ? error.response.data : error.message);
       return Promise.reject(error.response || error.message);
     }
   );

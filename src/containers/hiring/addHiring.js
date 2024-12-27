@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ApiService from '../../services/ApiService';
 import { useNavigate } from 'react-router';
+import { initialAuthState } from '../../services/ApiService';
 
 const AddHiring = () => {
   const navigate = useNavigate();
@@ -15,9 +16,11 @@ const AddHiring = () => {
     address: '',
     hiringLevel: 2,
     resume: null,
-    resumePath: '',
+    file: '',
     dateOfUpload: new Date().toISOString().split('T')[0],
     status: 'INTERVIEWED',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode
   });
 
   const [fileUploadedMessage, setFileUploadedMessage] = useState('');
@@ -48,57 +51,93 @@ const AddHiring = () => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await ApiService.post(
-          '/hiring/uploadResume',
-          formData
-        );
-        setFormData((prev) => ({
-          ...prev,
-          resumePath: response.resumePath,
-        }));
-        setFileUploadedMessage('File uploaded successfully!');
-      } catch (error) {
-        console.error('File upload failed:', error);
-        setFileUploadedMessage('File upload failed. Please try again.');
-      }
+      const filePath = URL.createObjectURL(file);
+      setFileUploadedMessage(filePath);
+      setFormData((prev) => ({
+        ...prev,
+        resumePath: filePath, // Storing for UI purposes
+        resume: file,        // Storing the file object
+      }));
     }
   };
 
   // Handle Form Submission
+  // const handleSubmit = async () => {
+  //   const payload = {
+  //     hiringLevel: formData.hiringLevel,
+  //     candidateName: formData.candidateName,
+  //     phoneNumber: formData.phoneNumber,
+  //     email: formData.email,
+  //     address: formData.address,
+  //     qualifications: qualifications.map((q) => ({
+  //       qualificationName: q.name,
+  //       marks: q.marks,
+  //       yearOfPass: q.year,
+  //     })),
+  //     file: formData.file,
+  //     dateOfUpload: formData.dateOfUpload,
+  //     status: formData.status,
+  //   };
+
+  //   try {
+
+  //     const endpoint = formData.id
+  //       ? `/hiring/saveHiringDetailsWithResume` // Edit branch
+  //       : `/hiring/saveHiringDetailsWithResume`; // Add branch (same endpoint)
+  //     const response = await ApiService.post(endpoint, payload, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //     });
+  //     if (response.data.status) {
+  //       alert(formData.id ? 'Hiring updated successfully!' : 'Hiring added successfully!');
+  //       navigate('/hiring');
+  //     } else {
+  //       alert('Failed to save branch details. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error saving hiring details:', error);
+  //     alert('Failed to save hiring details. Please try again.');
+  //   }
+  // };
   const handleSubmit = async () => {
-    const payload = {
-      hiringLevel: formData.hiringLevel,
-      candidateName: formData.candidateName,
-      phoneNumber: formData.phoneNumber,
-      email: formData.email,
-      address: formData.address,
-      qualifications: qualifications.map((q) => ({
-        qualificationName: q.name,
-        marks: q.marks,
-        yearOfPass: q.year,
-      })),
-      resumePath: formData.resumePath,
-      dateOfUpload: formData.dateOfUpload,
-      status: formData.status,
-    };
+    const payload = new FormData();
+    payload.append('hiringLevel', formData.hiringLevel);
+    payload.append('candidateName', formData.candidateName);
+    payload.append('phoneNumber', formData.phoneNumber);
+    payload.append('email', formData.email);
+    payload.append('address', formData.address);
+    payload.append('dateOfUpload', formData.dateOfUpload);
+    payload.append('status', formData.status);
+    payload.append('companyCode', formData.companyCode);
+    payload.append('unitCode', formData.unitCode);
+
+    qualifications.forEach((q, index) => {
+      payload.append(`qualifications[${index}][qualificationName]`, q.name);
+      payload.append(`qualifications[${index}][marks]`, q.marks);
+      payload.append(`qualifications[${index}][yearOfPass]`, q.year);
+    });
+
+    if (formData.resume) {
+      payload.append('file', formData.resume); // File field expected by backend
+    }
 
     try {
-      const response = await ApiService.post(
-        '/hiring/saveHiringDetails',
-        payload
-      );
-      console.log('Hiring details saved successfully:', response);
-      alert('Hiring details saved successfully!');
-      navigate('/hiring');
+      const endpoint = `/hiring/saveHiringDetailsWithResume`;
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.data.status) {
+        alert('Hiring details saved successfully!');
+        navigate('/hiring');
+      } else {
+        alert('Failed to save hiring details. Please try again.');
+      }
     } catch (error) {
       console.error('Error saving hiring details:', error);
       alert('Failed to save hiring details. Please try again.');
     }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center space-y-2">
@@ -204,11 +243,53 @@ const AddHiring = () => {
         </div>
 
         {/* Upload Resume */}
+        <div>
+          <p className="font-semibold mb-1">HiringLevel</p>
+          <select
+            name="hiringLevel"
+            value={formData.hiringLevel}
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          >
+            <option value="">Select hiringLevel</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <div>
+          <p className="font-semibold mb-1">status</p>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          >
+            <option value="">Select status</option>
+            <option value="Pending">Pending</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Qualified">Qualified</option>
+            <option value="APPLIED">APPLIED</option>
+            <option value="INTERVIEWED">INTERVIEWED</option>
+          </select>
+        </div>
+
+        <label className="block">
+          <span className="block text-gray-700">DateOfUpload:</span>
+          <input
+            type="date"
+            name="dateOfUpload"
+            value={formData.dateOfUpload}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+          />
+        </label>
         <div className="flex items-center space-x-4 shadow-lg p-4 rounded-md">
           <span className="block flex-1">Upload Resume</span>
           <label className="bg-green-700 text-white p-2 rounded-md cursor-pointer">
             Upload File
-            <input type="file" className="hidden" onChange={handleFileUpload} />
+            <input type="file" className="hidden" name="file" onChange={handleFileUpload} />
           </label>
         </div>
         {fileUploadedMessage && (

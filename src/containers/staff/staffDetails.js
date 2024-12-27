@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const StaffDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -11,17 +13,26 @@ const StaffDetails = () => {
   // Initialize form data, using employeeData if available
   const initialFormData = {
     name: employeeData.name || '',
-    number: employeeData.number || '',
-    staffId: employeeData.staffId || '',
+    phoneNumber: employeeData.phoneNumber || '',
+    staffId: employeeData.staffId || '', // Will be ignored during creation
     designation: employeeData.designation || '',
-    branch: employeeData.branch || '',
+    branch: employeeData.branchName || '', // Initialize branch with existing data
     dob: employeeData.dob || '',
     email: employeeData.email || '',
-    aadhar: employeeData.aadhar || '',
+    aadharNumber: employeeData.aadharNumber || '',
     address: employeeData.address || '',
+    companyCode: initialAuthState.companyCode,
+    photo: employeeData?.photo || null,
+    unitCode: initialAuthState.unitCode,
+    joiningDate: employeeData.joiningDate,
+    attendance: employeeData.attendance,
+    basicSalary: employeeData.basicSalary,
+    beforeExperience: employeeData.beforeExperience,
+    password: employeeData.password
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const [staffList, setStaffList] = useState([]);
 
   useEffect(() => {
     // If employee data is present, update form data
@@ -40,6 +51,29 @@ const StaffDetails = () => {
     navigate('/staff');
   };
 
+  const fetchStaffList = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getStaffSearchDetails', {
+        staffId: employeeData?.staffId,
+        name: employeeData?.name,
+        branchName: employeeData?.branchName,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.data.success) {
+        setStaffList(response.data.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch branch list.');
+      }
+    } catch (error) {
+      console.error('Error fetching branch list:', error);
+      alert('Failed to fetch branch list.');
+    }
+  };
+
+  useEffect(() => {
+    fetchStaffList();
+  }, []);
   const handleCancel = () => {
     // Handle cancel action
     navigate('/staff');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Login = ({ handleLoginFlag }) => {
   const [userId, setUserId] = useState('');
@@ -10,37 +11,35 @@ const Login = ({ handleLoginFlag }) => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    handleLoginFlag();
-    // setError('');
-    // setLoading(true);
+    setError('');
+    setLoading(true);
 
-    // try {
-    //   const payload = {
-    //     staffId: userId,
-    //     password: password,
-    //     designation: role,
-    //   };
+    try {
+      const payload = {
+        staffId: userId,
+        password,
+        designation: role,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode
+      };
 
-    //   const response = await ApiService.post('/login/LoginDetails', payload);
-
-    //   if (response) {
-    //     localStorage.setItem('userRole', role);
-
-    //     handleLoginFlag();
-    //     navigate('/home');
-    //   } else {
-    //     setError('Invalid login credentials');
-    //   }
-    // } catch (err) {
-    //   setError(
-    //     err?.data?.message || 'Failed to login. Please check your credentials.'
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+      const response = await ApiService.post('/login/LoginDetails', payload);
+      console.log(payload, response, "++++++++++++++++++++++++++")
+      // Correctly check `status` instead of `success`
+      if (response && response.success) {
+        localStorage.setItem('userRole', role);
+        handleLoginFlag();
+        navigate('/home');
+      } else {
+        setError(response?.internalMessage || 'Invalid login credentials.');
+      }
+    } catch (err) {
+      setError(err?.response?.data?.internalMessage || 'Failed to login. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,7 +72,7 @@ const Login = ({ handleLoginFlag }) => {
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-              //required
+            //required
             />
           </div>
 
@@ -92,7 +91,7 @@ const Login = ({ handleLoginFlag }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-              //required
+            //required
             />
           </div>
 
@@ -109,7 +108,7 @@ const Login = ({ handleLoginFlag }) => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              //required
+            //required
             >
               <option value="">Select Role</option>
               <option value="CEO">CEO</option>
