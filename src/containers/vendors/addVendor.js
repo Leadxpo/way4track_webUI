@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaFileCirclePlus } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
-
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const AddEditVendor = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -11,34 +12,97 @@ const AddEditVendor = () => {
 
   // Initialize form data with existing vendor details if available
   const initialFormData = {
-    name: vendorData.vendorName || '',
-    number: vendorData.number || '',
-    staffId: vendorData.staffId || '',
-    designation: vendorData.designation || '',
-    branch: vendorData.branch || '',
-    dob: vendorData.dob || '',
-    email: vendorData.email || '',
-    aadhar: vendorData.aadhar || '',
+    name: vendorData.name || '',
+    vendorPhoneNumber: vendorData.vendorPhoneNumber || '',
+    alternatePhoneNumber: vendorData.alternatePhoneNumber || '',
+    startingDate: vendorData.startingDate || '',
+    emailId: vendorData.emailId || '',
+    aadharNumber: vendorData.aadharNumber || '',
     address: vendorData.address || '',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
+    photo: vendorData?.photo || null,
+    productType: vendorData?.productType
   };
 
   const [formData, setFormData] = useState(initialFormData);
-
-  useEffect(() => {
-    console.log(vendorData);
-    if (vendorData) {
-      setFormData(vendorData);
-    }
-  }, [vendorData]);
+  const [image, setImage] = useState(vendorData?.photo || '');
+  // useEffect(() => {
+  //   console.log(vendorData);
+  //   if (vendorData) {
+  //     setFormData(vendorData);
+  //   }
+  // }, [vendorData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    // Handle save action (e.g., API call or state update)
-    navigate('/vendors');
+
+  useEffect(() => {
+    if (vendorData?.id || vendorData?.vendorId) {
+      const fetchClientDetails = async () => {
+        try {
+          const response = await ApiService.post('/vendor/getVendorDetails', {
+            vendorId: vendorData.vendorId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          });
+          const vendor = response.data?.[0];
+          setFormData((prev) => ({
+            ...prev,
+            ...vendor,
+          }));
+          setImage(vendor?.photo || '');
+        } catch (error) {
+          console.error('Error fetching branch details:', error);
+          alert('Failed to fetch branch details.');
+        }
+      };
+      fetchClientDetails();
+    }
+  }, [vendorData]);
+
+  const handleSave = async () => {
+
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'photo' && value instanceof File) {
+        payload.append(key, value);
+      } else {
+        payload.append(key, value);
+      }
+    });
+    console.log(payload, formData, "+++++++++++++++++++++++++")
+    try {
+      const endpoint = formData.id ? '/vendor/handleVendorDetails' : '/vendor/handleVendorDetails';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.data.status) {
+        alert(formData.id ? 'vendor updated successfully!' : 'vendor added successfully!');
+        navigate('/vendors');
+      } else {
+        alert('Failed to save employee details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving employee details:', error);
+      alert('Failed to save employee details. Please try again.');
+    }
+  };
+
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImage(URL.createObjectURL(selectedFile));
+      setFormData((prev) => ({
+        ...prev,
+        photo: selectedFile,
+      }));
+    }
   };
 
   const handleCancel = () => {
@@ -57,18 +121,29 @@ const AddEditVendor = () => {
 
         {/* Photo Section */}
         <div className="flex items-center space-x-2 mb-6">
-          <div className="p-8 bg-gray-200 rounded-full">
-            {vendorData.vendorName ? (
-              <img
-                src="logo-square.png"
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            ) : (
-              <FaFileCirclePlus className="text-gray-800" size={30} />
-            )}
-          </div>
-          <button className="ml-4 border p-2 rounded">Add Photo</button>
-          <button className="ml-2 text-red-500">Remove</button>
+          <img
+            src={image || 'https://i.pravatar.cc/150?img=5'}
+            alt="Employee"
+            className="w-24 h-24 rounded-full object-cover"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            name="photo"
+            className="ml-4 border p-2 rounded"
+            onChange={handleFileChange}
+          />
+          {formData.photo && (
+            <button
+              onClick={() => {
+                setFormData({ ...formData, photo: null });
+                setImage('');
+              }}
+              className="ml-2 text-red-500"
+            >
+              Remove
+            </button>
+          )}
         </div>
 
         {/* Form Fields */}
@@ -79,7 +154,7 @@ const AddEditVendor = () => {
             <input
               type="text"
               name="name"
-              value={formData.vendorName}
+              value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -90,56 +165,30 @@ const AddEditVendor = () => {
             <p className="font-semibold mb-1">Vendor Number</p>
             <input
               type="text"
-              name="number"
-              value={formData.number}
+              name="vendorPhoneNumber"
+              value={formData.vendorPhoneNumber}
               onChange={handleInputChange}
               placeholder="Enter Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          {/* Staff ID */}
           <div>
-            <p className="font-semibold mb-1">Staff ID</p>
+            <p className="font-semibold mb-1">Vendor Number</p>
             <input
               type="text"
-              name="staffId"
-              value={formData.staffId}
+              name="alternatePhoneNumber"
+              value={formData.alternatePhoneNumber}
               onChange={handleInputChange}
-              placeholder="Enter Staff ID"
+              placeholder="Enter Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          {/* Designation */}
           <div>
-            <p className="font-semibold mb-1">Designation</p>
-            <input
-              type="text"
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              placeholder="Enter Designation"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Branch */}
-          <div>
-            <p className="font-semibold mb-1">Branch</p>
-            <input
-              type="text"
-              name="branch"
-              value={formData.branch}
-              onChange={handleInputChange}
-              placeholder="Enter Branch"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Date of Birth */}
-          <div>
-            <p className="font-semibold mb-1">Date of Birth</p>
+            <p className="font-semibold mb-1">starting Date</p>
             <input
               type="date"
-              name="dob"
-              value={formData.dob}
+              name="startingDate"
+              value={formData.startingDate}
               onChange={handleInputChange}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
@@ -149,8 +198,8 @@ const AddEditVendor = () => {
             <p className="font-semibold mb-1">Email ID</p>
             <input
               type="email"
-              name="email"
-              value={formData.email}
+              name="emailId"
+              value={formData.emailId}
               onChange={handleInputChange}
               placeholder="Enter Email ID"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -161,8 +210,8 @@ const AddEditVendor = () => {
             <p className="font-semibold mb-1">Aadhar Number</p>
             <input
               type="text"
-              name="aadhar"
-              value={formData.aadhar}
+              name="aadharNumber"
+              value={formData.aadharNumber}
               onChange={handleInputChange}
               placeholder="Enter Aadhar Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -177,6 +226,17 @@ const AddEditVendor = () => {
               value={formData.address}
               onChange={handleInputChange}
               placeholder="Enter Address"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <p className="font-semibold mb-1">product Type</p>
+            <input
+              type="text"
+              name="productType"
+              value={formData.productType}
+              onChange={handleInputChange}
+              placeholder="Enter productType"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>

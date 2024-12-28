@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaFileCirclePlus } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const AddEditSubDealer = () => {
   const navigate = useNavigate();
@@ -10,57 +11,91 @@ const AddEditSubDealer = () => {
   const subDealerData = location.state?.subDealerDetails || {};
 
   const initialFormData = {
-    name: subDealerData.subDealerName || '',
-    number: subDealerData.number || '',
+    name: subDealerData.name || '',
+    subDealerPhoneNumber: subDealerData.subDealerPhoneNumber || '',
     alternateNumber: subDealerData.alternateNumber || '',
     gstNumber: subDealerData.gstNumber || '',
-    productTypes: subDealerData.productTypes || '',
+    password: subDealerData.password || '',
     startDate: subDealerData.startDate || '',
-    email: subDealerData.email || '',
-    aadhar: subDealerData.aadhar || '',
+    emailId: subDealerData.emailId || '',
+    aadharNumber: subDealerData.aadharNumber || '',
     address: subDealerData.address || '',
+    photo: subDealerData?.photo || null,
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [errorMessage, setErrorMessage] = useState('');
+  const [image, setImage] = useState(subDealerData?.photo || '');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = async () => {
-    const isEmpty = Object.values(formData).some((value) => value === '');
-    if (isEmpty) {
-      setErrorMessage('Please fill all details');
-      return;
-    } else {
-      setErrorMessage('');
+  useEffect(() => {
+    if (subDealerData?.id || subDealerData?.subDealerId) {
+      const fetchClientDetails = async () => {
+        try {
+          const response = await ApiService.post('/subdealer/getSubDealerDetails', {
+            subDealerId: subDealerData.subDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          });
+          const subDealer = response.data?.[0];
+          setFormData((prev) => ({
+            ...prev,
+            ...subDealer,
+          }));
+          setImage(subDealer?.photo || '');
+        } catch (error) {
+          console.error('Error fetching branch details:', error);
+          alert('Failed to fetch branch details.');
+        }
+      };
+      fetchClientDetails();
     }
+  }, [subDealerData]);
 
-    const payload = {
-      name: formData.name,
-      subDealerPhoneNumber: formData.number,
-      alternatePhoneNumber: formData.alternateNumber,
-      gstNumber: formData.gstNumber,
-      startingDate: formData.startDate,
-      emailId: formData.email,
-      aadharNumber: formData.aadhar,
-      address: formData.address,
-      voucherId: 2,
-    };
+  const handleSave = async () => {
 
-    try {
-      if (subDealerData.subDealerName) {
-        await ApiService.put('/sub-dealer/saveSubDealerDetails', payload);
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'photo' && value instanceof File) {
+        payload.append(key, value);
       } else {
-        await ApiService.post('/subdealer/saveSubDealerDetails', payload);
+        payload.append(key, value);
       }
-      alert('Sub-dealer saved successfully!');
-      navigate('/sub_dealers');
+    });
+    console.log(payload, formData, "+++++++++++++++++++++++++")
+    try {
+      const endpoint = formData.id ? '/subdealer/handleSubDealerDetails' : '/subdealer/handleSubDealerDetails';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.data.status) {
+        alert(formData.id ? 'vendor updated successfully!' : 'vendor added successfully!');
+        navigate('/sub_dealers');
+      } else {
+        alert('Failed to save employee details. Please try again.');
+      }
     } catch (error) {
-      console.error('Error saving sub-dealer:', error);
-      alert('Failed to save sub-dealer. Please try again.');
+      console.error('Error saving employee details:', error);
+      alert('Failed to save employee details. Please try again.');
+    }
+  };
+
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImage(URL.createObjectURL(selectedFile));
+      setFormData((prev) => ({
+        ...prev,
+        photo: selectedFile,
+      }));
     }
   };
 
@@ -78,21 +113,30 @@ const AddEditSubDealer = () => {
         </div>
 
         <div className="flex items-center space-x-2 mb-6">
-          <div className="p-8 bg-gray-200 rounded-full">
-            {subDealerData.subDealerName ? (
-              <img
-                src="logo-square.png"
-                className="w-24 h-24 rounded-full object-cover"
-                alt="Sub Dealer"
-              />
-            ) : (
-              <FaFileCirclePlus className="text-gray-800" size={30} />
-            )}
-          </div>
-          <button className="ml-4 border p-2 rounded">Add Photo</button>
-          <button className="ml-2 text-red-500">Remove</button>
+          <img
+            src={image || 'https://i.pravatar.cc/150?img=5'}
+            alt="Employee"
+            className="w-24 h-24 rounded-full object-cover"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            name="photo"
+            className="ml-4 border p-2 rounded"
+            onChange={handleFileChange}
+          />
+          {formData.photo && (
+            <button
+              onClick={() => {
+                setFormData({ ...formData, photo: null });
+                setImage('');
+              }}
+              className="ml-2 text-red-500"
+            >
+              Remove
+            </button>
+          )}
         </div>
-
         <div className="space-y-4">
           {[
             {
@@ -103,7 +147,7 @@ const AddEditSubDealer = () => {
             },
             {
               label: 'Dealer Number',
-              name: 'number',
+              name: 'subDealerPhoneNumber',
               type: 'text',
               placeholder: 'Enter Number',
             },
@@ -120,12 +164,6 @@ const AddEditSubDealer = () => {
               placeholder: 'Enter GST Number',
             },
             {
-              label: 'Product Types',
-              name: 'productTypes',
-              type: 'text',
-              placeholder: 'Enter Product Types',
-            },
-            {
               label: 'Starting Date',
               name: 'startDate',
               type: 'date',
@@ -133,13 +171,19 @@ const AddEditSubDealer = () => {
             },
             {
               label: 'Email ID',
-              name: 'email',
+              name: 'emailId',
               type: 'email',
               placeholder: 'Enter Email ID',
             },
             {
+              label: 'Password',
+              name: 'password',
+              type: 'text',
+              placeholder: 'Enter Password',
+            },
+            {
               label: 'Aadhar Number',
-              name: 'aadhar',
+              name: 'aadharNumber',
               type: 'text',
               placeholder: 'Enter Aadhar Number',
             },

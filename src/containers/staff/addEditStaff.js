@@ -107,7 +107,7 @@ const AddEditEmployeeForm = () => {
   };
 
   useEffect(() => {
-    if (employeeData?.id) {
+    if (employeeData?.id || employeeData?.staffId) {
       const fetchStaffDetails = async () => {
         try {
           const response = await ApiService.post('/staff/getStaffDetailsById', {

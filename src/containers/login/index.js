@@ -12,6 +12,7 @@ const Login = ({ handleLoginFlag }) => {
 
   const navigate = useNavigate();
   const handleLogin = async (e) => {
+    console.log("ClickOutsideWrapper", "+++++++")
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -28,7 +29,7 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
       console.log(payload, response, "++++++++++++++++++++++++++")
       // Correctly check `status` instead of `success`
-      if (response && response.success) {
+      if (response && response.status) {
         localStorage.setItem('userRole', role);
         handleLoginFlag();
         navigate('/home');
