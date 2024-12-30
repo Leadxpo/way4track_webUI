@@ -1,148 +1,192 @@
+import { type } from '@testing-library/user-event/dist/type';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 const TABS = ['Receipt', 'Payment', 'Journal', 'Contra', 'Purchase', 'Invoice'];
 const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
 
-const dropdownOptions = {
-  role: ['Manager', 'Accountant', 'Staff'],
-  amountGoingTo: ['Account A', 'Account B', 'Account C'],
-  bankFrom: ['Bank A', 'Bank B', 'Bank C'],
-  bankTo: ['Bank X', 'Bank Y', 'Bank Z'],
-};
-
-const formFieldsByTab = {
-  Receipt: [
-    { name: 'title', label: 'Title' },
-    { name: 'branchName', label: 'Branch Name' },
-    {
-      name: 'role',
-      label: 'Role',
-      type: 'dropdown',
-      options: dropdownOptions.role,
-    },
-    { name: 'receipt', label: 'Receipt' },
-    { name: 'purpose', label: 'Purpose' },
-    { name: 'creditAmount', label: 'Credit Amount' },
-  ],
-  Payment: [
-    { name: 'title', label: 'Title' },
-    { name: 'clientName', label: 'Client Name' },
-    {
-      name: 'role',
-      label: 'Role',
-      type: 'dropdown',
-      options: dropdownOptions.role,
-    },
-    { name: 'branchName', label: 'Branch Name' },
-    { name: 'purpose', label: 'Purpose' },
-    { name: 'debitAmount', label: 'Debit Amount' },
-    { name: 'paymentTo', label: 'Payment To' },
-    { name: 'amountPaid', label: 'Amount Paid' },
-  ],
-  Journal: [
-    { name: 'title', label: 'Title' },
-    { name: 'branchName', label: 'Branch Name' },
-    { name: 'purpose', label: 'Purpose' },
-    {
-      name: 'amountTo',
-      label: 'Amount Going To',
-      type: 'dropdown',
-      options: dropdownOptions.amountGoingTo,
-    },
-    { name: 'requestFrom', label: 'From Request To' },
-    { name: 'amount', label: 'Amount' },
-  ],
-  Contra: [
-    { name: 'title', label: 'Title' },
-    { name: 'purpose', label: 'Purpose' },
-    { name: 'amountTo', label: 'Amount Going To' },
-    { name: 'transformBy', label: 'Transform By' },
-    {
-      name: 'bankFrom',
-      label: 'Bank From',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    {
-      name: 'bankTo',
-      label: 'Bank To',
-      type: 'dropdown',
-      options: dropdownOptions.bankTo,
-    },
-  ],
-  Purchase: [
-    { name: 'title', label: 'Title' },
-    { name: 'purpose', label: 'Purpose' },
-    { name: 'transformBy', label: 'Transform By' },
-    {
-      name: 'bankFrom',
-      label: 'Bank From',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    {
-      name: 'bankTo',
-      label: 'Bank To',
-      type: 'dropdown',
-      options: dropdownOptions.bankTo,
-    },
-  ],
-};
-
-const paymentModeFields = {
-  Cash: [
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addVoucher', label: 'Add Voucher' },
-  ],
-  UPI: [
-    { name: 'upiId', label: 'UPI ID' },
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addVoucher', label: 'Add Voucher' },
-  ],
-  Bank: [
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addVoucher', label: 'Add Voucher' },
-  ],
-  Cheque: [
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addVoucher', label: 'Add Voucher' },
-  ],
-  Card: [
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addVoucher', label: 'Add Voucher' },
-  ],
-};
-
 const AddEditVouchers = () => {
+  const dropdownOptions = {
+    role: ['Manager', 'Accountant', 'Staff'],
+    receiptTo: ['Client', 'Vendor'],
+    amountGoingTo: ['Account A', 'Account B', 'Account C'],
+    bankFrom: ['Bank A', 'Bank B', 'Bank C'],
+    bankTo: ['Bank X', 'Bank Y', 'Bank Z'],
+    branches: ['Vishakapatnam', 'Hyderabad'],
+  };
+
+  const formFieldsByTab = {
+    Receipt: [
+      { name: 'title', label: 'Title' },
+      {
+        name: 'branchName',
+        label: 'Branch Name',
+        type: 'dropdown',
+        options: dropdownOptions.branches,
+      },
+      {
+        name: 'role',
+        label: 'Role',
+        type: 'dropdown',
+        options: dropdownOptions.role,
+      },
+      {
+        name: 'receipt',
+        label: 'Receipt To',
+        type: 'dropdown',
+        options: dropdownOptions.receiptTo,
+      },
+      { name: 'purpose', label: 'Purpose' },
+      { name: 'creditAmount', label: 'Credit Amount' },
+    ],
+    Payment: [
+      { name: 'title', label: 'Title' },
+      {
+        name: 'clientName',
+        label: 'Client Name',
+        type: 'dropdown',
+        options: dropdownOptions.receiptTo,
+      },
+      {
+        name: 'role',
+        label: 'Role',
+        type: 'dropdown',
+        options: dropdownOptions.role,
+      },
+      {
+        name: 'branchName',
+        label: 'Branch Name',
+        type: 'dropdown',
+        options: dropdownOptions.branches,
+      },
+      { name: 'purpose', label: 'Purpose' },
+      { name: 'debitAmount', label: 'Debit Amount' },
+      { name: 'paymentTo', label: 'Payment To' },
+      { name: 'amountPaid', label: 'Amount Paid' },
+    ],
+    Journal: [
+      { name: 'title', label: 'Title' },
+      {
+        name: 'branchName',
+        label: 'Branch Name',
+        type: 'dropdown',
+        options: dropdownOptions.branches,
+      },
+      { name: 'purpose', label: 'Purpose' },
+      {
+        name: 'amountTo',
+        label: 'Amount Giving To',
+        type: 'dropdown',
+        options: dropdownOptions.amountGoingTo,
+      },
+      {
+        name: 'requestFrom',
+        label: 'From Request To',
+        type: 'dropdown',
+        options: dropdownOptions.amountGoingTo,
+      },
+      { name: 'amount', label: 'Amount' },
+    ],
+    Contra: [
+      { name: 'title', label: 'Title' },
+      { name: 'purpose', label: 'Purpose' },
+      { name: 'amountTo', label: 'Amount Going To' },
+      {
+        name: 'transformBy',
+        label: 'Transform By',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      {
+        name: 'bankFrom',
+        label: 'Bank From',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      {
+        name: 'bankTo',
+        label: 'Bank To',
+        type: 'dropdown',
+        options: dropdownOptions.bankTo,
+      },
+    ],
+    Purchase: [
+      { name: 'title', label: 'Title' },
+      { name: 'purpose', label: 'Purpose' },
+      { name: 'transformBy', label: 'Transform By' },
+      {
+        name: 'bankFrom',
+        label: 'Bank From',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      {
+        name: 'bankTo',
+        label: 'Bank To',
+        type: 'dropdown',
+        options: dropdownOptions.bankTo,
+      },
+    ],
+  };
+
+  const paymentModeFields = {
+    Cash: [
+      { name: 'cashAmount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    UPI: [
+      { name: 'upiId', label: 'UPI ID' },
+      {
+        name: 'bank',
+        label: 'Bank',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      { name: 'cashAmount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    Bank: [
+      {
+        name: 'bankName',
+        label: 'Bank Name',
+      },
+      {
+        name: 'branch',
+        label: 'Branch Name',
+      },
+      {
+        name: 'ifsc',
+        label: 'IFSC',
+      },
+      {
+        name: 'accountNumber',
+        label: 'Account Number',
+      },
+      { name: 'cashAmount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    Cheque: [
+      { name: 'chequeNumber', label: 'Check Number' },
+      {
+        name: 'bank',
+        label: 'Bank',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      { name: 'cashAmount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    Card: [
+      { name: 'cardNumber', label: 'Card Number' },
+      {
+        name: 'bank',
+        label: 'Bank',
+        type: 'dropdown',
+        options: dropdownOptions.bankFrom,
+      },
+      { name: 'cashAmount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+  };
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
@@ -241,6 +285,43 @@ const AddEditVouchers = () => {
     navigate('/invoice');
   };
 
+  //for purchase items
+  const [rows, setRows] = useState([
+    { id: 1, name: '', quantity: '', amount: 0 },
+  ]);
+
+  // Add a new row
+  const addRow = () => {
+    setRows([
+      ...rows,
+      { id: rows.length + 1, name: '', quantity: '', amount: 0 },
+    ]);
+  };
+
+  // Remove the last row (ensure at least one row remains)
+  const removeRow = () => {
+    if (rows.length > 1) {
+      setRows(rows.slice(0, -1));
+    }
+  };
+
+  // Handle input changes for Name, Quantity, and Amount
+  const handlePurchaseItemsInputChange = (id, field, value) => {
+    const updatedRows = rows.map((row) => {
+      if (row.id === id) {
+        return {
+          ...row,
+          [field]: field === 'amount' ? parseFloat(value) || 0 : value,
+        };
+      }
+      return row;
+    });
+    setRows(updatedRows);
+  };
+
+  const calculateTotalAmount = () => {
+    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
+  };
   return (
     <div className="p-6">
       {/* Tabs */}
@@ -287,6 +368,79 @@ const AddEditVouchers = () => {
               )}
             </div>
           ))}
+          {selectedTab === 'Purchase' && (
+            <div className="pt-2">
+              {/* Dynamic Input Rows */}
+              <div className="space-y-4 border rounded-md p-4 bg-gray-50">
+                {rows.map((row) => (
+                  <div key={row.id} className="flex items-center space-x-4">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={row.name}
+                      onChange={(e) =>
+                        handlePurchaseItemsInputChange(
+                          row.id,
+                          'name',
+                          e.target.value
+                        )
+                      }
+                      className="p-2 border rounded-md w-1/3"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Quantity"
+                      value={row.quantity}
+                      onChange={(e) =>
+                        handlePurchaseItemsInputChange(
+                          row.id,
+                          'quantity',
+                          e.target.value
+                        )
+                      }
+                      className="p-2 border rounded-md w-1/3"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Amount"
+                      value={row.amount}
+                      onChange={(e) =>
+                        handlePurchaseItemsInputChange(
+                          row.id,
+                          'amount',
+                          e.target.value
+                        )
+                      }
+                      className="p-2 border rounded-md w-1/3"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-4 py-2">
+                <button
+                  onClick={addRow}
+                  className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                >
+                  +
+                </button>
+                <button
+                  onClick={removeRow}
+                  className={`bg-gray-300 text-white py-2 px-4 rounded-md ${rows.length === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-500'}`}
+                  disabled={rows.length === 1}
+                >
+                  -
+                </button>
+              </div>
+
+              {/* Total Amount */}
+              <div className="text-right font-bold text-lg mt-4">
+                Total Amount: {calculateTotalAmount().toLocaleString('en-IN')}{' '}
+                /-
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <form className="space-y-6">
