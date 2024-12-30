@@ -29,7 +29,7 @@ const AddEditEmployeeForm = () => {
     attendance: employeeData.attendance,
     basicSalary: employeeData.basicSalary,
     beforeExperience: employeeData.beforeExperience,
-    password: employeeData.password
+    password: employeeData.password,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -58,7 +58,9 @@ const AddEditEmployeeForm = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (response.status) {
           setBranches(response.data); // Set branches to state
         } else {
@@ -74,10 +76,9 @@ const AddEditEmployeeForm = () => {
 
   // Handle save button
   const handleSave = async () => {
-
     if (!formData.phoneNumber) {
-      alert("Phone number is required.");
-      return;  // Prevent submission if phone number is missing
+      alert('Phone number is required.');
+      return; // Prevent submission if phone number is missing
     }
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -89,13 +90,19 @@ const AddEditEmployeeForm = () => {
     });
 
     try {
-      const endpoint = formData.id ? '/staff/handleStaffDetails' : '/staff/handleStaffDetails';
+      const endpoint = formData.id
+        ? '/staff/handleStaffDetails'
+        : '/staff/handleStaffDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (response.data.status) {
-        alert(formData.id ? 'Employee updated successfully!' : 'Employee added successfully!');
+        alert(
+          formData.id
+            ? 'Employee updated successfully!'
+            : 'Employee added successfully!'
+        );
         navigate('/staff');
       } else {
         alert('Failed to save employee details. Please try again.');
@@ -161,7 +168,9 @@ const AddEditEmployeeForm = () => {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
-          <h1 className="text-3xl font-bold">{employeeData?.id ? 'Edit Employee' : 'Add Employee'}</h1>
+          <h1 className="text-3xl font-bold">
+            {employeeData?.id ? 'Edit Employee' : 'Add Employee'}
+          </h1>
         </div>
 
         {/* Photo Section */}
@@ -202,7 +211,9 @@ const AddEditEmployeeForm = () => {
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select a Branch</option>
+                <option value="" disabled>
+                  Select a Branch
+                </option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.branchName}>
                     {branch.branchName}
@@ -236,16 +247,56 @@ const AddEditEmployeeForm = () => {
         {/* Form Fields */}
         <div className="space-y-4">
           {[
-            { label: 'Name', name: 'name', type: 'text', placeholder: 'Enter Name' },
-            { label: 'Number', name: 'phoneNumber', type: 'text', placeholder: 'Enter Number' },
-            { label: 'Before Experience', name: 'beforeExperience', type: 'float', placeholder: 'Enter Before Experience' },
-            { label: 'BasicSalary', name: 'basicSalary', type: 'float', placeholder: 'Enter BasicSalary' },
+            {
+              label: 'Name',
+              name: 'name',
+              type: 'text',
+              placeholder: 'Enter Name',
+            },
+            {
+              label: 'Number',
+              name: 'phoneNumber',
+              type: 'text',
+              placeholder: 'Enter Number',
+            },
+            {
+              label: 'Before Experience',
+              name: 'beforeExperience',
+              type: 'float',
+              placeholder: 'Enter Before Experience',
+            },
+            {
+              label: 'BasicSalary',
+              name: 'basicSalary',
+              type: 'float',
+              placeholder: 'Enter BasicSalary',
+            },
             { label: 'Date of Birth', name: 'dob', type: 'date' },
             { label: 'Joining Date', name: 'joiningDate', type: 'date' },
-            { label: 'Email ID', name: 'email', type: 'email', placeholder: 'Enter Email ID' },
-            { label: 'Aadhar Number', name: 'aadharNumber', type: 'text', placeholder: 'Enter Aadhar Number' },
-            { label: 'Address', name: 'address', type: 'text', placeholder: 'Enter Address' },
-            { label: 'password', name: 'password', type: 'text', placeholder: 'Enter password' },
+            {
+              label: 'Email ID',
+              name: 'email',
+              type: 'email',
+              placeholder: 'Enter Email ID',
+            },
+            {
+              label: 'Aadhar Number',
+              name: 'aadharNumber',
+              type: 'text',
+              placeholder: 'Enter Aadhar Number',
+            },
+            {
+              label: 'Address',
+              name: 'address',
+              type: 'text',
+              placeholder: 'Enter Address',
+            },
+            {
+              label: 'password',
+              name: 'password',
+              type: 'text',
+              placeholder: 'Enter password',
+            },
           ].map((field) => (
             <div key={field.name}>
               <p className="font-semibold mb-1">{field.label}</p>
@@ -260,7 +311,6 @@ const AddEditEmployeeForm = () => {
             </div>
           ))}
         </div>
-
 
         <div className="flex justify-center space-x-4 mt-6">
           <button

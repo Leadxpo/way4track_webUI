@@ -22,7 +22,7 @@ const AddBranchForm = () => {
     email: branchData?.email || '',
     photo: branchData?.photo || null,
     companyCode: initialAuthState.companyCode,
-    unitCode: initialAuthState.unitCode
+    unitCode: initialAuthState.unitCode,
   });
 
   const [image, setImage] = useState(branchData?.photo || '');
@@ -38,11 +38,14 @@ const AddBranchForm = () => {
       // Fetch branch details by ID
       const fetchBranchDetails = async () => {
         try {
-          const response = await ApiService.post('/branch/getBranchDetailsById', {
-            id: branchData.id,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          });
+          const response = await ApiService.post(
+            '/branch/getBranchDetailsById',
+            {
+              id: branchData.id,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
           const branch = response.data?.[0];
           setFormData((prev) => ({
             ...prev,
@@ -65,7 +68,7 @@ const AddBranchForm = () => {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-      if (response.data.success) {
+      if (response.status) {
         setBranchList(response.data.data);
       } else {
         alert(response.data.message || 'Failed to fetch branch list.');
@@ -114,7 +117,11 @@ const AddBranchForm = () => {
       });
 
       if (response.data.status) {
-        alert(formData.id ? 'Branch updated successfully!' : 'Branch added successfully!');
+        alert(
+          formData.id
+            ? 'Branch updated successfully!'
+            : 'Branch added successfully!'
+        );
         navigate('/branches');
       } else {
         alert('Failed to save branch details. Please try again.');
@@ -129,7 +136,11 @@ const AddBranchForm = () => {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
-          <img src="logo-square.png" alt="Logo" className="w-20 h-20 rounded shadow-lg" />
+          <img
+            src="logo-square.png"
+            alt="Logo"
+            className="w-20 h-20 rounded shadow-lg"
+          />
           <h1 className="text-3xl font-bold text-green-600">
             {branchData ? 'Edit Branch' : 'New Branch'}
           </h1>
@@ -158,25 +169,25 @@ const AddBranchForm = () => {
             </div>
           </div>
           <div>
-          <p className="font-semibold mb-1">Designation</p>
-          <select
-            name="designation"
-            value={formData.designation}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          >
-            <option value="">Select designation</option>
-            <option value="CEO">CEO</option>
-            <option value="HR">HR</option>
-            <option value="Accountant">Accountant</option>
-            <option value="BranchManager">Branch Manager</option>
-            <option value="SubDealer">Sub Dealer</option>
-            <option value="Technician">Technician</option>
-            <option value="SalesMan">Sales Man</option>
-            <option value="CallCenter">Call Center</option>
-            <option value="Warehouse Manager">Warehouse Manager</option>
-          </select>
-        </div>
+            <p className="font-semibold mb-1">Designation</p>
+            <select
+              name="designation"
+              value={formData.designation}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select designation</option>
+              <option value="CEO">CEO</option>
+              <option value="HR">HR</option>
+              <option value="Accountant">Accountant</option>
+              <option value="BranchManager">Branch Manager</option>
+              <option value="SubDealer">Sub Dealer</option>
+              <option value="Technician">Technician</option>
+              <option value="SalesMan">Sales Man</option>
+              <option value="CallCenter">Call Center</option>
+              <option value="Warehouse Manager">Warehouse Manager</option>
+            </select>
+          </div>
           {/* Address */}
           <div>
             <label className="block font-bold mb-1">Branch Address</label>
@@ -278,7 +289,9 @@ const AddBranchForm = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               onChange={handleFileChange}
             />
-            {image && <img src={image} alt="Branch" className="w-32 h-32 mt-4" />}
+            {image && (
+              <img src={image} alt="Branch" className="w-32 h-32 mt-4" />
+            )}
           </div>
         </div>
 

@@ -71,11 +71,16 @@ import AddEditVouchers from '../vouchers/addEditVouchers';
 import ProductAssignDetails from '../product-assign/productAssignDetails';
 import AddAsset from '../asserts/addAsset';
 import AssetDetails from '../asserts/assetDetails';
+import BankDetailsDashboard from '../bank-details';
+import AddEditBankDetails from '../bank-details/addEditBankDetails';
+import AddAmount from '../bank-details/addAmount';
+import BankDetails from '../bank-details/bankDetails';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const role = localStorage.getItem('userRole');
   const getPathname = (role = 'ceo') => {
     return formattedPaths[role][location.pathname]?.name || '';
   };
@@ -131,28 +136,37 @@ const BodyLayout = ({ children }) => {
           </span>
         </div>
         <div className="flex space-x-6 mr-4">
-          <div className="w-full relative">
-            <input
-              className="w-full border rounded pl-2 text-sm focus:outline-none"
-              placeholder="Search here"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-            {/* Dropdown for search results */}
-            {searchTerm && results.length > 0 && (
-              <div className="absolute bg-white border rounded shadow-lg z-10 max-h-48 overflow-y-auto w-full">
-                {results.map((item) => (
-                  <div
-                    key={item.name}
-                    className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleResultClick(item.route)}
-                  >
-                    {item.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {role === 'Accountant' ? (
+            <button
+              className="bg-red-500 text-sm w-fit text-white p-1"
+              onClick={() => navigate('/bank-details-dashboard')}
+            >
+              Bank Account Details
+            </button>
+          ) : (
+            <div className="w-full relative">
+              <input
+                className="w-full border rounded pl-2 text-sm focus:outline-none"
+                placeholder="Search here"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+              {/* Dropdown for search results */}
+              {searchTerm && results.length > 0 && (
+                <div className="absolute bg-white border rounded shadow-lg z-10 max-h-48 overflow-y-auto w-full">
+                  {results.map((item) => (
+                    <div
+                      key={item.name}
+                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleResultClick(item.route)}
+                    >
+                      {item.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <FaUserCircle
             className="text-xl text-gray-600"
@@ -250,6 +264,13 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          <Route
+            path="/bank-details-dashboard"
+            element={<BankDetailsDashboard />}
+          />
+          <Route path="/add-bank-account" element={<AddEditBankDetails />} />
+          <Route path="/add-amount" element={<AddAmount />} />
+          <Route path="/bank-details" element={<BankDetails />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

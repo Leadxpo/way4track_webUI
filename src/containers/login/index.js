@@ -22,13 +22,13 @@ const Login = ({ handleLoginFlag }) => {
         password,
         designation: role,
         companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode
+        unitCode: initialAuthState.unitCode,
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log(payload, response, "++++++++++++++++++++++++++")
+      console.log(payload, response, '++++++++++++++++++++++++++');
       // Correctly check `status` instead of `success`
-      if (response && response.success) {
+      if (response && response.status) {
         localStorage.setItem('userRole', role);
         handleLoginFlag();
         navigate('/home');
@@ -36,7 +36,10 @@ const Login = ({ handleLoginFlag }) => {
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {
-      setError(err?.response?.data?.internalMessage || 'Failed to login. Please check your credentials.');
+      setError(
+        err?.response?.data?.internalMessage ||
+          'Failed to login. Please check your credentials.'
+      );
     } finally {
       setLoading(false);
     }
@@ -72,7 +75,7 @@ const Login = ({ handleLoginFlag }) => {
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-            //required
+              //required
             />
           </div>
 
@@ -91,7 +94,7 @@ const Login = ({ handleLoginFlag }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-            //required
+              //required
             />
           </div>
 
@@ -108,7 +111,7 @@ const Login = ({ handleLoginFlag }) => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            //required
+              //required
             >
               <option value="">Select Role</option>
               <option value="CEO">CEO</option>
