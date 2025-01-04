@@ -66,50 +66,8 @@ const AddEditClient = () => {
     fetchBranches();
   }, []);
 
-  // const fetchClientList = async () => {
-  //   try {
-  //     const response = await ApiService.post('/dashboards/getClientData', {
-  //       companyCode: initialAuthState?.companyCode,
-  //       unitCode: initialAuthState?.unitCode,
-  //     });
-  //     if (response.data.success) {
-  //       setClientList(response.data.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch branch list.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching branch list:', error);
-  //     alert('Failed to fetch branch list.');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchClientList();
-  // }, []);
-
-  useEffect(() => {
-    if (clientData?.id || clientData?.clientId) {
-      const fetchClientDetails = async () => {
-        try {
-          const response = await ApiService.post('/client/getClientDetails', {
-            clientId: clientData.clientId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          });
-          const client = response.data?.[0];
-          setFormData((prev) => ({
-            ...prev,
-            ...client,
-          }));
-          setImage(client?.file || '');
-        } catch (error) {
-          console.error('Error fetching branch details:', error);
-          alert('Failed to fetch branch details.');
-        }
-      };
-      fetchClientDetails();
-    }
-  }, [clientData]);
+ 
+ 
 
   const handleSave = async () => {
 

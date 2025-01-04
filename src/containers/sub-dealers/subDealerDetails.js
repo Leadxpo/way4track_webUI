@@ -1,15 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const SubDealerDetails = () => {
-  const vendorInfo = {
-    name: 'K Praveen Sai',
-    phone: '77788 77788',
-    email: 'Way4track@gmail.com',
-    branch: 'Visakhapatnam',
-    dob: '03 Mar 1970',
-    address: '***********************',
-  };
+  const location = useLocation();
+  const subDealerDetailsFromState = location.state?.subDealerDetails || {};
+  const [subDealerDetails, setVendorDetails] = useState({});
+  useEffect(() => {
+    const fetchSubDealerDetails = async () => {
+      try {
+        const response = await ApiService.post('/subdealer/getSubDealerDetails', {
+          subDealerId: subDealerDetailsFromState.subDealerId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const subDealer = response.data?.[0];
+          setVendorDetails({
+            ...subDealer,
+            name: subDealer.name,
+            phone: subDealer.subDealerPhoneNumber,
+            email: subDealer.emailId,
+            alternatePhoneNumber: subDealer.alternatePhoneNumber,
+            aadharNumber: subDealer.aadharNumber,
+            address: subDealer.address,
+            subDealerPhoto: subDealer.subDealerPhoto,
+            branch: subDealer.branchName
+          });
+        } else {
+          setVendorDetails({})
+        }
 
+      } catch (error) {
+        console.error('Error fetching branch details:', error);
+        alert('Failed to fetch branch details.');
+      }
+    };
+    fetchSubDealerDetails();
+
+  }, [subDealerDetailsFromState.subDealerId]);
   const products = [
     { name: 'Bike GPS Tracker', image: 'https://via.placeholder.com/150' },
     { name: 'Car GPS Tracker', image: 'https://via.placeholder.com/150' },
@@ -56,19 +86,19 @@ const SubDealerDetails = () => {
       <p className="font-bold text-xl">Sub Dealer ID</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
-          src={'https://i.pravatar.cc/150?img=5'}
-          alt="Vendor"
+          src={subDealerDetails.subDealerPhoto}
+          alt="subDealer"
           className="w-32 h-32 rounded-full object-cover"
         />
         <div className="space-y-2">
           <p className="text-gray-800 font-bold text-xl">
-            Client Name : {vendorInfo.name}
+            SubDealer Name : {subDealerDetails.name}
           </p>
-          <p className="text-gray-800">Phone number : {vendorInfo.phone}</p>
-          <p className="text-gray-800">Email : {vendorInfo.email}</p>
-          <p className="text-gray-800">Client Branch : {vendorInfo.branch}</p>
-          <p className="text-gray-800">Date of Birth : {vendorInfo.dob}</p>
-          <p className="text-gray-800">Address : {vendorInfo.address}</p>
+          <p className="text-gray-800">Phone number : {subDealerDetails.phone}</p>
+          <p className="text-gray-800">Email : {subDealerDetails.email}</p>
+          <p className="text-gray-800">SubDealer Branch : {subDealerDetails.branch}</p>
+          <p className="text-gray-800">Date of Birth : {subDealerDetails.dob}</p>
+          <p className="text-gray-800">Address : {subDealerDetails.address}</p>
         </div>
       </div>
 

@@ -1,12 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const AppointmentDetails = () => {
   const location = useLocation();
-  const appointmentDetails = location.state?.appointmentDetails || {};
+  const appointmentDetailsFromState = location.state?.appointmentDetails || {};
+  const [appointmentDetails, setAppointmentDetails] = useState({});
+
+  useEffect(() => {
+    const fetchAppointmentDetails = async () => {
+      try {
+        const response = await ApiService.post('/appointment/getAppointmentDetails', {
+          appointmentId: appointmentDetailsFromState.appointmentId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+
+        if (response.status) {
+          const data = response.data[0];
+          setAppointmentDetails({
+            ...data,
+            branch: data.branchName,
+            assignPerson: data.assignedTo,
+            type: data.appointmentType,
+            product: data.name,
+            clientNumber: data.clientPhoneNumber,
+            clientName: data.clientName,
+            address: data.clientAddress,
+            image: data.staffPhoto
+          });
+        } else {
+          setAppointmentDetails({});
+        }
+      } catch (error) {
+        console.error('Error fetching appointment details:', error);
+        alert('Failed to fetch appointment details.');
+      }
+    };
+
+    fetchAppointmentDetails();
+  }, [appointmentDetailsFromState.appointmentId]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 rounded-lg ">
+    <div className="w-full max-w-4xl mx-auto p-6 rounded-lg">
       <h2 className="text-2xl font-semibold mb-6">Appointment Details</h2>
 
       {/* Header Section */}
@@ -14,8 +51,7 @@ const AppointmentDetails = () => {
         {/* Image Section */}
         <div className="flex-shrink-0 flex items-center justify-center h-full">
           <img
-            src={appointmentDetails.image || 'https://via.placeholder.com/100'}
-            alt="Assigned Person"
+            src={appointmentDetails.image}
             className="w-36 h-36 rounded-full object-cover border border-gray-300"
           />
         </div>

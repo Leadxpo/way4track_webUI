@@ -5,7 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 
 const AddEditEmployeeForm = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   // Check if data is available from the location state
   const employeeData = location.state?.staffDetails || {};
