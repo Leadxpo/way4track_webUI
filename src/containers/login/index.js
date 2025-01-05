@@ -12,6 +12,7 @@ const Login = ({ handleLoginFlag }) => {
 
   const navigate = useNavigate();
   const handleLogin = async (e) => {
+    console.log("ClickOutsideWrapper", "+++++++")
     e.preventDefault();
     setError('');
     setLoading(true);

@@ -1,10 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 import { FaEllipsisVertical } from 'react-icons/fa6';
 const BranchDetails = () => {
   const [managerMenuOpen, setManagerMenuOpen] = useState(false);
   const toggleMenu = () => {
     setManagerMenuOpen(!managerMenuOpen);
   };
+  const location = useLocation();
+  const branchDetailsFromState = location.state?.branchDetails || {};
+  const [branchDetails, setBranchDetails] = useState({});
+  useEffect(() => {
+    const fetchBranchDetails = async () => {
+      try {
+        const response = await ApiService.post('/branch/getBranchDetailsById', {
+          id: branchDetailsFromState.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const branch = response.data?.[0];
+          setBranchDetails({
+            branchName: branch.branchName,
+            address: branch.address,
+            email: branch.email,
+            branchPhoto: branch.branchPhoto,
+            city: branch.city,
+            state: branch.state,
+            addressLine1: branch.addressLine1,
+            addressLine2: branch.addressLine2,
+            phoneNumber: branch.phoneNumber,
+            branchOpening: branch.branchOpening
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching branch details:', error);
+        alert('Failed to fetch branch details.');
+      }
+    };
+    fetchBranchDetails();
+
+  }, [branchDetailsFromState.id]);
   return (
     <div className="space-y-10 px-8 py-4">
       {/* Header Section */}
@@ -14,30 +51,29 @@ const BranchDetails = () => {
           alt="Branch Logo"
           className="w-16 h-16 rounded-full"
         />
-        <h1 className="text-3xl font-bold text-green-600">Visakhapatnam</h1>
+        <h1 className="text-3xl font-bold text-green-600">{branchDetails.name}</h1>
       </div>
 
       {/* Branch Info */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <strong>Branch Name:</strong>
-          <p>Visakhapatnam</p>
+          <p>{branchDetails.name}</p>
         </div>
         <div>
-          <strong>Branch Number:</strong> <p>+91 91107 29757</p>
+          <strong>Branch Number:</strong> <p>{branchDetails.phoneNumber}</p>
         </div>
         <div>
           <strong>Branch Opening:</strong>
-          <p> 01-01-2010</p>
+          <p>{branchDetails.branchOpening}</p>
         </div>
         <div>
-          <strong>Email ID:</strong> <p>sharontelmaticspvtltd@gmail.com</p>
+          <strong>Email ID:</strong> <p>{branchDetails.email}</p>
         </div>
         <div className="col-span-2">
           <strong>Branch Address:</strong>{' '}
           <p>
-            21-27, Double Road, Viman Nagar, Kakani Nagar, Visakhapatnam, Andhra
-            Pradesh 530009
+            {branchDetails.address}
           </p>
         </div>
       </div>
@@ -47,7 +83,7 @@ const BranchDetails = () => {
         <h2 className="text-xl font-semibold mb-4">Branch Photos</h2>
         <div className="flex space-x-4 overflow-x-auto">
           <img
-            src="logo.png"
+            src={branchDetails.branchPhoto}
             alt="Branch Photo 1"
             className="w-32 h-32 rounded-md"
           />
