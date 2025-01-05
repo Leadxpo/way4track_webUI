@@ -1,133 +1,145 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { FaEllipsisVertical } from 'react-icons/fa6';
 import { FaList, FaTh, FaPlus } from 'react-icons/fa';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import Table from '../../components/Table';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Staff = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const employeeData = location.state?.staffDetails || {};
+
   const [selectedBranch, setSelectedBranch] = useState('');
+  const [branches, setBranches] = useState([]);
   const [isGridView, setIsGridView] = useState(true);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
+  const [profiles, setProfiles] = useState([]);
 
-  const profiles = [
-    {
-      employeeId: 'EMP001',
-      name: 'John Doe',
-      designation: 'Manager',
-      branch: 'Hyderabad',
-      phone: '9876543210',
-      attendance: 'Present',
-    },
-    {
-      employeeId: 'EMP002',
-      name: 'Jane Smith',
-      designation: 'Developer',
-      branch: 'Vishakapatnam',
-      phone: '8765432109',
-      attendance: 'Off Leave',
-    },
-    {
-      employeeId: 'EMP003',
-      name: 'Peter Parker',
-      designation: 'Designer',
-      branch: 'Vijayawada',
-      phone: '7654321098',
-      attendance: 'Absent',
-    },
-    {
-      employeeId: 'EMP004',
-      name: 'Alice Brown',
-      designation: 'Tester',
-      branch: 'Kakinada',
-      phone: '6543210987',
-      attendance: 'Present',
-    },
-    {
-      employeeId: 'EMP005',
-      name: 'Robert White',
-      designation: 'Team Lead',
-      branch: 'Hyderabad',
-      phone: '5432109876',
-      attendance: 'Absent',
-    },
-    {
-      employeeId: 'EMP006',
-      name: 'Lucy Green',
-      designation: 'HR',
-      branch: 'Vishakapatnam',
-      phone: '4321098765',
-      attendance: 'Off Leave',
-    },
-    {
-      employeeId: 'EMP007',
-      name: 'Tom Hanks',
-      designation: 'Support Engineer',
-      branch: 'Vijayawada',
-      phone: '3210987654',
-      attendance: 'Present',
-    },
-    {
-      employeeId: 'EMP008',
-      name: 'Emma Watson',
-      designation: 'Developer',
-      branch: 'Kakinada',
-      phone: '2109876543',
-      attendance: 'Absent',
-    },
-    {
-      employeeId: 'EMP009',
-      name: 'Chris Evans',
-      designation: 'Admin',
-      branch: 'Hyderabad',
-      phone: '1098765432',
-      attendance: 'Present',
-    },
-    {
-      employeeId: 'EMP010',
-      name: 'Natalie Portman',
-      designation: 'Designer',
-      branch: 'Vishakapatnam',
-      phone: '0987654321',
-      attendance: 'Off Leave',
-    },
-  ];
+  // Fetch Staff Details using useCallback to memoize the function
+  const getStaffSearchDetails = useCallback(async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getStaffSearchDetails',
+        {
+          staffId: employeeData?.staffId,
+          branchName: employeeData?.branchName,
+          staffName: employeeData?.staffName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
-  const columns = [
-    'employeeId',
-    'name',
-    'designation',
-    'branch',
-    'phone',
-    'attendance',
-  ];
+      if (response.status) {
+        console.log(response.data, '{{{{{{{{{{{{');
+        setProfiles(response.data || []);
+      } else {
+        alert(
+          response.data.internalMessage || 'Failed to fetch staff details.'
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      alert('Failed to fetch staff details.');
+    }
+  }, [
+    employeeData?.staffId,
+    employeeData?.branchName,
+    employeeData?.staffName,
+  ]);
 
-  const handleSelectChange = (e) => setSelectedBranch(e.target.value);
+  // Fetch Branch Names
+  const fetchBranches = async () => {
+    try {
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      if (response.status) {
+        setBranches(response.data);
+      } else {
+        console.error('Failed to fetch branch names.');
+      }
+    } catch (error) {
+      console.error('Error fetching branch names:', error);
+    }
+  };
 
+  // Initial API calls
+  useEffect(() => {
+    getStaffSearchDetails();
+    fetchBranches();
+  }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
+
+  // Handle branch selection
+  const handleSelectChange = (e) => {
+    setSelectedBranch(e.target.value);
+  };
+
+  // Toggle dropdown menu
   const toggleMenu = (index) => {
     setMenuOpenIndex(menuOpenIndex === index ? null : index);
   };
 
+  // Navigate to edit page
   const handleEdit = (profile) => {
     navigate('/edit-staff', { state: { staffDetails: profile } });
   };
 
+  // Navigate to details page
   const handleMoreDetails = (profile) => {
     navigate('/staff-details', { state: { staffDetails: profile } });
   };
-  const onEdit = (row) => {
-    // Handle edit for the Table component
-    console.log('Edit clicked for row:', row);
-  };
 
-  const onDetails = (row) => {
-    // Handle view details for the Table component
-    console.log('Details clicked for row:', row);
-  };
+  const columns = [
+    {
+      title: 'Staff ID',
+      dataIndex: 'staffId',
+      key: 'staffId',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'staffName',
+      key: 'staffName',
+    },
+    {
+      title: 'Designation',
+      dataIndex: 'designation',
+      key: 'designation',
+    },
+    {
+      title: 'Branch',
+      dataIndex: 'branchName',
+      key: 'branchName',
+    },
+    {
+      title: 'Phone Number',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, profile) => (
+        <div className="flex space-x-2">
+          <button
+            className="text-blue-500 hover:underline"
+            onClick={() => handleEdit(profile)}
+          >
+            Edit
+          </button>
+          <button
+            className="text-green-500 hover:underline"
+            onClick={() => handleMoreDetails(profile)}
+          >
+            Details
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="m-2">
-      {/* Header with toggling view buttons */}
+      {/* Header */}
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Staff Details</h2>
         <div className="flex items-center space-x-4">
@@ -158,8 +170,6 @@ const Staff = () => {
           </button>
         </div>
       </div>
-
-      {/* Search Bar */}
       <div className="flex space-x-4 my-4">
         <input
           placeholder="Staff ID"
@@ -170,24 +180,22 @@ const Staff = () => {
           className="h-12 w-full block px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
         <select
+          id="branchDropdown"
           value={selectedBranch}
           onChange={handleSelectChange}
           className="h-12 w-full block px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none"
         >
-          <option value="" disabled>
-            Select Branch
-          </option>
-          <option value="Hyderabad">Hyderabad</option>
-          <option value="Vishakapatnam">Vishakapatnam</option>
-          <option value="Vijayawada">Vijayawada</option>
-          <option value="Kakinada">Kakinada</option>
+          {branches.map((branch) => (
+            <option key={branch.branchName} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
         </select>
         <button className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
           Search
         </button>
       </div>
-
-      {/* Conditional Rendering for Grid and Table Views */}
+      {/* Staff Table */}
       {isGridView ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
           {profiles.map((profile, index) => (
@@ -230,27 +238,13 @@ const Staff = () => {
                 <p className="text-gray-500">{profile.designation}</p>
                 <p className="text-gray-400">{profile.branch}</p>
               </div>
-              <div className="mt-4 flex justify-center space-x-4">
-                <button className="px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer">
-                  Message
-                </button>
-                <button className="px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer">
-                  View Profile
-                </button>
-              </div>
             </div>
           ))}
         </div>
       ) : (
-        <Table
-          columns={columns}
-          data={profiles}
-          onEdit={onEdit}
-          onDetails={onDetails}
-        />
-      )}
+        <Table columns={columns} data={profiles} />
+      )}{' '}
     </div>
   );
 };
-
 export default Staff;

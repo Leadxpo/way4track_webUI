@@ -37,17 +37,32 @@ const Branches = () => {
     setShowPopup(true);
   };
 
+  const handleConfirmDelete = async () => {
+    try {
+      await ApiService.post('/branch/deleteBranchDetails', { id: branchToDelete.id });
+      setBranches((prev) => prev.filter((branch) => branch.id !== branchToDelete.id));
+      setBranchToDelete(branchToDelete.id)
+      alert('Branch deleted successfully');
+    } catch (error) {
+      console.error('Error deleting branch:', error);
+      alert('Failed to delete branch.');
+    } finally {
+      setShowPopup(false);
+      setBranchToDelete(null);
+    }
+  };
+
   const handleClosePopup = () => {
     setShowPopup(false);
     setBranchToDelete(null);
   };
 
-  const handleConfirmDelete = () => {
-    console.log(`Deleting branch: ${branchToDelete.branchName}`);
-    setShowPopup(false);
-    setBranchToDelete(null);
-    // Perform the actual delete operation here
-  };
+  // const handleConfirmDelete = () => {
+  //   console.log(`Deleting branch: ${branchToDelete.branchName}`);
+  //   setShowPopup(false);
+  //   setBranchToDelete(null);
+  //   // Perform the actual delete operation here
+  // };
 
   return (
     <div className="">

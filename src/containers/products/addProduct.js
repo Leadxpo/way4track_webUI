@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlusSquare } from 'react-icons/fa';
-import { FaFileCirclePlus } from 'react-icons/fa6';
+import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router';
 const AddProductForm = () => {
   const location = useLocation();
@@ -37,7 +36,7 @@ const AddProductForm = () => {
     validateFile(selectedFile);
   };
 
-  const validateFile = (selectedFile) => {
+  const validateFile = async (selectedFile) => {
     if (
       selectedFile &&
       selectedFile.type ===
@@ -45,6 +44,25 @@ const AddProductForm = () => {
     ) {
       setFile(selectedFile);
       setError('');
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await ApiService.post(
+          'products/bulk-upload',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        console.log('File uploaded successfully:', response);
+      } catch (error) {
+        console.error('File upload failed:', error);
+        setError('Failed to upload the file. Please try again.');
+      }
     } else {
       setError('Only Excel files (.xlsx) are allowed.');
       setFile(null);

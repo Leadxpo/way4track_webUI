@@ -92,10 +92,10 @@ const AddEditProductAssign = () => {
                 <input
                   type="radio"
                   name="option"
-                  value="product"
+                  value="person"
                   className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
                 />
-                <span>Product</span>
+                <span>Person</span>
               </label>
             </div>
           </div>

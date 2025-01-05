@@ -1,175 +1,154 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
-
-const appointmentsData = [
-  {
-    No: 1,
-    Id: 'APT001',
-    AppointmentTime: '10:30 AM',
-    Type: 'Consultation',
-    AssignPerson: 'Dr. John Doe',
-    Slot: '10:30',
-    Status: 'Accepted',
-    Branch: 'Visakhapatnam',
-  },
-  {
-    No: 2,
-    Id: 'APT002',
-    AppointmentTime: '11:45 AM',
-    Type: 'Follow-Up',
-    AssignPerson: 'Dr. Jane Smith',
-    Slot: '11:45',
-    Status: 'Sent',
-    Branch: 'Hyderabad',
-  },
-  {
-    No: 3,
-    Id: 'APT003',
-    AppointmentTime: '01:15 PM',
-    Type: 'Surgery',
-    AssignPerson: 'Dr. Emily Johnson',
-    Slot: '13:15',
-    Status: 'Accepted',
-    Branch: 'Vijayawada',
-  },
-  {
-    No: 4,
-    Id: 'APT004',
-    AppointmentTime: '02:00 PM',
-    Type: 'Consultation',
-    AssignPerson: 'Dr. Mark Lee',
-    Slot: '14:00',
-    Status: 'Declined',
-    Branch: 'Kakinada',
-  },
-  {
-    No: 5,
-    Id: 'APT005',
-    AppointmentTime: '03:30 PM',
-    Type: 'Diagnostics',
-    AssignPerson: 'Dr. Sarah Brown',
-    Slot: '15:30',
-    Status: 'Sent',
-    Branch: 'Visakhapatnam',
-  },
-  {
-    No: 6,
-    Id: 'APT006',
-    AppointmentTime: '09:00 AM',
-    Type: 'Consultation',
-    AssignPerson: 'Dr. David Wilson',
-    Slot: '09:00',
-    Status: 'Accepted',
-    Branch: 'Hyderabad',
-  },
-  {
-    No: 7,
-    Id: 'APT007',
-    AppointmentTime: '10:00 AM',
-    Type: 'Follow-Up',
-    AssignPerson: 'Dr. Laura Taylor',
-    Slot: '10:00',
-    Status: 'Declined',
-    Branch: 'Vijayawada',
-  },
-  {
-    No: 8,
-    Id: 'APT008',
-    AppointmentTime: '01:45 PM',
-    Type: 'Consultation',
-    AssignPerson: 'Dr. Michael White',
-    Slot: '13:45',
-    Status: 'Sent',
-    Branch: 'Kakinada',
-  },
-  {
-    No: 9,
-    Id: 'APT009',
-    AppointmentTime: '04:00 PM',
-    Type: 'Surgery',
-    AssignPerson: 'Dr. Anna Harris',
-    Slot: '16:00',
-    Status: 'Accepted',
-    Branch: 'Visakhapatnam',
-  },
-  {
-    No: 10,
-    Id: 'APT010',
-    AppointmentTime: '05:15 PM',
-    Type: 'Diagnostics',
-    AssignPerson: 'Dr. Chris Martin',
-    Slot: '17:15',
-    Status: 'Declined',
-    Branch: 'Hyderabad',
-  },
-];
-
-const cities = ['All', 'Visakhapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada'];
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Appointments = () => {
   const navigate = useNavigate();
-  const [selectedCity, setSelectedCity] = useState('All');
-  const [filteredAppointments, setFilteredAppointments] =
-    useState(appointmentsData);
+  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [appointments, setAppointments] = useState([]);
+  const [branches, setBranches] = useState([{ branchName: 'All' }]);
+  const [loading, setLoading] = useState(false);
+  const fetchAppointmentDetails = async (branchName = 'All') => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
 
-  // Handle city selection and update filtered appointments
-  const handleCitySelection = (city) => {
-    setSelectedCity(city);
-    if (city === 'All') {
-      setFilteredAppointments(appointmentsData);
-    } else {
-      setFilteredAppointments(
-        appointmentsData.filter((appointment) => appointment.Branch === city)
-      );
+      if (branchName !== 'All') {
+        payload.branchName = branchName;
+      }
+
+      const res = await ApiService.post('/dashboards/getAllAppointmentDetails', payload);
+
+      if (res.status) {
+        setAppointments(res.data.appointments);
+        if (branchName === 'All') {
+          const branchOptions = [
+            { branchName: 'All' },
+            ...res.data.result.map((branch) => ({
+              branchName: branch.branchName,
+            })),
+          ];
+          setBranches(branchOptions);
+        }
+      } else {
+        setAppointments([]);
+        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err);
+      setAppointments([]);
     }
+  };
+
+  const deleteAppointmentDetails = async (appointmentId) => {
+    setLoading(true);
+    try {
+      const payload = {
+        appointmentId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+
+      const res = await ApiService.post('/appointment/deleteAppointmentDetails', payload);
+
+      if (res.status) {
+        setAppointments((prevAppointments) =>
+          prevAppointments.filter((appt) => appt.appointmentId !== appointmentId)
+        );
+        alert('Appointment deleted successfully.');
+      } else {
+        alert('Failed to delete the appointment.');
+      }
+    } catch (err) {
+      console.error('Failed to delete appointment:', err);
+      alert('An error occurred while deleting the appointment.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBranchSelection = (branch) => {
+    setSelectedBranch(branch);
   };
 
   const handleEdit = (appt) => {
     navigate('/add-appointment', { state: { appointmentDetails: appt } });
   };
 
+  // const handleDelete = (appt) => {
+  //   navigate('/delete-appointment');
+  // };
   const handleDelete = (appt) => {
-    navigate('/delete-appointment');
+    if (window.confirm(`Are you sure you want to delete appointment ${appt.appointmentId}?`)) {
+      deleteAppointmentDetails(appt.appointmentId);
+    }
   };
-
   const handleDetails = (appt) => {
     navigate('/appointment-details', {
       state: { appointmentDetails: appt },
     });
   };
 
+  useEffect(() => {
+    fetchAppointmentDetails();
+  }, []);
+
+  useEffect(() => {
+    fetchAppointmentDetails(selectedBranch);
+  }, [selectedBranch]);
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <h2 className="text-xl font-semibold mb-4">Appointments</h2>
 
-      {/* Tabs */}
-      <div className="flex gap-4 mb-4">
-        {cities.map((city) => (
-          <button
-            key={city}
-            onClick={() => handleCitySelection(city)}
-            className={`px-4 py-2 font-medium ${
-              selectedCity === city ? 'text-blue-500' : 'text-gray-700'
-            }`}
-          >
-            {city}
-          </button>
-        ))}
-        <button
-          onClick={() => navigate('/add-appointment')}
-          className="bg-yellow-400 text-black font-bold p-2 rounded-md shadow-lg hover:bg-yellow-500 transition-all"
+      <div className="mb-4">
+        <label htmlFor="branchDropdown" className="font-medium mr-2">
+          Select Branch:
+        </label>
+        <select
+          id="branchDropdown"
+          value={selectedBranch}
+          onChange={(e) => handleBranchSelection(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md"
         >
-          Create New Appointment
-        </button>
+          {branches.map((branch) => (
+            <option key={branch.branchName} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
       </div>
 
+      <button
+        onClick={() => navigate('/add-appointment')}
+        className="bg-yellow-400 text-black font-bold p-2 rounded-md shadow-lg hover:bg-yellow-500 transition-all mb-4"
+      >
+        Create New Appointment
+      </button>
+
       <Table
-        columns={Object.keys(appointmentsData[0])}
-        data={filteredAppointments}
+        columns={[
+          'appointmentId',
+          'appointmentName',
+          'clientName',
+          'clientPhoneNumber',
+          'clientAddress',
+          'branchName',
+          'appointmentType',
+          'slot',
+          'description',
+          'status',
+          'assignedTo',
+        ]}
+        data={appointments}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onDetails={handleDetails}
+        loading={loading}
       />
     </div>
   );

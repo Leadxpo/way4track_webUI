@@ -1,14 +1,20 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const ClientProfile = () => {
-  const clientInfo = {
-    name: 'K Praveen Sai',
-    phone: '77788 77788',
-    email: 'Way4track@gmail.com',
-    branch: 'Visakhapatnam',
-    dob: '03 Mar 1970',
-    address: '***********************',
-  };
+  const location = useLocation();
+  const clientDetailsFromState = location.state?.clientDetails || {};
+  const [clientDetails, setClientDetails] = useState({});
+
+  // const clientInfo = {
+  //   name: 'K Praveen Sai',
+  //   phone: '77788 77788',
+  //   email: 'Way4track@gmail.com',
+  //   branch: 'Visakhapatnam',
+  //   dob: '03 Mar 1970',
+  //   address: '***********************',
+  // };
 
   const pitchers = [
     {
@@ -45,25 +51,58 @@ const ClientProfile = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchClientDetails = async () => {
+      try {
+        const response = await ApiService.post('/client/getClientDetails', {
+          clientId: clientDetailsFromState.clientId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const client = response.data?.[0];
+          setClientDetails({
+            ...client,
+            name: client.branchName,
+            phone: client.phoneNumber,
+            email: client.email,
+            branch: client.branchName,
+            dob: client.dob,
+            address: client.address,
+            clientPhoto: client.clientPhoto
+          });
+        } else {
+          setClientDetails({})
+        }
+
+      } catch (error) {
+        console.error('Error fetching branch details:', error);
+        alert('Failed to fetch branch details.');
+      }
+    };
+    fetchClientDetails();
+
+  }, [clientDetailsFromState.clientId]);
+
   return (
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
       <p className="font-bold text-xl">Client ID</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
-          src={'https://i.pravatar.cc/150?img=5'}
+          src={clientDetails.clientPhoto}
           alt="Vendor"
           className="w-32 h-32 rounded-full object-cover"
         />
         <div className="space-y-2">
           <p className="text-gray-800 font-bold text-xl">
-            Client Name : {clientInfo.name}
+            Client Name : {clientDetails.name}
           </p>
-          <p className="text-gray-800">Phone number : {clientInfo.phone}</p>
-          <p className="text-gray-800">Email : {clientInfo.email}</p>
-          <p className="text-gray-800">Client Branch : {clientInfo.branch}</p>
-          <p className="text-gray-800">Date of Birth : {clientInfo.dob}</p>
-          <p className="text-gray-800">Address : {clientInfo.address}</p>
+          <p className="text-gray-800">Phone number : {clientDetails.phone}</p>
+          <p className="text-gray-800">Email : {clientDetails.email}</p>
+          <p className="text-gray-800">Client Branch : {clientDetails.branch}</p>
+          <p className="text-gray-800">Date of Birth : {clientDetails.dob}</p>
+          <p className="text-gray-800">Address : {clientDetails.address}</p>
         </div>
       </div>
 
