@@ -14,6 +14,7 @@ import { pageTitles } from '../../common/constants';
 import requestData from '../../mockData/mockRequests.json';
 const TableWithSearchFilter = ({
   type,
+  onCreateNew,
   onEdit,
   onDelete,
   onDetails,
@@ -107,6 +108,9 @@ const TableWithSearchFilter = ({
         break;
       case 'hiring':
         navigate('/add-hiring');
+        break;
+      case 'tickets':
+        onCreateNew();
         break;
     }
   };
