@@ -9,7 +9,7 @@ const notificationsData = [
     time: '5 min ago',
     city: 'Visakhapatnam',
     read: false,
-    profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
+    // profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
     description:
       'Detailed description of the action Ralph Edwards wants to perform on the Tetri sly Design System.',
   },
@@ -31,7 +31,7 @@ const notificationsData = [
     time: '24 min ago',
     city: 'Kakinada',
     read: false,
-    profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
+    // profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
     description:
       'Ralph Edwards needs to make urgent changes to the Tetri sly Design System.',
   },
@@ -42,7 +42,8 @@ const notificationsData = [
     time: '33 min ago',
     city: 'Visakhapatnam',
     read: false,
-    profileImage: 'https://randomuser.me/api/portraits/men/4.jpg',
+    type: "re/ti/te",
+    // profileImage: 'https://randomuser.me/api/portraits/men/4.jpg',
     description:
       'Changes requested by Ralph Edwards are related to design enhancements on the Tetri sly Design System.',
   },
@@ -53,7 +54,7 @@ const notificationsData = [
     time: '1 hr ago',
     city: 'Kakinada',
     read: false,
-    profileImage: 'https://randomuser.me/api/portraits/men/5.jpg',
+    // profileImage: 'https://randomuser.me/api/portraits/men/5.jpg',
     description:
       'Ralph Edwards aims to update the style and usability of the Tetri sly Design System.',
   },
@@ -71,8 +72,8 @@ function Notifications() {
     selectedCity === 'All'
       ? notifications
       : notifications.filter(
-          (notification) => notification.city === selectedCity
-        );
+        (notification) => notification.city === selectedCity
+      );
 
   // Mark all notifications as read
   const markAllAsRead = () => {
@@ -98,8 +99,8 @@ function Notifications() {
     return city === 'All'
       ? notifications.filter((notification) => !notification.read).length
       : notifications.filter(
-          (notification) => notification.city === city && !notification.read
-        ).length;
+        (notification) => notification.city === city && !notification.read
+      ).length;
   };
 
   return (
@@ -139,11 +140,11 @@ function Notifications() {
             className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
           >
             {/* Profile Image */}
-            <img
-              src={notification.profileImage}
+            {/* <img
+              // src={notification.profileImage}
               alt={notification.user}
               className="w-14 h-14 rounded-full mr-3"
-            />
+            /> */}
             <div className="flex-1">
               <p className="font-medium">
                 {notification.user} {notification.message}
