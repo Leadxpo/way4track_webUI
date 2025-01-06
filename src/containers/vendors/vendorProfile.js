@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const VendorProfile = () => {
-  const vendorInfo = {
-    name: 'K Praveen Sai',
-    phone: '77788 77788',
-    email: 'Way4track@gmail.com',
-    branch: 'Visakhapatnam',
-    dob: '03 Mar 1970',
-    address: '***********************',
-  };
+  const location = useLocation();
+  const vendorDetailsFromState = location.state?.vendorDetails || {};
+  const [vendorDetails, setVendorDetails] = useState({});
+
+  useEffect(() => {
+    const fetchVendorDetails = async () => {
+      try {
+        const response = await ApiService.post('/vendor/getVendorDetails', {
+          vendorId: vendorDetailsFromState.vendorId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const vendor = response.data?.[0];
+          setVendorDetails({
+            ...vendor,
+            name: vendor.name,
+            phone: vendor.vendorPhoneNumber,
+            email: vendor.emailId,
+            alternatePhoneNumber: vendor.alternatePhoneNumber,
+            aadharNumber: vendor.aadharNumber,
+            address: vendor.address,
+            vendorPhoto: vendor.vendorPhoto,
+            branch: vendor.branchName
+          });
+        } else {
+          setVendorDetails({})
+        }
+
+      } catch (error) {
+        console.error('Error fetching branch details:', error);
+        alert('Failed to fetch branch details.');
+      }
+    };
+    fetchVendorDetails();
+
+  }, [vendorDetailsFromState.vendorId]);
+  // const vendorDetails = {
+  //   name: 'K Praveen Sai',
+  //   phone: '77788 77788',
+  //   email: 'Way4track@gmail.com',
+  //   branch: 'Visakhapatnam',
+  //   dob: '03 Mar 1970',
+  //   address: '***********************',
+  // };
 
   const products = [
     { name: 'Bike GPS Tracker', image: 'https://via.placeholder.com/150' },
@@ -64,19 +104,20 @@ const VendorProfile = () => {
       <p className="font-bold text-xl">Vendor ID</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
-          src={'https://i.pravatar.cc/150?img=5'}
+          src={vendorDetails.vendorPhoto}
           alt="Vendor"
           className="w-32 h-32 rounded-full object-cover"
         />
         <div className="space-y-2">
           <p className="text-gray-800 font-bold text-xl">
-            Client Name : {vendorInfo.name}
+            Vendor Name : {vendorDetails.name}
           </p>
-          <p className="text-gray-800">Phone number : {vendorInfo.phone}</p>
-          <p className="text-gray-800">Email : {vendorInfo.email}</p>
-          <p className="text-gray-800">Client Branch : {vendorInfo.branch}</p>
-          <p className="text-gray-800">Date of Birth : {vendorInfo.dob}</p>
-          <p className="text-gray-800">Address : {vendorInfo.address}</p>
+          <p className="text-gray-800">Phone number : {vendorDetails.phone}</p>
+          <p className="text-gray-800">Email : {vendorDetails.email}</p>
+          <p className="text-gray-800">Alternate Phone number : {vendorDetails.alternatePhoneNumber}</p>
+          <p className="text-gray-800">Branch : {vendorDetails.branch}</p>
+          <p className="text-gray-800">Aadhar Number : {vendorDetails.aadharNumber}</p>
+          <p className="text-gray-800">Address : {vendorDetails.address}</p>
         </div>
       </div>
 

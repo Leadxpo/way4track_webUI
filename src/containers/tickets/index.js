@@ -1,27 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ApiService from '../../services/ApiService'; // Adjust the import based on your structure
 import TableWithSearchFilter from '../tablesSearchFilter';
-
+import { initialAuthState } from '../../services/ApiService';
 const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
+  const [staffList, setStaffList] = useState([]); // Store fetched staff names
+  const [branchList, setBranchList] = useState([]); // Store fetched branches
+  const [selectedStaffId, setSelectedStaffId] = useState(''); // Selected staff ID
+  const [selectedStaffNumber, setSelectedStaffNumber] = useState(''); // Staff number
+  const [selectedBranch, setSelectedBranch] = useState(''); // Selected branch
+  const [date, setDate] = useState(''); // Date state
+
+  // Fetch staff names when modal opens
+  useEffect(() => {
+    if (isModalOpen) {
+      fetchStaffNames();
+      fetchBranches();
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (isEditMode && selectedTicket) {
+      setDate(selectedTicket.date.slice(0, 10)); // Set date in yyyy-MM-dd format for editing
+    }
+  }, [isEditMode, selectedTicket]);
+
+  const fetchStaffNames = async () => {
+    try {
+      const response = await ApiService.post('/staff/getStaffNamesDropDown');
+      setStaffList(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch staff names:', error);
+    }
+  };
+
+  const fetchBranches = async () => {
+    try {
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      setBranchList(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch branches:', error);
+    }
+  };
+
+  const handleStaffChange = (e) => {
+    const staffName = e.target.value;
+    setSelectedStaffId(staffName);
+
+    // Find the selected staff and set their number
+    const selectedStaff = staffList.find((staff) => staff.name === staffName);
+    setSelectedStaffNumber(selectedStaff?.staffId || '');
+  };
+
+  const handleBranchChange = (e) => {
+    setSelectedBranch(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value); // Update date when changed
+  };
 
   const handleOpenModalForAdd = () => {
     setSelectedTicket(null);
     setIsEditMode(false);
     setIsModalOpen(true);
+    setSelectedStaffId('');
+    setSelectedStaffNumber('');
+    setSelectedBranch('');
+    setDate(''); // Reset date for Add
   };
 
   const handleOpenModalForEdit = (ticket) => {
     setSelectedTicket(ticket);
     setIsEditMode(true);
     setIsModalOpen(true);
+    setSelectedStaffId(ticket?.staffId || '');
+    setSelectedStaffNumber(ticket?.staffNumber || '');
+    setSelectedBranch(ticket?.branch || '');
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedTicket(null);
+    setSelectedStaffId('');
+    setSelectedStaffNumber('');
+    setSelectedBranch('');
+    setDate('');
   };
 
   const handleOpenMoreDetailsModal = (ticket) => {
@@ -34,15 +101,39 @@ const Tickets = () => {
     setSelectedTicket(null);
   };
 
+  const handleSaveTicket = async () => {
+    const payload = {
+      staffId: selectedStaffId,
+      problem: document.querySelector('[name="problem"]').value, // Use the input value
+      date: date, // Use the date from state
+      branchId: selectedBranch,
+      addressingDepartment: 'SomeDepartment', // Replace with actual addressing department logic
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    };
+
+    try {
+      const response = await ApiService.post(
+        '/tickets/handleTicketDetails',
+        payload
+      );
+      console.log('Ticket saved successfully', response);
+      handleCloseModal(); // Close the modal after saving
+    } catch (error) {
+      console.error('Error saving ticket', error);
+    }
+  };
+
   return (
     <div className="p-10">
       <div className="flex justify-between mb-4">
         <p className="text-xl font-bold">Tickets</p>
       </div>
 
+      {/* Modal for Add/Edit Ticket */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative">
+          <div className="bg-white p-8 rounded-md shadow-lg relative w-3/4">
             <button
               onClick={handleCloseModal}
               className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
@@ -54,70 +145,81 @@ const Tickets = () => {
             </h2>
             <form>
               <div className="grid grid-cols-3 gap-4 mb-4">
+                {/* Staff Name Dropdown */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
-                    Client Name
+                    Staff Name
+                  </label>
+                  <select
+                    value={selectedStaffId}
+                    onChange={handleStaffChange}
+                    className="border p-2 rounded w-full focus:outline-none"
+                  >
+                    <option value="">Select Staff</option>
+                    {staffList.map((staff) => (
+                      <option key={staff.id} value={staff.name}>
+                        {staff.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Staff Number */}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    Staff Number
                   </label>
                   <input
                     type="text"
-                    className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket
-                        ? selectedTicket.clientName
-                        : ''
-                    }
+                    value={selectedStaffNumber}
+                    readOnly
+                    className="border p-2 rounded w-full focus:outline-none bg-gray-100"
                   />
                 </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Client Number
-                  </label>
-                  <input
-                    type="text"
-                    className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket
-                        ? selectedTicket.clientNumber
-                        : ''
-                    }
-                  />
-                </div>
+                {/* Date */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Date
                   </label>
                   <input
                     type="date"
+                    value={date}
+                    onChange={handleDateChange}
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.date : ''
-                    }
                   />
                 </div>
+                {/* Problem */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Problem
                   </label>
                   <input
                     type="text"
+                    name="problem"
                     className="border p-2 rounded w-full focus:outline-none"
                     defaultValue={
                       isEditMode && selectedTicket ? selectedTicket.problem : ''
                     }
                   />
                 </div>
+                {/* Branch Dropdown */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Select Branch
                   </label>
-                  <input
-                    type="text"
+                  <select
+                    value={selectedBranch}
+                    onChange={handleBranchChange}
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.branch : ''
-                    }
-                  />
+                  >
+                    <option value="">Select Branch</option>
+                    {branchList.map((branch) => (
+                      <option key={branch.id} value={branch.branchName}>
+                        {branch.branchName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                {/* Address */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Address
@@ -131,9 +233,10 @@ const Tickets = () => {
                   />
                 </div>
               </div>
+              {/* Problems */}
               <div>
                 <label className="block text-gray-700 font-semibold mb-1">
-                  Other Information
+                  Problems
                 </label>
                 <textarea
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
@@ -144,7 +247,12 @@ const Tickets = () => {
                   }
                 ></textarea>
               </div>
-              <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block">
+              {/* Save Button */}
+              <button
+                type="button"
+                className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block"
+                onClick={handleSaveTicket}
+              >
                 {isEditMode ? 'Save Changes' : 'Save'}
               </button>
             </form>
@@ -152,51 +260,9 @@ const Tickets = () => {
         </div>
       )}
 
-      {isMoreDetailsModalOpen && selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative w-[550px]">
-            <button
-              onClick={handleCloseMoreDetailsModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
-            >
-              X
-            </button>
-            <h2 className="text-xl font-bold text-center mb-4">
-              Ticket Details
-            </h2>
-            <div>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Client Name:</strong> {selectedTicket.clientName}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Client Number:</strong> {selectedTicket.clientNumber}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Date:</strong> {selectedTicket.date}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Problem:</strong> {selectedTicket.problem}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Branch:</strong> {selectedTicket.branch}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Address:</strong> {selectedTicket.address}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Other Information:</strong>{' '}
-                {selectedTicket.otherInformation}
-              </p>
-            </div>
-            <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
-              Download PDF
-            </button>
-          </div>
-        </div>
-      )}
-
       <TableWithSearchFilter
         type="tickets"
+        onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
         onDelete={() => {}}

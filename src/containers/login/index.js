@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Login = ({ handleLoginFlag }) => {
   const [userId, setUserId] = useState('');
@@ -10,37 +11,39 @@ const Login = ({ handleLoginFlag }) => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
+    console.log("ClickOutsideWrapper", "+++++++")
     e.preventDefault();
-    handleLoginFlag();
-    // setError('');
-    // setLoading(true);
+    setError('');
+    setLoading(true);
 
-    // try {
-    //   const payload = {
-    //     staffId: userId,
-    //     password: password,
-    //     designation: role,
-    //   };
+    try {
+      const payload = {
+        staffId: userId,
+        password,
+        designation: role,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
 
-    //   const response = await ApiService.post('/login/LoginDetails', payload);
-
-    //   if (response) {
-    //     localStorage.setItem('userRole', role);
-
-    //     handleLoginFlag();
-    //     navigate('/home');
-    //   } else {
-    //     setError('Invalid login credentials');
-    //   }
-    // } catch (err) {
-    //   setError(
-    //     err?.data?.message || 'Failed to login. Please check your credentials.'
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+      const response = await ApiService.post('/login/LoginDetails', payload);
+      console.log(payload, response, '++++++++++++++++++++++++++');
+      // Correctly check `status` instead of `success`
+      if (response && response.status) {
+        localStorage.setItem('userRole', role);
+        handleLoginFlag();
+        navigate('/home');
+      } else {
+        setError(response?.internalMessage || 'Invalid login credentials.');
+      }
+    } catch (err) {
+      setError(
+        err?.response?.data?.internalMessage ||
+          'Failed to login. Please check your credentials.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

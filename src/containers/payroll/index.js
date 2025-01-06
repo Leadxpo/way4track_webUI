@@ -1,34 +1,82 @@
-import React, { useState } from 'react';
-import payrollData from '../../mockData/mockPayroll.json';
+import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
-  const [selectedRow, setSelectedRow] = useState(null); // State to track the selected row for the popup
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
+  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [payrollData, setPayrollData] = useState([]);
+  const [branches, setBranches] = useState([{ branchName: 'All' }]);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const filteredData =
-    activeTab === 'All'
-      ? payrollData
-      : payrollData.filter((row) => row.branchName === activeTab);
+  // Fetch payroll data
+  const fetchPayrollData = async (branchName = 'All') => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
 
-  const columns = Object.keys(payrollData[0]);
-  const branches = [
-    'All',
-    'Visakhapatnam',
-    'Hyderabad',
-    'Vijayawada',
-    'Kakinada',
-  ];
+      if (branchName !== 'All') {
+        payload.branchName = branchName;
+      }
 
-  const handleChangePayroll = (row) => {
-    setSelectedRow(row); // Set the selected row details
-    setIsPopupOpen(true); // Open the popup
+      const res = await ApiService.post('/dashboards/payRoll', payload);
+      if (res.status) {
+        setPayrollData(res.data);
+
+        if (branchName === 'All') {
+          const branchOptions = [
+            { branchName: 'All' },
+            ...res.data.map((branch) => ({
+              branchName: branch.branch,
+            })),
+          ];
+          setBranches(branchOptions);
+        }
+      } else {
+        setPayrollData([]);
+        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch payroll data:', err);
+      setPayrollData([]);
+    }
   };
 
+  // Fetch data on initial render
+  useEffect(() => {
+    fetchPayrollData();
+  }, []);
+
+  // Fetch data when selected branch changes
+  useEffect(() => {
+    fetchPayrollData(selectedBranch);
+  }, [selectedBranch]);
+
+  // Columns for the table
+  const columns = payrollData.length
+    ? Object.keys(payrollData[0]).map((key, index) => ({ title: key, dataIndex: index }))
+    : [];
+
+  // Handle tab click
+  const handleTabClick = (branch) => {
+    setActiveTab(branch);
+    setSelectedBranch(branch);
+  };
+
+  // Handle row edit
+  const handleChangePayroll = (row) => {
+    setSelectedRow(row);
+    setIsPopupOpen(true);
+  };
+
+  // Close popup
   const handleClosePopup = () => {
-    setIsPopupOpen(false); // Close the popup
-    setSelectedRow(null); // Reset the selected row
+    setIsPopupOpen(false);
+    setSelectedRow(null);
   };
 
   return (
@@ -37,15 +85,14 @@ const Payroll = () => {
       <div className="flex space-x-4 mb-4 border-b">
         {branches.map((branch) => (
           <button
-            key={branch}
-            onClick={() => setActiveTab(branch)}
-            className={`pb-2 text-sm font-semibold ${
-              activeTab === branch
-                ? 'border-b-2 border-black text-black'
-                : 'text-gray-500'
-            }`}
+            key={branch.branchName} // Use branchName as the key
+            onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
+            className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
+              ? 'border-b-2 border-black text-black'
+              : 'text-gray-500'
+              }`}
           >
-            {branch}
+            {branch.branchName}
           </button>
         ))}
       </div>
@@ -53,9 +100,11 @@ const Payroll = () => {
       {/* Table */}
       <Table
         columns={columns}
-        data={filteredData}
+        data={payrollData.filter(
+          (row) => activeTab === 'All' || row.branchName === activeTab
+        )}
         onEdit={handleChangePayroll}
-        onDetails={() => {}}
+        onDetails={() => { }}
         showDelete={false}
       />
 
@@ -78,7 +127,7 @@ const Payroll = () => {
             <div className="flex justify-center mb-6">
               <img
                 className="rounded-full h-28 w-28 object-cover shadow-lg"
-                src="https://via.placeholder.com/150" // Replace with actual image source if available
+                src="https://via.placeholder.com/150"
                 alt="Profile"
               />
             </div>
