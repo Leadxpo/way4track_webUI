@@ -7,6 +7,9 @@ const VendorProfile = () => {
   const location = useLocation();
   const vendorDetailsFromState = location.state?.vendorDetails || {};
   const [vendorDetails, setVendorDetails] = useState({});
+  const [vendorDetailsData, setVendorDetailsData] = useState([]);
+  const [photoData, setPhotoData] = useState([]);
+
 
   useEffect(() => {
     const fetchVendorDetails = async () => {
@@ -16,7 +19,7 @@ const VendorProfile = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        if (response.status) {
+        if (response.paymentStatus) {
           const vendor = response.data?.[0];
           setVendorDetails({
             ...vendor,
@@ -41,62 +44,51 @@ const VendorProfile = () => {
     fetchVendorDetails();
 
   }, [vendorDetailsFromState.vendorId]);
-  // const vendorDetails = {
-  //   name: 'K Praveen Sai',
-  //   phone: '77788 77788',
-  //   email: 'Way4track@gmail.com',
-  //   branch: 'Visakhapatnam',
-  //   dob: '03 Mar 1970',
-  //   address: '***********************',
-  // };
 
-  const products = [
-    { name: 'Bike GPS Tracker', image: 'https://via.placeholder.com/150' },
-    { name: 'Car GPS Tracker', image: 'https://via.placeholder.com/150' },
-    {
-      name: 'AIS 140 VLTD for transport & commercial vehicles.',
-      image: 'https://via.placeholder.com/150',
-    },
-  ];
+  useEffect(() => {
+    const getProductsPhotos = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getProductsPhotos', {
+          vendorId: vendorDetailsFromState.vendorId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          // Ensure vendor details data is an array
+          setPhotoData(response.data || []);
+        } else {
+          setPhotoData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching vendor details data:', error);
+        alert('Failed to fetch vendor details data.');
+      }
+    };
+    getProductsPhotos();
+  }, [vendorDetailsFromState.vendorId]);
 
-  const pitchers = [
-    {
-      no: '01',
-      date: '01-03-2025',
-      product: 'Car GPS Tracker',
-      items: 12,
-      numberOfItems: '12',
-      price: '₹2099',
-      status: 'Paid',
-    },
-    {
-      no: '02',
-      date: '01-03-2025',
-      product: 'Fuel Monitoring System',
-      items: 34,
-      numberOfItems: '34',
-      price: '₹5469',
-      status: 'Pending',
-    },
-    {
-      no: '03',
-      date: '01-03-2025',
-      product: 'Car GPS Tracker',
-      items: 56,
-      numberOfItems: '56',
-      price: '₹2099',
-      status: 'Paid',
-    },
-    {
-      no: '04',
-      date: '01-03-2025',
-      product: 'Fuel Monitoring System',
-      items: 87,
-      numberOfItems: '87',
-      price: '₹5469',
-      status: 'Pending',
-    },
-  ];
+
+  useEffect(() => {
+    const fetchVendorDetailsData = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getDetailVendorData', {
+          vendorId: vendorDetailsFromState.vendorId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          // Ensure vendor details data is an array
+          setVendorDetailsData(response.data || []);
+        } else {
+          setVendorDetailsData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching vendor details data:', error);
+        alert('Failed to fetch vendor details data.');
+      }
+    };
+    fetchVendorDetailsData();
+  }, [vendorDetailsFromState.vendorId]);
 
   return (
     <div className="p-6 space-y-8">
@@ -123,17 +115,17 @@ const VendorProfile = () => {
 
       {/* Product Cards */}
       <div className="flex space-x-4">
-        {products.map((product, index) => (
+        {photoData.map((product, index) => (
           <div
             key={index}
             className="bg-white rounded-lg shadow-md p-4 w-48 text-center"
           >
             <img
-              src={product.image}
-              alt={product.name}
+              src={product.productPhoto}
+              alt={product.productName}
               className="w-20 h-20 mx-auto rounded-full object-cover"
             />
-            <p className="mt-4 text-gray-800 font-medium">{product.name}</p>
+            <p className="mt-4 text-gray-800 font-medium">{product.productName}</p>
           </div>
         ))}
       </div>
@@ -144,33 +136,33 @@ const VendorProfile = () => {
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-200 text-gray-600">
-              <th className="py-2 px-4">NO.</th>
-              <th className="py-2 px-4">Date</th>
-              <th className="py-2 px-4">Product</th>
-              <th className="py-2 px-4">Items</th>
-              <th className="py-2 px-4">Number Of Items</th>
-              <th className="py-2 px-4">Price</th>
-              <th className="py-2 px-4">Status</th>
+              <th className="py-2 px-4">Voucher Id</th>
+              <th className="py-2 px-4">product Type</th>
+              <th className="py-2 px-4">voucher Name</th>
+              <th className="py-2 px-4">Amount</th>
+              <th className="py-2 px-4">quantity</th>
+              <th className="py-2 px-4">generation Date</th>
+              <th className="py-2 px-4">payment Status</th>
             </tr>
           </thead>
           <tbody>
-            {pitchers.map((pitcher, index) => (
+            {vendorDetailsData.map((pitcher, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
-                <td className="py-2 px-4 text-center">{pitcher.no}</td>
-                <td className="py-2 px-4 text-center">{pitcher.date}</td>
-                <td className="py-2 px-4 text-center">{pitcher.product}</td>
-                <td className="py-2 px-4 text-center">{pitcher.items}</td>
+                <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
+                <td className="py-2 px-4 text-center">{pitcher.productType}</td>
+                <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
+                <td className="py-2 px-4 text-center">{pitcher.amount}</td>
                 <td className="py-2 px-4 text-center">
-                  {pitcher.numberOfItems}
+                  {pitcher.quantity}
                 </td>
-                <td className="py-2 px-4 text-center">{pitcher.price}</td>
+                <td className="py-2 px-4 text-center">{pitcher.generationDate}</td>
                 <td
-                  className={`py-2 px-4 text-center font-semibold ${pitcher.status === 'Paid' ? 'text-green-500' : 'text-red-500'}`}
+                  className={`py-2 px-4 text-center font-semibold ${pitcher.paymentStatus === 'Paid' ? 'text-green-500' : 'text-red-500'}`}
                 >
-                  {pitcher.status}
+                  {pitcher.paymentStatus}
                 </td>
               </tr>
             ))}

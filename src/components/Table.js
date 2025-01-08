@@ -77,6 +77,7 @@ const Table = ({
                 <th
                   key={index}
                   className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700"
+                  style={{ textTransform: "capitalize" }}
                 >
                   {column}
                 </th>
@@ -95,11 +96,10 @@ const Table = ({
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${
-                      checkColumn(column)
+                    className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${checkColumn(column)
                         ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
                         : ''
-                    }`}
+                      }`}
                   >
                     {row[column]}
                   </td>

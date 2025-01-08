@@ -5,7 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 
 const AddEditEmployeeForm = () => {
   const location = useLocation();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Check if data is available from the location state
   const employeeData = location.state?.staffDetails || {};
@@ -13,6 +13,7 @@ const AddEditEmployeeForm = () => {
 
   // Initialize form data with defaults
   const initialFormData = {
+    id: employeeData.id || null,
     name: employeeData.name || '',
     phoneNumber: employeeData.phoneNumber || '',
     staffId: employeeData.staffId || '', // Will be ignored during creation
@@ -113,29 +114,7 @@ const AddEditEmployeeForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (employeeData?.id || employeeData?.staffId) {
-      const fetchStaffDetails = async () => {
-        try {
-          const response = await ApiService.post('/staff/getStaffDetailsById', {
-            staffId: employeeData.staffId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          });
-          const staff = response.data?.[0];
-          setFormData((prev) => ({
-            ...prev,
-            ...staff,
-          }));
-          setImage(staff?.photo || '');
-        } catch (error) {
-          console.error('Error fetching branch details:', error);
-          alert('Failed to fetch branch details.');
-        }
-      };
-      fetchStaffDetails();
-    }
-  }, [employeeData]);
+
 
   // Fetch branch list
   const fetchStaffList = async () => {

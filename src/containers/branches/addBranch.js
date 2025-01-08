@@ -33,33 +33,7 @@ const AddBranchForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    if (branchData?.id) {
-      // Fetch branch details by ID
-      const fetchBranchDetails = async () => {
-        try {
-          const response = await ApiService.post(
-            '/branch/getBranchDetailsById',
-            {
-              id: branchData.id,
-              companyCode: initialAuthState.companyCode,
-              unitCode: initialAuthState.unitCode,
-            }
-          );
-          const branch = response.data?.[0];
-          setFormData((prev) => ({
-            ...prev,
-            ...branch,
-          }));
-          setImage(branch?.photo || '');
-        } catch (error) {
-          console.error('Error fetching branch details:', error);
-          alert('Failed to fetch branch details.');
-        }
-      };
-      fetchBranchDetails();
-    }
-  }, [branchData]);
+ 
 
   // Fetch branch list
   const fetchBranchList = async () => {

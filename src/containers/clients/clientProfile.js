@@ -6,50 +6,29 @@ const ClientProfile = () => {
   const location = useLocation();
   const clientDetailsFromState = location.state?.clientDetails || {};
   const [clientDetails, setClientDetails] = useState({});
+  const [clientDetailsData, setClientDetailsData] = useState([]);
 
-  // const clientInfo = {
-  //   name: 'K Praveen Sai',
-  //   phone: '77788 77788',
-  //   email: 'Way4track@gmail.com',
-  //   branch: 'Visakhapatnam',
-  //   dob: '03 Mar 1970',
-  //   address: '***********************',
-  // };
-
-  const pitchers = [
-    {
-      no: '01',
-      date: '01-03-2025',
-      product: 'Car GPS Tracker',
-      items: 12,
-      price: '₹2099',
-      status: 'Paid',
-    },
-    {
-      no: '02',
-      date: '01-03-2025',
-      product: 'Fuel Monitoring System',
-      items: 34,
-      price: '₹5469',
-      status: 'Pending',
-    },
-    {
-      no: '03',
-      date: '01-03-2025',
-      product: 'Car GPS Tracker',
-      items: 56,
-      price: '₹2099',
-      status: 'Paid',
-    },
-    {
-      no: '04',
-      date: '01-03-2025',
-      product: 'Fuel Monitoring System',
-      items: 87,
-      price: '₹5469',
-      status: 'Pending',
-    },
-  ];
+  useEffect(() => {
+    const fetchClientDetailsData = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getDetailClientData', {
+          clientId: clientDetailsFromState.clientId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          // Ensure client details data is an array
+          setClientDetailsData(response.data || []);
+        } else {
+          setClientDetailsData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching client details data:', error);
+        alert('Failed to fetch client details data.');
+      }
+    };
+    fetchClientDetailsData();
+  }, [clientDetailsFromState.clientId]);
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -63,7 +42,7 @@ const ClientProfile = () => {
           const client = response.data?.[0];
           setClientDetails({
             ...client,
-            name: client.branchName,
+            name: client.name,
             phone: client.phoneNumber,
             email: client.email,
             branch: client.branchName,
@@ -112,33 +91,27 @@ const ClientProfile = () => {
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-200 text-gray-600">
-              <th className="py-2 px-4">NO.</th>
-              <th className="py-2 px-4">Date</th>
-              <th className="py-2 px-4">Srvice/Product</th>
-              <th className="py-2 px-4">Items</th>
-              <th className="py-2 px-4">Price</th>
+              <th className="py-2 px-4">Voucher Id</th>
+              <th className="py-2 px-4">Voucher Name</th>
+              <th className="py-2 px-4">Product Type</th>
+              <th className="py-2 px-4">Quantity</th>
+              <th className="py-2 px-4">Amount</th>
               <th className="py-2 px-4">Status</th>
             </tr>
           </thead>
           <tbody>
-            {pitchers.map((pitcher, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
-              >
-                <td className="py-2 px-4 text-center">{pitcher.no}</td>
-                <td className="py-2 px-4 text-center">{pitcher.date}</td>
-                <td className="py-2 px-4 text-center">{pitcher.product}</td>
-                <td className="py-2 px-4 text-center">{pitcher.items}</td>
-                <td className="py-2 px-4 text-center">{pitcher.price}</td>
-                <td
-                  className={`py-2 px-4 text-center font-semibold ${pitcher.status === 'Paid' ? 'text-green-500' : 'text-red-500'}`}
-                >
-                  {pitcher.status}
-                </td>
+            {clientDetailsData.map((pitcher, index) => (
+              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
+                <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
+                <td className="py-2 px-4 text-center">{pitcher.productType}</td>
+                <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
+                <td className="py-2 px-4 text-center">{pitcher.amount}</td>
+                <td className="py-2 px-4 text-center">{pitcher.paymentStatus}</td>
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 
