@@ -40,6 +40,9 @@ const TableWithSearchFilter = ({
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
   const ticketData = location.state?.ticketsData || {};
+  const hiringData = location.state?.hiringData || {};
+
+
   const getSearchDetailClient = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getSearchDetailClient', {
@@ -60,8 +63,30 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [clientData?.staffId, clientData?.branchName, clientData?.name]);
+  }, [clientData?.clientId, clientData?.branchName, clientData?.name]);
 
+
+  const getHiringSearchDetails = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/hiring/getHiringSearchDetails', {
+        hiringId: hiringData?.hiringId,
+        candidateName: hiringData?.candidateName,
+        status: hiringData?.status,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, "Response Data");  // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch client details.');
+      }
+    } catch (error) {
+      console.error('Error fetching client details:', error);
+      alert('Failed to fetch client details.');
+    }
+  }, [hiringData?.hiringId, hiringData?.candidateName, hiringData?.status]);
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
@@ -84,16 +109,22 @@ const TableWithSearchFilter = ({
     }
   }, [ticketData?.ticketId, ticketData?.staffId, ticketData?.branchName]);
 
-  useEffect(() => {
-    getTicketDetailsAgainstSearch();
-  }, []);
 
-  const handleTicketSearch = async () => {
-    await getTicketDetailsAgainstSearch();
-  };
   useEffect(() => {
-    getSearchDetailClient();
-  }, []);
+    switch (type) {
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
+      case 'hiring':
+        getHiringSearchDetails();
+        break;
+      case 'clients':
+        getSearchDetailClient();
+        break;
+      default:
+        return;
+    }
+  }, [type]);
 
   useEffect(() => {
     let dataSource;
@@ -111,7 +142,7 @@ const TableWithSearchFilter = ({
         dataSource = filteredData;
         break;
       case 'hiring':
-        dataSource = hiringData;
+        dataSource = filteredData;
         break;
       case 'receipts':
         dataSource = receiptsData;
@@ -164,7 +195,18 @@ const TableWithSearchFilter = ({
     setFilteredData(filtered);
   };
   const handleSearch = async () => {
-    await getSearchDetailClient();
+    switch (type) {
+      case 'clients':
+        await getSearchDetailClient();
+        break;
+      case 'hiring':
+        await getHiringSearchDetails();
+        break;
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
+    }
+
   };
 
   const handleCreateNew = () => {

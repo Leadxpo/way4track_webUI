@@ -113,8 +113,8 @@ const Tickets = () => {
     const payload = {
       id: tickettData.id,
       staffId: selectedStaffId,
-      // date: date,
-      date: tickettData.date,
+      date: date,
+      // date: tickettData.date,
       branchId: selectedBranch,
       problem: document.querySelector('[name="problem"]').value,
       addressingDepartment: tickettData.addressingDepartment || '',
@@ -202,8 +202,8 @@ const Tickets = () => {
                   <input
                     type="date"
                     value={date}
-                    // onChange={handleDateChange}
-                    onChange={handleInputChange}
+                    onChange={handleDateChange}
+                    // onChange={handleInputChange}
                     className="border p-2 rounded w-full focus:outline-none"
                   />
                 </div>
