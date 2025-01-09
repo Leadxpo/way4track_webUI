@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService';
+
 const InvoiceForm = () => {
   const initialFormState = {
     title: '',
@@ -28,20 +29,26 @@ const InvoiceForm = () => {
 
   const [voucherFormData, setVoucherFormData] = useState(initialFormState);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [sgst, setSgst] = useState(0);
-  const [cgst, setCgst] = useState(0);
 
-  // Calculate total, SGST, and CGST
+  // Calculate total, SGST, CGST, and final amount
   useEffect(() => {
-    const calculatedTotal = voucherFormData.items.reduce(
-      (acc, item) => acc + parseFloat(item.amount || 0),
-      0
-    );
+    const calculatedTotal = voucherFormData.items.reduce((acc, item) => {
+      const amount = parseFloat(item.amount || 0);
+      const sgstPercent = parseFloat(item.sgst || 0);
+      const cgstPercent = parseFloat(item.cgst || 0);
+
+      const sgstAmount = (amount * sgstPercent) / 100;
+      const cgstAmount = (amount * cgstPercent) / 100;
+      const finalAmount = amount + sgstAmount + cgstAmount;
+
+      item.sgst = sgstAmount; // Update SGST amount
+      item.cgst = cgstAmount; // Update CGST amount
+      item.finalAmount = finalAmount; // Update Final amount
+
+      return acc + finalAmount; // Return updated total amount
+    }, 0);
+
     setTotalAmount(calculatedTotal);
-    const calculatedSgst = (calculatedTotal * 9) / 100;
-    const calculatedCgst = (calculatedTotal * 9) / 100;
-    setSgst(calculatedSgst);
-    setCgst(calculatedCgst);
   }, [voucherFormData.items]);
 
   // Handle field changes
@@ -243,20 +250,9 @@ const InvoiceForm = () => {
               </div>
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <div>
-                  <label className="font-bold">GST</label>
-                  <div className="flex mt-2">
-                    <button className="w-1/2 bg-gray-300 text-black py-2 rounded-l-md">
-                      TDS
-                    </button>
-                    <button className="w-1/2 bg-green-500 text-white py-2 rounded-r-md">
-                      GST
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <label className="font-bold">SGST</label>
+                  <label className="font-bold">SGST (%)</label>
                   <input
-                    type="text"
+                    type="number"
                     name="sgst"
                     value={entry.sgst}
                     onChange={(e) => handleItemChange(index, e)}
@@ -264,12 +260,22 @@ const InvoiceForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="font-bold">CGST</label>
+                  <label className="font-bold">CGST (%)</label>
                   <input
-                    type="text"
+                    type="number"
                     name="cgst"
                     value={entry.cgst}
                     onChange={(e) => handleItemChange(index, e)}
+                    className="w-full bg-gray-200 h-12 rounded-md mt-2"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold">Final Amount</label>
+                  <input
+                    type="text"
+                    name="finalAmount"
+                    value={entry.finalAmount}
+                    readOnly
                     className="w-full bg-gray-200 h-12 rounded-md mt-2"
                   />
                 </div>

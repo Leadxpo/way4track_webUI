@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaEllipsisVertical } from 'react-icons/fa6';
+import { formatString } from '../common/commonUtils';
 
 const getStatusStyle = (status) => {
   switch (status) {
@@ -78,7 +79,7 @@ const Table = ({
                   key={index}
                   className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700"
                 >
-                  {column}
+                  {formatString(column)}
                 </th>
               ))}
               <th className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">

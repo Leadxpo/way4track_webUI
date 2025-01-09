@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import generatePDF from '../../common/commonUtils';
 
 const AddEditEstimate = () => {
   const location = useLocation();
@@ -49,12 +50,50 @@ const AddEditEstimate = () => {
 
   const handleSave = () => {
     console.log('Saving estimate:', formData);
-    navigate('/estimates');
+
+    navigate('/estimate');
   };
 
   const handleSaveAndSend = () => {
     console.log('Saving and sending estimate:', formData);
-    navigate('/estimates');
+    generatePDF({
+      quotationNumber: 'EST-000641',
+      invoiceDate: '15/11/2024',
+      placeOfSupply: 'Andhra Pradesh (37)',
+      billTo: {
+        name: 'VENKATA SAI KRISHNA STONE CRUSHER',
+        gstin: '37AAGFV7908J1ZM',
+      },
+      items: [
+        {
+          description: 'Bs Techotronics AIS40 DEVICE',
+          hsn: '85299090',
+          qty: 8,
+          rate: 6500,
+          cgstRate: 9,
+          cgstAmt: 3966.1,
+          sgstRate: 9,
+          sgstAmt: 3966.1,
+          amount: 52000,
+        },
+      ],
+      totalTaxableAmount: 44067.8,
+      cgstRate: 9,
+      cgstAmount: 3966.1,
+      sgstRate: 9,
+      sgstAmount: 3966.1,
+      totalAmount: 52000,
+      notes: 'Looking forward for your business.',
+      bankDetails: {
+        name: 'Sharon Telematics Pvt Ltd.',
+        accountNumber: '131905001314',
+        bankName: 'ICICI Bank',
+        branchName: 'BUTCHIRAJU PALAM',
+        ifsc: 'ICIC0001319',
+      },
+      signatureName: 'Suneel G',
+    });
+    navigate('/estimate');
   };
 
   return (

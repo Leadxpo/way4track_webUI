@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService'; // Adjust the import based on your structure
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { initialAuthState } from '../../services/ApiService';
+
 const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -12,7 +13,11 @@ const Tickets = () => {
   const [selectedStaffId, setSelectedStaffId] = useState(''); // Selected staff ID
   const [selectedStaffNumber, setSelectedStaffNumber] = useState(''); // Staff number
   const [selectedBranch, setSelectedBranch] = useState(''); // Selected branch
+  const [selectedDepartment, setSelectedDepartment] = useState(''); // Selected addressing department
   const [date, setDate] = useState(''); // Date state
+  const [address, setAddress] = useState(''); // Address state
+  const [problem, setProblem] = useState(''); // Problem state
+  const [tickets, setTickets] = useState([]); // Tickets state
 
   // Fetch staff names when modal opens
   useEffect(() => {
@@ -24,7 +29,17 @@ const Tickets = () => {
 
   useEffect(() => {
     if (isEditMode && selectedTicket) {
-      setDate(selectedTicket.date.slice(0, 10)); // Set date in yyyy-MM-dd format for editing
+      setSelectedStaffId(selectedTicket.staffName || '');
+      setSelectedStaffNumber(selectedTicket.staffNumber || '');
+      setSelectedBranch(selectedTicket.branchName || '');
+      setSelectedDepartment(selectedTicket.addressing_department || '');
+      setDate(
+        selectedTicket.ticket_date
+          ? selectedTicket.ticket_date.split('T')[0]
+          : ''
+      );
+      setAddress(selectedTicket.address || '');
+      setProblem(selectedTicket.otherInformation || '');
     }
   }, [isEditMode, selectedTicket]);
 
@@ -41,6 +56,15 @@ const Tickets = () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       setBranchList(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch branches:', error);
+    }
+  };
+
+  const fetchTickets = async () => {
+    try {
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      setTickets(response.data || []);
     } catch (error) {
       console.error('Failed to fetch branches:', error);
     }
@@ -63,6 +87,18 @@ const Tickets = () => {
     setDate(e.target.value); // Update date when changed
   };
 
+  const handleDepartmentChange = (e) => {
+    setSelectedDepartment(e.target.value);
+  };
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+
+  const handleProblemChange = (e) => {
+    setProblem(e.target.value);
+  };
+
   const handleOpenModalForAdd = () => {
     setSelectedTicket(null);
     setIsEditMode(false);
@@ -71,15 +107,15 @@ const Tickets = () => {
     setSelectedStaffNumber('');
     setSelectedBranch('');
     setDate(''); // Reset date for Add
+    setSelectedDepartment(''); // Reset department for Add
+    setAddress(''); // Reset address for Add
+    setProblem(''); // Reset problem for Add
   };
 
   const handleOpenModalForEdit = (ticket) => {
     setSelectedTicket(ticket);
     setIsEditMode(true);
     setIsModalOpen(true);
-    setSelectedStaffId(ticket?.staffId || '');
-    setSelectedStaffNumber(ticket?.staffNumber || '');
-    setSelectedBranch(ticket?.branch || '');
   };
 
   const handleCloseModal = () => {
@@ -89,9 +125,13 @@ const Tickets = () => {
     setSelectedStaffNumber('');
     setSelectedBranch('');
     setDate('');
+    setSelectedDepartment(''); // Reset department on modal close
+    setAddress(''); // Reset address on modal close
+    setProblem(''); // Reset problem on modal close
   };
 
   const handleOpenMoreDetailsModal = (ticket) => {
+    console.log('Selected Ticket:', ticket);
     setSelectedTicket(ticket);
     setIsMoreDetailsModalOpen(true);
   };
@@ -102,15 +142,20 @@ const Tickets = () => {
   };
 
   const handleSaveTicket = async () => {
-    const payload = {
+    let payload = {
       staffId: selectedStaffId,
-      problem: document.querySelector('[name="problem"]').value, // Use the input value
+      problem: problem, // Use the problem from state
       date: date, // Use the date from state
       branchId: selectedBranch,
-      addressingDepartment: 'SomeDepartment', // Replace with actual addressing department logic
+      addressingDepartment: selectedDepartment, // Send the selected department
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
+      address: address, // Send the address from state
     };
+
+    // if(isEditMode) {
+    //   payload.id = selectedTicket.id;
+    // }
 
     try {
       const response = await ApiService.post(
@@ -157,7 +202,7 @@ const Tickets = () => {
                   >
                     <option value="">Select Staff</option>
                     {staffList.map((staff) => (
-                      <option key={staff.id} value={staff.name}>
+                      <option key={staff.id} value={staff.id}>
                         {staff.name}
                       </option>
                     ))}
@@ -187,19 +232,26 @@ const Tickets = () => {
                     className="border p-2 rounded w-full focus:outline-none"
                   />
                 </div>
-                {/* Problem */}
+                {/* Addressing Department */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
-                    Problem
+                    Addressing Department
                   </label>
-                  <input
-                    type="text"
-                    name="problem"
+                  <select
+                    value={selectedDepartment}
+                    onChange={handleDepartmentChange}
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.problem : ''
-                    }
-                  />
+                  >
+                    <option value="">Select Role</option>
+                    <option value="CEO">CEO</option>
+                    <option value="HR">HR</option>
+                    <option value="Accountant">Accountant</option>
+                    <option value="Operator">Operator</option>
+                    <option value="Warehouse Manager">Warehouse Manager</option>
+                    <option value="Sub Dealer">Sub Dealer</option>
+                    <option value="Technician">Technician</option>
+                    <option value="Sales Man">Sales Man</option>
+                  </select>
                 </div>
                 {/* Branch Dropdown */}
                 <div>
@@ -213,7 +265,7 @@ const Tickets = () => {
                   >
                     <option value="">Select Branch</option>
                     {branchList.map((branch) => (
-                      <option key={branch.id} value={branch.branchName}>
+                      <option key={branch.id} value={branch.branchNumber}>
                         {branch.branchName}
                       </option>
                     ))}
@@ -226,10 +278,10 @@ const Tickets = () => {
                   </label>
                   <input
                     type="text"
+                    name="address"
+                    value={address}
+                    onChange={handleAddressChange}
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.address : ''
-                    }
                   />
                 </div>
               </div>
@@ -239,12 +291,10 @@ const Tickets = () => {
                   Problems
                 </label>
                 <textarea
+                  name="problem"
+                  value={problem}
+                  onChange={handleProblemChange}
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
-                  defaultValue={
-                    isEditMode && selectedTicket
-                      ? selectedTicket.otherInformation
-                      : ''
-                  }
                 ></textarea>
               </div>
               {/* Save Button */}
@@ -256,6 +306,46 @@ const Tickets = () => {
                 {isEditMode ? 'Save Changes' : 'Save'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {isMoreDetailsModalOpen && selectedTicket && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-md shadow-lg relative w-[550px]">
+            <button
+              onClick={handleCloseMoreDetailsModal}
+              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
+            >
+              X
+            </button>
+            <h2 className="text-xl font-bold text-center mb-4">
+              Ticket Details
+            </h2>
+            <div>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Staff Name:</strong> {selectedTicket.staffName}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Staff Number:</strong> {selectedTicket.staffNumber}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Date:</strong> {selectedTicket.ticket_date}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Problem:</strong> {selectedTicket.problem}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Branch:</strong> {selectedTicket.branchName}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Address:</strong> {selectedTicket.address}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Other Information:</strong>{' '}
+                {selectedTicket.otherInformation}
+              </p>
+            </div>
           </div>
         </div>
       )}

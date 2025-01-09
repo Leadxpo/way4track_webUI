@@ -11,14 +11,15 @@ import totalExpenses from '../../mockData/mockExpenses.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { pageTitles } from '../../common/constants';
 import requestData from '../../mockData/mockRequests.json';
-import { initialAuthState } from '../../services/ApiService'
+import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { get } from 'react-hook-form';
+
 const TableWithSearchFilter = ({
   type,
   onCreateNew,
   onEdit,
-  // onDelete,
   onDetails,
   showCreateBtn = true,
   showStatusFilter = false,
@@ -41,6 +42,8 @@ const TableWithSearchFilter = ({
   const [branches, setBranches] = useState([]);
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
+
+  // Fetch client details
   const getSearchDetailClient = useCallback(async () => {
     try {
       const response = await ApiService.post('/client/getSearchDetailClient', {
@@ -52,7 +55,6 @@ const TableWithSearchFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, "Response Data");  // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -61,26 +63,81 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [clientData?.staffId, clientData?.branchName, clientData?.name]);
+  }, [clientData?.clientId, clientData?.branchName, clientData?.name]);
+
+  // Fetch ticket details
+  const getSearchDetailTickets = useCallback(async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getTicketDetailsAgainstSearch',
+        {
+          ticketId: searchID,
+          clientName: searchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching ticket details:', error);
+      alert('Failed to fetch ticket details.');
+    }
+  }, [searchID, searchName]);
+
+  // Fetch work allocation details
+  const getSearchDetailWorkAllocation = useCallback(async () => {
+    try {
+      const response = await ApiService.post(
+        '/work-allocations/getWorkAllocation',
+        {
+          workAllocationNumber: searchID,
+          clientName: searchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching ticket details:', error);
+      alert('Failed to fetch ticket details.');
+    }
+  }, [searchID, searchName]);
 
   useEffect(() => {
-    getSearchDetailClient();
-  }, []);
+    if (type === 'clients') {
+      getSearchDetailClient();
+    } else if (type === 'tickets') {
+      getSearchDetailTickets();
+    } else if (type === 'work-allocations') {
+      console.log(type);
+      getSearchDetailWorkAllocation();
+    }
+  }, [type]);
 
   useEffect(() => {
     let dataSource;
     switch (type) {
       case 'vouchers':
-        dataSource = vouchersData;
+        dataSource = vouchersData; // Example mock data, replace with actual API integration if needed
         break;
-      case 'work allocation':
-        dataSource = workAllocationData;
+      case 'work-allocations':
+        dataSource = filteredData;
         break;
       case 'ledger':
         dataSource = ledgerData;
         break;
       case 'tickets':
-        dataSource = ticketsData;
+        dataSource = filteredData; // You might replace this with an API call if required
         break;
       case 'hiring':
         dataSource = hiringData;
@@ -107,12 +164,14 @@ const TableWithSearchFilter = ({
 
     const uniqueStatuses = [...new Set(dataSource.map((item) => item.Status))];
     setStatuses(uniqueStatuses);
-  }, [type]);
+  }, [type, filteredData]);
 
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (response.status) {
           setBranches(response.data); // Set branches to state
         } else {
@@ -136,21 +195,14 @@ const TableWithSearchFilter = ({
     setFilteredData(filtered);
   };
 
-  // const handleSearch = () => {
-  //   const filtered = data.filter((item) => {
-  //     const matchesID =
-  //       searchID === '' || item['ID'].toString().includes(searchID);
-  //     const matchesName =
-  //       searchName === '' ||
-  //       item['Name'].toLowerCase().includes(searchName.toLowerCase());
-  //     return matchesID && matchesName;
-  //   });
-  //   setFilteredData(filtered);
-  // };
+  // Combined search handler for both clients and tickets
   const handleSearch = async () => {
-    await getSearchDetailClient();
+    if (type === 'tickets') {
+      await getSearchDetailTickets();
+    } else if (type === 'clients') {
+      await getSearchDetailClient();
+    }
   };
-
 
   const handleCreateNew = () => {
     switch (type) {
@@ -163,6 +215,8 @@ const TableWithSearchFilter = ({
       case 'tickets':
         onCreateNew();
         break;
+      default:
+        break;
     }
   };
 
@@ -174,8 +228,11 @@ const TableWithSearchFilter = ({
       case 'hiring':
         navigate('/delete-hiring');
         break;
+      default:
+        break;
     }
   };
+
   return (
     <div className="p-10">
       <p className="font-bold text-xl">{pageTitle}</p>
@@ -191,12 +248,16 @@ const TableWithSearchFilter = ({
         )}
       </div>
       <div className="flex mb-4">
-        {/* Search by Client ID */}
+        {/* Search by Client ID or Ticket ID */}
         <div className="flex-grow mr-2">
           <input
             type="text"
             value={searchID}
-            placeholder="Search with Client ID"
+            placeholder={
+              type === 'tickets'
+                ? 'Search with Ticket ID'
+                : 'Search with Client ID'
+            }
             onChange={(e) => setSearchID(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             style={{ paddingLeft: '8px' }}
@@ -207,7 +268,11 @@ const TableWithSearchFilter = ({
           <input
             type="text"
             value={searchName}
-            placeholder="Search with Name"
+            placeholder={
+              type === 'tickets'
+                ? 'Search with Client Name'
+                : 'Search with Name'
+            }
             onChange={(e) => setSearchName(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             style={{ paddingLeft: '8px' }}
@@ -233,7 +298,9 @@ const TableWithSearchFilter = ({
               onChange={handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
-              <option value="" disabled>Select a Branch</option>
+              <option value="" disabled>
+                Select a Branch
+              </option>
               {branches.map((branch) => (
                 <option key={branch.id} value={branch.branchName}>
                   {branch.branchName}
@@ -257,12 +324,12 @@ const TableWithSearchFilter = ({
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
-          showEdit={showEdit} // Hide Edit button
-          showDelete={showDelete} // Show Delete button
-          showDetails={showDetails} // Show Details button
-          editText={editText} // Custom edit button text
-          deleteText={deleteText} // Custom delete button text
-          detailsText={detailsText} // Custom details button text
+          showEdit={showEdit}
+          showDelete={showDelete}
+          showDetails={showDetails}
+          editText={editText}
+          deleteText={deleteText}
+          detailsText={detailsText}
         />
       </div>
     </div>

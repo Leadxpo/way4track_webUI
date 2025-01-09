@@ -1,11 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TableWithSearchFilter from '../tablesSearchFilter';
+import ApiService, { initialAuthState } from '../../services/ApiService';
+import { useNavigate } from 'react-router';
 
 const WorkAllocation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedWorkAllocation, setSelectedWorkAllocation] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
+  const [clientNames, setClientNames] = useState([]); // For storing client names
+  const [clientNumber, setClientNumber] = useState(''); // For storing client number
+  const [selectedClient, setSelectedClient] = useState(null); // To keep track of the selected client
+  const [staffList, setStaffList] = useState([]); // For storing staff names
+  const [selectedStaff, setSelectedStaff] = useState(null); // To keep track of the selected staff
+  const [serviceOrProduct, setServiceOrProduct] = useState(''); // To store service/product value
+  const [otherInformation, setOtherInformation] = useState(''); // To store other information
+  const [date, setDate] = useState(''); // To store date value
+  const [address, setAddress] = useState(''); // To store address value
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Fetch client names when component mounts
+    const fetchClientNames = async () => {
+      try {
+        const response = await ApiService.post(
+          '/client/getClientNamesDropDown',
+          {}
+        );
+        setClientNames(response.data); // Assuming API returns an array of client names
+      } catch (error) {
+        console.error('Error fetching client names:', error);
+      }
+    };
+    const fetchStaffNames = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        setStaffList(response.data || []);
+      } catch (error) {
+        console.error('Failed to fetch staff names:', error);
+      }
+    };
+
+    fetchClientNames();
+    fetchStaffNames();
+  }, []);
+
+  useEffect(() => {
+    setDate(
+      selectedWorkAllocation.date
+        ? selectedWorkAllocation.date.split('T')[0]
+        : ''
+    );
+    setSelectedStaff(selectedWorkAllocation.staffName);
+  }, [isEditMode, isMoreDetailsModalOpen]);
+
+  const handleClientChange = (event) => {
+    const selectedClientName = event.target.value;
+    setSelectedClient(selectedClientName);
+
+    // Assuming API returns the client number when provided the client name
+    const selectedClientInfo = clientNames.find(
+      (client) => client.name === selectedClientName
+    );
+    if (selectedClientInfo) {
+      setClientNumber(selectedClientInfo.id);
+    } else {
+      setClientNumber('');
+    }
+  };
+
+  const handleStaffChange = (event) => {
+    const selectedStaffId = event.target.value;
+    setSelectedStaff(selectedStaffId);
+  };
+
+  const handleServiceOrProductChange = (event) => {
+    setServiceOrProduct(event.target.value);
+  };
+
+  const handleOtherInformationChange = (event) => {
+    setOtherInformation(event.target.value);
+  };
+
+  const handleDateChange = (event) => {
+    setDate(event.target.value);
+  };
+
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
 
   const handleOpenModalForAdd = () => {
     setSelectedWorkAllocation(null);
@@ -17,6 +99,15 @@ const WorkAllocation = () => {
     setSelectedWorkAllocation(voucher);
     setIsEditMode(true);
     setIsModalOpen(true);
+
+    // Populate input fields with existing data
+    setSelectedClient(voucher.clientName);
+    setClientNumber(voucher.clientNumber);
+    setServiceOrProduct(voucher.serviceOrProduct);
+    setOtherInformation(voucher.otherInformation);
+    setDate(voucher.date);
+    setSelectedStaff(voucher.staffId);
+    setAddress(voucher.address);
   };
 
   const handleCloseModal = () => {
@@ -25,7 +116,6 @@ const WorkAllocation = () => {
   };
 
   const handleOpenMoreDetailsModal = (voucher) => {
-    console.log(voucher);
     setSelectedWorkAllocation(voucher);
     setIsMoreDetailsModalOpen(true);
   };
@@ -33,6 +123,39 @@ const WorkAllocation = () => {
   const handleCloseMoreDetailsModal = () => {
     setIsMoreDetailsModalOpen(false);
     setSelectedWorkAllocation(null);
+  };
+
+  const handleSave = async () => {
+    const payload = {
+      id: isEditMode ? selectedWorkAllocation.id : '', // Only send id for edit
+      staffId: selectedStaff,
+      clientId: clientNumber,
+      serviceOrProduct,
+      otherInformation,
+      date,
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      workAllocationNumber: isEditMode
+        ? selectedWorkAllocation.workAllocationNumber
+        : '', // Only send workAllocationNumber for edit
+    };
+
+    try {
+      const response = await ApiService.post(
+        '/work-allocations/handleWorkAllocationDetails',
+        payload
+      );
+      if (response.status) {
+        alert('Work allocation saved successfully.');
+        setIsModalOpen(false);
+        navigate('/work_allocation', { replace: true });
+      } else {
+        alert(response.data.message || 'Failed to save work allocation.');
+      }
+    } catch (error) {
+      console.error('Error saving work allocation:', error);
+      alert('Failed to save work allocation.');
+    }
   };
 
   return (
@@ -65,15 +188,18 @@ const WorkAllocation = () => {
                   <label className="block text-gray-700 font-semibold mb-1">
                     Client Name
                   </label>
-                  <input
-                    type="text"
+                  <select
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.issuedPerson
-                        : ''
-                    }
-                  />
+                    value={selectedClient || ''}
+                    onChange={handleClientChange}
+                  >
+                    <option value="">Select Client</option>
+                    {clientNames.map((client, index) => (
+                      <option key={index} value={client.name}>
+                        {client.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -82,11 +208,8 @@ const WorkAllocation = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.takenPerson
-                        : ''
-                    }
+                    value={clientNumber}
+                    readOnly
                   />
                 </div>
                 <div>
@@ -96,11 +219,8 @@ const WorkAllocation = () => {
                   <input
                     type="date"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.Date
-                        : ''
-                    }
+                    value={date}
+                    onChange={handleDateChange}
                   />
                 </div>
                 <div>
@@ -110,26 +230,26 @@ const WorkAllocation = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.Amount
-                        : ''
-                    }
+                    value={serviceOrProduct}
+                    onChange={handleServiceOrProductChange}
                   />
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Allocated to
                   </label>
-                  <input
-                    type="text"
+                  <select
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.paymentMode
-                        : ''
-                    }
-                  />
+                    value={selectedStaff || ''}
+                    onChange={handleStaffChange}
+                  >
+                    <option value="">Select Staff</option>
+                    {staffList.map((staff, index) => (
+                      <option key={index} value={staff.id}>
+                        {staff.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -138,11 +258,8 @@ const WorkAllocation = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.Date
-                        : ''
-                    }
+                    value={address}
+                    onChange={handleAddressChange}
                   />
                 </div>
               </div>
@@ -152,14 +269,14 @@ const WorkAllocation = () => {
                 </label>
                 <textarea
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
-                  defaultValue={
-                    isEditMode && selectedWorkAllocation
-                      ? selectedWorkAllocation.otherInformation
-                      : ''
-                  }
+                  value={otherInformation}
+                  onChange={handleOtherInformationChange}
                 />
               </div>
-              <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block">
+              <button
+                className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block"
+                onClick={handleSave}
+              >
                 {isEditMode ? 'Save Changes' : 'Save'}
               </button>
             </form>
@@ -182,25 +299,25 @@ const WorkAllocation = () => {
             <div>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Client Name : </strong>{' '}
-                {selectedWorkAllocation.issuedPerson}
+                {selectedWorkAllocation.clientName}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Client Number : </strong>{' '}
-                {selectedWorkAllocation.takenPerson}
+                {selectedWorkAllocation.clientNumber}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Date : </strong> {selectedWorkAllocation.Date}
+                <strong>Date : </strong> {selectedWorkAllocation.date}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Service / Product :</strong>{' '}
-                {selectedWorkAllocation.Amount}
+                {selectedWorkAllocation.serviceOrProduct}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Allocated to : </strong>{' '}
-                {selectedWorkAllocation.paymentMode}
+                {selectedWorkAllocation.staffName}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Address : </strong> {selectedWorkAllocation.Date}
+                <strong>Address : </strong> {selectedWorkAllocation.address}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Other Information : </strong>{' '}
@@ -215,7 +332,7 @@ const WorkAllocation = () => {
       )}
 
       <TableWithSearchFilter
-        type="vouchers"
+        type="work-allocations"
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
         showDelete={false}
