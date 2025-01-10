@@ -127,7 +127,7 @@ const TableWithSearchFilter = ({
   }, [type]);
 
   useEffect(() => {
-    let dataSource;
+    let dataSource=[];
     switch (type) {
       case 'vouchers':
         dataSource = vouchersData;

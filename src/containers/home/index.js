@@ -374,7 +374,7 @@ const Home = () => {
           null
         }
         <div className="mt-8">
-          <Table columns={tableColumns} data={ticketDetails} />
+          {/* <Table columns={tableColumns} data={ticketDetails} /> */}
         </div>
       </div>
       {/* sixth section - table */}

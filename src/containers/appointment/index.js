@@ -93,9 +93,9 @@ const Appointments = () => {
     });
   };
 
-  useEffect(() => {
-    fetchAppointmentDetails();
-  }, []);
+  // useEffect(() => {
+  //   fetchAppointmentDetails();
+  // }, []);
 
   useEffect(() => {
     fetchAppointmentDetails(selectedBranch);

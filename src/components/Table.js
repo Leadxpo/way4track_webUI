@@ -62,7 +62,7 @@ const Table = ({
   detailsText = 'More Details',
 }) => {
   const [openRowIndex, setOpenRowIndex] = useState(null);
-
+  console.log(columns, "}}}}}}}}}}}}}}}")
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
@@ -97,8 +97,8 @@ const Table = ({
                   <td
                     key={colIndex}
                     className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${checkColumn(column)
-                        ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
-                        : ''
+                      ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
+                      : ''
                       }`}
                   >
                     {row[column]}

@@ -111,7 +111,7 @@ const TableWithDateFilter = ({
     getSubDealerData();
   }, []);
   useEffect(() => {
-    let dataSource;
+    let dataSource=[];
     switch (type) {
       case 'estimate':
         dataSource = estimatesData;

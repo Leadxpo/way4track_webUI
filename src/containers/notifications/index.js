@@ -1,171 +1,351 @@
-import React, { useState } from 'react';
+// import React, { useState, useEffect } from 'react';
+// import ApiService from '../../services/ApiService';
+// import { initialAuthState } from '../../services/ApiService';
 
-// Sample JSON data with profile images and descriptions
-const notificationsData = [
-  {
-    id: 1,
-    user: 'Ralph Edwards',
-    message: 'Wants to Edit Tetri sly Design System',
-    time: '5 min ago',
-    city: 'Visakhapatnam',
-    read: false,
-    // profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
-    description:
-      'Detailed description of the action Ralph Edwards wants to perform on the Tetri sly Design System.',
-  },
-  {
-    id: 2,
-    user: 'Ralph Edwards',
-    message: 'Wants to Edit Tetri sly Design System',
-    time: '10 min ago',
-    city: 'Hyderabad',
-    read: false,
-    profileImage: 'https://randomuser.me/api/portraits/men/2.jpg',
-    description:
-      'Ralph Edwards requests edits to improve user experience on the Tetri sly Design System.',
-  },
-  {
-    id: 3,
-    user: 'Ralph Edwards',
-    message: 'Wants to Edit Tetri sly Design System',
-    time: '24 min ago',
-    city: 'Kakinada',
-    read: false,
-    // profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
-    description:
-      'Ralph Edwards needs to make urgent changes to the Tetri sly Design System.',
-  },
-  {
-    id: 4,
-    user: 'Ralph Edwards',
-    message: 'Wants to Edit Tetri sly Design System',
-    time: '33 min ago',
-    city: 'Visakhapatnam',
-    read: false,
-    type: "re/ti/te",
-    // profileImage: 'https://randomuser.me/api/portraits/men/4.jpg',
-    description:
-      'Changes requested by Ralph Edwards are related to design enhancements on the Tetri sly Design System.',
-  },
-  {
-    id: 5,
-    user: 'Ralph Edwards',
-    message: 'Wants to Edit Tetri sly Design System',
-    time: '1 hr ago',
-    city: 'Kakinada',
-    read: false,
-    // profileImage: 'https://randomuser.me/api/portraits/men/5.jpg',
-    description:
-      'Ralph Edwards aims to update the style and usability of the Tetri sly Design System.',
-  },
-];
+// function Notifications() {
+//   const [notifications, setNotifications] = useState([]);
+//   const [selectedBranch, setSelectedBranch] = useState('All');
+//   const [expandedNotification, setExpandedNotification] = useState(null);
+//   const [branches, setBranches] = useState([]);
 
-const cities = ['All', 'Visakhapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada'];
+//   const getAllNotifications = async (branchName = 'All') => {
+//     try {
+//       const payload = {
+//         companyCode: initialAuthState.companyCode,
+//         unitCode: initialAuthState.unitCode,
+//       };
+
+//       if (branchName !== 'All') {
+//         payload.branchName = branchName;
+//       }
+
+//       const res = await ApiService.post('/notifications/getAllNotifications', payload);
+
+//       if (res.status) {
+//         console.log(res.data); // Log the response to inspect its structure
+//         console.log(res.data.notifications);
+//         // Set branches and notifications
+//         setBranches([
+//           { branchName: 'All' },
+//           ...res.data.result.map((branch) => ({
+//             branchName: branch.branchName,
+//           })),
+//         ]);
+//         setNotifications(Array.isArray(res.data.notifications) ? res.data.notifications : []);
+//         // Check if notifications is an array
+//         // Use `setNotifications` instead of `setAppointments`
+//       } else {
+//         setBranches([{ branchName: 'All' }]);
+//         setNotifications([]);  // Empty the notifications if no data is found
+//       }
+//     } catch (err) {
+//       console.error('Failed to fetch notifications:', err);
+//       setNotifications([]);
+//       setBranches([{ branchName: 'All' }]);
+//     }
+//   };
+//   useEffect(() => {
+//     const markAsRead = async (id) => {
+//       try {
+//         const response = await ApiService.post('/notifications/markAsRead', {
+//           id
+//         });
+//         if (response.status) {
+//         } else {
+//         }
+//       } catch (error) {
+//         console.error('Error fetching client details data:', error);
+//         alert('Failed to fetch client details data.');
+//       }
+//     };
+//     markAsRead();
+//   }, [id]);
+//   const handleBranchSelection = (branch) => {
+//     setSelectedBranch(branch);
+//   };
+
+//   useEffect(() => {
+//     getAllNotifications(selectedBranch);
+//   }, [selectedBranch]);
+
+//   // Filter notifications based on selected branch
+//   const filteredNotifications =
+//     selectedBranch === 'All'
+//       ? notifications
+//       : notifications.filter(
+//         (notification) => notification.branchName === selectedBranch
+//       );
+
+//   // Mark all notifications as read
+//   const markAllAsRead = () => {
+//     const updatedNotifications = notifications.map((notification) => ({
+//       ...notification,
+//       isRead: 1, // Mark as read
+//     }));
+//     setNotifications(updatedNotifications);
+//   };
+
+// // Toggle expand/collapse for a notification and mark as read if expanded
+// const toggleExpand = (id) => {
+//   setNotifications((prevNotifications) =>
+//     prevNotifications.map((notification) =>
+//       notification.id === id ? { ...notification, isRead: 1 } : notification
+//     )
+//   );
+//   setExpandedNotification(expandedNotification === id ? null : id);
+// };
+
+//   // Get unread count per branch
+//   const getUnreadCount = (branch) => {
+//     return branch === 'All'
+//       ? notifications.filter((notification) => notification.isRead === 0).length
+//       : notifications.filter(
+//         (notification) => notification.branchName === branch && notification.isRead === 0
+//       ).length;
+//   };
+
+//   return (
+//     <div className="p-6 w-full max-w-4xl mx-auto">
+//       <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+
+//       {/* Branch Selection Dropdown */}
+//       <div className="flex gap-4 mb-4">
+//         <label htmlFor="branchDropdown" className="font-medium mr-2">
+//           Select Branch:
+//         </label>
+//         <select
+//           id="branchDropdown"
+//           value={selectedBranch}
+//           onChange={(e) => handleBranchSelection(e.target.value)}
+//           className="px-4 py-2 border border-gray-300 rounded-md"
+//         >
+//           {branches.map((branch) => (
+//             <option key={branch.branchName} value={branch.branchName}>
+//               {branch.branchName}
+//             </option>
+//           ))}
+//         </select>
+
+//         {getUnreadCount(selectedBranch) > 0 && (
+//           <span className="ml-1 text-xs bg-red-500 text-white rounded-full px-2 py-1">
+//             {getUnreadCount(selectedBranch)}
+//           </span>
+//         )}
+//       </div>
+//       {/* Mark All as Read Button */}
+//       <button
+//         onClick={markAllAsRead}
+//         className="text-blue-600 font-medium ml-auto mb-4"
+//       >
+//         Mark All as Read
+//       </button>
+
+//       {/* Notifications List */}
+//       <div>
+//         {filteredNotifications.map((notification) => (
+//           <div
+//             key={notification.id}
+//             onClick={() => toggleExpand(notification.id)}
+//             className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
+//           >
+//             <div className="flex-1">
+//               <p className="font-medium">
+//                 {notification.user} {notification.notificationType}
+//               </p>
+//               <p className="text-sm text-gray-500">{notification.createdAt}</p>
+//               {expandedNotification === notification.id && (
+//                 <div className="mt-3">
+//                   <p className="text-gray-600">{notification.message}</p>
+//                   <div className="flex gap-4 mt-2">
+//                     <button className="bg-green-500 text-white px-4 py-1 rounded">
+//                       Allow
+//                     </button>
+//                     <button className="bg-red-500 text-white px-4 py-1 rounded">
+//                       Deny
+//                     </button>
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Unread Notification Badge */}
+//             {!notification.isRead && (
+//               <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
+//                 {notification.id}
+//               </div>
+//             )}
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Notifications;
+
+import React, { useState, useEffect } from 'react';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 function Notifications() {
-  const [notifications, setNotifications] = useState(notificationsData);
-  const [selectedCity, setSelectedCity] = useState('All');
+  const [notifications, setNotifications] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('All');
   const [expandedNotification, setExpandedNotification] = useState(null);
+  const [branches, setBranches] = useState([]);
 
-  // Filter notifications based on selected city
-  const filteredNotifications =
-    selectedCity === 'All'
-      ? notifications
-      : notifications.filter(
-        (notification) => notification.city === selectedCity
-      );
+  const getAllNotifications = async (branchName = 'All') => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
 
-  // Mark all notifications as read
-  const markAllAsRead = () => {
-    const updatedNotifications = notifications.map((notification) => ({
-      ...notification,
-      read: true,
-    }));
-    setNotifications(updatedNotifications);
+      if (branchName !== 'All') {
+        payload.branchName = branchName;
+      }
+
+      const res = await ApiService.post('/notifications/getAllNotifications', payload);
+
+      if (res.status) {
+        setBranches([
+          { branchName: 'All' },
+          ...res.data.result.map((branch) => ({
+            branchName: branch.branchName,
+          })),
+        ]);
+        setNotifications(res.data.notifications || []);
+      } else {
+        setBranches([{ branchName: 'All' }]);
+        setNotifications([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+      setNotifications([]);
+      setBranches([{ branchName: 'All' }]);
+    }
   };
 
+  useEffect(() => {
+    getAllNotifications(selectedBranch);
+  }, [selectedBranch]);
+
+  // Mark single notification as read
+  const markAsRead = async (id) => {
+    try {
+      const response = await ApiService.post('/notifications/markAsRead', {
+        ids: [id], // Send an array with one id for single mark as read
+        isRead: true,
+      });
+      if (response.status) {
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification.id === id ? { ...notification, isRead: 1 } : notification
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
   // Toggle expand/collapse for a notification and mark as read if expanded
   const toggleExpand = (id) => {
     setNotifications((prevNotifications) =>
       prevNotifications.map((notification) =>
-        notification.id === id ? { ...notification, read: true } : notification
+        notification.id === id ? { ...notification, isRead: 1 } : notification
       )
     );
     setExpandedNotification(expandedNotification === id ? null : id);
   };
 
-  // Get unread count per city
-  const getUnreadCount = (city) => {
-    return city === 'All'
-      ? notifications.filter((notification) => !notification.read).length
-      : notifications.filter(
-        (notification) => notification.city === city && !notification.read
-      ).length;
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      const ids = notifications.map((notification) => notification.id);
+      const response = await ApiService.post('/notifications/markAsRead', {
+        ids, // Send an array of all ids
+        isRead: true,
+      });
+      if (response.status) {
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) => ({
+            ...notification,
+            isRead: 1,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+    }
   };
+
+  const handleBranchSelection = (branch) => {
+    setSelectedBranch(branch);
+  };
+
+  // Filter notifications based on selected branch
+  const filteredNotifications =
+    selectedBranch === 'All'
+      ? notifications
+      : notifications.filter(
+        (notification) => notification.branchName === selectedBranch
+      );
 
   return (
     <div className="p-6 w-full max-w-4xl mx-auto">
       <h2 className="text-xl font-semibold mb-4">Notifications</h2>
 
-      {/* Tabs */}
+      {/* Branch Selection Dropdown */}
       <div className="flex gap-4 mb-4">
-        {cities.map((city) => (
-          <button
-            key={city}
-            onClick={() => setSelectedCity(city)}
-            className={`px-4 py-2 font-medium ${selectedCity === city ? 'text-blue-500' : 'text-gray-700'}`}
-          >
-            {city}
-            {getUnreadCount(city) > 0 && (
-              <span className="ml-1 text-xs bg-red-500 text-white rounded-full px-2 py-1">
-                {getUnreadCount(city)}
-              </span>
-            )}
-          </button>
-        ))}
-        <button
-          onClick={markAllAsRead}
-          className="text-blue-600 font-medium ml-auto"
+        <label htmlFor="branchDropdown" className="font-medium mr-2">
+          Select Branch:
+        </label>
+        <select
+          id="branchDropdown"
+          value={selectedBranch}
+          onChange={(e) => handleBranchSelection(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md"
         >
-          Mark All as Read
-        </button>
+          {branches.map((branch) => (
+            <option key={branch.branchName} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
       </div>
+
+      {/* Mark All as Read Button */}
+      <button
+        onClick={markAllAsRead}
+        className="text-blue-600 font-medium ml-auto mb-4"
+      >
+        Mark All as Read
+      </button>
 
       {/* Notifications List */}
       <div>
         {filteredNotifications.map((notification) => (
           <div
             key={notification.id}
-            onClick={() => toggleExpand(notification.id)}
+            onClick={() => markAsRead(notification.id)} 
             className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
           >
-            {/* Profile Image */}
-            {/* <img
-              // src={notification.profileImage}
-              alt={notification.user}
-              className="w-14 h-14 rounded-full mr-3"
-            /> */}
-            <div className="flex-1">
-              <p className="font-medium">
-                {notification.user} {notification.message}
-              </p>
-              <p className="text-sm text-gray-500">{notification.time}</p>
-              {expandedNotification === notification.id && (
-                <div className="mt-3">
-                  <p className="text-gray-600">{notification.description}</p>
-                  <div className="flex gap-4 mt-2">
-                    <button className="bg-green-500 text-white px-4 py-1 rounded">
-                      Allow
-                    </button>
-                    <button className="bg-red-500 text-white px-4 py-1 rounded">
-                      Deny
-                    </button>
+            <div
+              key={notification.id}
+              onClick={() => toggleExpand(notification.id)}
+              className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
+            >
+              <div className="flex-1">
+                <p className="font-medium">{notification.user}</p>
+                <p className="text-sm text-gray-500">{notification.createdAt}</p>
+                {expandedNotification === notification.id && (
+                  <div className="mt-3">
+                    <p className="text-gray-600">{notification.message}</p>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             {/* Unread Notification Badge */}
-            {!notification.read && (
+            {!notification.isRead && (
               <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
                 {notification.id}
               </div>
