@@ -1,28 +1,35 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import ApiService from '../../services/ApiService';
+import { useNavigate, useLocation } from 'react-router';
+import { initialAuthState } from '../../services/ApiService';
 const EditHiring = () => {
-  // Static candidate data
-  const candidate = {
-    name: 'Sai Kumar',
-    email: 'way4teack@gmail.com',
-    phone: '+91 45645 64556',
-    level: 2,
-    levels: [
-      {
-        type: 'Technical',
-        dateOfConductor: '2023-12-10',
-        conductorBy: 'HR',
-        conductorPlace: 'Hyderabad',
-        result: 'Pass',
-        review: 'Good performance',
-      },
-      {},
-      {},
-      {},
-    ],
-  };
-
-  const [levels, setLevels] = useState(candidate.levels);
+  const [candidate, setCandidate] = useState([]);
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const hiringToEdit = state?.hiringDetails;
+  useEffect(() => {
+    const fetchClientDetailsData = async () => {
+      try {
+        const response = await ApiService.post('/hiring/saveHiringDetailsWithResume', {
+          id: hiringToEdit.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          // Ensure client details data is an array
+          setCandidate(response.data || []);
+          navigate('/hiring');
+        } else {
+          setCandidate([]);
+        }
+      } catch (error) {
+        console.error('Error fetching client details data:', error);
+        alert('Failed to fetch client details data.');
+      }
+    };
+    fetchClientDetailsData();
+  }, [hiringToEdit.id]);
+  const [levels, setLevels] = useState(candidate.levelWiseData);
   const [expandedLevels, setExpandedLevels] = useState([
     true,
     false,
@@ -54,10 +61,13 @@ const EditHiring = () => {
             className="w-24 h-24 rounded-full object-cover"
           />
           <div>
-            <h2 className="text-xl font-semibold">{candidate.name}</h2>
+            <h2 className="text-xl font-semibold">{candidate.candidateName}</h2>
             <p>Email: {candidate.email}</p>
-            <p>Phone Number: {candidate.phone}</p>
-            <p>Level: {candidate.level}</p>
+            <p>Phone Number: {candidate.phoneNumber}</p>
+            <p>Level: {candidate.hiringLevel}</p>
+            <p>Level: {candidate.address}</p>
+            <p>Level: {candidate.resume}</p>
+            <p>Level: {candidate.status}</p>
           </div>
         </div>
 
@@ -67,11 +77,10 @@ const EditHiring = () => {
           {levels.map((level, index) => (
             <div key={index} className="bg-white rounded-md shadow mb-4">
               <div
-                className={`flex items-center justify-between p-4 cursor-pointer ${
-                  expandedLevels[index]
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-200'
-                }`}
+                className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index]
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-200'
+                  }`}
                 onClick={() => toggleLevel(index)}
               >
                 <h3 className="font-semibold">Level {index + 1}</h3>
@@ -79,17 +88,7 @@ const EditHiring = () => {
               </div>
               {expandedLevels[index] && (
                 <div className="p-4 grid grid-cols-2 gap-4">
-                  <label>
-                    <span>Type:</span>
-                    <input
-                      type="text"
-                      className="w-full border px-4 py-2 rounded-md"
-                      value={level.type || ''}
-                      onChange={(e) =>
-                        handleInputChange(index, 'type', e.target.value)
-                      }
-                    />
-                  </label>
+
                   <label>
                     <span>Date of Conductor:</span>
                     <input
@@ -107,14 +106,24 @@ const EditHiring = () => {
                   </label>
                   <label>
                     <span>Conductor By:</span>
-                    <input
-                      type="text"
-                      className="w-full border px-4 py-2 rounded-md"
+                    <select
                       value={level.conductorBy || ''}
                       onChange={(e) =>
                         handleInputChange(index, 'conductorBy', e.target.value)
                       }
-                    />
+                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    >
+                      <option value="">Select designation</option>
+                      <option value="CEO">CEO</option>
+                      <option value="HR">HR</option>
+                      <option value="Accountant">Accountant</option>
+                      <option value="BranchManager">Branch Manager</option>
+                      <option value="SubDealer">Sub Dealer</option>
+                      <option value="Technician">Technician</option>
+                      <option value="SalesMan">Sales Man</option>
+                      <option value="CallCenter">Call Center</option>
+                      <option value="Warehouse Manager">Warehouse Manager</option>
+                    </select>
                   </label>
                   <label>
                     <span>Conductor Place:</span>

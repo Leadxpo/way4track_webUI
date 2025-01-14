@@ -1,300 +1,239 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+
 const StaffDetails = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  // Check if data is available from the location state
   const employeeData = location.state?.staffDetails || {};
+  const [staffDetails, setStaffDetails] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize form data, using employeeData if available
-  const initialFormData = {
-    name: employeeData.name || '',
-    phoneNumber: employeeData.phoneNumber || '',
-    staffId: employeeData.staffId || '', // Will be ignored during creation
-    designation: employeeData.designation || '',
-    branch: employeeData.branchName || '', // Initialize branch with existing data
-    dob: employeeData.dob || '',
-    email: employeeData.email || '',
-    aadharNumber: employeeData.aadharNumber || '',
-    address: employeeData.address || '',
-    companyCode: initialAuthState.companyCode,
-    photo: employeeData?.photo || null,
-    unitCode: initialAuthState.unitCode,
-    joiningDate: employeeData.joiningDate,
-    attendance: employeeData.attendance,
-    basicSalary: employeeData.basicSalary,
-    beforeExperience: employeeData.beforeExperience,
-    password: employeeData.password
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
-  const [staffList, setStaffList] = useState([]);
-
+  // Fetch staff details when the component loads
   useEffect(() => {
-    // If employee data is present, update form data
-    if (employeeData) {
-      setFormData(employeeData);
-    }
-  }, [employeeData]);
+    const fetchStaffDetails = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffDetailsById', {
+          staffId: employeeData.staffId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const staff = response.data?.[0];
+          setStaffDetails({
+            name: staff.name,
+            phoneNumber: staff.phoneNumber,
+            address: staff.address,
+            email: staff.email,
+            staffPhoto: staff.staffPhoto,
+            dob: staff.dob,
+            aadharNumber: staff.aadharNumber,
+            joiningDate: staff.joiningDate,
+            basicSalary: staff.basicSalary,
+            branchName: staff.branchName,
+            designation: staff.designation,
+            staffId: staff.staffId,
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+          });
+        }
 
-  const handleSave = () => {
-    // Handle save action
-    navigate('/staff');
-  };
-
-  const fetchStaffList = async () => {
-    try {
-      const response = await ApiService.post('/dashboards/getStaffSearchDetails', {
-        staffId: employeeData?.staffId,
-        name: employeeData?.name,
-        branchName: employeeData?.branchName,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-      if (response.data.success) {
-        setStaffList(response.data.data);
-      } else {
-        alert(response.data.message || 'Failed to fetch branch list.');
       }
-    } catch (error) {
-      console.error('Error fetching branch list:', error);
-      alert('Failed to fetch branch list.');
-    }
-  };
+      catch (error) {
+        console.error('Error fetching staff details:', error);
+        alert('Failed to fetch staff details.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchStaffDetails();
+  }, [employeeData.staffId]);
+
+  // Fetch attendance details when a date is selected
   useEffect(() => {
-    fetchStaffList();
-  }, []);
-  const handleCancel = () => {
-    // Handle cancel action
-    navigate('/staff');
-  };
+    if (!selectedDate) return;
+
+    const fetchAttendanceData = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/staffAttendanceDetails', {
+          staffId: employeeData.staffId,
+          date: selectedDate,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          setAttendanceData(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching attendance details:', error);
+        alert('Failed to fetch attendance details.');
+      }
+    };
+
+    fetchAttendanceData();
+  }, [selectedDate, employeeData.staffId]);
+
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
-        {/* Photo Section */}
-        <div className="flex items-center space-x-2 mb-6">
-          <img
-            src={'https://i.pravatar.cc/150?img=5'}
-            alt="Employee"
-            className="w-24 h-24 rounded-full object-cover"
-          />
-        </div>
-
-        {/* Form Fields */}
-        <div className="space-y-4">
-          {/* Form field for Name */}
-          <div>
-            <p className="font-semibold mb-1">Name</p>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Enter Name"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Other fields follow the same pattern */}
-          {/* Number */}
-          <div>
-            <p className="font-semibold mb-1">Number</p>
-            <input
-              type="text"
-              name="number"
-              value={formData.number}
-              onChange={handleInputChange}
-              placeholder="Enter Number"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Staff ID */}
-          <div>
-            <p className="font-semibold mb-1">Staff ID</p>
-            <input
-              type="text"
-              name="staffId"
-              value={formData.staffId}
-              onChange={handleInputChange}
-              placeholder="Enter Staff ID"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Designation */}
-          <div>
-            <p className="font-semibold mb-1">Designation</p>
-            <input
-              type="text"
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              placeholder="Enter Designation"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Branch */}
-          <div>
-            <p className="font-semibold mb-1">Branch</p>
-            <select
-              name="branch"
-              value={formData.branch}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            >
-              <option value="" disabled>
-                Select a Branch
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
-          </div>
-
-          {/* Date of Birth */}
-          <div>
-            <p className="font-semibold mb-1">Date of Birth</p>
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Email */}
-          <div>
-            <p className="font-semibold mb-1">Email ID</p>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Enter Email ID"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Aadhar */}
-          <div>
-            <p className="font-semibold mb-1">Aadhar Number</p>
-            <input
-              type="text"
-              name="aadhar"
-              value={formData.aadhar}
-              onChange={handleInputChange}
-              placeholder="Enter Aadhar Number"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-          {/* Address */}
-          <div>
-            <p className="font-semibold mb-1">Address</p>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              placeholder="Enter Address"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none cursor-not-allowed"
-              disabled
-            />
-          </div>
-
-          <div className="flex w-full space-x-4">
-            {/* Date Picker */}
-            <div className="w-1/2">
-              <DatePicker
-                dateFormat="MM/yyyy"
-                showMonthYearPicker
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                popperClassName="z-10"
+        {isLoading ? (
+          <p className="text-center text-lg font-semibold">Loading staff details...</p>
+        ) : (
+          <>
+            {/* Photo Section */}
+            <div className="flex items-center space-x-2 mb-6">
+              <img
+                src={staffDetails.staffPhoto}
+                alt="Employee"
+                className="w-24 h-24 rounded-full object-cover"
               />
             </div>
 
-            {/* Search Button */}
-            <div className="w-3/4">
-              <button className="w-full bg-green-700 text-white px-6 py-2 rounded-md flex items-center justify-center space-x-2">
-                <span>Search</span>
-              </button>
-            </div>
-          </div>
+            {/* Staff Details */}
 
-          {/*attendance*/}
-          <div className="w-full overflow-auto border border-gray-300 rounded-md">
-            <div className=" p-4 text-center font-semibold text-lg border-b border-gray-300 min-w-full">
-              Monthly Attendance Summary For Month October 2024
+            <div className="space-y-4">
+              {/* Form field for Name */}
+              <div>
+                <p className="font-semibold mb-1">Name</p>
+                <p>{staffDetails.name}</p>
+              </div>
+              {/* Other fields follow the same pattern */}
+              {/* Number */}
+              <div>
+                <p className="font-semibold mb-1">Number</p>
+                <p>{staffDetails.phoneNumber}</p>
+              </div>
+              {/* Staff ID */}
+              <div>
+                <p className="font-semibold mb-1">Staff ID</p>
+                <p>{staffDetails.staffId}</p>
+              </div>
+              {/* Designation */}
+              <div>
+                <p className="font-semibold mb-1">Designation</p>
+                <p>{staffDetails.designation}</p>
+              </div>
+              {/* Branch */}
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
+                <p>{staffDetails.branchName}</p>
+              </div>
+
+              {/* Date of Birth */}
+              <div>
+                <p className="font-semibold mb-1">Date of Birth</p>
+                <p>{staffDetails.dob}</p>
+              </div>
+              {/* Email */}
+              <div>
+                <p className="font-semibold mb-1">Email ID</p>
+                <p>{staffDetails.email}</p>
+              </div>
+              {/* Aadhar */}
+              <div>
+                <p className="font-semibold mb-1">Aadhar Number</p>
+                <p>{staffDetails.aadhar}</p>
+              </div>
+              {/* Address */}
+              <div>
+                <p className="font-semibold mb-1">Address</p>
+                <p>{staffDetails.address}</p>
+              </div>
+
             </div>
-            <div className="table w-full border-collapse">
-              <div className="table-header-group bg-gray-100 border-b border-gray-300">
-                <div className="table-row border-b border-gray-300">
-                  <div className="table-cell p-2 border-r border-gray-300 text-center font-semibold">
-                    Day
-                  </div>
-                  {Array.from({ length: 30 }, (_, i) => (
-                    <div
-                      key={i}
-                      className="table-cell p-2 border-r border-gray-300 text-center font-semibold"
-                    >
-                      {i + 1}
+            {/* Date Picker */}
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold text-center mb-4">Select Date for Attendance</h2>
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                dateFormat="yyyy-MM-dd"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholderText="Select a date"
+              // disabled={!staffDetails.name} // Disable until staff details are loaded
+              />
+            </div>
+
+            {/* Attendance Table */}
+            {selectedDate && (
+              <div className="w-full overflow-auto border border-gray-300 rounded-md">
+                <div className="p-4 text-center font-semibold text-lg border-b border-gray-300 min-w-full">
+                  Monthly Attendance Summary For Month October 2024
+                </div>
+                <div className="table w-full border-collapse">
+                  <div className="table-header-group bg-gray-100 border-b border-gray-300">
+                    <div className="table-row border-b border-gray-300">
+                      <div className="table-cell p-2 border-r border-gray-300 text-center font-semibold">Day</div>
+                      {Array.from({ length: 30 }, (_, i) => (
+                        <div key={i} className="table-cell p-2 border-r border-gray-300 text-center font-semibold">
+                          {i + 1}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <div className="table-row-group">
+                    <div className="table-row-group">
+                      {/* In Time Row */}
+                      <div className="table-row border-b border-gray-300">
+                        <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">In</div>
+                        {Array.from({ length: 30 }, (_, i) => (
+                          <div key={i} className="table-cell p-1 border-r border-gray-300 text-center">
+                            {attendanceData?.length > 0 && attendanceData[i]?.inTime
+                              ? new Date(attendanceData[i].inTime).toLocaleTimeString() // format the time properly
+                              : 'No Data'}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Out Time Row */}
+                      <div className="table-row border-b border-gray-300">
+                        <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">Out</div>
+                        {Array.from({ length: 30 }, (_, i) => (
+                          <div key={i} className="table-cell p-1 border-r border-gray-300 text-center">
+                            {attendanceData?.length > 0 && attendanceData[i]?.outTime
+                              ? new Date(attendanceData[i].outTime).toLocaleTimeString() // format the time properly
+                              : 'No Data'}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Total Hours Row */}
+                      <div className="table-row border-b border-gray-300">
+                        <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">Total Hrs</div>
+                        {Array.from({ length: 30 }, (_, i) => (
+                          <div key={i} className="table-cell p-1 border-r border-gray-300 text-center">
+                            {attendanceData?.length > 0 && attendanceData[i]?.totalHours > 0
+                              ? attendanceData[i].totalHours
+                              : 'No Data'}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Status Row */}
+                      <div className="table-row border-b border-gray-300">
+                        <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">Status</div>
+                        {Array.from({ length: 30 }, (_, i) => (
+                          <div key={i} className="table-cell p-1 border-r border-gray-300 text-center">
+                            {attendanceData?.length > 0 && attendanceData[i]?.status
+                              ? attendanceData[i].status
+                              : 'Absent'}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
               </div>
-              <div className="table-row-group">
-                <div className="table-row border-b border-gray-300">
-                  <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                    In
-                  </div>
-                  {Array.from({ length: 30 }, () => (
-                    <div className="table-cell p-1 border-r border-gray-300"></div>
-                  ))}
-                </div>
-                <div className="table-row border-b border-gray-300">
-                  <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                    Out
-                  </div>
-                  {Array.from({ length: 30 }, () => (
-                    <div className="table-cell p-1 border-r border-gray-300"></div>
-                  ))}
-                </div>
-                <div className="table-row border-b border-gray-300">
-                  <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold whitespace-nowrap">
-                    Total Hrs
-                  </div>
-                  {Array.from({ length: 30 }, () => (
-                    <div className="table-cell p-1 border-r border-gray-300"></div>
-                  ))}
-                </div>
-                <div className="table-row border-b border-gray-300">
-                  <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                    Status
-                  </div>
-                  {Array.from({ length: 30 }, () => (
-                    <div className="table-cell p-1 border-r border-gray-300"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

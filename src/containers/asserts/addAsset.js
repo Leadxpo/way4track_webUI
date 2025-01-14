@@ -1,74 +1,128 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 import { FaFileCirclePlus } from 'react-icons/fa6';
-const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'EMI', 'Card'];
-const dropdownOptions = {
-  role: ['Manager', 'Accountant', 'Staff'],
-  amountGoingTo: ['Account A', 'Account B', 'Account C'],
-  bankFrom: ['Bank A', 'Bank B', 'Bank C'],
-  bankTo: ['Bank X', 'Bank Y', 'Bank Z'],
-};
-const paymentModeFields = {
-  Cash: [
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-  UPI: [
-    { name: 'upiId', label: 'UPI ID' },
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-  Bank: [
-    { name: 'bankName', label: 'Bank Name' },
-    { name: 'branch', label: 'Branch' },
-    { name: 'ifscNumber', label: 'IFSC Number' },
-    { name: 'accountNumber', label: 'Account Number' },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-  Cheque: [
-    { name: 'chequeNumber', label: 'Cheque Number' },
-    {
-      name: 'bank',
-      label: 'Bank',
-      type: 'dropdown',
-      options: dropdownOptions.bankFrom,
-    },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-  EMI: [
-    { name: 'incisionPayment', label: 'Incision Payment' },
-    { name: 'numberOfEmi', label: 'Number Of EMI' },
-    { name: 'emi', label: 'EMI' },
-    { name: 'startingMonth', label: 'Starting Month' },
-    { name: 'endingMonth', label: 'Ending Month' },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-  Card: [
-    { name: 'cardNumber', label: 'Card Number' },
-    { name: 'cardHaulNumber', label: 'Card Haul Number' },
-    { name: 'cashAmount', label: 'Amount' },
-    { name: 'price', label: 'Price' },
-    { name: 'addAsset', label: 'Add Asset Invoice', type: 'file' },
-  ],
-};
 const AddAsset = () => {
-  const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-  const handleInputChange = () => {};
-  const handleSave = () => {};
-  const handleCancel = () => {};
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const assetData = location.state?.assetsData || {};
+  const [voucherList, setVoucherList] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [image, setImage] = useState(assetData?.photo || '');
+
+  const initialFormData = {
+    id: assetData.id,
+    branchId: assetData.branchId || '',
+    assetType: assetData.assetType || '',
+    voucherId: assetData.voucherId || '',
+    branch: assetData.branchName || '',
+    description: initialAuthState.description || '',
+    companyCode: initialAuthState.companyCode,
+    photo: assetData?.photo || null,
+    unitCode: initialAuthState.unitCode,
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle file input (photo)
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setImage(URL.createObjectURL(selectedFile));
+      setFormData((prev) => ({
+        ...prev,
+        photo: selectedFile,
+      }));
+    }
+  };
+
+  // Fetch branch data from API
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+  useEffect(() => {
+    const fetchVoucher = async () => {
+      try {
+        const response = await ApiService.post(
+          '/voucher/getVoucherNamesDropDown'
+        );
+        if (response.status) {
+          setVoucherList(response.data);
+        } else {
+          console.error('Failed to fetch voucher');
+        }
+      } catch (error) {
+        console.error('Error fetching voucher:', error);
+      }
+    };
+
+    fetchVoucher();
+  }, []);
+
+  const handleSave = async () => {
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      // Do not include 'id' if it is null
+      if (key === 'id' && !value) return;
+  
+      if (key === 'photo' && value instanceof File) {
+        payload.append(key, value);
+      } else {
+        payload.append(key, value);
+      }
+    });
+  
+    try {
+      const endpoint = formData.id
+        ? '/asserts/update' // Use an update endpoint if 'id' exists
+        : '/asserts/create'; // Use a create endpoint if 'id' is null
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      if (response.data.status) {
+        alert(
+          formData.id
+            ? 'Asset updated successfully!'
+            : 'Asset added successfully!'
+        );
+        navigate('/add-assets');
+      } else {
+        alert('Failed to save asset details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving asset details:', error);
+      alert('Failed to save asset details. Please try again.');
+    }
+  };
+  
+
+  const handleCancel = () => {
+    navigate('/add-assets');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
@@ -79,152 +133,100 @@ const AddAsset = () => {
 
         {/* Photo Section */}
         <div className="flex items-center space-x-2 mb-6">
-          <div className="p-8 bg-gray-200 rounded-full">
-            <FaFileCirclePlus className="text-gray-800" size={30} />
-          </div>
-          <button className="ml-4 border p-2 rounded">Add Photo</button>
-          <button className="ml-2 text-red-500">Remove</button>
-        </div>
-
-        {/* Form Fields */}
-        <div className="space-y-4">
-          {/* Form field for Name */}
-          <div>
-            <p className="font-semibold mb-1">Asset Name</p>
-            <input
-              type="text"
-              name="name"
-              onChange={handleInputChange}
-              placeholder="Enter Name"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Vendor Number */}
-          <div>
-            <p className="font-semibold mb-1">Asset Amount</p>
-            <input
-              type="text"
-              name="amount"
-              onChange={handleInputChange}
-              placeholder="Enter Amount"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Staff ID */}
-          <div>
-            <p className="font-semibold mb-1">Asset Type</p>
-            <input
-              type="text"
-              name="type"
-              onChange={handleInputChange}
-              placeholder="Enter Asset Type"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Designation */}
-          <div>
-            <p className="font-semibold mb-1">Price</p>
-            <input
-              type="text"
-              name="price"
-              onChange={handleInputChange}
-              placeholder="Enter Price"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Branch */}
-          <div>
-            <p className="font-semibold mb-1">Quantity</p>
-            <input
-              type="text"
-              name="quantity"
-              onChange={handleInputChange}
-              placeholder="Enter Quantity"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          <div>
-            <p className="font-semibold mb-1">Branch</p>
-            <select
-              name="branch"
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          <img
+            src={image || 'https://i.pravatar.cc/150?img=5'}
+            alt="Employee"
+            className="w-24 h-24 rounded-full object-cover"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            name="file"
+            className="ml-4 border p-2 rounded"
+            onChange={handleFileChange}
+          />
+          {formData.file && (
+            <button
+              onClick={() => {
+                setFormData({ ...formData, file: null });
+                setImage('');
+              }}
+              className="ml-2 text-red-500"
             >
-              <option value="">Select Branch</option>
-              <option value="Vishakapatnam">Vishakapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
-          </div>
-          <div>
-            <p className="font-semibold mb-1">Description</p>
-            <input
-              type="text"
-              name="des"
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Email */}
-          <div>
-            <p className="font-semibold mb-1">Purchase Date</p>
-            <input
-              type="date"
-              name="date"
-              onChange={handleInputChange}
-              placeholder="select date"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          {/* Payment Mode Section */}
-
-          <h3 className="font-bold mb-2">Payment Mode</h3>
-
-          <div className="flex space-x-2 mb-4">
-            {PAYMENT_MODES.map((mode) => (
-              <button
-                key={mode}
-                className={`px-4 py-2 rounded ${selectedPaymentMode === mode ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                onClick={() => setSelectedPaymentMode(mode)}
-              >
-                {mode}
-              </button>
-            ))}
-          </div>
+              Remove
+            </button>
+          )}
         </div>
-        {/* Dynamic Payment Mode Fields */}
         <div>
-          {paymentModeFields[selectedPaymentMode]?.map((field) => (
-            <div key={field.name} className="mb-2">
-              <label className="block font-semibold">{field.label}</label>
-              {field.type === 'dropdown' ? (
+          <p className="font-semibold mb-1">Asset Type</p>
+          <select
+            name="assetType"
+            value={formData.assetType}
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          >
+            <option value="">Select assetType</option>
+            <option value="office asset">OFFICE_ASSET</option>
+            <option value="transport asset">TRANSPORT_ASSET</option>
+          </select>
+        </div>
+        <div>
+          {branches.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
                 <select
-                  name={field.name}
-                  value={''}
+                  name="branch"
+                  value={formData.branch}
                   onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
-                  <option value="">Select {field.label}</option>
-                  {field.options?.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  <option value="" disabled>
+                    Select a Branch
+                  </option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.branchName}>
+                      {branch.branchName}
                     </option>
                   ))}
                 </select>
-              ) : (
-                <input
-                  type={field.type || 'text'}
-                  name={field.name}
-                  value={''}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                />
-              )}
+              </div>
             </div>
-          ))}
+          )}
         </div>
-
+        <div>
+          {voucherList.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Voucher Id</p>
+                <select
+                  name="voucherId"
+                  value={formData.voucherId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Select a voucherId
+                  </option>
+                  {voucherList.map((branch) => (
+                    <option key={branch.voucherId} value={branch.voucherId}>
+                      {branch.voucherId}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="font-semibold mb-1">Description</p>
+          <input
+            type="text"
+            name="description"
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          />
+        </div>
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">
           <button
@@ -241,7 +243,7 @@ const AddAsset = () => {
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

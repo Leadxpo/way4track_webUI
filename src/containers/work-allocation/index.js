@@ -1,114 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import TableWithSearchFilter from '../tablesSearchFilter';
-import ApiService, { initialAuthState } from '../../services/ApiService';
-import { useNavigate } from 'react-router';
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const WorkAllocation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if there's workAllocation data passed through location.state
+  const workAllocationData = location.state?.workAllocationDetails || {};
+
+  // Initialize form data with existing workAllocation details if available
+  const initialFormData = {
+    id: workAllocationData.id || '',
+    // staffId: workAllocationData.name || '',
+    workAllocationId: workAllocationData.workAllocationId || '',
+    workAllocationNumber: workAllocationData.workAllocationNumber || '',
+    serviceOrProduct: workAllocationData.serviceOrProduct || '',
+    otherInformation: workAllocationData.otherInformation || '',
+    date: workAllocationData.date || '',
+    staffId: workAllocationData.assignedTo,
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
+    // clientName: workAllocationData?.clientName,
+    // clientId: workAllocationData?.clientId || null,
+    // phoneNumber: workAllocationData?.phoneNumber,
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedWorkAllocation, setSelectedWorkAllocation] = useState(null);
+  const [selectedWorkAllocation, setSelectedWorkAllocation] =
+    useState(initialFormData);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
-  const [clientNames, setClientNames] = useState([]); // For storing client names
-  const [clientNumber, setClientNumber] = useState(''); // For storing client number
-  const [selectedClient, setSelectedClient] = useState(null); // To keep track of the selected client
-  const [staffList, setStaffList] = useState([]); // For storing staff names
-  const [selectedStaff, setSelectedStaff] = useState(null); // To keep track of the selected staff
-  const [serviceOrProduct, setServiceOrProduct] = useState(''); // To store service/product value
-  const [otherInformation, setOtherInformation] = useState(''); // To store other information
-  const [date, setDate] = useState(''); // To store date value
-  const [address, setAddress] = useState(''); // To store address value
-  const navigate = useNavigate();
-  useEffect(() => {
-    // Fetch client names when component mounts
-    const fetchClientNames = async () => {
-      try {
-        const response = await ApiService.post(
-          '/client/getClientNamesDropDown',
-          {}
-        );
-        setClientNames(response.data); // Assuming API returns an array of client names
-      } catch (error) {
-        console.error('Error fetching client names:', error);
-      }
-    };
-    const fetchStaffNames = async () => {
-      try {
-        const response = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaffList(response.data || []);
-      } catch (error) {
-        console.error('Failed to fetch staff names:', error);
-      }
-    };
-
-    fetchClientNames();
-    fetchStaffNames();
-  }, []);
-
-  useEffect(() => {
-    setDate(
-      selectedWorkAllocation.date
-        ? selectedWorkAllocation.date.split('T')[0]
-        : ''
-    );
-    setSelectedStaff(selectedWorkAllocation.staffName);
-  }, [isEditMode, isMoreDetailsModalOpen]);
-
-  const handleClientChange = (event) => {
-    const selectedClientName = event.target.value;
-    setSelectedClient(selectedClientName);
-
-    // Assuming API returns the client number when provided the client name
-    const selectedClientInfo = clientNames.find(
-      (client) => client.name === selectedClientName
-    );
-    if (selectedClientInfo) {
-      setClientNumber(selectedClientInfo.id);
-    } else {
-      setClientNumber('');
-    }
-  };
-
-  const handleStaffChange = (event) => {
-    const selectedStaffId = event.target.value;
-    setSelectedStaff(selectedStaffId);
-  };
-
-  const handleServiceOrProductChange = (event) => {
-    setServiceOrProduct(event.target.value);
-  };
-
-  const handleOtherInformationChange = (event) => {
-    setOtherInformation(event.target.value);
-  };
-
-  const handleDateChange = (event) => {
-    setDate(event.target.value);
-  };
-
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value);
-  };
-
+  const [client, setClient] = useState([]);
+  const [staff, setStaff] = useState([]);
   const handleOpenModalForAdd = () => {
     setSelectedWorkAllocation(null);
     setIsEditMode(false);
     setIsModalOpen(true);
   };
+  // const handleDropdownChange = (e) => {
+  //   const selectedClientId = e.target.value;
+  //   const selectedClient = client.find(
+  //     (clientDetails) => String(clientDetails.clientId) === String(selectedClientId)
+  //   );
 
+  //   setSelectedWorkAllocation((prev) => ({
+  //     ...prev,
+  //     clientId: selectedClientId,
+  //     clientName: selectedClient?.name || '',
+  //     phoneNumber: selectedClient?.phoneNumber || '',
+  //   }));
+  // };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedWorkAllocation({ ...selectedWorkAllocation, [name]: value });
+  };
   const handleOpenModalForEdit = (voucher) => {
     setSelectedWorkAllocation(voucher);
     setIsEditMode(true);
     setIsModalOpen(true);
-
-    // Populate input fields with existing data
-    setSelectedClient(voucher.clientName);
-    setClientNumber(voucher.clientNumber);
-    setServiceOrProduct(voucher.serviceOrProduct);
-    setOtherInformation(voucher.otherInformation);
-    setDate(voucher.date);
-    setSelectedStaff(voucher.staffId);
-    setAddress(voucher.address);
   };
+  // Fetch client data
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const res = await ApiService.post('/client/getClientNamesDropDown');
+        setClient(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch client details:', err);
+        setClient([]); // Ensure state is always an array
+      }
+    };
+    fetchClients();
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -119,45 +84,50 @@ const WorkAllocation = () => {
     setSelectedWorkAllocation(voucher);
     setIsMoreDetailsModalOpen(true);
   };
-
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const res = await ApiService.post('/staff/getStaffNamesDropDown');
+        setStaff(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaff([]);
+      }
+    };
+    fetchStaff();
+  }, []);
   const handleCloseMoreDetailsModal = () => {
     setIsMoreDetailsModalOpen(false);
     setSelectedWorkAllocation(null);
   };
 
-  const handleSave = async () => {
-    const payload = {
-      id: isEditMode ? selectedWorkAllocation.id : '', // Only send id for edit
-      staffId: selectedStaff,
-      clientId: clientNumber,
-      serviceOrProduct,
-      otherInformation,
-      date,
-      companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode,
-      workAllocationNumber: isEditMode
-        ? selectedWorkAllocation.workAllocationNumber
-        : '', // Only send workAllocationNumber for edit
-    };
-
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const payload = { ...selectedWorkAllocation };
+    console.log(payload, '+++++++++++++++++++++++');
     try {
-      const response = await ApiService.post(
-        '/work-allocations/handleWorkAllocationDetails',
-        payload
-      );
-      if (response.status) {
-        alert('Work allocation saved successfully.');
-        setIsModalOpen(false);
-        navigate('/work_allocation', { replace: true });
+      const endpoint = selectedWorkAllocation.id
+        ? '/work-allocations/handleWorkAllocationDetails'
+        : '/work-allocations/handleWorkAllocationDetails';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.data.status) {
+        alert(
+          selectedWorkAllocation.id
+            ? 'workAllocation updated successfully!'
+            : 'workAllocation added successfully!'
+        );
+        navigate('/workAllocations');
       } else {
-        alert(response.data.message || 'Failed to save work allocation.');
+        alert('Failed to save employee details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving work allocation:', error);
-      alert('Failed to save work allocation.');
+      console.error('Error saving employee details:', error);
+      alert('Failed to save employee details. Please try again.');
     }
   };
-
   return (
     <div className="p-10">
       <div className="flex justify-between mb-4">
@@ -182,36 +152,54 @@ const WorkAllocation = () => {
             <h2 className="text-xl font-bold text-center mb-4">
               {isEditMode ? 'Edit Work Allocation' : 'Create Work Allocation'}
             </h2>
-            <form>
+            <form onSubmit={handleSave}>
               <div className="grid grid-cols-3 gap-4 mb-4">
-                <div>
+                {/* <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Client Name
                   </label>
-                  <select
-                    className="border p-2 rounded w-full focus:outline-none"
-                    value={selectedClient || ''}
-                    onChange={handleClientChange}
-                  >
-                    <option value="">Select Client</option>
-                    {clientNames.map((client, index) => (
-                      <option key={index} value={client.name}>
-                        {client.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
+                  {client.length > 0 && (
+                    <select
+                      name="clientId"
+                      value={selectedWorkAllocation.clientId || ''}
+                      onChange={handleDropdownChange}
+                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    >
+                      <option value="" disabled>Select Client</option>
+                      {client.map((clientItem) => (
+                        <option key={clientItem.clientId} value={clientItem.clientId}>
+                          {clientItem.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                </div> */}
+                {/* <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Client Number
                   </label>
-                  <input
-                    type="text"
-                    className="border p-2 rounded w-full focus:outline-none"
-                    value={clientNumber}
-                    readOnly
-                  />
-                </div>
+                  <select
+                    name="clientId"
+                    value={selectedWorkAllocation.clientId}
+                    onChange={handleDropdownChange}
+                    defaultValue={
+                      isEditMode && selectedWorkAllocation
+                        ? selectedWorkAllocation.clientId
+                        : ''
+                    }
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Select Client
+                    </option>
+                    {client.map((clientItem) => (
+                      <option key={clientItem.clientId} value={clientItem.clientId}>
+                        {clientItem.phoneNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div> */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Date
@@ -219,8 +207,12 @@ const WorkAllocation = () => {
                   <input
                     type="date"
                     className="border p-2 rounded w-full focus:outline-none"
-                    value={date}
-                    onChange={handleDateChange}
+                    defaultValue={
+                      isEditMode && selectedWorkAllocation
+                        ? selectedWorkAllocation.date
+                        : ''
+                    }
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div>
@@ -234,23 +226,33 @@ const WorkAllocation = () => {
                     onChange={handleServiceOrProductChange}
                   />
                 </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Allocated to
-                  </label>
-                  <select
-                    className="border p-2 rounded w-full focus:outline-none"
-                    value={selectedStaff || ''}
-                    onChange={handleStaffChange}
-                  >
-                    <option value="">Select Staff</option>
-                    {staffList.map((staff, index) => (
-                      <option key={index} value={staff.id}>
-                        {staff.name}
+                {/* Assign To */}
+                {staff.length > 0 && (
+                  <div className="flex flex-col">
+                    <label className="font-semibold mb-2">Assign To:</label>
+                    <select
+                      name="staffId"
+                      value={selectedWorkAllocation.staffId}
+                      onChange={handleInputChange}
+                      defaultValue={
+                        isEditMode && selectedWorkAllocation.staffId
+                      }
+                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Allocated to
                       </option>
-                    ))}
-                  </select>
-                </div>
+                      {staff.map((staffMember) => (
+                        <option
+                          key={staffMember.id}
+                          value={staffMember.staffId}
+                        >
+                          {staffMember.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Address
@@ -258,8 +260,12 @@ const WorkAllocation = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
-                    value={address}
-                    onChange={handleAddressChange}
+                    defaultValue={
+                      isEditMode && selectedWorkAllocation
+                        ? selectedWorkAllocation.address
+                        : ''
+                    }
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -269,13 +275,17 @@ const WorkAllocation = () => {
                 </label>
                 <textarea
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
-                  value={otherInformation}
-                  onChange={handleOtherInformationChange}
+                  defaultValue={
+                    isEditMode && selectedWorkAllocation
+                      ? selectedWorkAllocation.otherInformation
+                      : ''
+                  }
+                  onChange={handleInputChange}
                 />
               </div>
               <button
+                type="submit"
                 className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block"
-                onClick={handleSave}
               >
                 {isEditMode ? 'Save Changes' : 'Save'}
               </button>
@@ -298,12 +308,16 @@ const WorkAllocation = () => {
             </h2>
             <div>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
+                <strong>Work Allocation Number : </strong>{' '}
+                {selectedWorkAllocation.workAllocationNumber}
+              </p>
+              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Client Name : </strong>{' '}
                 {selectedWorkAllocation.clientName}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Client Number : </strong>{' '}
-                {selectedWorkAllocation.clientNumber}
+                {selectedWorkAllocation.phoneNumber}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Date : </strong> {selectedWorkAllocation.date}
@@ -314,7 +328,7 @@ const WorkAllocation = () => {
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Allocated to : </strong>{' '}
-                {selectedWorkAllocation.staffName}
+                {selectedWorkAllocation.assignedTo}
               </p>
               <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
                 <strong>Address : </strong> {selectedWorkAllocation.address}

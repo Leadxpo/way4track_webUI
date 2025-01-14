@@ -1,62 +1,29 @@
-import React, { useEffect, useState } from 'react';
 import ProfitsGraph from '../../components/ProfitsGraph';
 import TotalCountCard from '../../components/TotalCountCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
-import ticketsData from '../../mockData/mockTickets.json';
 import totalProducts from '../../mockData/mockTotalProducts.json';
 import totalExpenses from '../../mockData/mockExpenses.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { FaSearch } from 'react-icons/fa';
-import ApiService, { initialAuthState } from '../../services/ApiService';
-
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const Home = () => {
   const [tableData, setTableData] = useState(totalProducts);
   const [filteredData, setFilteredData] = useState(totalProducts);
-  const [tableColumns, setTableColumns] = useState(
-    Object.keys(totalProducts[0])
-  );
+  const [tableColumns, setTableColumns] = useState([]);
   const [selectedCard, setSelectedCard] = useState('Total Products');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [branchFilter, setBranchFilter] = useState('');
-  const [totalTicketDetails, setTotalTicketDetails] = useState({});
-  const [cardData, setCardData] = useState([
-    {
-      id: 1,
-      icon: <img src="products_box.png" />,
-      title: 'Total Products',
-      count: 120,
-      growth: '+55%',
-      bgColor: '#151515',
-    },
-    {
-      id: 2,
-      icon: <img src="ticket.png" />,
-      title: 'Total Tickets',
-      count: 75,
-      growth: '+40%',
-      bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
-    },
-    {
-      id: 3,
-      icon: <img src="expenses.png" />,
-      title: 'Expenses',
-      count: 5000,
-      growth: '+20%',
-      bgColor: '#CF0101',
-    },
-    {
-      id: 4,
-      icon: <img src="sale.png" />,
-      title: 'Total Purchases',
-      count: 80,
-      growth: '+30%',
-      bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
-    },
-  ]);
-  const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada'];
+  const [ticketDetails, setTicketDetails] = useState([]);
+  const location = useLocation();
+  const ticketData = location.state?.ticketsData || {};
+  const [branches, setBranches] = useState([]);
+  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
   const branch_details = [
     {
       branch_name: 'Vishakapatnam',
@@ -126,6 +93,41 @@ const Home = () => {
     },
   ];
 
+  const CardData = [
+    {
+      id: 1,
+      icon: <img src="products_box.png" />,
+      title: 'Total Products',
+      count: 120,
+      growth: '+55%',
+      bgColor: '#151515',
+    },
+    {
+      id: 2,
+      icon: <img src="ticket.png" />,
+      title: 'Total Tickets',
+      count: 75,
+      growth: '+40%',
+      bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
+    },
+    {
+      id: 3,
+      icon: <img src="expenses.png" />,
+      title: 'Expenses',
+      count: 5000,
+      growth: '+20%',
+      bgColor: '#CF0101',
+    },
+    {
+      id: 4,
+      icon: <img src="sale.png" />,
+      title: 'Total Purchases',
+      count: 80,
+      growth: '+30%',
+      bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
+    },
+  ];
+
   const columns = [
     'Ticket Number',
     'Purpose',
@@ -170,6 +172,40 @@ const Home = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchTicketDetails = async () => {
+      try {
+        const response = await ApiService.post(
+          '/tickets/getTicketDetailsById',
+          {
+            id: ticketData.id,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response.status) {
+          const staff = response.data?.[0];
+          setTicketDetails({
+            staffName: staff.staffName,
+            addressingDepartment: staff.addressingDepartment,
+            ticketNumber: staff.ticketNumber,
+            branchId: staff.branchId,
+            date: staff.date,
+            problem: staff.problem,
+            branchName: staff.branchName,
+            staffNumber: staff.staffNumber,
+            staffId: staff.staffId,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching staff details:', error);
+        alert('Failed to fetch staff details.');
+      }
+    };
+
+    fetchTicketDetails();
+  }, [ticketData.id]);
+
   const tableMockData = [
     {
       Name: 'John Doe',
@@ -202,15 +238,32 @@ const Home = () => {
       Department: 'Development',
     },
   ];
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
 
-  const handleCardClick = async (cardType) => {
+    fetchBranches();
+  }, []);
+  const handleCardClick = (cardType) => {
     let dataSource;
     switch (cardType) {
       case 'Total Products':
         dataSource = totalProducts;
         break;
       case 'Total Tickets':
-        dataSource = await fetchTicketsData();
+        dataSource = ticketDetails;
         break;
       case 'Expenses':
         dataSource = totalExpenses;
@@ -369,7 +422,7 @@ const Home = () => {
 
       {/* fourth section */}
       <div className="flex justify-between space-x-4 mt-12">
-        {cardData.map((card) => (
+        {CardData.map((card) => (
           <div onClick={() => handleCardClick(card.title)}>
             <TotalCountCard data={card} />
           </div>
@@ -409,9 +462,9 @@ const Home = () => {
                 className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
               >
                 <option value="">All Branches</option>
-                {branches.map((status, index) => (
-                  <option key={index} value={status}>
-                    {status}
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.branchName}>
+                    {branch.branchName}
                   </option>
                 ))}
               </select>
@@ -425,7 +478,7 @@ const Home = () => {
           </div>
         ) : null}
         <div className="mt-8">
-          <Table columns={tableColumns} data={filteredData} />
+          {/* <Table columns={tableColumns} data={ticketDetails} /> */}
         </div>
       </div>
       {/* sixth section - table */}

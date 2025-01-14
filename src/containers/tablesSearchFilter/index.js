@@ -4,13 +4,11 @@ import { FaSearch } from 'react-icons/fa';
 import vouchersData from '../../mockData/mockVouchers.json';
 import workAllocationData from '../../mockData/mockWorkAllocation.json';
 import ledgerData from '../../mockData/mockLedger.json';
-import ticketsData from '../../mockData/mockTickets.json';
 import hiringData from '../../mockData/mockHiring.json';
 import receiptsData from '../../mockData/mockReceipts.json';
 import totalExpenses from '../../mockData/mockExpenses.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { pageTitles } from '../../common/constants';
-import requestData from '../../mockData/mockRequests.json';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -42,17 +40,21 @@ const TableWithSearchFilter = ({
   const [branches, setBranches] = useState([]);
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
+  const ticketData = location.state?.ticketsData || {};
+  const hiringData = location.state?.hiringData || {};
 
-  // Fetch client details
   const getSearchDetailClient = useCallback(async () => {
     try {
-      const response = await ApiService.post('/client/getSearchDetailClient', {
-        clientId: clientData?.clientId,
-        branchName: clientData?.branchName,
-        name: clientData?.name,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getSearchDetailClient',
+        {
+          clientId: clientData?.clientId,
+          branchName: clientData?.branchName,
+          name: clientData?.name,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
@@ -65,67 +67,70 @@ const TableWithSearchFilter = ({
     }
   }, [clientData?.clientId, clientData?.branchName, clientData?.name]);
 
-  // Fetch ticket details
-  const getSearchDetailTickets = useCallback(async () => {
+  const getHiringSearchDetails = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/hiring/getHiringSearchDetails', {
+        hiringId: hiringData?.hiringId,
+        candidateName: hiringData?.candidateName,
+        status: hiringData?.status,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch client details.');
+      }
+    } catch (error) {
+      console.error('Error fetching client details:', error);
+      alert('Failed to fetch client details.');
+    }
+  }, [hiringData?.hiringId, hiringData?.candidateName, hiringData?.status]);
+
+  const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
       const response = await ApiService.post(
         '/dashboards/getTicketDetailsAgainstSearch',
         {
-          ticketId: searchID,
-          clientName: searchName,
+          ticketId: ticketData?.ticketId,
+          staffId: ticketData?.staffId,
+          branchName: ticketData?.branchName,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
       );
-
       if (response.status) {
-        setFilteredData(response.data); // Assuming the structure is as expected
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
       } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
+        alert(response.data.message || 'Failed to fetch vendor details.');
       }
     } catch (error) {
-      console.error('Error fetching ticket details:', error);
-      alert('Failed to fetch ticket details.');
+      console.error('Error fetching vendor details:', error);
+      alert('Failed to fetch vendor details.');
     }
-  }, [searchID, searchName]);
-
-  // Fetch work allocation details
-  const getSearchDetailWorkAllocation = useCallback(async () => {
-    try {
-      const response = await ApiService.post(
-        '/work-allocations/getWorkAllocation',
-        {
-          workAllocationNumber: searchID,
-          clientName: searchName,
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
-      );
-
-      if (response.status) {
-        setFilteredData(response.data); // Assuming the structure is as expected
-      } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
-      }
-    } catch (error) {
-      console.error('Error fetching ticket details:', error);
-      alert('Failed to fetch ticket details.');
-    }
-  }, [searchID, searchName]);
+  }, [ticketData?.ticketId, ticketData?.staffId, ticketData?.branchName]);
 
   useEffect(() => {
-    if (type === 'clients') {
-      getSearchDetailClient();
-    } else if (type === 'tickets') {
-      getSearchDetailTickets();
-    } else if (type === 'work-allocations') {
-      console.log(type);
-      getSearchDetailWorkAllocation();
+    switch (type) {
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
+      case 'hiring':
+        getHiringSearchDetails();
+        break;
+      case 'clients':
+        getSearchDetailClient();
+        break;
+      default:
+        return;
     }
   }, [type]);
 
   useEffect(() => {
-    let dataSource;
+    let dataSource = [];
     switch (type) {
       case 'vouchers':
         dataSource = vouchersData; // Example mock data, replace with actual API integration if needed
@@ -137,10 +142,10 @@ const TableWithSearchFilter = ({
         dataSource = ledgerData;
         break;
       case 'tickets':
-        dataSource = filteredData; // You might replace this with an API call if required
+        dataSource = filteredData;
         break;
       case 'hiring':
-        dataSource = hiringData;
+        dataSource = filteredData;
         break;
       case 'receipts':
         dataSource = receiptsData;
@@ -194,13 +199,17 @@ const TableWithSearchFilter = ({
     );
     setFilteredData(filtered);
   };
-
-  // Combined search handler for both clients and tickets
   const handleSearch = async () => {
-    if (type === 'tickets') {
-      await getSearchDetailTickets();
-    } else if (type === 'clients') {
-      await getSearchDetailClient();
+    switch (type) {
+      case 'clients':
+        await getSearchDetailClient();
+        break;
+      case 'hiring':
+        await getHiringSearchDetails();
+        break;
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
     }
   };
 
