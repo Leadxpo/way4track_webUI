@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import generatePDF from '../../common/commonUtils';
-
+import generatePDF, { PurchaseOrderPDF } from '../../common/commonUtils';
+import { MyPDF } from '../../common/commonUtils';
+import { EstimatePDF } from '../../components/EstimatePdf';
+import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
+import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 const AddEditEstimate = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,44 +59,52 @@ const AddEditEstimate = () => {
 
   const handleSaveAndSend = () => {
     console.log('Saving and sending estimate:', formData);
-    generatePDF({
-      quotationNumber: 'EST-000641',
-      invoiceDate: '15/11/2024',
-      placeOfSupply: 'Andhra Pradesh (37)',
-      billTo: {
-        name: 'VENKATA SAI KRISHNA STONE CRUSHER',
-        gstin: '37AAGFV7908J1ZM',
-      },
-      items: [
-        {
-          description: 'Bs Techotronics AIS40 DEVICE',
-          hsn: '85299090',
-          qty: 8,
-          rate: 6500,
-          cgstRate: 9,
-          cgstAmt: 3966.1,
-          sgstRate: 9,
-          sgstAmt: 3966.1,
-          amount: 52000,
-        },
-      ],
-      totalTaxableAmount: 44067.8,
-      cgstRate: 9,
-      cgstAmount: 3966.1,
-      sgstRate: 9,
-      sgstAmount: 3966.1,
-      totalAmount: 52000,
-      notes: 'Looking forward for your business.',
-      bankDetails: {
-        name: 'Sharon Telematics Pvt Ltd.',
-        accountNumber: '131905001314',
-        bankName: 'ICICI Bank',
-        branchName: 'BUTCHIRAJU PALAM',
-        ifsc: 'ICIC0001319',
-      },
-      signatureName: 'Suneel G',
-    });
+    // generatePDF({
+    //   quotationNumber: 'EST-000641',
+    //   invoiceDate: '15/11/2024',
+    //   placeOfSupply: 'Andhra Pradesh (37)',
+    //   billTo: {
+    //     name: 'VENKATA SAI KRISHNA STONE CRUSHER',
+    //     gstin: '37AAGFV7908J1ZM',
+    //   },
+    //   items: [
+    //     {
+    //       description: 'Bs Techotronics AIS40 DEVICE',
+    //       hsn: '85299090',
+    //       qty: 8,
+    //       rate: 6500,
+    //       cgstRate: 9,
+    //       cgstAmt: 3966.1,
+    //       sgstRate: 9,
+    //       sgstAmt: 3966.1,
+    //       amount: 52000,
+    //     },
+    //   ],
+    //   totalTaxableAmount: 44067.8,
+    //   cgstRate: 9,
+    //   cgstAmount: 3966.1,
+    //   sgstRate: 9,
+    //   sgstAmount: 3966.1,
+    //   totalAmount: 52000,
+    //   notes: 'Looking forward for your business.',
+    //   bankDetails: {
+    //     name: 'Sharon Telematics Pvt Ltd.',
+    //     accountNumber: '131905001314',
+    //     bankName: 'ICICI Bank',
+    //     branchName: 'BUTCHIRAJU PALAM',
+    //     ifsc: 'ICIC0001319',
+    //   },
+    //   signatureName: 'Suneel G',
+    // });
+
     navigate('/estimate');
+  };
+  const gridData = {
+    consigneeName: 'Nava Durga Stone Crusher',
+    gstin: '37ACFPN5800Q1Z5',
+    stateAddress: 'Andhra Pradesh',
+    stateCode: '37',
+    supplyPlace: 'Andhra Pradesh',
   };
 
   return (
@@ -279,13 +290,18 @@ const AddEditEstimate = () => {
 
           {/* Buttons */}
           <div className="flex space-x-4 justify-center">
-            <button
-              type="button"
-              onClick={handleSaveAndSend}
-              className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-orange-600"
+            <PDFViewer width="100%" height="600">
+              <TaxInvoicePDF data={gridData} />
+            </PDFViewer>
+            <PDFDownloadLink
+              document={<EstimatePDF data={gridData} />}
+              fileName="grid-layout.pdf"
+              className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600"
             >
-              Save & Send
-            </button>
+              {({ loading }) =>
+                loading ? 'Loading document...' : 'Download PDF'
+              }
+            </PDFDownloadLink>
             <button
               type="button"
               onClick={handleSave}

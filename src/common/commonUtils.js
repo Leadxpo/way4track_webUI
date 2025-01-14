@@ -1,116 +1,214 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import React from 'react';
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  PDFViewer,
+  Image,
+} from '@react-pdf/renderer';
 
-const generatePDF = (data) => {
-  const doc = new jsPDF('p', 'pt', 'a4'); // Portrait, points, A4 size
+// Styles for the PDF
 
-  // Document Styles
-  const margin = 40;
-  let startY = margin;
+const poStyles = StyleSheet.create({
+  titleBlock: {
+    alignItems: 'flex-end', // Align content to the right
+    marginBottom: 10,
+    paddingTop: 50,
+    paddingRight: 30,
+  },
+  mainTitle: {
+    fontSize: 30,
+    fontFamily: 'Helvetica',
+  },
+  poNumber: {
+    fontSize: 12,
+    fontFamily: 'Helvetica',
+  },
+  boldText: {
+    fontFamily: 'Helvetica-Bold',
+  },
+  companyDetailsBlock: {
+    marginTop: 20,
+    marginLeft: 40,
+  },
+  companyTextNormal: {
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    marginBottom: 1,
+  },
+  companyTextBold: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    marginBottom: 1,
+  },
+  textRightAlign: {
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    textAlign: 'right',
+    marginRight: 30,
+  },
+  textRightAlignBold: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    textAlign: 'right',
+    marginRight: 30,
+  },
+  tableBlock: {
+    marginTop: 20,
+    marginLeft: 40,
+    marginRight: 30,
+    borderBottom: '1px solid black',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#4A4A4A', // Dark gray background
+    padding: 10,
+  },
+  tableHeaderText: {
+    color: 'white',
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    flex: 1,
+    textAlign: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    backgroundColor: 'white', // White background for rows
+    padding: 10,
+  },
+  tableRowText: {
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    flex: 1,
+    textAlign: 'center',
+    color: 'black', // Black text for rows
+  },
+  serialNumberColumn: {
+    flex: 0.5, // Less width for the first column (serial number)
+  },
+  secondColumn: {
+    flex: 2, // More width for the second column
+  },
+  otherColumns: {
+    flex: 1, // Equal width for the other columns
+  },
+});
 
-  // Title
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Tax Invoice', margin, startY);
-  startY += 30;
+const mockRows = [
+  {
+    column1: '1',
+    column2: 'Product 1',
+    column3: '1234',
+    column4: '10',
+    column5: '1000',
+    cgstPercent: '9%',
+    cgstAmt: '90',
+    sgstPercent: '9%',
+    sgstAmt: '90',
+    column6: '10000',
+  },
+];
 
-  // Header Section
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('SHARON TELEMATICS PRIVATE LIMITED VIZAG', margin, startY);
-  doc.text(
-    '21-27 Viman Nagar, Near Airport Road, Visakhapatnam',
-    margin,
-    startY + 15
-  );
-  doc.text('GSTIN/UIN: 37ABACS4415R1ZV', margin, startY + 30);
-  doc.text('State Name: Andhra Pradesh, Code: 37', margin, startY + 45);
-  doc.text(
-    'E-Mail: varshini.saragadam@sharontelematics.com',
-    margin,
-    startY + 60
-  );
+export const PurchaseOrderPDF = ({ data }) => (
+  <Document>
+    <Page>
+      <View style={poStyles.titleBlock}>
+        <Text style={poStyles.mainTitle}>PURCHASE ORDER</Text>
+        <Text style={poStyles.poNumber}># PO-0014</Text>
+      </View>
 
-  // Invoice Details Table
-  doc.autoTable({
-    startY: startY + 70,
-    theme: 'grid',
-    head: [['Invoice No.', '96', 'Dated', '2-Oct-24']],
-    body: [
-      ['Delivery Note', '', 'Mode/Terms of Payment', ''],
-      ['Reference No. & Date', '', 'Other References', ''],
-      ['Buyer’s Order No.', '', 'Dated', ''],
-      ['Dispatch Doc No.', '', 'Delivery Note Date', ''],
-      ['Dispatched through', '', 'Destination', ''],
-      ['Terms of Delivery', '', '', ''],
-    ],
-    styles: { fontSize: 9, cellPadding: 5 },
-    columnStyles: { 0: { fontStyle: 'bold' }, 2: { fontStyle: 'bold' } },
-    margin: { top: startY + 70, left: margin, right: margin },
-  });
+      <View>
+        <Image src="/logo-big-bt.png" style={{ width: 250, marginLeft: 30 }} />
+      </View>
 
-  // Buyer and Consignee Details
-  let finalY = doc.lastAutoTable.finalY + 10;
-  doc.setFont('helvetica', 'bold');
-  doc.text('Consignee (Ship to)', margin, finalY);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Navadurga Stone Crusher', margin, finalY + 15);
-  doc.text('GSTIN/UIN: 37ACFPN5800Q1Z5', margin, finalY + 30);
-  doc.text('State Name: Andhra Pradesh, Code: 37', margin, finalY + 45);
+      <View style={poStyles.companyDetailsBlock}>
+        <Text style={poStyles.companyTextBold}>
+          SHARON TELEMATICS PRIVATE LIMITED
+        </Text>
+        <Text style={poStyles.companyTextNormal}>
+          Company ID : U74999AP2018PTC108597
+        </Text>
+        <Text style={poStyles.companyTextNormal}>21-27 Viman Nagar</Text>
+        <Text style={poStyles.companyTextNormal}>Near Airport Road</Text>
+        <Text style={poStyles.companyTextNormal}>
+          Visakhapatnam Andhra Pradesh 530009
+        </Text>
+        <Text style={poStyles.companyTextNormal}>India</Text>
+        <Text style={poStyles.companyTextNormal}>GSTIN 37ABACS4415R1ZV</Text>
+      </View>
 
-  doc.setFont('helvetica', 'bold');
-  doc.text('Buyer (Bill to)', margin + 300, finalY);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Navadurga Stone Crusher', margin + 300, finalY + 15);
-  doc.text('GSTIN/UIN: 37ACFPN5800Q1Z5', margin + 300, finalY + 30);
-  doc.text('State Name: Andhra Pradesh, Code: 37', margin + 300, finalY + 45);
+      <View style={poStyles.companyDetailsBlock}>
+        <Text style={poStyles.companyTextNormal}>Vendor Address</Text>
+        <Text style={poStyles.companyTextBold}>IKON ENGINEERING CO</Text>
+        <Text style={poStyles.companyTextNormal}>21-27 Viman Nagar</Text>
+        <Text style={poStyles.companyTextNormal}>Near Airport Road</Text>
+        <Text style={poStyles.companyTextNormal}>
+          Visakhapatnam Andhra Pradesh 530009
+        </Text>
+        <Text style={poStyles.companyTextNormal}>India</Text>
+        <Text style={poStyles.companyTextNormal}>GSTIN 37ABACS4415R1ZV</Text>
+      </View>
 
-  // Item Details Table
-  finalY += 70;
-  doc.autoTable({
-    startY: finalY,
-    theme: 'grid',
-    head: [
-      [
-        'Sl No.',
-        'Description of Goods',
-        'HSN/SAC',
-        'Quantity',
-        'Rate',
-        'per',
-        'Amount',
-      ],
-    ],
-    body: [
-      [
-        '1',
-        'AIS140 APSAC MINING GPS DEVICE',
-        '85269190',
-        '10 no',
-        '6,101.69',
-        'no',
-        '61,016.94',
-      ],
-      ['', 'CGST', '', '', '', '', '5,491.52'],
-      ['', 'SGST', '', '', '', '', '5,491.52'],
-      ['', 'Rounding Off', '', '', '', '', '0.02'],
-    ],
-    styles: { fontSize: 9, cellPadding: 5 },
-    columnStyles: { 1: { fontStyle: 'bold' }, 6: { fontStyle: 'bold' } },
-    margin: { left: margin, right: margin },
-  });
+      <View style={poStyles.companyDetailsBlock}>
+        <Text style={poStyles.companyTextNormal}>Delivery To</Text>
+        <Text style={poStyles.companyTextBold}>Sunil G</Text>
+        <Text style={poStyles.companyTextNormal}>
+          Company ID : U74999AP2018PTC108597
+        </Text>
+        <Text style={poStyles.companyTextNormal}>21-27 Viman Nagar</Text>
+        <Text style={poStyles.companyTextNormal}>Near Airport Road</Text>
+        <Text style={poStyles.companyTextNormal}>
+          Visakhapatnam Andhra Pradesh 530009
+        </Text>
+        <Text style={poStyles.companyTextNormal}>India</Text>
+        <Text style={poStyles.companyTextNormal}>GSTIN 37ABACS4415R1ZV</Text>
+        <Text style={poStyles.textRightAlign}>Date : 28/10/2024</Text>
+      </View>
 
-  // Footer
-  finalY = doc.lastAutoTable.finalY + 30;
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(10);
-  doc.text('This is a Computer Generated Invoice', margin, finalY);
+      <View style={poStyles.tableBlock}>
+        {/* Table Header */}
+        <View style={poStyles.tableHeader}>
+          <Text style={[poStyles.tableHeaderText, poStyles.serialNumberColumn]}>
+            #
+          </Text>
+          <Text style={[poStyles.tableHeaderText, poStyles.secondColumn]}>
+            Item & Description
+          </Text>
+          <Text style={poStyles.tableHeaderText}>HSN/SAC</Text>
+          <Text style={poStyles.tableHeaderText}>Qty</Text>
+          <Text style={poStyles.tableHeaderText}>Rate</Text>
+          <Text style={poStyles.tableHeaderText}>Amount</Text>
+        </View>
 
-  // Save PDF
-  doc.save('Tax_Invoice.pdf');
-};
+        {/* Table Rows */}
+        {mockRows.map((row, index) => (
+          <View style={poStyles.tableRow} key={index}>
+            <Text style={poStyles.tableRowText}>{row.column1}</Text>
+            <Text style={poStyles.tableRowText}>{row.column2}</Text>
+            <Text style={poStyles.tableRowText}>{row.column3}</Text>
+            <Text style={poStyles.tableRowText}>{row.column4}</Text>
+            <Text style={poStyles.tableRowText}>{row.column5}</Text>
+            <Text style={poStyles.tableRowText}>{row.column6}</Text>
+          </View>
+        ))}
+      </View>
 
-export default generatePDF;
+      <View style={poStyles.companyDetailsBlock}>
+        <Text style={poStyles.textRightAlign}>Sub Total : 25,000.00</Text>
+        <Text style={{ marginTop: '10px', ...poStyles.textRightAlignBold }}>
+          Total : 25,000.00
+        </Text>
+      </View>
+      <View style={poStyles.companyDetailsBlock}>
+        <Text style={poStyles.companyTextNormal}>
+          Authorized Signature : ____________________________________
+        </Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 export function formatString(input) {
   // Convert camelCase to space-separated words
