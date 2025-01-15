@@ -20,9 +20,10 @@ const BranchDetails = () => {
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
-          const branch = response.data?.[0];
+          const branch = response.data;
           setBranchDetails({
             branchName: branch.branchName,
+            branchNumber: branch.branchNumber,
             address: branch.address,
             email: branch.email,
             branchPhoto: branch.branchPhoto,
@@ -58,10 +59,10 @@ const BranchDetails = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <strong>Branch Name:</strong>
-          <p>{branchDetails.name}</p>
+          <p>{branchDetails.branchName}</p>
         </div>
         <div>
-          <strong>Branch Number:</strong> <p>{branchDetails.phoneNumber}</p>
+          <strong>Branch Number:</strong> <p>{branchDetails.branchNumber}</p>
         </div>
         <div>
           <strong>Branch Opening:</strong>

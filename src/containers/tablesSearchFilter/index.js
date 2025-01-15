@@ -4,21 +4,20 @@ import { FaSearch } from 'react-icons/fa';
 import vouchersData from '../../mockData/mockVouchers.json';
 import workAllocationData from '../../mockData/mockWorkAllocation.json';
 import ledgerData from '../../mockData/mockLedger.json';
-import ticketsData from '../../mockData/mockTickets.json';
 import hiringData from '../../mockData/mockHiring.json';
 import receiptsData from '../../mockData/mockReceipts.json';
 import totalExpenses from '../../mockData/mockExpenses.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { pageTitles } from '../../common/constants';
-import requestData from '../../mockData/mockRequests.json';
-import { initialAuthState } from '../../services/ApiService'
+import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { get } from 'react-hook-form';
+
 const TableWithSearchFilter = ({
   type,
   onCreateNew,
   onEdit,
-  // onDelete,
   onDetails,
   showCreateBtn = true,
   showStatusFilter = false,
@@ -41,18 +40,23 @@ const TableWithSearchFilter = ({
   const [branches, setBranches] = useState([]);
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
+  const ticketData = location.state?.ticketsData || {};
+  const hiringData = location.state?.hiringData || {};
+
   const getSearchDetailClient = useCallback(async () => {
     try {
-      const response = await ApiService.post('/client/getSearchDetailClient', {
-        clientId: clientData?.clientId,
-        branchName: clientData?.branchName,
-        name: clientData?.name,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getSearchDetailClient',
+        {
+          clientId: clientData?.clientId,
+          branchName: clientData?.branchName,
+          name: clientData?.name,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
       if (response.status) {
-        console.log(response.data, "Response Data");  // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -61,29 +65,87 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [clientData?.staffId, clientData?.branchName, clientData?.name]);
+  }, [clientData?.clientId, clientData?.branchName, clientData?.name]);
+
+  const getHiringSearchDetails = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/hiring/getHiringSearchDetails', {
+        hiringId: hiringData?.hiringId,
+        candidateName: hiringData?.candidateName,
+        status: hiringData?.status,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch client details.');
+      }
+    } catch (error) {
+      console.error('Error fetching client details:', error);
+      alert('Failed to fetch client details.');
+    }
+  }, [hiringData?.hiringId, hiringData?.candidateName, hiringData?.status]);
+
+  const getTicketDetailsAgainstSearch = useCallback(async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getTicketDetailsAgainstSearch',
+        {
+          ticketId: ticketData?.ticketId,
+          staffId: ticketData?.staffId,
+          branchName: ticketData?.branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch vendor details.');
+      }
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+      alert('Failed to fetch vendor details.');
+    }
+  }, [ticketData?.ticketId, ticketData?.staffId, ticketData?.branchName]);
 
   useEffect(() => {
-    getSearchDetailClient();
-  }, []);
+    switch (type) {
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
+      case 'hiring':
+        getHiringSearchDetails();
+        break;
+      case 'clients':
+        getSearchDetailClient();
+        break;
+      default:
+        return;
+    }
+  }, [type]);
 
   useEffect(() => {
-    let dataSource;
+    let dataSource = [];
     switch (type) {
       case 'vouchers':
-        dataSource = vouchersData;
+        dataSource = vouchersData; // Example mock data, replace with actual API integration if needed
         break;
-      case 'work allocation':
-        dataSource = workAllocationData;
+      case 'work-allocations':
+        dataSource = filteredData;
         break;
       case 'ledger':
         dataSource = ledgerData;
         break;
       case 'tickets':
-        dataSource = ticketsData;
+        dataSource = filteredData;
         break;
       case 'hiring':
-        dataSource = hiringData;
+        dataSource = filteredData;
         break;
       case 'receipts':
         dataSource = receiptsData;
@@ -107,12 +169,14 @@ const TableWithSearchFilter = ({
 
     const uniqueStatuses = [...new Set(dataSource.map((item) => item.Status))];
     setStatuses(uniqueStatuses);
-  }, [type]);
+  }, [type, filteredData]);
 
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (response.status) {
           setBranches(response.data); // Set branches to state
         } else {
@@ -135,22 +199,19 @@ const TableWithSearchFilter = ({
     );
     setFilteredData(filtered);
   };
-
-  // const handleSearch = () => {
-  //   const filtered = data.filter((item) => {
-  //     const matchesID =
-  //       searchID === '' || item['ID'].toString().includes(searchID);
-  //     const matchesName =
-  //       searchName === '' ||
-  //       item['Name'].toLowerCase().includes(searchName.toLowerCase());
-  //     return matchesID && matchesName;
-  //   });
-  //   setFilteredData(filtered);
-  // };
   const handleSearch = async () => {
-    await getSearchDetailClient();
+    switch (type) {
+      case 'clients':
+        await getSearchDetailClient();
+        break;
+      case 'hiring':
+        await getHiringSearchDetails();
+        break;
+      case 'tickets':
+        getTicketDetailsAgainstSearch();
+        break;
+    }
   };
-
 
   const handleCreateNew = () => {
     switch (type) {
@@ -163,6 +224,8 @@ const TableWithSearchFilter = ({
       case 'tickets':
         onCreateNew();
         break;
+      default:
+        break;
     }
   };
 
@@ -174,8 +237,11 @@ const TableWithSearchFilter = ({
       case 'hiring':
         navigate('/delete-hiring');
         break;
+      default:
+        break;
     }
   };
+
   return (
     <div className="p-10">
       <p className="font-bold text-xl">{pageTitle}</p>
@@ -191,12 +257,16 @@ const TableWithSearchFilter = ({
         )}
       </div>
       <div className="flex mb-4">
-        {/* Search by Client ID */}
+        {/* Search by Client ID or Ticket ID */}
         <div className="flex-grow mr-2">
           <input
             type="text"
             value={searchID}
-            placeholder="Search with Client ID"
+            placeholder={
+              type === 'tickets'
+                ? 'Search with Ticket ID'
+                : 'Search with Client ID'
+            }
             onChange={(e) => setSearchID(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             style={{ paddingLeft: '8px' }}
@@ -207,7 +277,11 @@ const TableWithSearchFilter = ({
           <input
             type="text"
             value={searchName}
-            placeholder="Search with Name"
+            placeholder={
+              type === 'tickets'
+                ? 'Search with Client Name'
+                : 'Search with Name'
+            }
             onChange={(e) => setSearchName(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             style={{ paddingLeft: '8px' }}
@@ -233,7 +307,9 @@ const TableWithSearchFilter = ({
               onChange={handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
-              <option value="" disabled>Select a Branch</option>
+              <option value="" disabled>
+                Select a Branch
+              </option>
               {branches.map((branch) => (
                 <option key={branch.id} value={branch.branchName}>
                   {branch.branchName}
@@ -257,12 +333,12 @@ const TableWithSearchFilter = ({
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
-          showEdit={showEdit} // Hide Edit button
-          showDelete={showDelete} // Show Delete button
-          showDetails={showDetails} // Show Details button
-          editText={editText} // Custom edit button text
-          deleteText={deleteText} // Custom delete button text
-          detailsText={detailsText} // Custom details button text
+          showEdit={showEdit}
+          showDelete={showDelete}
+          showDetails={showDetails}
+          editText={editText}
+          deleteText={deleteText}
+          detailsText={detailsText}
         />
       </div>
     </div>

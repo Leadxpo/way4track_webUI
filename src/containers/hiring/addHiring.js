@@ -60,44 +60,6 @@ const AddHiring = () => {
       }));
     }
   };
-
-  // Handle Form Submission
-  // const handleSubmit = async () => {
-  //   const payload = {
-  //     hiringLevel: formData.hiringLevel,
-  //     candidateName: formData.candidateName,
-  //     phoneNumber: formData.phoneNumber,
-  //     email: formData.email,
-  //     address: formData.address,
-  //     qualifications: qualifications.map((q) => ({
-  //       qualificationName: q.name,
-  //       marks: q.marks,
-  //       yearOfPass: q.year,
-  //     })),
-  //     file: formData.file,
-  //     dateOfUpload: formData.dateOfUpload,
-  //     status: formData.status,
-  //   };
-
-  //   try {
-
-  //     const endpoint = formData.id
-  //       ? `/hiring/saveHiringDetailsWithResume` // Edit branch
-  //       : `/hiring/saveHiringDetailsWithResume`; // Add branch (same endpoint)
-  //     const response = await ApiService.post(endpoint, payload, {
-  //       headers: { 'Content-Type': 'multipart/form-data' },
-  //     });
-  //     if (response.data.status) {
-  //       alert(formData.id ? 'Hiring updated successfully!' : 'Hiring added successfully!');
-  //       navigate('/hiring');
-  //     } else {
-  //       alert('Failed to save branch details. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error saving hiring details:', error);
-  //     alert('Failed to save hiring details. Please try again.');
-  //   }
-  // };
   const handleSubmit = async () => {
     const payload = new FormData();
     payload.append('hiringLevel', formData.hiringLevel);

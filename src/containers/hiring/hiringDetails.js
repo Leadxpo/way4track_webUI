@@ -1,27 +1,50 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const HiringDetails = () => {
   // Static candidate data
-  const candidate = {
-    name: 'Sai Kumar',
-    email: 'way4teack@gmail.com',
-    phone: '+91 45645 64556',
-    level: 2,
-    levels: [
-      {
-        type: 'Technical',
-        dateOfConductor: '2023-12-10',
-        conductorBy: 'HR',
-        conductorPlace: 'Hyderabad',
-        result: 'Pass',
-        review: 'Good performance',
-      },
-      {},
-      {},
-      {},
-    ],
-  };
+  const location = useLocation();
+  const HiringDetail = location.state?.HiringDetails || {};
+  const [candidate, setCandidate] = useState({});
 
+  
+  useEffect(() => {
+    const fetchClientDetails = async () => {
+      try {
+        const response = await ApiService.post('/hiring/getHiringDetails', {
+          id: HiringDetail.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          const hiring = response.data?.[0];
+          setCandidate({
+            ...hiring,
+            candidateName: hiring.candidateName,
+            phoneNumber: hiring.phoneNumber,
+            email: hiring.email,
+            qualifications: hiring.qualifications,
+            levelWiseData: hiring.levelWiseData,
+            address: hiring.address,
+            status: hiring.status,
+            dateOfUpload: hiring.dateOfUpload,
+            resumePath: hiring.resumePath,
+            hiringLevel: hiring.hiringLevel,
+
+          });
+        } else {
+          setCandidate({})
+        }
+
+      } catch (error) {
+        console.error('Error fetching branch details:', error);
+        alert('Failed to fetch branch details.');
+      }
+    };
+    fetchClientDetails();
+
+  }, [HiringDetail.id]);
   const [levels, setLevels] = useState(candidate.levels);
   const [expandedLevels, setExpandedLevels] = useState([
     true,
@@ -48,10 +71,12 @@ const HiringDetails = () => {
             className="w-24 h-24 rounded-full object-cover"
           />
           <div>
-            <h2 className="text-xl font-semibold">{candidate.name}</h2>
+            <h2 className="text-xl font-semibold">{candidate.candidateName}</h2>
             <p>Email: {candidate.email}</p>
-            <p>Phone Number: {candidate.phone}</p>
-            <p>Level: {candidate.level}</p>
+            <p>Phone Number: {candidate.phoneNumber}</p>
+            <p>Level: {candidate.hiringLevel}</p>
+            <p>Address: {candidate.address}</p>
+
           </div>
         </div>
 
@@ -61,11 +86,10 @@ const HiringDetails = () => {
           {levels.map((level, index) => (
             <div key={index} className="bg-white rounded-md shadow mb-4">
               <div
-                className={`flex items-center justify-between p-4 cursor-pointer ${
-                  expandedLevels[index]
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-200'
-                }`}
+                className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index]
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-200'
+                  }`}
                 onClick={() => toggleLevel(index)}
               >
                 <h3 className="font-semibold">Level {index + 1}</h3>

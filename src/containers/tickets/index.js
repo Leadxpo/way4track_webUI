@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService'; // Adjust the import based on your structure
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { initialAuthState } from '../../services/ApiService';
+import { useNavigate, useLocation } from 'react-router-dom';
 const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [formData, setFormData] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [staffList, setStaffList] = useState([]); // Store fetched staff names
@@ -13,8 +15,10 @@ const Tickets = () => {
   const [selectedStaffNumber, setSelectedStaffNumber] = useState(''); // Staff number
   const [selectedBranch, setSelectedBranch] = useState(''); // Selected branch
   const [date, setDate] = useState(''); // Date state
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Fetch staff names when modal opens
+  const tickettData = location.state?.tickettDetails || {};
   useEffect(() => {
     if (isModalOpen) {
       fetchStaffNames();
@@ -28,6 +32,10 @@ const Tickets = () => {
     }
   }, [isEditMode, selectedTicket]);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
   const fetchStaffNames = async () => {
     try {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
@@ -103,24 +111,38 @@ const Tickets = () => {
 
   const handleSaveTicket = async () => {
     const payload = {
+      id: tickettData.id,
       staffId: selectedStaffId,
-      problem: document.querySelector('[name="problem"]').value, // Use the input value
-      date: date, // Use the date from state
+      date: date,
+      // date: tickettData.date,
       branchId: selectedBranch,
-      addressingDepartment: 'SomeDepartment', // Replace with actual addressing department logic
+      problem: document.querySelector('[name="problem"]').value,
+      addressingDepartment: tickettData.addressingDepartment || '',
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
 
     try {
-      const response = await ApiService.post(
-        '/tickets/handleTicketDetails',
-        payload
-      );
-      console.log('Ticket saved successfully', response);
-      handleCloseModal(); // Close the modal after saving
+      const endpoint = formData.id
+        ? '/tickets/handleTicketDetails'
+        : '/tickets/handleTicketDetails';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (response.data.status) {
+        alert(
+          formData.id
+            ? 'Ticket updated successfully!'
+            : 'Ticket saved successfully!'
+        );
+        navigate('/vendors');
+      } else {
+        alert('Failed to save employee details. Please try again.');
+      }
+      handleCloseModal();
     } catch (error) {
       console.error('Error saving ticket', error);
+      alert('Failed to save employee details. Please try again.');
     }
   };
 
@@ -184,6 +206,7 @@ const Tickets = () => {
                     type="date"
                     value={date}
                     onChange={handleDateChange}
+                    // onChange={handleInputChange}
                     className="border p-2 rounded w-full focus:outline-none"
                   />
                 </div>
@@ -195,6 +218,7 @@ const Tickets = () => {
                   <input
                     type="text"
                     name="problem"
+                    onChange={handleInputChange}
                     className="border p-2 rounded w-full focus:outline-none"
                     defaultValue={
                       isEditMode && selectedTicket ? selectedTicket.problem : ''
@@ -227,10 +251,31 @@ const Tickets = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
+                    onChange={handleInputChange}
                     defaultValue={
                       isEditMode && selectedTicket ? selectedTicket.address : ''
                     }
                   />
+                </div>
+                <div>
+                  <p className="font-semibold mb-1">Addressing Department</p>
+                  <select
+                    name="addressingDepartment"
+                    value={formData.addressingDepartment}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="">Select addressingDepartment</option>
+                    <option value="CEO">CEO</option>
+                    <option value="HR">HR</option>
+                    <option value="Accountant">Accountant</option>
+                    <option value="BranchManager">Branch Manager</option>
+                    <option value="SubDealer">Sub Dealer</option>
+                    <option value="Technician">Technician</option>
+                    <option value="SalesMan">Sales Man</option>
+                    <option value="CallCenter">Call Center</option>
+                    <option value="Warehouse Manager">Warehouse Manager</option>
+                  </select>
                 </div>
               </div>
               {/* Problems */}
@@ -240,6 +285,7 @@ const Tickets = () => {
                 </label>
                 <textarea
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
+                  onChange={handleInputChange}
                   defaultValue={
                     isEditMode && selectedTicket
                       ? selectedTicket.otherInformation

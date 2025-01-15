@@ -32,7 +32,6 @@ const Staff = () => {
       );
 
       if (response.status) {
-        console.log(response.data, '{{{{{{{{{{{{');
         setProfiles(response.data || []);
       } else {
         alert(

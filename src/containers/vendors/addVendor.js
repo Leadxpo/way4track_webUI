@@ -7,10 +7,8 @@ const AddEditVendor = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if there's vendor data passed through location.state
   const vendorData = location.state?.vendorDetails || {};
 
-  // Initialize form data with existing vendor details if available
   const initialFormData = {
     name: vendorData.name || '',
     vendorPhoneNumber: vendorData.vendorPhoneNumber || '',
@@ -27,42 +25,11 @@ const AddEditVendor = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(vendorData?.photo || '');
-  // useEffect(() => {
-  //   console.log(vendorData);
-  //   if (vendorData) {
-  //     setFormData(vendorData);
-  //   }
-  // }, [vendorData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-
-  useEffect(() => {
-    if (vendorData?.id || vendorData?.vendorId) {
-      const fetchClientDetails = async () => {
-        try {
-          const response = await ApiService.post('/vendor/getVendorDetails', {
-            vendorId: vendorData.vendorId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          });
-          const vendor = response.data?.[0];
-          setFormData((prev) => ({
-            ...prev,
-            ...vendor,
-          }));
-          setImage(vendor?.photo || '');
-        } catch (error) {
-          console.error('Error fetching branch details:', error);
-          alert('Failed to fetch branch details.');
-        }
-      };
-      fetchClientDetails();
-    }
-  }, [vendorData]);
 
   const handleSave = async () => {
 
@@ -74,7 +41,6 @@ const AddEditVendor = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, formData, "+++++++++++++++++++++++++")
     try {
       const endpoint = formData.id ? '/vendor/handleVendorDetails' : '/vendor/handleVendorDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -115,7 +81,7 @@ const AddEditVendor = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {vendorData.vendorName ? 'Edit Vendor' : 'Add Vendor'}
+            {vendorData.id ? 'Edit Vendor' : 'Add Vendor'}
           </h1>
         </div>
 
@@ -173,7 +139,7 @@ const AddEditVendor = () => {
             />
           </div>
           <div>
-            <p className="font-semibold mb-1">Vendor Number</p>
+            <p className="font-semibold mb-1">Vendor Alternate Number</p>
             <input
               type="text"
               name="alternatePhoneNumber"

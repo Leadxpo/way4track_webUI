@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import generatePDF, { PurchaseOrderPDF } from '../../common/commonUtils';
+import { MyPDF } from '../../common/commonUtils';
+import { EstimatePDF } from '../../components/EstimatePdf';
+import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
+import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
+import ApiService from '../../services/ApiService';
 
 const AddEditEstimate = () => {
   const location = useLocation();
@@ -17,7 +23,7 @@ const AddEditEstimate = () => {
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{ product: '', description: '', amount: '' }],
+    items: [{ name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
     terms: '',
   };
 
@@ -25,6 +31,35 @@ const AddEditEstimate = () => {
   const [formData, setFormData] = useState(
     isEditMode ? location.state.estimateDetails : initialFormState
   );
+
+  const [clients, setClients] = useState([]);
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const fetchClients = async () => {
+    try {
+      const res = await ApiService.post('/client/getClientNamesDropDown');
+      setClients(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch client details:', err);
+      setClients([]);
+    }
+  };
+
+  const handleClientChange = (e) => {
+    const selectedClient = clients.find(
+      (client) => client.name === e.target.value
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      client: selectedClient.name,
+      clientNumber: selectedClient.clientId,
+      email: selectedClient.email,
+      clientAddress: selectedClient.clientAddress,
+    }));
+  };
 
   // Handle field changes
   const handleInputChange = (e) => {
@@ -43,18 +78,62 @@ const AddEditEstimate = () => {
   const addNewItem = () => {
     setFormData((prevData) => ({
       ...prevData,
-      items: [...prevData.items, { product: '', description: '', amount: '' }],
+      items: [
+        ...prevData.items,
+        { name: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+      ],
     }));
   };
 
-  const handleSave = () => {
-    console.log('Saving estimate:', formData);
-    navigate('/estimates');
+  const removeItem = (index) => {
+    const updatedItems = formData.items.filter((_, i) => i !== index);
+    setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
 
-  const handleSaveAndSend = () => {
-    console.log('Saving and sending estimate:', formData);
-    navigate('/estimates');
+  const handleSave = async () => {
+    const estimateDto = {
+      id: formData.id || 0,
+      clientId: formData.clientNumber,
+      buildingAddress: formData.billingAddress,
+      estimateDate: formData.estimateDate,
+      expireDate: formData.expiryDate,
+      productOrService: formData.items.map((item) => item.name).join(', '),
+      description: formData.terms,
+      totalAmount: formData.items.reduce(
+        (total, item) => total + parseFloat(item.amount || 0),
+        0
+      ),
+      companyCode: 'COMPANY_CODE', // Replace with actual company code
+      unitCode: 'UNIT_CODE', // Replace with actual unit code
+      products: formData.items.map((item) => ({
+        name: item.name,
+        quantity: parseInt(item.quantity, 10),
+        hsnCode: item.hsnCode,
+        amount: parseFloat(item.amount),
+      })),
+      estimateId: formData.estimateId || undefined,
+    };
+
+    try {
+      await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
+      console.log('Estimate saved:', estimateDto);
+      navigate('/estimate');
+    } catch (err) {
+      console.error('Failed to save estimate:', err);
+    }
+  };
+
+  const handleSaveAndSend = async () => {
+    await handleSave();
+    // Add logic to send the estimate if needed
+  };
+
+  const gridData = {
+    consigneeName: 'Nava Durga Stone Crusher',
+    gstin: '37ACFPN5800Q1Z5',
+    stateAddress: 'Andhra Pradesh',
+    stateCode: '37',
+    supplyPlace: 'Andhra Pradesh',
   };
 
   return (
@@ -71,14 +150,19 @@ const AddEditEstimate = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
-              <input
-                type="text"
+              <select
                 name="client"
                 value={formData.client}
-                onChange={handleInputChange}
-                placeholder="Client Name"
+                onChange={handleClientChange}
                 className="w-full p-2 border rounded-md"
-              />
+              >
+                <option value="">Select Client</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.name}>
+                    {client.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-semibold mb-1">
@@ -91,6 +175,7 @@ const AddEditEstimate = () => {
                 onChange={handleInputChange}
                 placeholder="Client Number"
                 className="w-full p-2 border rounded-md"
+                readOnly
               />
             </div>
             <div>
@@ -162,8 +247,6 @@ const AddEditEstimate = () => {
             </div>
           </div>
 
-          {/* Dates */}
-
           {/* Items */}
           <div>
             <label className="block text-sm font-semibold mb-1">Items</label>
@@ -171,11 +254,12 @@ const AddEditEstimate = () => {
               {/* Header Row */}
               <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
                 <span className="col-span-1 font-semibold">#</span>
-                <span className="col-span-4 font-semibold">
-                  Service/Product
-                </span>
-                <span className="col-span-5 font-semibold">Description</span>
+                <span className="col-span-2 font-semibold">Name</span>
+                <span className="col-span-2 font-semibold">Quantity</span>
+                <span className="col-span-2 font-semibold">Rate</span>
                 <span className="col-span-2 font-semibold">Amount</span>
+                <span className="col-span-2 font-semibold">HSN Code</span>
+                <span className="col-span-1 font-semibold"></span>
               </div>
 
               {/* Items Rows */}
@@ -188,19 +272,27 @@ const AddEditEstimate = () => {
                     <span className="col-span-1">{index + 1}</span>
                     <input
                       type="text"
-                      name="product"
-                      value={item.product}
+                      name="name"
+                      value={item.name}
                       onChange={(e) => handleItemChange(index, e)}
-                      placeholder="Service/Product"
-                      className="col-span-4 p-2 border rounded-md"
+                      placeholder="Name"
+                      className="col-span-2 p-2 border rounded-md"
                     />
                     <input
                       type="text"
-                      name="description"
-                      value={item.description}
+                      name="quantity"
+                      value={item.quantity}
                       onChange={(e) => handleItemChange(index, e)}
-                      placeholder="Description"
-                      className="col-span-5 p-2 border rounded-md"
+                      placeholder="Quantity"
+                      className="col-span-2 p-2 border rounded-md"
+                    />
+                    <input
+                      type="text"
+                      name="rate"
+                      value={item.rate}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="Rate"
+                      className="col-span-2 p-2 border rounded-md"
                     />
                     <input
                       type="number"
@@ -210,6 +302,21 @@ const AddEditEstimate = () => {
                       placeholder="Amount"
                       className="col-span-2 p-2 border rounded-md"
                     />
+                    <input
+                      type="text"
+                      name="hsnCode"
+                      value={item.hsnCode}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="HSN code"
+                      className="col-span-2 p-2 border rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeItem(index)}
+                      className="bg-gray-100 rounded-md w-fit p-2"
+                    >
+                      -
+                    </button>
                   </div>
                 ))}
               <div className="flex justify-end p-2">
@@ -240,13 +347,15 @@ const AddEditEstimate = () => {
 
           {/* Buttons */}
           <div className="flex space-x-4 justify-center">
-            <button
-              type="button"
-              onClick={handleSaveAndSend}
-              className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-orange-600"
+            <PDFDownloadLink
+              document={<EstimatePDF data={gridData} />}
+              fileName="grid-layout.pdf"
+              className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600"
             >
-              Save & Send
-            </button>
+              {({ loading }) =>
+                loading ? 'Loading document...' : 'Download PDF'
+              }
+            </PDFDownloadLink>
             <button
               type="button"
               onClick={handleSave}

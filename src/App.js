@@ -1,30 +1,30 @@
-import React, {useState} from "react";
-import Sidebar from "./containers/sidebar";
-import BodyLayout from "./containers/bodyLayout";
-import Login from "./containers/login";
+import React, { useState } from 'react';
+import Sidebar from './containers/sidebar';
+import BodyLayout from './containers/bodyLayout';
+import Login from './containers/login';
 const App = () => {
   const [role, setRole] = useState('ceo'); // You can switch between 'ceo' and 'subdealer'
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
-  const handleLoginFlag = () =>{
+  const handleLoginFlag = () => {
     setIsLoggedIn(true);
-  }
+  };
   return (
     <div>
-      {!isLoggedIn?
-      <div>
-        <Login handleLoginFlag={handleLoginFlag}/>
-      </div>
-      :<div className="flex min-h-screen">
+      {!isLoggedIn ? (
+        <div>
+          <Login handleLoginFlag={handleLoginFlag} />
+        </div>
+      ) : (
+        <div className="flex min-h-screen">
           <div className="h-auto min-h-full">
             <Sidebar role={role} />
           </div>
           <div className="w-3/4 flex-1 h-auto min-h-full">
-            <BodyLayout>
-                {/* The rest of your app content */}
-            </BodyLayout>
+            <BodyLayout>{/* The rest of your app content */}</BodyLayout>
           </div>
-      </div>}
+        </div>
+      )}
     </div>
   );
 };
