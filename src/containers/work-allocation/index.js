@@ -81,6 +81,7 @@ const WorkAllocation = () => {
   };
 
   const handleOpenMoreDetailsModal = (voucher) => {
+    console.log(voucher);
     setSelectedWorkAllocation(voucher);
     setIsMoreDetailsModalOpen(true);
   };
@@ -222,8 +223,11 @@ const WorkAllocation = () => {
                   <input
                     type="text"
                     className="border p-2 rounded w-full focus:outline-none"
-                    value={serviceOrProduct}
-                    onChange={handleServiceOrProductChange}
+                    defaultValue={
+                      isEditMode && selectedWorkAllocation
+                        ? selectedWorkAllocation.Amount
+                        : ''
+                    }
                   />
                 </div>
                 {/* Assign To */}
@@ -346,7 +350,7 @@ const WorkAllocation = () => {
       )}
 
       <TableWithSearchFilter
-        type="work-allocations"
+        type="vouchers"
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
         showDelete={false}

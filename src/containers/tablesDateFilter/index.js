@@ -6,9 +6,10 @@ import invoicesData from '../../mockData/mockInvoices.json';
 import paymentsData from '../../mockData/mockPayments.json';
 import requestData from '../../mockData/mockRequests.json';
 import { pageTitles } from '../../common/constants';
-import { initialAuthState } from '../../services/ApiService'
+import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 const TableWithDateFilter = ({
   type,
   onEdit,
@@ -34,17 +35,16 @@ const TableWithDateFilter = ({
   const [filteredData, setFilteredData] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const navigate = useNavigate();
-  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada'];
   const location = useLocation();
   const vendorData = location.state?.vendorsData || {};
   const subDealerData = location.state?.subDealersData || {};
 
-
-
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (response.status) {
           setBranches(response.data); // Set branches to state
         } else {
@@ -58,7 +58,6 @@ const TableWithDateFilter = ({
     fetchBranches();
   }, []);
 
-
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
@@ -70,7 +69,7 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, "Response Data");  // Log data to verify it
+        console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch vendor details.');
@@ -79,11 +78,7 @@ const TableWithDateFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [vendorData?.fromDate, vendorData?.toDate, vendorData?.paymentStatus]);
-  // Populate columns and data based on the type
-  useEffect(() => {
-    getVendorData();
-  }, []);
+  }, [vendorData?.joiningDate, vendorData?.paymentStatus]);
 
   const getSubDealerData = useCallback(async () => {
     try {
@@ -96,25 +91,57 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, "Response Data");  // Log data to verify it
+        console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
-        alert(response.data.message || 'Failed to fetch vendor details.');
+        alert(response.data.message || 'Failed to fetch sub-dealer details.');
       }
     } catch (error) {
-      console.error('Error fetching vendor details:', error);
-      alert('Failed to fetch vendor details.');
+      console.error('Error fetching sub-dealer details:', error);
+      alert('Failed to fetch sub-dealer details.');
     }
-  }, [subDealerData?.fromDate, subDealerData?.toDate, subDealerData?.paymentStatus]);
+  }, [subDealerData?.joiningDate, subDealerData?.paymentStatus]);
+
+  const getEstimateData = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getEstimates', {
+        fromDate: dateFrom,
+        toDate: dateTo,
+        status: statusFilter,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch estimate details.');
+      }
+    } catch (error) {
+      console.error('Error fetching estimate details:', error);
+      alert('Failed to fetch estimate details.');
+    }
+  }, [dateFrom, dateTo, statusFilter]);
 
   useEffect(() => {
-    getSubDealerData();
-  }, []);
+    switch (type) {
+      case 'sub_dealers':
+        getSubDealerData();
+        break;
+      case 'estimate':
+        getEstimateData();
+        break;
+      default:
+        break;
+    }
+  }, [type, getSubDealerData, getEstimateData]);
+
   useEffect(() => {
-    let dataSource=[];
+    let dataSource = [];
     switch (type) {
       case 'estimate':
-        dataSource = estimatesData;
+        dataSource = filteredData;
         break;
       case 'invoice':
         dataSource = invoicesData;
@@ -142,7 +169,7 @@ const TableWithDateFilter = ({
     // Extract unique statuses
     const uniqueStatuses = [...new Set(dataSource.map((item) => item.status))];
     setStatuses(uniqueStatuses);
-  }, [type]);
+  }, [type, filteredData]);
 
   // Handle status filter change
   const handleStatusChange = (e) => {
@@ -156,8 +183,19 @@ const TableWithDateFilter = ({
   };
 
   const handleSearch = async () => {
-    await getVendorData()
-    await getSubDealerData();
+    switch (type) {
+      case 'vendors':
+        await getVendorData();
+        break;
+      case 'sub_dealers':
+        await getSubDealerData();
+        break;
+      case 'estimate':
+        await getEstimateData();
+        break;
+      default:
+        break;
+    }
   };
 
   const handleCreateNew = () => {
@@ -176,6 +214,8 @@ const TableWithDateFilter = ({
         break;
       case 'requests':
         navigate('/add-request');
+        break;
+      default:
         break;
     }
   };
@@ -243,7 +283,9 @@ const TableWithDateFilter = ({
               onChange={handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
-              <option value="" disabled>Select a Branch</option>
+              <option value="" disabled>
+                Select a Branch
+              </option>
               {branches.map((branch) => (
                 <option key={branch.id} value={branch.branchName}>
                   {branch.branchName}

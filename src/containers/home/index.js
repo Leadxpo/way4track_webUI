@@ -11,6 +11,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { PDFViewer } from '@react-pdf/renderer';
+import { EstimatePDF } from '../../components/EstimatePdf';
 const Home = () => {
   const [tableData, setTableData] = useState(totalProducts);
   const [filteredData, setFilteredData] = useState(totalProducts);
@@ -23,6 +25,41 @@ const Home = () => {
   const location = useLocation();
   const ticketData = location.state?.ticketsData || {};
   const [branches, setBranches] = useState([]);
+  const [totalTicketDetails, setTotalTicketDetails] = useState({});
+  const [cardData, setCardData] = useState([
+    {
+      id: 1,
+      icon: <img src="products_box.png" />,
+      title: 'Total Products',
+      count: 120,
+      growth: '+55%',
+      bgColor: '#151515',
+    },
+    {
+      id: 2,
+      icon: <img src="ticket.png" />,
+      title: 'Total Tickets',
+      count: 75,
+      growth: '+40%',
+      bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
+    },
+    {
+      id: 3,
+      icon: <img src="expenses.png" />,
+      title: 'Expenses',
+      count: 5000,
+      growth: '+20%',
+      bgColor: '#CF0101',
+    },
+    {
+      id: 4,
+      icon: <img src="sale.png" />,
+      title: 'Total Purchases',
+      count: 80,
+      growth: '+30%',
+      bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
+    },
+  ]);
   // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
   const branch_details = [
     {
