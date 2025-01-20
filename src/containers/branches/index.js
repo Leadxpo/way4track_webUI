@@ -58,13 +58,6 @@ const Branches = () => {
     setShowPopup(false);
     setBranchToDelete(null);
   };
-
-  // const handleConfirmDelete = () => {
-  //   console.log(`Deleting branch: ${branchToDelete.branchName}`);
-  //   setShowPopup(false);
-  //   setBranchToDelete(null);
-  //   // Perform the actual delete operation here
-  // };
   const getLast30DaysCreditAndDebitPercentages = async () => {
     try {
       const response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {

@@ -79,7 +79,6 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, formData, "+++++++++++++++++++++++++")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {

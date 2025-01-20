@@ -70,7 +70,6 @@ const AddBranchForm = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('FormData before submission:', formData);
 
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {

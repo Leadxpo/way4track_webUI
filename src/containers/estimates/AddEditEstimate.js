@@ -116,7 +116,6 @@ const AddEditEstimate = () => {
 
     try {
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
-      console.log('Estimate saved:', estimateDto);
       navigate('/estimate');
     } catch (err) {
       console.error('Failed to save estimate:', err);
