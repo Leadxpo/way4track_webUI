@@ -8,12 +8,32 @@ const DownloadComponent = () => {
   const { filterData = [] } = location.state || {};
 
   const [selectedBranch, setSelectedBranch] = useState("All Branch's");
+  const [selectedClient, setSelectedClient] = useState('');
   const [branches, setBranches] = useState([]);
+  const [client, setClient] = useState([]);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const handleBranchChange = (event) => {
     setSelectedBranch(event.target.value);
+  }
+
+  const handleClientChange = (event) => {
+    setSelectedClient(event.target.value);
   };
+
+  // Fetch client data
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const res = await ApiService.post('/client/getClientNamesDropDown');
+        setClient(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch client details:', err);
+        setClient([]);
+      }
+    };
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -33,6 +53,23 @@ const DownloadComponent = () => {
   }, []);
 
   const exportExcel = async () => {
+    let type = ''
+    switch (type) {
+      case 'Day Book':
+        await exportDayBookExcel();
+        break;
+      case 'Ledger':
+        await exportLedgerExcel();
+        break;
+      case 'Sales':
+        await exportSalesExcel();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const exportDayBookExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet();
 
@@ -46,7 +83,7 @@ const DownloadComponent = () => {
       { header: 'Debit Amount', key: 'debitAmount', width: 20 },
       { header: 'Balance Amount', key: 'balanceAmount', width: 20 },
     ];
-console.log(filterData," Fetch Data")
+    console.log(filterData, " Fetch Data")
     filterData.forEach((row) => {
       worksheet.addRow({
         date: row.date,
@@ -69,6 +106,82 @@ console.log(filterData," Fetch Data")
     anchor.click();
   };
 
+  const exportLedgerExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet();
+
+    worksheet.columns = [
+      { header: 'Voucher Type', key: 'voucherType', width: 20 },
+      { header: 'generationDate', key: 'generationDate', width: 15 },
+      { header: 'Voucher ID', key: 'voucherId', width: 20 },
+      { header: 'client Name', key: 'clientName', width: 20 },
+      { header: 'client Name', key: 'clientName', width: 20 },
+      { header: 'expireDate', key: 'expireDate', width: 15 },
+      { header: 'Purpose', key: 'purpose', width: 25 },
+      { header: 'Credit Amount', key: 'creditAmount', width: 20 },
+      { header: 'Debit Amount', key: 'debitAmount', width: 20 },
+      { header: 'Balance Amount', key: 'balanceAmount', width: 20 },
+      { header: 'phone Number', key: 'phoneNumber', width: 20 },
+      { header: 'Branch Name', key: 'branchName', width: 20 },
+      { header: 'address', key: 'address', width: 20 },
+      { header: 'email', key: 'email', width: 20 },
+    ];
+    console.log(filterData, " Fetch Data")
+    filterData.forEach((row) => {
+      worksheet.addRow({
+        voucherId: row.voucherId,
+        name: row.name,
+        clientName: row.clientName,
+        generationDate: row.generationDate,
+        expireDate: row.expireDate,
+        paymentStatus: row.paymentStatus,
+        phoneNumber: row.phoneNumber,
+        email: row.email,
+        address: row.address,
+        creditAmount: row.creditAmount,
+        debitAmount: row.debitAmount,
+        balanceAmount: row.balanceAmount,
+        purpose: row.purpose,
+        branchName: row.branchName,
+        voucherType: row.voucherType
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'Ledger.xlsx';
+    anchor.click();
+  };
+
+  const exportSalesExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet();
+
+    worksheet.columns = [
+      { header: 'Date', key: 'date', width: 15 },
+      { header: 'Branch Name', key: 'branchName', width: 20 },
+      { header: 'Sales', key: 'serviceSales', width: 20 },
+    ];
+    console.log(filterData, " Fetch Data")
+    filterData.forEach((row) => {
+      worksheet.addRow({
+        date: row.date,
+        branchName: row.branchName,
+        serviceSales: row.serviceSales,
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'Ledger.xlsx';
+    anchor.click();
+  };
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-xl font-bold mb-4">Download Day Book</h1>
@@ -113,6 +226,23 @@ console.log(filterData," Fetch Data")
           ))}
         </select>
       </div>
+
+      <div className="mb-4">
+        <select
+          value={selectedClient}
+          onChange={handleClientChange}
+          className="w-full bg-green-500 text-white font-bold px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+        >
+          <option value="All Clients">All Clients</option>
+          {client.map((cl) => (
+            <option key={cl.id} value={cl.clientName}>
+              {cl.clientName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
       <button
         className="bg-green-500 text-white font-bold px-6 py-2 rounded-lg shadow-md hover:bg-green-600"
         onClick={exportExcel}

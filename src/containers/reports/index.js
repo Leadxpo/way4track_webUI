@@ -1,24 +1,9 @@
 import React from 'react';
-import ProfitsGraph from '../../components/ProfitsGraph';
 import {
-  FaBox,
-  FaTicketAlt,
-  FaMoneyBillWave,
-  FaShoppingCart,
-  FaDownload,
+  FaDownload
 } from 'react-icons/fa';
-import TotalCountCard from '../../components/TotalCountCard';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  CartesianGrid,
-  Cell,
-} from 'recharts';
-import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
+import TotalCountCard from '../../components/TotalCountCard';
 
 const Reports = () => {
   const navigate = useNavigate();
@@ -162,51 +147,13 @@ const Reports = () => {
   };
   return (
     <div>
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 p-4 w-full">
-        {branchesData.map((branchData, index) => (
-          <ProfitsGraph key={index} branchData={branchData} />
-        ))}
-      </div> */}
+
 
       <div className="flex justify-between space-x-4 mt-12">
         {CardData.map((card) => (
           <TotalCountCard data={card} />
         ))}
       </div>
-
-      {/* <div className="bg-white p-6 rounded-lg shadow-md w-full my-8 mx-2">
-        <h2 className="text-right font-semibold text-lg">Staff Performance</h2>
-        <div className="w-full h-[400px] mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="city" />
-              <YAxis />
-              <Bar
-                dataKey="performance"
-                label={{
-                  position: 'top',
-                  fill: 'black',
-                  angle: -90,
-                  dy: -10,
-                  dx: -20,
-                }} // Rotates city labels
-                barSize={30}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <Table columns={Object.keys(tableData[0])} data={tableData} /> */}
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
         <p className="text-xl">Day Book</p>
         <FaDownload
@@ -214,7 +161,6 @@ const Reports = () => {
           onClick={() => handleDownload('Day Book')}
         />
       </div>
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
         <p className="text-xl">Ledger</p>
         <FaDownload
@@ -222,7 +168,6 @@ const Reports = () => {
           onClick={() => handleDownload('Ledger')}
         />
       </div>
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
         <p className="text-xl">Vouchers</p>
         <FaDownload
@@ -230,9 +175,8 @@ const Reports = () => {
           onClick={() => handleDownload('Vouchers')}
         />
       </div>
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
-        <p className="text-xl">Amount</p>
+        <p className="text-xl">Sales</p>
         <FaDownload
           className="text-xl text-red-500"
           onClick={() => handleDownload('Amount')}
@@ -246,7 +190,6 @@ const Reports = () => {
           onClick={() => handleDownload('Invoices')}
         />
       </div>
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
         <p className="text-xl">Estimate</p>
         <FaDownload
@@ -254,7 +197,6 @@ const Reports = () => {
           onClick={() => handleDownload('Estimate')}
         />
       </div>
-
       <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
         <p className="text-xl">Receipt</p>
         <FaDownload
