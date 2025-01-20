@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const PaymentForm = ({ branches }) => {
+const PaymentForm = ({ branches, bankOptions, clients }) => {
+  console.log(bankOptions);
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState('Payment');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    role: ['client', 'vendor'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -20,10 +20,10 @@ const PaymentForm = ({ branches }) => {
     Payment: [
       { name: 'name', label: 'Title' },
       {
-        name: 'clientName',
+        name: 'clientId',
         label: 'Client Name',
         type: 'dropdown',
-        options: dropdownOptions.receiptTo,
+        options: clients,
       },
       {
         name: 'role',
@@ -35,11 +35,19 @@ const PaymentForm = ({ branches }) => {
         name: 'branchId',
         label: 'Branch Name',
         type: 'dropdown',
-        options: dropdownOptions.branches,
+        options: branches.map((branch) => ({
+          value: branch.id,
+          label: branch.branchName,
+        })),
       },
       { name: 'purpose', label: 'Purpose' },
       { name: 'debitAmount', label: 'Debit Amount' },
-      { name: 'paymentTo', label: 'Payment To' },
+      {
+        name: 'toAccount',
+        label: 'Payment To',
+        type: 'dropdown',
+        options: bankOptions,
+      },
     ],
   };
 
@@ -54,7 +62,7 @@ const PaymentForm = ({ branches }) => {
         name: 'bank',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -102,11 +110,17 @@ const PaymentForm = ({ branches }) => {
       { name: 'remainingAmount', label: 'Remaining Amount' },
     ],
   };
+
   const onSubmit = async (data) => {
     try {
       console.log('Form Data:', data);
       data.voucherType = selectedTab.toLowerCase();
       data.paymentType = selectedPaymentMode.toLowerCase();
+      data.companyCode = initialAuthState.companyCode;
+      data.unitCode = initialAuthState.unitCode;
+      data.branchId = 1;
+      data.clientId = 1;
+      data.toAccount = 'acc1';
       const response = await ApiService.post('/voucher/save', data); // Adjust the endpoint URL as needed
       console.log('Response:', response);
       // Handle the response (e.g., show a success message or redirect)
@@ -137,11 +151,22 @@ const PaymentForm = ({ branches }) => {
                       {...controllerField}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
-                      {field.options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
+                      {field.options.map((option) => {
+                        // Handle both string arrays and object arrays
+                        if (typeof option === 'string') {
+                          return (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          );
+                        }
+                      })}
                     </select>
                   </div>
                 );
@@ -193,8 +218,8 @@ const PaymentForm = ({ branches }) => {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     {field.options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>

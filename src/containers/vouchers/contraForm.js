@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ApiService from '../../services/ApiService';
 
-const ContraForm = ({ branches }) => {
+const ContraForm = ({ branches, bankOptions }) => {
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState('Contra');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');

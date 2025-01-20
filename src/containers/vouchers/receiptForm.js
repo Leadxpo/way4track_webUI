@@ -6,7 +6,6 @@ const ReceiptForm = ({ branches }) => {
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
@@ -23,7 +22,10 @@ const ReceiptForm = ({ branches }) => {
         name: 'branchId',
         label: 'Branch Name',
         type: 'dropdown',
-        options: dropdownOptions.branches,
+        options: branches.map((branch) => ({
+          value: branch.id,
+          label: branch.branchName,
+        })),
       },
       {
         name: 'role',
@@ -138,11 +140,22 @@ const ReceiptForm = ({ branches }) => {
                       {...controllerField}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
-                      {field.options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
+                      {field.options.map((option) => {
+                        // Handle both string arrays and object arrays
+                        if (typeof option === 'string') {
+                          return (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          );
+                        }
+                      })}
                     </select>
                   </div>
                 );
