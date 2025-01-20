@@ -50,6 +50,14 @@ const AddProductForm = () => {
     const selectedFile = e.target.files[0];
     validateFile(selectedFile);
   };
+  // const handleFileUpload = (info) => {
+  //   if (info.file.status === 'done') {
+  //     setBulkFile(info.file.originFileObj);
+  //     message.success(`${info.file.name} file uploaded successfully.`);
+  //   } else if (info.file.status === 'error') {
+  //     message.error(`${info.file.name} file upload failed.`);
+  //   }
+  // };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -62,7 +70,7 @@ const AddProductForm = () => {
     if (
       selectedFile &&
       selectedFile.type ===
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       setFile(selectedFile);
       setError('');
@@ -91,63 +99,55 @@ const AddProductForm = () => {
   };
 
   const handleVendorChange = (e) => {
+    const {  value } = e.target;
     const selectedVendorId = parseInt(e.target.value, 10);
     const vendor = vendors.find((v) => v.id === selectedVendorId);
     setSelectedVendor(vendor);
-    setFormData({
-      ...formData,
-      designation: vendor.id,
-      vendorNumber: vendor.id,
-    });
+    setFormData((prev) => ({
+      ...prev,
+      vendorEmailId: value,
+      vendorName: selectedVendor ? selectedVendor.name : '',
+    }));
   };
 
   const handleSave = async () => {
-    if (!file) {
-      setError('File is mandatory. Please upload an Excel file.');
-      return;
-    }
-
-    const formDataToSend = new FormData();
-    formDataToSend.append('file', file);
-    formDataToSend.append(
-      'productDto',
-      new Blob(
-        [
-          JSON.stringify({
-            productName: formData.name,
-            emiNumber: formData.number,
-            dateOfPurchase: formData.staffId,
-            vendorId: formData.designation,
-            imeiNumber: formData.aadhar,
-            categoryName: formData.category,
-            price: formData.price,
-            productDescription: formData.productDescription,
-            vendorPhoneNumber: formData.vendorNumber,
-            vendorName: formData.designation,
-            vendorAddress: formData.branch,
-            vendorEmailId: formData.email,
-          }),
-        ],
-        { type: 'application/json' }
-      )
-    );
-
     try {
-      console.log('Sending request to /products/createOrUpdateProduct');
-      const response = await ApiService.post(
-        '/products/createOrUpdateProduct',
-        formDataToSend,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
+      const formDataToSend = new FormData();
+
+      if (file) {
+        formDataToSend.append('file', file);
+      }
+
+      formDataToSend.append(
+        'productDto',
+        JSON.stringify({
+          productName: formData.name,
+          emiNumber: formData.number,
+          vendorId: formData.designation,
+          dateOfPurchase: formData.staffId,
+          imeiNumber: formData.aadhar,
+          categoryName: formData.category,
+          price: formData.price,
+          productDescription: formData.productDescription,
+          vendorPhoneNumber: formData.vendorNumber,
+          vendorName: formData.designation,
+          vendorAddress: formData.branch,
+          vendorEmailId: formData.email,
+        })
       );
-      console.log('File uploaded successfully:', response);
+
+      const endpoint = isBulk ? '/products/bulkUploadProducts' : '/products/createOrUpdateProduct';
+      const response = await ApiService.post(endpoint, formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Response:', response);
       navigate('/staff');
     } catch (error) {
-      console.error('File upload failed:', error);
-      setError('Failed to upload the file. Please try again.');
+      console.error('Error saving product:', error);
+      setError('Failed to save the product. Please check your input.');
     }
   };
 
