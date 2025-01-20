@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaCalendarAlt } from 'react-icons/fa';
 
 const InHandProductsForm = () => {
   const [formData, setFormData] = useState({
