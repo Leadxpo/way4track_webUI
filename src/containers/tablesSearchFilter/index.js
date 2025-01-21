@@ -42,7 +42,7 @@ const TableWithSearchFilter = ({
   const clientData = location.state?.clientDetails || {};
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
-
+  const voucherData = location.state?.voucherData || {};
   const getSearchDetailClient = useCallback(async () => {
     try {
       const response = await ApiService.post(
@@ -113,6 +113,25 @@ const TableWithSearchFilter = ({
     }
   }, [ticketData?.ticketId, ticketData?.staffId, ticketData?.branchName]);
 
+  const getVoucherDetailsAgainstSearch = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getAllVouchers', {
+        voucherId: ticketData?.ticketId,
+        branchName: ticketData?.branchName,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.status) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch voucher details.');
+      }
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+      alert('Failed to fetch vendor details.');
+    }
+  }, [voucherData?.voucherId, voucherData?.staffId, voucherData?.branchName]);
   useEffect(() => {
     switch (type) {
       case 'tickets':
@@ -124,6 +143,9 @@ const TableWithSearchFilter = ({
       case 'clients':
         getSearchDetailClient();
         break;
+      case 'vouchers':
+        getVoucherDetailsAgainstSearch();
+        break;
       default:
         return;
     }
@@ -133,7 +155,7 @@ const TableWithSearchFilter = ({
     let dataSource = [];
     switch (type) {
       case 'vouchers':
-        dataSource = vouchersData; // Example mock data, replace with actual API integration if needed
+        dataSource = filteredData; // Example mock data, replace with actual API integration if needed
         break;
       case 'work-allocations':
         dataSource = filteredData;

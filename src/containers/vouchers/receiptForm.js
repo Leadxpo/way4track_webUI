@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const ReceiptForm = ({ branches }) => {
+const ReceiptForm = ({ branches, bankOptions }) => {
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
@@ -17,6 +17,7 @@ const ReceiptForm = ({ branches }) => {
   };
   const formFieldsByTab = {
     Receipt: [
+      { name: 'invoiceId', label: 'Invoice ID' },
       { name: 'name', label: 'Title' },
       {
         name: 'branchId',

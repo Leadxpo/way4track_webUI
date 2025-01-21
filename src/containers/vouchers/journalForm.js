@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { useNavigate } from 'react-router';
 
 const JournalForm = ({ branches, bankOptions, clients }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Journal');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-
+  const navigate = useNavigate();
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
@@ -135,6 +136,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
       };
       console.log('Payload:', payload);
       const response = await ApiService.post('/voucher/save', payload);
+      navigate('/vouchers');
       console.log('Response:', response);
     } catch (error) {
       console.error('Error submitting data:', error);
