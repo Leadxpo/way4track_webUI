@@ -92,7 +92,7 @@ const AddEditEstimate = () => {
 
   const handleSave = async () => {
     const estimateDto = {
-      id: formData.id || 0,
+      id: formData.id || '',
       clientId: formData.clientNumber,
       buildingAddress: formData.billingAddress,
       estimateDate: formData.estimateDate,
@@ -105,15 +105,30 @@ const AddEditEstimate = () => {
       ),
       companyCode: 'COMPANY_CODE', // Replace with actual company code
       unitCode: 'UNIT_CODE', // Replace with actual unit code
-      products: formData.items.map((item) => ({
-        name: item.name,
-        quantity: parseInt(item.quantity, 10),
-        hsnCode: item.hsnCode,
-        amount: parseFloat(item.amount),
-      })),
       estimateId: formData.estimateId || undefined,
+      invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
+      GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
+      SCST: formData.SCST || 0, // Default or from formData
+      CGST: formData.CGST || 0, // Default or from formData
+      quantity: formData.items.reduce(
+        (total, item) => total + parseInt(item.quantity, 10),
+        0
+      ),
+      hsnCode: formData.items[0].hsnCode,
+      cgstPercentage: formData.cgstPercentage || 0, // For temporary use
+      scstPercentage: formData.scstPercentage || 0, // For temporary use
+      convertToInvoice: formData.convertToInvoice || false, // Boolean value
+      productDetails: formData.items.map((item) => ({
+        productId: item.productId, // Assuming each item has a productId
+        productName: item.name,
+        quantity: parseInt(item.quantity, 10),
+        costPerUnit: parseFloat(item.amount), // Assuming `amount` is the cost per unit
+        totalCost: parseFloat(item.amount) * parseInt(item.quantity, 10), // Total cost calculation
+      })),
     };
 
+    console.log(estimateDto);
+    console.log('date type', typeof estimateDto.estimateDate);
     try {
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
       console.log('Estimate saved:', estimateDto);

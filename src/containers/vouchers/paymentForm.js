@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const PaymentForm = ({ branches }) => {
-  const { control, handleSubmit } = useForm();
+const PaymentForm = ({ branches, bankOptions, clients }) => {
+  const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Payment');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    role: ['client', 'vendor'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -20,10 +19,10 @@ const PaymentForm = ({ branches }) => {
     Payment: [
       { name: 'name', label: 'Title' },
       {
-        name: 'clientName',
+        name: 'clientId',
         label: 'Client Name',
         type: 'dropdown',
-        options: dropdownOptions.receiptTo,
+        options: clients,
       },
       {
         name: 'role',
@@ -35,11 +34,19 @@ const PaymentForm = ({ branches }) => {
         name: 'branchId',
         label: 'Branch Name',
         type: 'dropdown',
-        options: dropdownOptions.branches,
+        options: branches.map((branch) => ({
+          value: branch.id,
+          label: branch.branchName,
+        })),
       },
       { name: 'purpose', label: 'Purpose' },
       { name: 'debitAmount', label: 'Debit Amount' },
-      { name: 'paymentTo', label: 'Payment To' },
+      {
+        name: 'toAccount',
+        label: 'Payment To',
+        type: 'dropdown',
+        options: bankOptions,
+      },
     ],
   };
 
@@ -54,7 +61,7 @@ const PaymentForm = ({ branches }) => {
         name: 'bank',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -73,7 +80,7 @@ const PaymentForm = ({ branches }) => {
         label: 'IFSC',
       },
       {
-        name: 'accountNumber',
+        name: 'bankAccountNumber',
         label: 'Account Number',
       },
       { name: 'amount', label: 'Amount' },
@@ -85,7 +92,7 @@ const PaymentForm = ({ branches }) => {
         name: 'bank',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -96,35 +103,74 @@ const PaymentForm = ({ branches }) => {
         name: 'bank',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
     ],
   };
+
+  const getRelevantFields = (mode) => {
+    return paymentModeFields[mode].map((field) => field.name);
+  };
+
   const onSubmit = async (data) => {
     try {
-      console.log('Form Data:', data);
-      data.voucherType = selectedTab.toLowerCase();
-      data.paymentType = selectedPaymentMode.toLowerCase();
-      const response = await ApiService.post('/voucher/save', data); // Adjust the endpoint URL as needed
+      const relevantFields = getRelevantFields(selectedPaymentMode);
+      const filteredData = Object.keys(data)
+        .filter(
+          (key) =>
+            relevantFields.includes(key) ||
+            formFieldsByTab[selectedTab].some((field) => field.name === key)
+        )
+        .reduce((obj, key) => {
+          obj[key] = data[key];
+          return obj;
+        }, {});
+
+      const payload = {
+        ...filteredData,
+        voucherType: selectedTab.toLowerCase(),
+        paymentType: selectedPaymentMode.toLowerCase(),
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        branchId: parseInt(data.branchId, 10),
+        clientId: parseInt(data.clientId, 10),
+        role: data.role,
+        toAccount: data.toAccount,
+      };
+      console.log('Payload:', payload);
+      const response = await ApiService.post('/voucher/save', payload);
       console.log('Response:', response);
-      // Handle the response (e.g., show a success message or redirect)
     } catch (error) {
       console.error('Error submitting data:', error);
-      // Handle the error (e.g., show an error message)
     }
+  };
+
+  const handlePaymentModeChange = (mode) => {
+    const currentValues = getValues();
+    setSelectedPaymentMode(mode);
+    reset({
+      ...currentValues,
+      ...paymentModeFields[mode].reduce((acc, field) => {
+        acc[field.name] = '';
+        return acc;
+      }, {}),
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Render form fields for the selected tab */}
       {formFieldsByTab[selectedTab]?.map((field) => (
         <Controller
           key={field.name}
           name={field.name}
           control={control}
-          defaultValue=""
+          defaultValue={
+            field.type === 'dropdown' && field.options.length === 1
+              ? field.options[0].value
+              : ''
+          }
           render={({ field: controllerField }) => {
             switch (field.type) {
               case 'dropdown':
@@ -137,11 +183,21 @@ const PaymentForm = ({ branches }) => {
                       {...controllerField}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
-                      {field.options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
+                      {field.options.map((option) => {
+                        if (typeof option === 'string') {
+                          return (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          );
+                        }
+                      })}
                     </select>
                   </div>
                 );
@@ -162,14 +218,13 @@ const PaymentForm = ({ branches }) => {
         />
       ))}
 
-      {/* Payment Mode Section */}
       <h3 className="font-bold mb-2">Payment Mode</h3>
       <div className="flex space-x-2 mb-4">
         {PAYMENT_MODES.map((mode) => (
           <button
             key={mode}
             className={`px-4 py-2 rounded ${selectedPaymentMode === mode ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => setSelectedPaymentMode(mode)}
+            onClick={() => handlePaymentModeChange(mode)}
             type="button"
           >
             {mode}
@@ -177,7 +232,6 @@ const PaymentForm = ({ branches }) => {
         ))}
       </div>
 
-      {/* Dynamic Payment Mode Fields */}
       <div>
         {paymentModeFields[selectedPaymentMode]?.map((field) => (
           <div key={field.name} className="mb-4">
@@ -186,15 +240,17 @@ const PaymentForm = ({ branches }) => {
               <Controller
                 name={field.name}
                 control={control}
-                defaultValue=""
+                defaultValue={
+                  field.options.length === 1 ? field.options[0].value : ''
+                }
                 render={({ field: controllerField }) => (
                   <select
                     {...controllerField}
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     {field.options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>

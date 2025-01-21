@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const Branches = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
   const [branches, setBranches] = useState([]);
+  const [percentage, setPercentage] = useState([])
 
   // Fetch branches on component load
   useEffect(() => {
@@ -63,7 +65,26 @@ const Branches = () => {
   //   setBranchToDelete(null);
   //   // Perform the actual delete operation here
   // };
+  const getLast30DaysCreditAndDebitPercentages = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.status) {
+        setPercentage(response.data);
+      } else {
+        alert(response.message || 'Failed to fetch branch list.');
+      }
+    } catch (error) {
+      console.error('Error fetching branch list:', error);
+      alert('Failed to fetch branch list.');
+    }
+  };
 
+  useEffect(() => {
+    getLast30DaysCreditAndDebitPercentages();
+  }, []);
   return (
     <div className="">
       <div className="flex justify-end">
@@ -75,8 +96,8 @@ const Branches = () => {
         </button>
       </div>
 
-      {branches.length > 0 ? (
-        branches.map((branch) => (
+      {percentage.length > 0 ? (
+        percentage.map((branch) => (
           <div className="flex justify-center mt-10" key={branch.id}>
             <div
               className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
@@ -97,8 +118,8 @@ const Branches = () => {
 
               <div className="space-y-4">
                 <div className="text-green-600 flex items-center text-xl font-bold">
-                  <span>Profit</span>
-                  <span> - 70%</span>{' '}
+                  <span>Credit Percentage</span>
+                  <span>{branch.creditPercentage}</span>{' '}
                   {/* Example static data, you can update with real data */}
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
@@ -109,8 +130,8 @@ const Branches = () => {
                 </div>
 
                 <div className="text-red-500 flex items-center text-xl font-bold">
-                  <span>Loss</span>
-                  <span>- 30%</span> {/* Example static data */}
+                  <span>Debit Percentage</span>
+                  <span>{branch.debitPercentage}</span> {/* Example static data */}
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
                   <div

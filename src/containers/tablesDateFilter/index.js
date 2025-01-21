@@ -124,6 +124,28 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
+  const getPaymentsData = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getPaymentData', {
+        fromDate: dateFrom,
+        toDate: dateTo,
+        status: statusFilter,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch estimate details.');
+      }
+    } catch (error) {
+      console.error('Error fetching estimate details:', error);
+      alert('Failed to fetch estimate details.');
+    }
+  }, [dateFrom, dateTo, statusFilter]);
+
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':
@@ -131,6 +153,9 @@ const TableWithDateFilter = ({
         break;
       case 'estimate':
         getEstimateData();
+        break;
+      case 'payments':
+        getPaymentsData();
         break;
       default:
         break;
