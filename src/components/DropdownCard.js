@@ -1,6 +1,13 @@
 import React from 'react';
 
-const DropdownCard = ({ bgColor, title, count, branches, selectedBranch, setSelectedBranch }) => {
+const DropdownCard = ({
+  bgColor,
+  title,
+  count,
+  branches,
+  selectedBranch,
+  setSelectedBranch,
+}) => {
   const bgClass =
     {
       red: 'bg-red-300',
@@ -8,11 +15,12 @@ const DropdownCard = ({ bgColor, title, count, branches, selectedBranch, setSele
       purple: 'bg-purple-300',
     }[bgColor] || 'bg-gray-300';
 
+  console.log(branches);
   return (
     <div className={`${bgClass} rounded-2xl shadow-lg p-6 w-80`}>
       <p className="text-2xl font-bold mb-1 text-white">{title}</p>
       <div className="bg-white rounded-md flex justify-between items-center px-4 py-2">
-        <select
+        {/* <select
           value={selectedBranch}
           onChange={(e) => setSelectedBranch(e.target.value)}
           className="h-6 w-full text-gray-700 rounded-md focus:outline-none"
@@ -22,7 +30,7 @@ const DropdownCard = ({ bgColor, title, count, branches, selectedBranch, setSele
               {branch.branchName}
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
       <div className="text-6xl font-bold mt-4 text-white">{count}</div>
     </div>

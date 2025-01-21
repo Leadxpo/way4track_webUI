@@ -8,27 +8,43 @@ const Branches = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
   const [branches, setBranches] = useState([]);
-  const [percentage, setPercentage] = useState([])
+  const [percentages, setPercentages] = useState([]);
 
-  // Fetch branches on component load
   useEffect(() => {
-    const fetchBranches = async () => {
+    const fetchBranchesAndPercentages = async () => {
       try {
-        const response = await ApiService.post(
-          '/branch/getBranchNamesDropDown'
-        ); // API call
-        if (response.status) {
-          setBranches(response.data); // Set branches to state
+        const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
+        if (branchResponse.status) {
+          setBranches(branchResponse.data);
         } else {
           console.error('Failed to fetch branches');
         }
+
+        const percentageResponse = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        if (percentageResponse.status) {
+          setPercentages(percentageResponse.data);
+        } else {
+          console.error('Failed to fetch percentages');
+        }
       } catch (error) {
-        console.error('Error fetching branches:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchBranches();
-  }, []); // Empty dependency array to run this effect only once when the component loads
+    fetchBranchesAndPercentages();
+  }, []);
+
+  const combinedBranches = branches.map((branch) => {
+    const percentageData = percentages.find((p) => p.id === branch.id) || {};
+    return {
+      ...branch,
+      creditPercentage: percentageData.creditPercentage || 0,
+      debitPercentage: percentageData.debitPercentage || 0,
+    };
+  });
 
   const handleEdit = (branchDetails) => {
     navigate('/edit-branch', { state: { branchDetails } });
@@ -43,7 +59,6 @@ const Branches = () => {
     try {
       await ApiService.post('/branch/deleteBranchDetails', { id: branchToDelete.id });
       setBranches((prev) => prev.filter((branch) => branch.id !== branchToDelete.id));
-      setBranchToDelete(branchToDelete.id)
       alert('Branch deleted successfully');
     } catch (error) {
       console.error('Error deleting branch:', error);
@@ -78,6 +93,7 @@ const Branches = () => {
   useEffect(() => {
     getLast30DaysCreditAndDebitPercentages();
   }, []);
+
   return (
     <div className="">
       <div className="flex justify-end">
@@ -89,8 +105,8 @@ const Branches = () => {
         </button>
       </div>
 
-      {percentage.length > 0 ? (
-        percentage.map((branch) => (
+      {combinedBranches.length > 0 ? (
+        combinedBranches.map((branch) => (
           <div className="flex justify-center mt-10" key={branch.id}>
             <div
               className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
@@ -111,25 +127,24 @@ const Branches = () => {
 
               <div className="space-y-4">
                 <div className="text-green-600 flex items-center text-xl font-bold">
-                  <span>Credit Percentage</span>
-                  <span>{branch.creditPercentage}</span>{' '}
-                  {/* Example static data, you can update with real data */}
+                  <span>Credit Percentage:</span>
+                  <span className="ml-2">{branch.creditPercentage}%</span>
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
                   <div
                     className="bg-green-600 h-6 rounded-full"
-                    style={{ width: '70%' }} // Example static data
+                    style={{ width: `${branch.creditPercentage}%` }}
                   ></div>
                 </div>
 
                 <div className="text-red-500 flex items-center text-xl font-bold">
-                  <span>Debit Percentage</span>
-                  <span>{branch.debitPercentage}</span> {/* Example static data */}
+                  <span>Debit Percentage:</span>
+                  <span className="ml-2">{branch.debitPercentage}%</span>
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
                   <div
                     className="bg-red-600 h-6 rounded-full"
-                    style={{ width: '30%' }} // Example static data
+                    style={{ width: `${branch.debitPercentage}%` }}
                   ></div>
                 </div>
               </div>
@@ -149,9 +164,7 @@ const Branches = () => {
                 </button>
                 <button
                   className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-gray-600"
-                  onClick={() =>
-                    navigate('/branch-details', { state: { branch } })
-                  }
+                  onClick={() => navigate('/branch-details', { state: { branch } })}
                 >
                   More Details
                 </button>
@@ -160,35 +173,22 @@ const Branches = () => {
           </div>
         ))
       ) : (
-        <div className="text-center mt-10 text-xl text-gray-700">
-          No branches available.
-        </div>
+        <div className="text-center mt-10 text-xl text-gray-700">No branches available.</div>
       )}
 
-      {/* Delete Confirmation Popup */}
       {showPopup && (
         <div className="fixed inset-0 top-0 left-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white shadow-lg pb-4 w-full max-w-md">
-            {/* Header */}
             <div className="flex justify-between items-center bg-red-500 p-2">
-              <h2 className="text-white font-bold text-xl text-center flex-grow">
-                Alert
-              </h2>
-              <button
-                onClick={handleClosePopup}
-                className="text-white hover:text-gray-800"
-              >
+              <h2 className="text-white font-bold text-xl text-center flex-grow">Alert</h2>
+              <button onClick={handleClosePopup} className="text-white hover:text-gray-800">
                 &#10005;
               </button>
             </div>
-
-            {/* Message */}
             <p className="mt-4 text-gray-700 text-center">
               Are you sure you want to delete the branch "
               <strong>{branchToDelete?.branchName}</strong>"?
             </p>
-
-            {/* Buttons */}
             <div className="mt-6 flex justify-center space-x-4">
               <button
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
