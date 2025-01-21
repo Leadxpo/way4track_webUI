@@ -16,6 +16,7 @@ const AddEditVouchers = () => {
   const [branches, setBranches] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [clients, setCleints] = useState([]);
+  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -31,6 +32,8 @@ const AddEditVouchers = () => {
         console.error('Error fetching branches:', error);
       }
     };
+
+
     const fetchBankOptions = async () => {
       try {
         const requestData = {
@@ -43,7 +46,7 @@ const AddEditVouchers = () => {
           requestData
         );
         const formattedOptions = response.data.map((account) => ({
-          value: account.id,
+          value: account.accountNumber,
           label: account.accountName,
         }));
 
@@ -52,6 +55,7 @@ const AddEditVouchers = () => {
         console.error('Error fetching bank options:', error);
       }
     };
+
     const fetchClients = async () => {
       try {
         const requestData = {
@@ -64,9 +68,9 @@ const AddEditVouchers = () => {
           requestData
         );
         console.log(response);
-        const formattedOptions = response.data.map((account) => ({
-          value: account.id,
-          label: account.name,
+        const formattedOptions = response.data.map((client) => ({
+          value: client.clientId,
+          label: client.name,
         }));
 
         setCleints(formattedOptions);

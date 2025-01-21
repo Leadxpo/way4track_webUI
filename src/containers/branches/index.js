@@ -10,9 +10,11 @@ const Branches = () => {
   const [branches, setBranches] = useState([]);
   const [percentages, setPercentages] = useState([]);
 
+  // Fetch branches and percentages on component load
   useEffect(() => {
     const fetchBranchesAndPercentages = async () => {
       try {
+        // Fetch branch names
         const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
         if (branchResponse.status) {
           setBranches(branchResponse.data);
@@ -20,6 +22,7 @@ const Branches = () => {
           console.error('Failed to fetch branches');
         }
 
+        // Fetch percentages
         const percentageResponse = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
@@ -37,6 +40,7 @@ const Branches = () => {
     fetchBranchesAndPercentages();
   }, []);
 
+  // Combine branches and percentages
   const combinedBranches = branches.map((branch) => {
     const percentageData = percentages.find((p) => p.id === branch.id) || {};
     return {
@@ -73,26 +77,6 @@ const Branches = () => {
     setShowPopup(false);
     setBranchToDelete(null);
   };
-  const getLast30DaysCreditAndDebitPercentages = async () => {
-    try {
-      const response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-      if (response.status) {
-        setPercentage(response.data);
-      } else {
-        alert(response.message || 'Failed to fetch branch list.');
-      }
-    } catch (error) {
-      console.error('Error fetching branch list:', error);
-      alert('Failed to fetch branch list.');
-    }
-  };
-
-  useEffect(() => {
-    getLast30DaysCreditAndDebitPercentages();
-  }, []);
 
   return (
     <div className="">
