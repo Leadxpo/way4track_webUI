@@ -13,6 +13,7 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
+import { TbWashDryP } from 'react-icons/tb';
 const Home = () => {
   const [tableData, setTableData] = useState(totalProducts);
   const [filteredData, setFilteredData] = useState(totalProducts);
@@ -26,6 +27,9 @@ const Home = () => {
   const ticketData = location.state?.ticketsData || {};
   const [branches, setBranches] = useState([]);
   const [totalTicketDetails, setTotalTicketDetails] = useState({});
+  const [totalProductDetails, setTotalProductDetails] = useState({});
+  const [solidLiquidData, setSolidLiquidData] = useState({});
+  const [branch_details, setBranchDetails] = useState([]);
   const [cardData, setCardData] = useState([
     {
       id: 1,
@@ -61,32 +65,32 @@ const Home = () => {
     },
   ]);
   // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
-  const branch_details = [
-    {
-      branch_name: 'Vishakapatnam',
-      service_sales: 500,
-      product_sales: 1200,
-      total_sales: 1700,
-    },
-    {
-      branch_name: 'Hyderabad',
-      service_sales: 600,
-      product_sales: 1400,
-      total_sales: 2000,
-    },
-    {
-      branch_name: 'Vijayawada',
-      service_sales: 500,
-      product_sales: 500,
-      total_sales: 1000,
-    },
-    {
-      branch_name: 'Kakinada',
-      service_sales: 500,
-      product_sales: 1100,
-      total_sales: 1600,
-    },
-  ];
+  // const branch_details = [
+  //   {
+  //     branch_name: 'Vishakapatnam',
+  //     service_sales: 500,
+  //     product_sales: 1200,
+  //     total_sales: 1700,
+  //   },
+  //   {
+  //     branch_name: 'Hyderabad',
+  //     service_sales: 600,
+  //     product_sales: 1400,
+  //     total_sales: 2000,
+  //   },
+  //   {
+  //     branch_name: 'Vijayawada',
+  //     service_sales: 500,
+  //     product_sales: 500,
+  //     total_sales: 1000,
+  //   },
+  //   {
+  //     branch_name: 'Kakinada',
+  //     service_sales: 500,
+  //     product_sales: 1100,
+  //     total_sales: 1600,
+  //   },
+  // ];
 
   const branchesData = [
     {
@@ -360,6 +364,85 @@ const Home = () => {
     }
   };
 
+  const fetchTotalProductss = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/totalProducts', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        userId: initialAuthState.userId,
+        userName: initialAuthState.userName,
+      });
+      console.log(response.data);
+      setTotalProductDetails(response.data);
+      setCardData((prevData) =>
+        prevData.map((item) =>
+          item.id === 1
+            ? {
+                ...item,
+                count: response.data.last30DaysProducts,
+                growth: response.data.percentageChange,
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching total tickets:', error);
+      alert('Failed to fetch total tickets.');
+    }
+  };
+
+  const fetchPurchaseCount = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getPurchaseCount', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        userId: initialAuthState.userId,
+        userName: initialAuthState.userName,
+      });
+      console.log(response.data);
+      setTotalProductDetails(response.data);
+      setCardData((prevData) =>
+        prevData.map((item) =>
+          item.id === 4
+            ? {
+                ...item,
+                count: response.data.last30DaysPurchases,
+                growth: response.data.percentageChange,
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching total tickets:', error);
+      alert('Failed to fetch total tickets.');
+    }
+  };
+  const fetchExpenseCount = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getExpenseData', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        userId: initialAuthState.userId,
+        userName: initialAuthState.userName,
+      });
+      console.log(response.data);
+      setTotalProductDetails(response.data);
+      setCardData((prevData) =>
+        prevData.map((item) =>
+          item.id === 3
+            ? {
+                ...item,
+                count: response.data.last30DaysExpenses,
+                growth: response.data.percentageChange,
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching total tickets:', error);
+      alert('Failed to fetch total tickets.');
+    }
+  };
   const fetchTicketsData = async () => {
     try {
       const response = await ApiService.post(
@@ -383,8 +466,74 @@ const Home = () => {
     }
   };
 
+  const getSolidLiquidCash = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getSolidLiquidCash', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.status) {
+        setSolidLiquidData(response.data);
+      } else {
+        alert(
+          response.data.message || 'Failed to fetch solid liquid cash details.'
+        );
+      }
+    } catch (e) {
+      console.error('error in fetching solid liquid cash details');
+    }
+  };
+
+  const getTotalProductAndServiceSales = async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getTotalProductAndServiceSales',
+        {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+        setBranchDetails(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch total sales details.');
+      }
+    } catch (e) {
+      console.error('error in fetching total sales details');
+    }
+  };
+
+  const getAnalysis = async () => {
+    try {
+      const date = new Date();
+
+      const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
+        date.getMonth() + 1
+      ).padStart(2, '0')}/${date.getFullYear()}`;
+      const response = await ApiService.post(
+        '/dashboards/getMonthWiseBalance',
+        {
+          date: formattedDate,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+      } else {
+        alert(response.data.message || 'Failed to analysis details.');
+      }
+    } catch (e) {
+      console.error('error in fetching analysis details');
+    }
+  };
   useEffect(() => {
     fetchTotalTickets();
+    fetchTotalProductss();
+    fetchPurchaseCount();
+    fetchExpenseCount();
+    getSolidLiquidCash();
+    getAnalysis();
+    getTotalProductAndServiceSales();
   }, []);
 
   return (
@@ -412,27 +561,25 @@ const Home = () => {
                   <div>
                     <p className="text-gray-800 font-semibold">Branch</p>
                     <p className="text-green-700 font-semibold">
-                      {branch.branch_name}
+                      {branch.branchName}
                     </p>
                   </div>
                 </div>
                 <div className="text-left">
                   <p className="text-gray-500">Service Sales</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.service_sales}
+                    {branch.serviceSales}
                   </p>
                 </div>
                 <div className="text-left">
                   <p className="text-gray-500">Product Sales</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.product_sales}
+                    {branch.productSales}
                   </p>
                 </div>
                 <div className="text-left">
                   <p className="text-gray-500">Total Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.total_sales}
-                  </p>
+                  <p className="text-gray-800 font-bold">{branch.totalSales}</p>
                 </div>
               </div>
             ))}
@@ -446,8 +593,16 @@ const Home = () => {
 
       {/* second section */}
       <div className="flex items-center justify-center space-x-10">
-        <CashCard title="Solid Cash" amount="200000" />
-        <CashCard title="Liquid Cash" amount="300000" />
+        <CashCard
+          title="Solid Cash"
+          amount={solidLiquidData.solidCash}
+          details={solidLiquidData.details}
+        />
+        <CashCard
+          title="Liquid Cash"
+          amount={solidLiquidData.liquidCash}
+          details={solidLiquidData.details}
+        />
       </div>
 
       {/* third section - profits graphs */}
@@ -459,7 +614,7 @@ const Home = () => {
 
       {/* fourth section */}
       <div className="flex justify-between space-x-4 mt-12">
-        {CardData.map((card) => (
+        {cardData.map((card) => (
           <div onClick={() => handleCardClick(card.title)}>
             <TotalCountCard data={card} />
           </div>

@@ -1,11 +1,14 @@
 import { FaTicketAlt } from 'react-icons/fa';
 
-const TotalCountCard = ({data}) => {
+const TotalCountCard = ({ data }) => {
   return (
     <div className="w-full max-w-xs rounded-lg shadow-lg bg-white p-4 relative mx-2">
       <div className="flex items-center justify-between">
         {/* Icon with background and positioned partially outside */}
-        <div className={`absolute -top-4 left-4 w-14 h-14 text-white flex items-center justify-center rounded-lg shadow-lg`} style={{background: `${data.bgColor}`}}>
+        <div
+          className={`absolute -top-4 left-4 w-14 h-14 text-white flex items-center justify-center rounded-lg shadow-lg`}
+          style={{ background: `${data.bgColor}` }}
+        >
           {data.icon}
         </div>
 
@@ -24,7 +27,8 @@ const TotalCountCard = ({data}) => {
 
       {/* Left-aligned text for percentage */}
       <p className="font-semibold text-lg">
-        <span className="text-green-600 text-2xl">{data.growth}</span> than last week
+        <span className="text-green-600 text-2xl">{data.growth}</span> than last
+        week
       </p>
     </div>
   );

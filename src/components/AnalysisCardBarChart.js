@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -8,7 +8,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-
+import ApiService from '../services/ApiService';
+import { initialAuthState } from '../services/ApiService';
 const data = [
   { name: 'Jan', value: -10 },
   { name: 'Feb', value: 20 },
@@ -24,7 +25,31 @@ const data = [
   { name: 'Dec', value: 90 },
 ];
 
+const getAnalysis = async () => {
+  try {
+    const date = new Date();
+
+    const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}/${date.getFullYear()}`;
+    const response = await ApiService.post('/dashboards/getMonthWiseBalance', {
+      date: formattedDate,
+      companyCode: initialAuthState?.companyCode,
+      unitCode: initialAuthState?.unitCode,
+    });
+    if (response.status) {
+    } else {
+      alert(response.data.message || 'Failed to analysis details.');
+    }
+  } catch (e) {
+    console.error('error in fetching analysis details');
+  }
+};
+
 const AnalysisCardBarChart = ({ togglePopup }) => {
+  useEffect(() => {
+    getAnalysis();
+  }, []);
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold text-black mb-4">
