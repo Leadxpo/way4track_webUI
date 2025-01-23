@@ -11,8 +11,8 @@ const Login = ({ handleLoginFlag }) => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
-    console.log('ClickOutsideWrapper', '+++++++');
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -20,17 +20,22 @@ const Login = ({ handleLoginFlag }) => {
     try {
       const payload = {
         staffId: userId,
-        password,
+        password: password,
         designation: role,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log(payload, response, '++++++++++++++++++++++++++');
-      // Correctly check `status` instead of `success`
+
       if (response && response.status) {
-        localStorage.setItem('userRole', role);
+        // Store login details in localStorage
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('password', password);
+        localStorage.setItem('role', role);
+        localStorage.setItem('companyCode', initialAuthState.companyCode);
+        localStorage.setItem('unitCode', initialAuthState.unitCode);
+
         handleLoginFlag();
         navigate('/home');
       } else {
@@ -39,7 +44,7 @@ const Login = ({ handleLoginFlag }) => {
     } catch (err) {
       setError(
         err?.response?.data?.internalMessage ||
-          'Failed to login. Please check your credentials.'
+        'Failed to login. Please check your credentials.'
       );
     } finally {
       setLoading(false);
@@ -49,24 +54,11 @@ const Login = ({ handleLoginFlag }) => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="p-8 rounded-lg w-96 space-y-12 bg-white shadow-md">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <img src="/way4tracklogo.png" alt="Logo" className="h-16" />
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="text-red-500 text-sm text-center">{error}</div>
-        )}
-
         {/* Form */}
         <form className="space-y-8" onSubmit={handleLogin}>
           {/* User ID Input */}
           <div className="mb-4">
-            <label
-              htmlFor="userId"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
               Registered ID
             </label>
             <input
@@ -76,16 +68,13 @@ const Login = ({ handleLoginFlag }) => {
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-              //required
+              required
             />
           </div>
 
           {/* Password Input */}
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
@@ -95,11 +84,11 @@ const Login = ({ handleLoginFlag }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-              //required
+              required
             />
           </div>
 
-          {/* Role Selection */}
+        //           {/* Role Selection */}
           <div className="mb-6">
             <label
               htmlFor="role"
@@ -127,6 +116,7 @@ const Login = ({ handleLoginFlag }) => {
             </select>
           </div>
 
+
           {/* Login Button */}
           <button
             type="submit"
@@ -142,3 +132,4 @@ const Login = ({ handleLoginFlag }) => {
 };
 
 export default Login;
+
