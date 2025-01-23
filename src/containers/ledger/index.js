@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
+import ApiService from '../../services/ApiService'; // Assuming ApiService is correctly set up
+
 const Ledger = () => {
   const navigate = useNavigate();
+
   const [searchData, setSearchData] = useState({
     clientId: '',
     clientName: '',
     branch: '',
   });
 
-  const records = [
-    { no: '001', client: 'Petrol', items: 'Petrol', amount: '₹2099' },
-    { no: '002', client: 'Books', items: 'Books', amount: '₹2099' },
-    { no: '003', client: 'Pens', items: 'Pens', amount: '₹2099' },
-    { no: '004', client: 'Advances', items: 'Advances', amount: '₹2099' },
-  ];
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,12 +24,34 @@ const Ledger = () => {
     }));
   };
 
-  const handleSearch = () => {
-    console.log('Search data:', searchData);
+  const handleSearch = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await ApiService.post('/dashboards/getLedgerData', {
+        ...searchData,
+        companyCode: ApiService.initialAuthState?.companyCode,
+        unitCode: ApiService.initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        setRecords(response.data);
+      } else {
+        setError(response.data.message || 'No records found.');
+      }
+    } catch (error) {
+      setError('Failed to fetch ledger data. Please try again.');
+      console.error('Error fetching ledger data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleView = (ledger) => {
-    navigate('/ledger-details', { state: { ledgerDetails: ledger } });
+    navigate('/dashboards/ledger-details', {
+      state: { ledgerDetails: ledger },
+    });
   };
 
   return (
@@ -80,6 +102,10 @@ const Ledger = () => {
         </button>
       </div>
 
+      {/* Loading and Error Messages */}
+      {loading && <p className="text-blue-500">Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
       {/* Table Section */}
       <div className="overflow-x-auto border rounded-lg">
         <table className="min-w-full text-left">
@@ -93,27 +119,38 @@ const Ledger = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {records.map((record, index) => (
-              <tr
-                key={index}
-                className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} text-sm`}
-              >
-                <td className="py-1 px-4 cursor-pointer hover:underline">
-                  {record.no}
-                </td>
-                <td className="py-1 px-4">{record.client}</td>
-                <td className="py-1 px-4">{record.items}</td>
-                <td className="py-1 px-4">{record.amount}</td>
-                <td className="py-1 px-4">
-                  <button
-                    className="bg-blue-600 text-white text-sm rounded-lg px-3 py-1 hover:bg-blue-600"
-                    onClick={() => handleView(record)}
+            {records.length > 0
+              ? records.map((record, index) => (
+                  <tr
+                    key={index}
+                    className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} text-sm`}
                   >
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <td className="py-1 px-4 cursor-pointer hover:underline">
+                      {record.no}
+                    </td>
+                    <td className="py-1 px-4">{record.client}</td>
+                    <td className="py-1 px-4">{record.items}</td>
+                    <td className="py-1 px-4">{record.amount}</td>
+                    <td className="py-1 px-4">
+                      <button
+                        className="bg-blue-600 text-white text-sm rounded-lg px-3 py-1 hover:bg-blue-600"
+                        onClick={() => handleView(record)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              : !loading && (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="py-2 px-4 text-center text-gray-500"
+                    >
+                      No records found
+                    </td>
+                  </tr>
+                )}
           </tbody>
         </table>
       </div>

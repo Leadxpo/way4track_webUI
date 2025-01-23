@@ -14,12 +14,12 @@ const Analysis = () => {
     <div className="mx-32">
       {/* Analysis Components */}
       <AnalysisCardBarChart togglePopup={togglePopup} />
-      <AnalysisCard
+      {/* <AnalysisCard
         bartitle1={'Resolved Issues'}
         bartitle2={'Pending Issues'}
         barpercentage1={60}
         barpercentage2={40}
-      />
+      /> */}
 
       {/* Popup Modal */}
       {isPopupVisible && (
