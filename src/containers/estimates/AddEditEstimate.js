@@ -13,7 +13,7 @@ const AddEditEstimate = () => {
 
   // Check if editing or creating
   const isEditMode = location.state?.estimateDetails ? true : false;
-
+isEditMode && console.log("edit : ",location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
     client: '',
@@ -23,28 +23,46 @@ const AddEditEstimate = () => {
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{ name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
+    items: [{productId:'', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
     terms: '',
+    totalAmount:0
   };
 
+  const calculateTotal = (items) => {
+    return items.reduce((total, item) => {
+      const itemAmount = parseFloat(item.amount) || 0; // Ensure amount is treated as a number
+      return total + itemAmount;
+    }, 0);
+  };
   // Populate form state for edit mode
   const [formData, setFormData] = useState(
     isEditMode ? location.state.estimateDetails : initialFormState
   );
 
   const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetchClients();
+    fetchProducts();
   }, []);
 
   const fetchClients = async () => {
     try {
-      const res = await ApiService.post('/client/getClientNamesDropDown');
+      const res = await ApiService.post('/client/getClientDetails');
       setClients(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
       setClients([]);
+    }
+  };
+  const fetchProducts = async () => {
+    try {
+      const res = await ApiService.post('/products/getAllproductDetails');
+      setProducts(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch client details:', err);
+      setProducts([]);
     }
   };
 
@@ -57,7 +75,7 @@ const AddEditEstimate = () => {
       client: selectedClient.name,
       clientNumber: selectedClient.clientId,
       email: selectedClient.email,
-      clientAddress: selectedClient.clientAddress,
+      clientAddress: selectedClient.address,
     }));
   };
 
@@ -73,6 +91,44 @@ const AddEditEstimate = () => {
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
+  };
+
+  const handleProductItemChange = (index, e) => {
+
+    const { name, value } = e.target;
+    const selectedProduct = products.find(
+
+      (product) => {
+        console.log(product.productName, " ===", e.target.value)
+        return (
+          product.productName === e.target.value
+        )
+      });
+
+    console.log("rrr : ", selectedProduct)
+    const updatedItems = [...formData.items];
+    updatedItems[index][name] = value;
+    updatedItems[index]['productId'] = selectedProduct.id;
+    updatedItems[index]['rate'] = selectedProduct.price;
+    updatedItems[index]['hsnCode'] = selectedProduct.imeiNumber;
+    setFormData((prevData) => ({ ...prevData, items: updatedItems }));
+  };
+
+  const handleProductItemQuantityChange = (index, e) => {
+
+    const { name, value } = e.target;
+
+    const updatedItems = [...formData.items];
+    updatedItems[index][name] = value;
+    const productPrice = updatedItems[index]['rate'] ? updatedItems[index]['rate'] : 0
+    updatedItems[index]['amount'] = parseInt(value) * parseInt(productPrice);
+    console.log("items :", updatedItems);
+    const totalProductsAmount = calculateTotal(updatedItems)
+    setFormData((prevData) => ({
+      ...prevData,
+      totalAmount: totalProductsAmount,
+      items: updatedItems
+    }));
   };
 
   const addNewItem = () => {
@@ -91,6 +147,7 @@ const AddEditEstimate = () => {
   };
 
   const handleSave = async () => {
+    console.log(formData.items)
     const estimateDto = {
       id: formData.id || '',
       clientId: formData.clientNumber,
@@ -105,25 +162,25 @@ const AddEditEstimate = () => {
       ),
       companyCode: 'COMPANY_CODE', // Replace with actual company code
       unitCode: 'UNIT_CODE', // Replace with actual unit code
-      estimateId: formData.estimateId || undefined,
-      invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
-      GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
-      SCST: formData.SCST || 0, // Default or from formData
-      CGST: formData.CGST || 0, // Default or from formData
-      quantity: formData.items.reduce(
-        (total, item) => total + parseInt(item.quantity, 10),
-        0
-      ),
-      hsnCode: formData.items[0].hsnCode,
-      cgstPercentage: formData.cgstPercentage || 0, // For temporary use
-      scstPercentage: formData.scstPercentage || 0, // For temporary use
-      convertToInvoice: formData.convertToInvoice || false, // Boolean value
+      // estimateId: formData.estimateId || undefined,
+      // invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
+      // GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
+      // SCST: formData.SCST || 0, // Default or from formData
+      // CGST: formData.CGST || 0, // Default or from formData
+      // quantity: formData.items.reduce(
+      //   (total, item) => total + parseInt(item.quantity, 10),
+      //   0
+      // ),
+      // hsnCode: formData.items[0].hsnCode,
+      // cgstPercentage: formData.cgstPercentage || 0, // For temporary use
+      // scstPercentage: formData.scstPercentage || 0, // For temporary use
+      // convertToInvoice: formData.convertToInvoice || false, // Boolean value
       productDetails: formData.items.map((item) => ({
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
-        costPerUnit: parseFloat(item.amount), // Assuming `amount` is the cost per unit
-        totalCost: parseFloat(item.amount) * parseInt(item.quantity, 10), // Total cost calculation
+       amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
+       hsnCode: parseFloat(item.hsnCode), // Total cost calculation
       })),
     };
 
@@ -285,19 +342,25 @@ const AddEditEstimate = () => {
                     className="grid grid-cols-12 gap-2 items-center p-2 border-t"
                   >
                     <span className="col-span-1">{index + 1}</span>
-                    <input
-                      type="text"
+                    <select
                       name="name"
                       value={item.name}
-                      onChange={(e) => handleItemChange(index, e)}
-                      placeholder="Name"
-                      className="col-span-2 p-2 border rounded-md"
-                    />
+                      onChange={(e) => handleProductItemChange(index, e)}
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Select Product</option>
+                      {products.map((product) => (
+                        <option key={product.id} value={product.productName}>
+                          {product.productName}
+                        </option>
+                      ))}
+                    </select>
+
                     <input
                       type="text"
                       name="quantity"
                       value={item.quantity}
-                      onChange={(e) => handleItemChange(index, e)}
+                      onChange={(e) => handleProductItemQuantityChange(index, e)}
                       placeholder="Quantity"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -345,7 +408,7 @@ const AddEditEstimate = () => {
               </div>
             </div>
           </div>
-
+          <strong className="col-span-2 font-semibold">Total Estimate Amount : {formData.totalAmount}</strong>
           {/* Terms & Conditions */}
           <div>
             <label className="block text-sm font-semibold mb-1">
