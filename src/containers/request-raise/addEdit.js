@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
 
 const AddEditRequestForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [staff, setStaff] = useState([]);
   // Check if data is available from the location state
   const requestData = location.state?.requestDetails || {};
 
@@ -20,12 +22,25 @@ const AddEditRequestForm = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
+  // useEffect(() => {
+  //   // If employee data is present, update form data
+  //   if (requestData) {
+  //     setFormData(requestData);
+  //   }
+  // }, [requestData]);
+
   useEffect(() => {
-    // If employee data is present, update form data
-    if (requestData) {
-      setFormData(requestData);
+    try {
+      const response = ApiService.post('/staff/getStaffNamesDropDown');
+      if (response.status) {
+        setStaff(response.data);
+      } else {
+        console.error('Error');
+      }
+    } catch (e) {
+      console.error('error');
     }
-  }, [requestData]);
+  }, [staff]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

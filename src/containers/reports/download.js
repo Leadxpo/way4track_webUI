@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as ExcelJS from 'exceljs';
-
+import { EstimatePDF } from '../../components/EstimatePdf';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
+import { PurchaseOrderPDF } from '../../common/commonUtils';
 const DownloadComponent = () => {
   const location = useLocation();
   const { filterData = [], name } = location.state || {};
@@ -14,7 +17,9 @@ const DownloadComponent = () => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [inputId, setInputId] = useState('');
-
+  const [estimateData, setEstimateData] = useState([]);
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [receiptData, setReceiptData] = useState([]);
   const handleBranchChange = (event) => {
     setSelectedBranch(event.target.value);
   };
@@ -222,7 +227,7 @@ const DownloadComponent = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
-      console.log(response);
+      setReceiptData(response.data);
     } catch (e) {
       console.error('error');
     }
@@ -235,7 +240,7 @@ const DownloadComponent = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
-      console.log(response);
+      setEstimateData(response.data);
     } catch (e) {
       console.error('error');
     }
@@ -323,8 +328,70 @@ const DownloadComponent = () => {
         className="bg-green-500 text-white font-bold px-6 py-2 rounded-lg shadow-md hover:bg-green-600"
         onClick={exportExcel}
       >
-        Download
+        {name === 'Estimate' || name === 'Receipt' || name === 'Invoice'
+          ? 'Search'
+          : 'Download'}
       </button>
+
+      {estimateData &&
+        Object.keys(estimateData).length > 0 &&
+        name === 'Estimate' && (
+          <PDFDownloadLink
+            document={<EstimatePDF data={estimateData} />}
+            fileName="estimate.pdf"
+            style={{
+              textDecoration: 'none',
+              padding: '10px 20px',
+              color: 'white',
+              backgroundColor: '#007bff',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF')}
+          </PDFDownloadLink>
+        )}
+
+      {invoiceData &&
+        Object.keys(invoiceData).length > 0 &&
+        name === 'Invoice' && (
+          <PDFDownloadLink
+            document={<TaxInvoicePDF data={invoiceData} />}
+            fileName="estimate.pdf"
+            style={{
+              textDecoration: 'none',
+              padding: '10px 20px',
+              color: 'white',
+              backgroundColor: '#007bff',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF')}
+          </PDFDownloadLink>
+        )}
+
+      {receiptData &&
+        Object.keys(receiptData).length > 0 &&
+        name === 'Receipt' && (
+          <PDFDownloadLink
+            document={<PurchaseOrderPDF data={receiptData} />}
+            fileName="estimate.pdf"
+            style={{
+              textDecoration: 'none',
+              padding: '10px 20px',
+              color: 'white',
+              backgroundColor: '#007bff',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF')}
+          </PDFDownloadLink>
+        )}
     </div>
   );
 };

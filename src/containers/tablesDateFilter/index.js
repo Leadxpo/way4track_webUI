@@ -146,6 +146,27 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
+  const getRequestsData = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/requests/getRequestsBySearch', {
+        fromDate: dateFrom,
+        toDate: dateTo,
+        status: statusFilter,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch request details.');
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+      alert('Failed to fetch request details.');
+    }
+  }, [dateFrom, dateTo, statusFilter]);
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':
@@ -156,6 +177,9 @@ const TableWithDateFilter = ({
         break;
       case 'payments':
         getPaymentsData();
+        break;
+      case 'requests':
+        getRequestsData();
         break;
       default:
         break;
@@ -172,10 +196,10 @@ const TableWithDateFilter = ({
         dataSource = invoicesData;
         break;
       case 'payments':
-        dataSource = paymentsData;
+        dataSource = filteredData;
         break;
       case 'requests':
-        dataSource = requestData;
+        dataSource = filteredData;
         break;
       case 'vendors':
         dataSource = filteredData;

@@ -352,11 +352,15 @@ export const EstimatePDF = ({ data }) => (
           >
             <View style={estStyles.detailsTextBlock}>
               <Text style={estStyles.detailsText}>#</Text>
-              <Text style={estStyles.detailsTextBold}>:EST-00061</Text>
+              <Text style={estStyles.detailsTextBold}>
+                :{data.estimateNumber}
+              </Text>
             </View>
             <View style={estStyles.detailsTextBlock}>
               <Text style={estStyles.detailsText}>Pro Forma Invoice Date</Text>
-              <Text style={estStyles.detailsTextBold}>:15/01/2024</Text>
+              <Text style={estStyles.detailsTextBold}>
+                :{data.estimateDate}
+              </Text>
             </View>
           </View>
           <View style={estStyles.detailsColumn}>
@@ -371,9 +375,7 @@ export const EstimatePDF = ({ data }) => (
 
         <View style={estStyles.billToBlock}>
           <Text style={estStyles.billToText1}>Bill To</Text>
-          <Text style={estStyles.billToText2}>
-            VENKATA SAI KRISHNA STONE CRUSHER
-          </Text>
+          <Text style={estStyles.billToText2}>{data.clientName}</Text>
           <Text style={estStyles.billToText3}>GSTIN 37AAGFV7908J1ZM</Text>
         </View>
 
@@ -499,7 +501,7 @@ export const EstimatePDF = ({ data }) => (
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.totalBlockRightTextBold}>Total</Text>
                 <Text style={estStyles.totalBlockRightTextBold}>
-                  ₹52,000.00
+                  ₹{data.amount}
                 </Text>
               </View>
             </View>

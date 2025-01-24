@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import ApiService from '../../services/ApiService'; // Assuming ApiService is correctly set up
+import ApiService from '../../services/ApiService';
+import { formatString } from '../../common/commonUtils';
 
 const Ledger = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Ledger = () => {
   });
 
   const [records, setRecords] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -36,23 +38,41 @@ const Ledger = () => {
       });
 
       if (response.status) {
-        setRecords(response.data);
+        const data = response.data;
+
+        if (data.length > 0) {
+          // Extract column names dynamically from the first record
+          setColumns(Object.keys(data[0]));
+        } else {
+          setColumns([]); // No columns if no data
+        }
+
+        setRecords(data);
       } else {
         setError(response.data.message || 'No records found.');
+        setColumns([]);
+        setRecords([]);
       }
     } catch (error) {
       setError('Failed to fetch ledger data. Please try again.');
       console.error('Error fetching ledger data:', error);
+      setColumns([]);
+      setRecords([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleView = (ledger) => {
-    navigate('/dashboards/ledger-details', {
+    navigate('/ledger-details', {
       state: { ledgerDetails: ledger },
     });
   };
+
+  useEffect(() => {
+    handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="p-8 space-y-6">
@@ -89,7 +109,7 @@ const Ledger = () => {
             onChange={handleInputChange}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
           >
-            <option value="">Select Ledger</option>
+            <option value="">Select Branch</option>
             <option value="Branch1">Branch 1</option>
             <option value="Branch2">Branch 2</option>
           </select>
@@ -108,51 +128,46 @@ const Ledger = () => {
 
       {/* Table Section */}
       <div className="overflow-x-auto border rounded-lg">
-        <table className="min-w-full text-left">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700 text-sm">
-              <th className="py-2 px-4">NO.</th>
-              <th className="py-2 px-4">Number of Clients</th>
-              <th className="py-2 px-4">Number Of Items</th>
-              <th className="py-2 px-4">Amount</th>
-              <th className="py-2 px-4">View</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {records.length > 0
-              ? records.map((record, index) => (
-                  <tr
-                    key={index}
-                    className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} text-sm`}
-                  >
-                    <td className="py-1 px-4 cursor-pointer hover:underline">
-                      {record.no}
+        {records.length > 0 ? (
+          <table className="min-w-full text-left">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700 text-sm">
+                {columns.map((col, index) => (
+                  <th key={index} className="py-2 px-4">
+                    {formatString(col)}
+                  </th>
+                ))}
+                <th className="py-2 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {records.map((record, index) => (
+                <tr
+                  key={index}
+                  className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} text-sm`}
+                >
+                  {columns.map((col, colIndex) => (
+                    <td key={colIndex} className="py-1 px-4">
+                      {record[col]}
                     </td>
-                    <td className="py-1 px-4">{record.client}</td>
-                    <td className="py-1 px-4">{record.items}</td>
-                    <td className="py-1 px-4">{record.amount}</td>
-                    <td className="py-1 px-4">
-                      <button
-                        className="bg-blue-600 text-white text-sm rounded-lg px-3 py-1 hover:bg-blue-600"
-                        onClick={() => handleView(record)}
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              : !loading && (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      className="py-2 px-4 text-center text-gray-500"
+                  ))}
+                  <td className="py-1 px-4">
+                    <button
+                      className="bg-blue-600 text-white text-sm rounded-lg px-3 py-1 hover:bg-blue-600"
+                      onClick={() => handleView(record)}
                     >
-                      No records found
-                    </td>
-                  </tr>
-                )}
-          </tbody>
-        </table>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          !loading && (
+            <p className="py-4 text-center text-gray-500">No records found</p>
+          )
+        )}
       </div>
     </div>
   );
