@@ -4,7 +4,9 @@ import BodyLayout from './containers/bodyLayout';
 import Login from './containers/login';
 const App = () => {
   const [role, setRole] = useState('ceo'); // You can switch between 'ceo' and 'subdealer'
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem('userRole') || false
+  );
 
   const handleLoginFlag = () => {
     setIsLoggedIn(true);
