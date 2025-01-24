@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
+import ApiService, { initialAuthState } from '../../services/ApiService';
+
 const ProductAssign = () => {
   const navigate = useNavigate();
   const handleCreateNew = () => {
@@ -17,40 +19,62 @@ const ProductAssign = () => {
     navigate('/product-assign-details');
   };
 
-  const tableData = [
-    {
-      'Request Number': 'REQ001',
-      'Branch/Person': 'Branch A',
-      Name: 'John Doe',
-      'IME-From': 232344555555,
-      'IME-To': 232344555556,
-      'Number of Products': 5,
-    },
-    {
-      'Request Number': 'REQ002',
-      'Branch/Person': 'Person B',
-      Name: 'Jane Smith',
-      'IME-From': 232344555557,
-      'IME-To': 232344555558,
-      'Number of Products': 3,
-    },
-    {
-      'Request Number': 'REQ003',
-      'Branch/Person': 'Branch C',
-      Name: 'Michael Johnson',
-      'IME-From': 232344555559,
-      'IME-To': 232344555560,
-      'Number of Products': 8,
-    },
-    {
-      'Request Number': 'REQ004',
-      'Branch/Person': 'Person D',
-      Name: 'Emily Davis',
-      'IME-From': 232344555561,
-      'IME-To': 232344555562,
-      'Number of Products': 2,
-    },
-  ];
+  const [tableData, setTableData] = useState([])
+  useEffect(() => {
+    const productAssignDetails = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/productAssignDetails', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          setTableData(response.data || []);
+        } else {
+          setTableData([])
+        }
+      }
+      catch (error) {
+        console.error('Error fetching staff details:', error);
+        alert('Failed to fetch staff details.');
+      }
+    };
+
+    productAssignDetails();
+  }, []);
+  // const tableData = [
+  //   {
+  //     'Request Number': 'REQ001',
+  //     'Branch/Person': 'Branch A',
+  //     Name: 'John Doe',
+  //     'IME-From': 232344555555,
+  //     'IME-To': 232344555556,
+  //     'Number of Products': 5,
+  //   },
+  //   {
+  //     'Request Number': 'REQ002',
+  //     'Branch/Person': 'Person B',
+  //     Name: 'Jane Smith',
+  //     'IME-From': 232344555557,
+  //     'IME-To': 232344555558,
+  //     'Number of Products': 3,
+  //   },
+  //   {
+  //     'Request Number': 'REQ003',
+  //     'Branch/Person': 'Branch C',
+  //     Name: 'Michael Johnson',
+  //     'IME-From': 232344555559,
+  //     'IME-To': 232344555560,
+  //     'Number of Products': 8,
+  //   },
+  //   {
+  //     'Request Number': 'REQ004',
+  //     'Branch/Person': 'Person D',
+  //     Name: 'Emily Davis',
+  //     'IME-From': 232344555561,
+  //     'IME-To': 232344555562,
+  //     'Number of Products': 2,
+  //   },
+  // ];
 
   return (
     <div className="p-10">
@@ -95,4 +119,4 @@ const ProductAssign = () => {
   );
 };
 
-export default ProductAssign;
+export default ProductAssign
