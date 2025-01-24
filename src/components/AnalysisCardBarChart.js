@@ -11,7 +11,7 @@ import {
 import ApiService from '../services/ApiService';
 import { initialAuthState } from '../services/ApiService';
 
-const AnalysisCardBarChart = ({ togglePopup }) => {
+const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
   const [chartData, setChartData] = useState([]);
   const [credits, setCredits] = useState([]);
   const [debits, setDebits] = useState([]);
@@ -156,11 +156,32 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
             No. of Credits
           </h3>
           <ul className="text-gray-700 text-lg mt-2">
-            {credits.map((credit, index) => (
+            {/* {credits.map((credit, index) => (
               <li key={index}>
                 {index + 1}. {credit.label}: {credit.percentage.toFixed(2)}%
               </li>
-            ))}
+            ))} */}
+            <li>
+              1. Sales:{' '}
+              {creditDebitPercent.reduce((sum, item) => {
+                return sum + (item.salesCreditPercentage || 0); // Add value or default to 0
+              }, 0) / creditDebitPercent.length}
+              %
+            </li>
+            <li>
+              2. Products:
+              {creditDebitPercent.reduce((sum, item) => {
+                return sum + (item.productCreditPercentage || 0); // Add value or default to 0
+              }, 0) / creditDebitPercent.length}
+              %
+            </li>
+            <li>
+              3. Services:{' '}
+              {creditDebitPercent.reduce((sum, item) => {
+                return sum + (item.serviceCreditPercentage || 0); // Add value or default to 0
+              }, 0) / creditDebitPercent.length}
+              %
+            </li>
           </ul>
           <button
             className="bg-green-500 text-white px-4 py-2 mt-4 rounded-full"
@@ -174,11 +195,25 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
         <div className="text-center">
           <h3 className="text-red-600 font-semibold text-xl">No. of Debits</h3>
           <ul className="text-gray-700 text-lg mt-2">
-            {debits.map((debit, index) => (
+            {/* {debits.map((debit, index) => (
               <li key={index}>
                 {index + 1}. {debit.label}: {debit.percentage.toFixed(2)}%
               </li>
-            ))}
+            ))} */}
+            <li>
+              1. Salaries:{' '}
+              {creditDebitPercent.reduce((sum, item) => {
+                return sum + (item.salariesDebitPercentage || 0); // Add value or default to 0
+              }, 0) / creditDebitPercent.length}
+              %
+            </li>
+            <li>
+              2. Expenses:{' '}
+              {creditDebitPercent.reduce((sum, item) => {
+                return sum + (item.expansesDebitPercentage || 0); // Add value or default to 0
+              }, 0) / creditDebitPercent.length}
+              %
+            </li>
           </ul>
           <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded-full">
             For More

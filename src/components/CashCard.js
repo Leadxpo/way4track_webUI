@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CashCard = ({ title, amount, details }) => {
+const CashCard = ({ title, amount, details, branchWiseDetails }) => {
   return (
     <div className="bg-green-300 rounded-3xl shadow-lg p-6 w-full max-w-lg flex justify-between items-center mt-6">
       {/* Left Side */}
@@ -13,18 +13,12 @@ const CashCard = ({ title, amount, details }) => {
 
       {/* Right Side */}
       <div>
-        <p className="text-lg font-medium whitespace-nowrap">
-          Branch 01: ₹5000/-
-        </p>
-        <p className="text-lg font-medium whitespace-nowrap">
-          Branch 02: ₹5000/-
-        </p>
-        <p className="text-lg font-medium whitespace-nowrap">
-          Branch 03: ₹5000/-
-        </p>
-        <p className="text-lg font-medium whitespace-nowrap">
-          Branch 04: ₹5000/-
-        </p>
+        {/* {branchWiseDetails.map((branch) => (
+          <p className="text-lg font-medium whitespace-nowrap">
+            {branch.branchName}:{' '}
+            {title == 'Solid Cash' ? branch.solidCash : branch.liquidCash}/-
+          </p>
+        ))} */}
       </div>
     </div>
   );
