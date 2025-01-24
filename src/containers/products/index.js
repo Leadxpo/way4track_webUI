@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEllipsisVertical } from 'react-icons/fa6';
 import { FaList, FaTh, FaPlus } from 'react-icons/fa';
 import DropdownCard from '../../components/DropdownCard';
 import { useNavigate } from 'react-router';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 import Table from '../../components/Table';
 const Products = () => {
   const navigate = useNavigate();
@@ -11,108 +12,31 @@ const Products = () => {
   const [totalBranch, setTotalBranch] = useState('All Branches');
   const [inHandBranch, setInHandBranch] = useState('All Branches');
   const [installationBranch, setInstallationBranch] = useState('All Branches');
+  const [products, setProducts] = useState([])
   const handleSelectChange = (e) => {
     setSelectedBranch(e.target.value);
   };
 
-  const products = [
-    {
-      name: 'Bike GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor A',
-      imeiNumber: '123456789012345',
-      presentStock: 50,
-    },
-    {
-      name: 'Car GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor B',
-      imeiNumber: '987654321098765',
-      presentStock: 30,
-    },
-    {
-      name: 'AIS 140 VLTD for transport & commercial vehicles.',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor C',
-      imeiNumber: '112233445566778',
-      presentStock: 20,
-    },
-    {
-      name: 'Fuel Monitoring System',
-      description:
-        'Basically, fuel is very important, and the cost of fuel is always a fear when it comes to cost-effectiveness and profit and hence fuel monitoring is an inevitable factor in fleet management to gain fuel efficiency.',
-      vendorName: 'Vendor D',
-      imeiNumber: '556677889900112',
-      presentStock: 15,
-    },
-    {
-      name: 'Car GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor B',
-      imeiNumber: '223344556677889',
-      presentStock: 40,
-    },
-    {
-      name: 'AIS 140 VLTD for transport & commercial vehicles.',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor C',
-      imeiNumber: '334455667788990',
-      presentStock: 25,
-    },
-    {
-      name: 'Bike GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor A',
-      imeiNumber: '445566778899001',
-      presentStock: 60,
-    },
-    {
-      name: 'Car GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor B',
-      imeiNumber: '556677889900112',
-      presentStock: 35,
-    },
-    {
-      name: 'AIS 140 VLTD for transport & commercial vehicles.',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor C',
-      imeiNumber: '667788990011223',
-      presentStock: 20,
-    },
-    {
-      name: 'Fuel Monitoring System',
-      description:
-        'Basically, fuel is very important, and the cost of fuel is always a fear when it comes to cost-effectiveness and profit and hence fuel monitoring is an inevitable factor in fleet management to gain fuel efficiency.',
-      vendorName: 'Vendor D',
-      imeiNumber: '778899001122334',
-      presentStock: 10,
-    },
-    {
-      name: 'Car GPS Tracker',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor B',
-      imeiNumber: '889900112233445',
-      presentStock: 45,
-    },
-    {
-      name: 'AIS 140 VLTD for transport & commercial vehicles.',
-      description:
-        'Way4Track offers tracking and monitoring services for your personal vehicle.',
-      vendorName: 'Vendor C',
-      imeiNumber: '990011223344556',
-      presentStock: 30,
-    },
-  ];
+  useEffect(() => {
+    const getAllproductDetails = async () => {
+      try {
+        const response = await ApiService.post('/products/getAllproductDetails', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          console.log(response.data, "res++++++++++++++")
+          setProducts(response.data);
+        }
+      }
+      catch (error) {
+        console.error('Error fetching staff details:', error);
+        alert('Failed to fetch staff details.');
+      }
+    };
+
+    getAllproductDetails();
+  }, []);
 
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
@@ -226,9 +150,9 @@ const Products = () => {
 
               {/* Name and Description */}
               <div className="text-center mt-4">
-                <h2 className="text-lg font-semibold">{profile.name}</h2>
+                <h2 className="text-lg font-semibold">{profile.productName}</h2>
                 <p className="text-sm text-gray-500">
-                  {truncateString(profile.description)}
+                  {truncateString(profile.productDescription)}
                 </p>
               </div>
 

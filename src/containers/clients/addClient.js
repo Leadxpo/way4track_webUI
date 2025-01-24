@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { FaFileCirclePlus } from 'react-icons/fa6';
-import { useNavigate, useLocation } from 'react-router-dom';
-import ApiService from '../../services/ApiService';
-import { initialAuthState } from '../../services/ApiService';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 const AddEditClient = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if there's client data passed through location.state
   const clientData = location.state?.clientDetails || {};
-
-
-  // Initialize form data with existing client details if available
   const initialFormData = {
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
@@ -29,7 +23,6 @@ const AddEditClient = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState(clientData?.file || '');
-  // const [clientList, setClientList] = useState([]);
 
 
 
@@ -79,7 +72,6 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, formData, "+++++++++++++++++++++++++")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {

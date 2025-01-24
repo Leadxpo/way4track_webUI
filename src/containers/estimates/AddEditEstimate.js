@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import generatePDF, { PurchaseOrderPDF } from '../../common/commonUtils';
-import { MyPDF } from '../../common/commonUtils';
 import { EstimatePDF } from '../../components/EstimatePdf';
-import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
-import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService from '../../services/ApiService';
 
 const AddEditEstimate = () => {
@@ -131,7 +128,6 @@ const AddEditEstimate = () => {
     console.log('date type', typeof estimateDto.estimateDate);
     try {
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
-      console.log('Estimate saved:', estimateDto);
       navigate('/estimate');
     } catch (err) {
       console.error('Failed to save estimate:', err);

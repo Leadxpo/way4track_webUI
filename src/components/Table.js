@@ -63,7 +63,6 @@ const Table = ({
   detailsText = 'More Details',
 }) => {
   const [openRowIndex, setOpenRowIndex] = useState(null);
-  console.log(columns, "}}}}}}}}}}}}}}}")
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };

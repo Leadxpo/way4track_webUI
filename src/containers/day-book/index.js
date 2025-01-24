@@ -23,7 +23,6 @@ const DayBook = () => {
 
         if (response.status) {
           setFilteredData(response.data);
-          console.log(response.data, "{{{{{{{{{{{{{{{{{{{{{{{{{{")
         } else {
           alert(response.data.message || 'Failed to fetch day book details.');
         }

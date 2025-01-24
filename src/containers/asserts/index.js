@@ -87,7 +87,6 @@ const Asserts = () => {
       });
 
       if (response.status) {
-        console.log(response.data, "Response Data");  // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch vendor details.');

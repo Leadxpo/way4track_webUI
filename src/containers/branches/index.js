@@ -10,9 +10,11 @@ const Branches = () => {
   const [branches, setBranches] = useState([]);
   const [percentages, setPercentages] = useState([]);
 
+  // Fetch branches and percentages on component load
   useEffect(() => {
     const fetchBranchesAndPercentages = async () => {
       try {
+        // Fetch branch names
         const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
         if (branchResponse.status) {
           setBranches(branchResponse.data);
@@ -20,6 +22,7 @@ const Branches = () => {
           console.error('Failed to fetch branches');
         }
 
+        // Fetch percentages
         const percentageResponse = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
@@ -37,6 +40,7 @@ const Branches = () => {
     fetchBranchesAndPercentages();
   }, []);
 
+  // Combine branches and percentages
   const combinedBranches = branches.map((branch) => {
     const percentageData = percentages.find((p) => p.id === branch.id) || {};
     return {
