@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -10,46 +10,114 @@ import {
 } from 'recharts';
 import ApiService from '../services/ApiService';
 import { initialAuthState } from '../services/ApiService';
-const data = [
-  { name: 'Jan', value: -10 },
-  { name: 'Feb', value: 20 },
-  { name: 'Mar', value: 50 },
-  { name: 'Apr', value: 40 },
-  { name: 'May', value: 30 },
-  { name: 'Jun', value: 60 },
-  { name: 'Jul', value: 70 },
-  { name: 'Aug', value: 50 },
-  { name: 'Sep', value: 40 },
-  { name: 'Oct', value: 60 },
-  { name: 'Nov', value: 80 },
-  { name: 'Dec', value: 90 },
-];
-
-const getAnalysis = async () => {
-  try {
-    const date = new Date();
-
-    const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
-      date.getMonth() + 1
-    ).padStart(2, '0')}/${date.getFullYear()}`;
-    const response = await ApiService.post('/dashboards/getMonthWiseBalance', {
-      date: formattedDate,
-      companyCode: initialAuthState?.companyCode,
-      unitCode: initialAuthState?.unitCode,
-    });
-    if (response.status) {
-    } else {
-      alert(response.data.message || 'Failed to analysis details.');
-    }
-  } catch (e) {
-    console.error('error in fetching analysis details');
-  }
-};
 
 const AnalysisCardBarChart = ({ togglePopup }) => {
+  const [chartData, setChartData] = useState([]);
+  const [credits, setCredits] = useState([]);
+  const [debits, setDebits] = useState([]);
+
+  const calculatePercentageChange = (data) => {
+    return data.map((item, index, array) => {
+      if (index === 0) {
+        return { ...item, growthPercentage: 0 }; // First month has no growth
+      }
+      const previousBalance = array[index - 1].balanceAmount;
+      const currentBalance = item.balanceAmount;
+
+      const growthPercentage = previousBalance
+        ? ((currentBalance - previousBalance) / previousBalance) * 100
+        : 0;
+
+      return {
+        ...item,
+        growthPercentage: parseFloat(growthPercentage.toFixed(2)), // Limit to 2 decimals
+      };
+    });
+  };
+
+  const getAnalysis = async () => {
+    try {
+      const date = new Date();
+      const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
+        date.getMonth() + 1
+      ).padStart(2, '0')}/${date.getFullYear()}`;
+
+      const response = await ApiService.post(
+        '/dashboards/getMonthWiseBalance',
+        {
+          date: formattedDate,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        const fetchedData = response.data;
+
+        const formattedChartData = calculatePercentageChange(fetchedData).map(
+          (item) => ({
+            name: item.monthName,
+            value: item.growthPercentage,
+          })
+        );
+        setChartData(formattedChartData);
+
+        const totalCreditAmount = fetchedData.reduce(
+          (sum, item) => sum + item.creditAmount,
+          0
+        );
+        const totalDebitAmount = fetchedData.reduce(
+          (sum, item) => sum + item.debitAmount,
+          0
+        );
+
+        setCredits([
+          {
+            label: 'Products',
+            percentage:
+              ((fetchedData[0]?.creditAmount || 0) / totalCreditAmount) * 100,
+          },
+          {
+            label: 'Sales',
+            percentage:
+              ((fetchedData[1]?.creditAmount || 0) / totalCreditAmount) * 100,
+          },
+          {
+            label: 'Serves',
+            percentage:
+              ((fetchedData[2]?.creditAmount || 0) / totalCreditAmount) * 100,
+          },
+        ]);
+
+        setDebits([
+          {
+            label: 'Salaries',
+            percentage:
+              ((fetchedData[0]?.debitAmount || 0) / totalDebitAmount) * 100,
+          },
+          {
+            label: 'Expenses',
+            percentage:
+              ((fetchedData[1]?.debitAmount || 0) / totalDebitAmount) * 100,
+          },
+          {
+            label: 'Vouchers',
+            percentage:
+              ((fetchedData[2]?.debitAmount || 0) / totalDebitAmount) * 100,
+          },
+        ]);
+      } else {
+        alert(response.data.message || 'Failed to fetch analysis details.');
+      }
+    } catch (e) {
+      console.error('Error in fetching analysis details:', e);
+    }
+  };
+
   useEffect(() => {
     getAnalysis();
   }, []);
+
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold text-black mb-4">
@@ -59,7 +127,7 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
       {/* Chart Section */}
       <div className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-lg p-4 shadow-md">
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
+          <LineChart data={chartData}>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="white"
@@ -68,6 +136,7 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
             />
             <XAxis dataKey="name" axisLine={false} tickLine={false} />
             <YAxis axisLine={false} tickLine={false} />
+            <Tooltip />
             <Line
               type="monotone"
               dataKey="value"
@@ -87,9 +156,11 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
             No. of Credits
           </h3>
           <ul className="text-gray-700 text-lg mt-2">
-            <li>1. Products: 40%</li>
-            <li>2. Sales: 30%</li>
-            <li>3. Serves: 5%</li>
+            {credits.map((credit, index) => (
+              <li key={index}>
+                {index + 1}. {credit.label}: {credit.percentage.toFixed(2)}%
+              </li>
+            ))}
           </ul>
           <button
             className="bg-green-500 text-white px-4 py-2 mt-4 rounded-full"
@@ -103,9 +174,11 @@ const AnalysisCardBarChart = ({ togglePopup }) => {
         <div className="text-center">
           <h3 className="text-red-600 font-semibold text-xl">No. of Debits</h3>
           <ul className="text-gray-700 text-lg mt-2">
-            <li>1. Salaries: 10%</li>
-            <li>2. Expenses: 10%</li>
-            <li>3. Vouchers: 5%</li>
+            {debits.map((debit, index) => (
+              <li key={index}>
+                {index + 1}. {debit.label}: {debit.percentage.toFixed(2)}%
+              </li>
+            ))}
           </ul>
           <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded-full">
             For More

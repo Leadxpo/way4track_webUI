@@ -116,7 +116,7 @@ export const PurchaseOrderPDF = ({ data }) => (
     <Page>
       <View style={poStyles.titleBlock}>
         <Text style={poStyles.mainTitle}>PURCHASE ORDER</Text>
-        <Text style={poStyles.poNumber}># PO-0014</Text>
+        <Text style={poStyles.poNumber}># {data.receiptId}</Text>
       </View>
 
       <View>
@@ -153,7 +153,7 @@ export const PurchaseOrderPDF = ({ data }) => (
 
       <View style={poStyles.companyDetailsBlock}>
         <Text style={poStyles.companyTextNormal}>Delivery To</Text>
-        <Text style={poStyles.companyTextBold}>Sunil G</Text>
+        <Text style={poStyles.companyTextBold}>{data.clientName}</Text>
         <Text style={poStyles.companyTextNormal}>
           Company ID : U74999AP2018PTC108597
         </Text>
@@ -164,7 +164,9 @@ export const PurchaseOrderPDF = ({ data }) => (
         </Text>
         <Text style={poStyles.companyTextNormal}>India</Text>
         <Text style={poStyles.companyTextNormal}>GSTIN 37ABACS4415R1ZV</Text>
-        <Text style={poStyles.textRightAlign}>Date : 28/10/2024</Text>
+        <Text style={poStyles.textRightAlign}>
+          Date : {data.generationDate}
+        </Text>
       </View>
 
       <View style={poStyles.tableBlock}>
@@ -196,9 +198,9 @@ export const PurchaseOrderPDF = ({ data }) => (
       </View>
 
       <View style={poStyles.companyDetailsBlock}>
-        <Text style={poStyles.textRightAlign}>Sub Total : 25,000.00</Text>
+        <Text style={poStyles.textRightAlign}>Sub Total : {data.amount}</Text>
         <Text style={{ marginTop: '10px', ...poStyles.textRightAlignBold }}>
-          Total : 25,000.00
+          Total : {data.amount}
         </Text>
       </View>
       <View style={poStyles.companyDetailsBlock}>
