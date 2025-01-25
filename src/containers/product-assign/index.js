@@ -19,21 +19,23 @@ const ProductAssign = () => {
     navigate('/product-assign-details');
   };
 
-  const [tableData, setTableData] = useState([])
+  const [tableData, setTableData] = useState([]);
   useEffect(() => {
     const productAssignDetails = async () => {
       try {
-        const response = await ApiService.post('/dashboards/productAssignDetails', {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/dashboards/productAssignDetails',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           setTableData(response.data || []);
         } else {
-          setTableData([])
+          setTableData([]);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching staff details:', error);
         alert('Failed to fetch staff details.');
       }
@@ -108,7 +110,7 @@ const ProductAssign = () => {
 
       <div className="mt-8">
         <Table
-          columns={Object.keys(tableData[0])}
+          columns={tableData.length > 0 ? Object.keys(tableData[0]) : []}
           data={tableData}
           onEdit={onEdit}
           onDetails={onDetails}
@@ -119,4 +121,4 @@ const ProductAssign = () => {
   );
 };
 
-export default ProductAssign
+export default ProductAssign;
