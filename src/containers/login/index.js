@@ -51,7 +51,7 @@ const Login = ({ handleLoginFlag }) => {
       <div className="p-8 rounded-lg w-96 space-y-12 bg-white shadow-md">
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <img src="/way4tracklogo.png" alt="Logo" className="h-16" />
+          <img src="./way4tracklogo.png" alt="Logo" className="h-16" />
         </div>
 
         {/* Error Message */}

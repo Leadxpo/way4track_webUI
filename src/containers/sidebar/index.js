@@ -28,7 +28,7 @@ const Sidebar = ({ role }) => {
         <div className="h-full w-60 bg-zinc-900 text-white flex flex-col justify-between">
             <div>
                 <div className="ml-4">
-                    <img src="/logo.png" alt="Company Logo" className="h-24 w-44" />
+                    <img src="./logo.png" alt="Company Logo" className="h-24 w-44" />
                 </div>
                 <div className="px-4 py-6 space-y-4">
                     {items.map((item, index) => (

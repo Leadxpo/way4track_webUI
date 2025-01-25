@@ -1,7 +1,7 @@
 {
   "name": "way4track-ui",
-  "version": "0.1.0",
   "homepage": "./",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@react-google-maps/api": "^2.20.3",

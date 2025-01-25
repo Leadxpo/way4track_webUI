@@ -52,7 +52,7 @@ const Reports = () => {
   const [CardData, setCardData] = useState([
     {
       id: 1,
-      icon: <img src="products_box.png" />,
+      icon: <img src="./products_box.png" />,
       title: 'Total Products',
       count: 120,
       growth: '+55%',
@@ -60,7 +60,7 @@ const Reports = () => {
     },
     {
       id: 2,
-      icon: <img src="ticket.png" />,
+      icon: <img src="./ticket.png" />,
       title: 'Total Tickets',
       count: 75,
       growth: '+40%',
@@ -68,7 +68,7 @@ const Reports = () => {
     },
     {
       id: 3,
-      icon: <img src="expenses.png" />,
+      icon: <img src="./expenses.png" />,
       title: 'Expenses',
       count: 5000,
       growth: '+20%',
@@ -76,7 +76,7 @@ const Reports = () => {
     },
     {
       id: 4,
-      icon: <img src="sale.png" />,
+      icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
       growth: '+30%',

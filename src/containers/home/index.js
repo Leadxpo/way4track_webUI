@@ -33,7 +33,7 @@ const Home = () => {
   const [cardData, setCardData] = useState([
     {
       id: 1,
-      icon: <img src="products_box.png" />,
+      icon: <img src="./products_box.png" />,
       title: 'Total Products',
       count: 120,
       growth: '+55%',
@@ -41,7 +41,7 @@ const Home = () => {
     },
     {
       id: 2,
-      icon: <img src="ticket.png" />,
+      icon: <img src="./ticket.png" />,
       title: 'Total Tickets',
       count: 75,
       growth: '+40%',
@@ -49,7 +49,7 @@ const Home = () => {
     },
     {
       id: 3,
-      icon: <img src="expenses.png" />,
+      icon: <img src="./expenses.png" />,
       title: 'Expenses',
       count: 5000,
       growth: '+20%',
@@ -57,7 +57,7 @@ const Home = () => {
     },
     {
       id: 4,
-      icon: <img src="sale.png" />,
+      icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
       growth: '+30%',
@@ -137,7 +137,7 @@ const Home = () => {
   const CardData = [
     {
       id: 1,
-      icon: <img src="products_box.png" />,
+      icon: <img src="./products_box.png" />,
       title: 'Total Products',
       count: 120,
       growth: '+55%',
@@ -145,7 +145,7 @@ const Home = () => {
     },
     {
       id: 2,
-      icon: <img src="ticket.png" />,
+      icon: <img src="./ticket.png" />,
       title: 'Total Tickets',
       count: 75,
       growth: '+40%',
@@ -153,7 +153,7 @@ const Home = () => {
     },
     {
       id: 3,
-      icon: <img src="expenses.png" />,
+      icon: <img src="./expenses.png" />,
       title: 'Expenses',
       count: 5000,
       growth: '+20%',
@@ -161,7 +161,7 @@ const Home = () => {
     },
     {
       id: 4,
-      icon: <img src="sale.png" />,
+      icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
       growth: '+30%',
@@ -586,7 +586,7 @@ const Home = () => {
           </div>
 
           <div className="w-2/5 relative flex justify-center items-center">
-            <img src="map.png" />
+            <img src="./map.png" />
           </div>
         </div>
       </div>

@@ -76,7 +76,7 @@ const ProfileSettings = () => {
           </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <img src="Google.png" alt="Google" className="w-6 h-6" />
+              <img src="./Google.png" alt="Google" className="w-6 h-6" />
               <span className="text-gray-800">Google</span>
             </div>
             <p>Connected</p>
