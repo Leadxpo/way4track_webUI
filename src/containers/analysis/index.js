@@ -1,19 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AnalysisCard from '../../components/AnalysisCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
-
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const Analysis = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-
+  const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   // Handle popup visibility
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
   };
 
+  const getProductTypeCreditAndDebitPercentages = async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getProductTypeCreditAndDebitPercentages',
+        {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+        setCreditDebitPercent(response.data);
+      } else {
+        alert(response.data.message || 'Failed to analysis details.');
+      }
+    } catch (e) {
+      console.error('error in fetching analysis details');
+    }
+  };
+  useEffect(() => {
+    getProductTypeCreditAndDebitPercentages();
+  }, []);
+
   return (
     <div className="mx-32">
       {/* Analysis Components */}
-      <AnalysisCardBarChart togglePopup={togglePopup} />
+      <AnalysisCardBarChart
+        togglePopup={togglePopup}
+        creditDebitPercent={creditDebitPercent}
+      />
       {/* <AnalysisCard
         bartitle1={'Resolved Issues'}
         bartitle2={'Pending Issues'}

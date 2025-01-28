@@ -120,33 +120,38 @@ const BodyLayout = ({ children }) => {
   };
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
+      <div className="p-4 flex flex-wrap md:flex-nowrap justify-between items-center">
+        {/* Logo and Path */}
+        <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <img
             src="/way4tracklogo.png"
             alt="Client Logo"
-            className="h-10 m-4"
+            className="h-8 w-auto" // Adjust the size for better responsiveness
           />
-          <span className="flex items-center text-gray-700 font-bold">
-            {getIcon()}
-            <span className="ml-2">
-              <p className="text-xs">Pages / {getPathname()}</p>
-              <p className="text-xs font-bold">Dashboard</p>
+          <span className="flex flex-col items-start text-gray-700 font-bold">
+            <span className="flex items-center">
+              {getIcon()}
+              <span className="ml-2">
+                <p className="text-xs">Pages / {getPathname()}</p>
+                <p className="text-xs font-bold">Dashboard</p>
+              </span>
             </span>
           </span>
         </div>
-        <div className="flex space-x-6 mr-4">
+
+        {/* Search and Icons */}
+        <div className="flex flex-col md:flex-row items-center md:space-x-6 w-full md:w-auto">
           {role === 'Accountant' ? (
             <button
-              className="bg-red-500 text-sm w-fit text-white p-1"
+              className="bg-red-500 text-sm text-white p-1 mb-4 md:mb-0"
               onClick={() => navigate('/bank-details-dashboard')}
             >
               Bank Account Details
             </button>
           ) : (
-            <div className="w-full relative">
+            <div className="w-full md:w-auto relative mb-4 md:mb-0">
               <input
-                className="w-full border rounded pl-2 text-sm focus:outline-none"
+                className="w-full md:w-64 border rounded pl-2 text-sm focus:outline-none"
                 placeholder="Search here"
                 value={searchTerm}
                 onChange={handleSearch}
@@ -168,18 +173,21 @@ const BodyLayout = ({ children }) => {
             </div>
           )}
 
-          <FaUserCircle
-            className="text-xl text-gray-600"
-            onClick={() => navigate('/profile')}
-          />
-          <FaCog
-            className="text-xl text-gray-600"
-            onClick={() => navigate('/settings')}
-          />
-          <FaBell
-            className="text-xl text-gray-600"
-            onClick={() => navigate('/notifications')}
-          />
+          {/* Icons */}
+          <div className="flex space-x-4">
+            <FaUserCircle
+              className="text-xl text-gray-600 cursor-pointer"
+              onClick={() => navigate('/profile')}
+            />
+            <FaCog
+              className="text-xl text-gray-600 cursor-pointer"
+              onClick={() => navigate('/settings')}
+            />
+            <FaBell
+              className="text-xl text-gray-600 cursor-pointer"
+              onClick={() => navigate('/notifications')}
+            />
+          </div>
         </div>
       </div>
 

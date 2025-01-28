@@ -22,24 +22,8 @@ const ProductAssign = () => {
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [product, setproduct] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
-  useEffect(() => {
-    const fetchBranches = async () => {
-      try {
-        const response = await ApiService.post('/api/branch/getBranchNamesDropDown');
-        if (response.status) {
-          setBranches(response.data);
-        } else {
-          console.error('Failed to fetch branches');
-        }
-      } catch (error) {
-        console.error('Error fetching branches:', error);
-      }
-    };
-    fetchBranches();
-  }, []);
 
-
-  const productAssignDetails = async (branchName = 'All') => {
+ const productAssignDetails = async (branchName = 'All') => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
@@ -124,4 +108,4 @@ const ProductAssign = () => {
   );
 };
 
-export default ProductAssign
+export default ProductAssign;

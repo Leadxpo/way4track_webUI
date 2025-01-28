@@ -48,9 +48,16 @@ const AddProductForm = () => {
   useEffect(() => {
     const fetchVendors = async () => {
       try {
-        const response = await ApiService.post('/vendor/getVendorNamesDropDown');
-        console.log("res", response.data, "{{{{{{{{")
-        setVendors(response.data);
+        const response = await ApiService.post(
+          '/vendor/getVendorNamesDropDown'
+        );
+        console.log('res', response.data, '{{{{{{{{');
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          vendorName: item.name,
+          name: undefined,
+        }));
+        setVendors(modifiedData);
       } catch (error) {
         console.error('Failed to fetch vendors:', error);
       }
@@ -93,10 +100,9 @@ const AddProductForm = () => {
         const response = await ApiService.post('/api/products/bulk-upload', bulkPayload, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         if (response.data.status) {
           alert('Bulk upload successful!');
-          navigate('/staff');
+          navigate('/products');
         } else {
           alert('Bulk upload failed. Please try again.');
         }
@@ -115,7 +121,6 @@ const AddProductForm = () => {
         const response = await ApiService.post('/api/products/createOrUpdateProduct', payload, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         if (response.data.status) {
           alert('Product saved successfully!');
           navigate('/staff');
@@ -133,7 +138,9 @@ const AddProductForm = () => {
 
   // Vendor selection
   const handleVendorChange = (e) => {
-    const selectedVendor = vendors.find((vendor) => vendor.vendorId === e.target.value);
+    const selectedVendor = vendors.find(
+      (vendor) => vendor.vendorId === e.target.value
+    );
     setFormData((prev) => ({
       ...prev,
       vendorId: selectedVendor?.vendorId || '',
@@ -142,7 +149,7 @@ const AddProductForm = () => {
       vendorEmailId: selectedVendor?.vendorEmailId || '',
       vendorPhoneNumber: selectedVendor?.vendorPhoneNumber || '',
     }));
-    console.log(selectedVendor, "{{{{{{{{{{{{")
+    console.log(selectedVendor, '{{{{{{{{{{{{');
   };
 
   // Render form fields dynamically
@@ -168,14 +175,16 @@ const AddProductForm = () => {
         <div>
           <label className="font-semibold mb-1 block">Product Image</label>
           <input type="file" accept="image/*" onChange={handleImageChange} />
-          {image && <img src={image} alt="Preview" className="mt-4 w-24 h-24 rounded" />}
+          {image && (
+            <img src={image} alt="Preview" className="mt-4 w-24 h-24 rounded" />
+          )}
         </div>
 
         {vendors.length > 0 && (
           <div>
             <p className="font-semibold mb-1">Vendor</p>
             <select
-              name="vendorId"
+              name="vendorName"
               value={formData.vendorId}
               onChange={handleVendorChange}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -184,7 +193,7 @@ const AddProductForm = () => {
                 Select a Vendor
               </option>
               {vendors.map((vendor) => (
-                <option key={vendor.vendorId} value={vendor.vendorName}>
+                <option key={vendor.vendorId} value={vendor.vendorId}>
                   {vendor.vendorName}
                 </option>
               ))}
@@ -211,7 +220,6 @@ const AddProductForm = () => {
         {renderField('Device Model', 'deviceModel')}
         {renderField('Category Name', 'categoryName')}
 
-
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
           <input type="file" accept=".csv" onChange={handleBulkFileChange} />
@@ -224,7 +232,11 @@ const AddProductForm = () => {
             className="p-3 bg-blue-500 text-white rounded-md w-full"
             disabled={isLoading}
           >
-            {isLoading ? 'Processing...' : bulkFile ? 'Upload Bulk File' : 'Save Product'}
+            {isLoading
+              ? 'Processing...'
+              : bulkFile
+                ? 'Upload Bulk File'
+                : 'Save Product'}
           </button>
         </div>
       </form>

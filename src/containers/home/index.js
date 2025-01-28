@@ -3,9 +3,9 @@ import TotalCountCard from '../../components/TotalCountCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
-import totalProducts from '../../mockData/mockTotalProducts.json';
-import totalExpenses from '../../mockData/mockExpenses.json';
-import totalPurchases from '../../mockData/mockTotalPurchases.json';
+// import totalProducts from '../../mockData/mockTotalProducts.json';
+// import totalExpenses from '../../mockData/mockExpenses.json';
+// import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { FaSearch } from 'react-icons/fa';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -15,8 +15,8 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 const Home = () => {
-  const [tableData, setTableData] = useState(totalProducts);
-  const [filteredData, setFilteredData] = useState(totalProducts);
+  const [tableData, setTableData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [tableColumns, setTableColumns] = useState([]);
   const [selectedCard, setSelectedCard] = useState('Total Products');
   const [dateFrom, setDateFrom] = useState('');
@@ -29,11 +29,18 @@ const Home = () => {
   const [totalTicketDetails, setTotalTicketDetails] = useState({});
   const [totalProductDetails, setTotalProductDetails] = useState({});
   const [solidLiquidData, setSolidLiquidData] = useState({});
+  const [creditDebitPercent, setCreditDebitPercent] = useState([]);
+  const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState(
+    {}
+  );
+  const [totalProducts, setTotalProducts] = useState([]);
+  const [totalExpenses, setTotalExpenses] = useState([]);
+  const [totalPurchases, setTotalPurchases] = useState([]);
   const [branch_details, setBranchDetails] = useState([]);
   const [cardData, setCardData] = useState([
     {
       id: 1,
-      icon: <img src="products_box.png" />,
+      icon: <img src="./products_box.png" />,
       title: 'Total Products',
       count: 120,
       growth: '+55%',
@@ -41,7 +48,7 @@ const Home = () => {
     },
     {
       id: 2,
-      icon: <img src="ticket.png" />,
+      icon: <img src="./ticket.png" />,
       title: 'Total Tickets',
       count: 75,
       growth: '+40%',
@@ -49,7 +56,7 @@ const Home = () => {
     },
     {
       id: 3,
-      icon: <img src="expenses.png" />,
+      icon: <img src="./expenses.png" />,
       title: 'Expenses',
       count: 5000,
       growth: '+20%',
@@ -57,42 +64,14 @@ const Home = () => {
     },
     {
       id: 4,
-      icon: <img src="sale.png" />,
+      icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
       growth: '+30%',
       bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
     },
   ]);
-  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
-  // const branch_details = [
-  //   {
-  //     branch_name: 'Vishakapatnam',
-  //     service_sales: 500,
-  //     product_sales: 1200,
-  //     total_sales: 1700,
-  //   },
-  //   {
-  //     branch_name: 'Hyderabad',
-  //     service_sales: 600,
-  //     product_sales: 1400,
-  //     total_sales: 2000,
-  //   },
-  //   {
-  //     branch_name: 'Vijayawada',
-  //     service_sales: 500,
-  //     product_sales: 500,
-  //     total_sales: 1000,
-  //   },
-  //   {
-  //     branch_name: 'Kakinada',
-  //     service_sales: 500,
-  //     product_sales: 1100,
-  //     total_sales: 1600,
-  //   },
-  // ];
-
-  const branchesData = [
+  const [branchesData, setBranchesData] = useState([
     {
       branch: 'Branch 1',
       background:
@@ -132,12 +111,39 @@ const Home = () => {
         { month: 'Mar', profit: 60 },
       ],
     },
-  ];
+  ]);
+  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
+  // const branch_details = [
+  //   {
+  //     branch_name: 'Vishakapatnam',
+  //     service_sales: 500,
+  //     product_sales: 1200,
+  //     total_sales: 1700,
+  //   },
+  //   {
+  //     branch_name: 'Hyderabad',
+  //     service_sales: 600,
+  //     product_sales: 1400,
+  //     total_sales: 2000,
+  //   },
+  //   {
+  //     branch_name: 'Vijayawada',
+  //     service_sales: 500,
+  //     product_sales: 500,
+  //     total_sales: 1000,
+  //   },
+  //   {
+  //     branch_name: 'Kakinada',
+  //     service_sales: 500,
+  //     product_sales: 1100,
+  //     total_sales: 1600,
+  //   },
+  // ];
 
   const CardData = [
     {
       id: 1,
-      icon: <img src="products_box.png" />,
+      icon: <img src="./products_box.png" />,
       title: 'Total Products',
       count: 120,
       growth: '+55%',
@@ -145,7 +151,7 @@ const Home = () => {
     },
     {
       id: 2,
-      icon: <img src="ticket.png" />,
+      icon: <img src="./ticket.png" />,
       title: 'Total Tickets',
       count: 75,
       growth: '+40%',
@@ -153,7 +159,7 @@ const Home = () => {
     },
     {
       id: 3,
-      icon: <img src="expenses.png" />,
+      icon: <img src="./expenses.png" />,
       title: 'Expenses',
       count: 5000,
       growth: '+20%',
@@ -161,7 +167,7 @@ const Home = () => {
     },
     {
       id: 4,
-      icon: <img src="sale.png" />,
+      icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
       growth: '+30%',
@@ -318,7 +324,7 @@ const Home = () => {
     setSelectedCard(cardType);
     setTableData(dataSource);
     setFilteredData(dataSource);
-    setTableColumns(Object.keys(dataSource[0]));
+    setTableColumns(Object.keys(dataSource[0] || []));
   };
 
   // Handle status filter change
@@ -364,7 +370,7 @@ const Home = () => {
     }
   };
 
-  const fetchTotalProductss = async () => {
+  const fetchTotalProducts = async () => {
     try {
       const response = await ApiService.post('/dashboards/totalProducts', {
         companyCode: initialAuthState.companyCode,
@@ -456,7 +462,63 @@ const Home = () => {
       );
 
       if (response.status) {
-        return response.data;
+        setTicketDetails(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchProductsData = async () => {
+    try {
+      const response = await ApiService.post('/products/getAllProductDetails', {
+        ticketId: '',
+        clientName: '',
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        setTotalProducts(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchExpensesData = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getExpenseData', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        setTotalExpenses(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchPurchaseData = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getPurchaseData', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        setTotalPurchases(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
       }
@@ -474,6 +536,27 @@ const Home = () => {
       });
       if (response.status) {
         setSolidLiquidData(response.data);
+      } else {
+        alert(
+          response.data.message || 'Failed to fetch solid liquid cash details.'
+        );
+      }
+    } catch (e) {
+      console.error('error in fetching solid liquid cash details');
+    }
+  };
+
+  const getBranchWiseSolidLiquidCash = async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getBranchWiseSolidLiquidCash',
+        {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+        setBranchWiseSolidLiquidData(response.data);
       } else {
         alert(
           response.data.message || 'Failed to fetch solid liquid cash details.'
@@ -526,14 +609,40 @@ const Home = () => {
       console.error('error in fetching analysis details');
     }
   };
+
+  const getProductTypeCreditAndDebitPercentages = async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getProductTypeCreditAndDebitPercentages',
+        {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+      if (response.status) {
+        setCreditDebitPercent(response.data);
+      } else {
+        alert(response.data.message || 'Failed to analysis details.');
+      }
+    } catch (e) {
+      console.error('error in fetching analysis details');
+    }
+  };
+
   useEffect(() => {
     fetchTotalTickets();
-    fetchTotalProductss();
+    fetchTotalProducts();
     fetchPurchaseCount();
     fetchExpenseCount();
     getSolidLiquidCash();
+    getBranchWiseSolidLiquidCash();
     getAnalysis();
     getTotalProductAndServiceSales();
+    getProductTypeCreditAndDebitPercentages();
+    fetchTicketsData();
+    fetchProductsData();
+    //fetchExpensesData();
+    fetchPurchaseData();
   }, []);
 
   return (
@@ -586,7 +695,7 @@ const Home = () => {
           </div>
 
           <div className="w-2/5 relative flex justify-center items-center">
-            <img src="map.png" />
+            <img src="./map.png" />
           </div>
         </div>
       </div>
@@ -597,11 +706,13 @@ const Home = () => {
           title="Solid Cash"
           amount={solidLiquidData.solidCash}
           details={solidLiquidData.details}
+          branchWiseDetails={bracnhWiseSolidLiquidData}
         />
         <CashCard
           title="Liquid Cash"
           amount={solidLiquidData.liquidCash}
           details={solidLiquidData.details}
+          branchWiseDetails={bracnhWiseSolidLiquidData}
         />
       </div>
 
@@ -670,7 +781,7 @@ const Home = () => {
           </div>
         ) : null}
         <div className="mt-8">
-          {/* <Table columns={tableColumns} data={ticketDetails} /> */}
+          <Table columns={tableColumns} data={tableData} />
         </div>
       </div>
       {/* sixth section - table */}
@@ -680,7 +791,7 @@ const Home = () => {
             barpercentage1={75}
             barpercentage2={25}
         /> */}
-      <AnalysisCardBarChart />
+      <AnalysisCardBarChart creditDebitPercent={creditDebitPercent} />
     </div>
   );
 };
