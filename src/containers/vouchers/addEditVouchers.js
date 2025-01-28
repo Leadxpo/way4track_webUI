@@ -42,7 +42,7 @@ const AddEditVouchers = () => {
           unitCode: 'WAY4',
         };
         const response = await ApiService.post(
-          '/account/getAccountsDropDown',
+          '/api/account/getAccountsDropDown',
           requestData
         );
         const formattedOptions = response.data.map((account) => ({

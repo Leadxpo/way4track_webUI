@@ -4,23 +4,22 @@ import { FaFileCirclePlus } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
 
 const AddEditProductAssign = () => {
-  const [formData, setFormData] = useState(initialFormData);
-  const [branches, setBranches] = useState([]);
-  const [image, setImage] = useState(productAssign?.file || '');
-  const [staff, setStaff] = useState([]);
+
+
   const navigate = useNavigate();
   const location = useLocation();
-  // Check if there's sub-dealer data passed through location.state
-  const productAssign = location.state?.productDetails || {};
-  const [product, setProduct] = useState([])
 
-  // Initialize form data with existing sub-dealer details if available
+  // Check if there's product data passed through location.state
+  const productAssign = location.state?.productDetails || {};
+
+  // Initialize form data with existing product details if available
   const initialFormData = {
     staffId: productAssign.staffId || '',
-    assignTo: productAssign.staffName || '',
+    assignTo: productAssign.assignTo || '',
     name: productAssign.name || '',
     productId: productAssign.productId || '',
     branchId: productAssign.branchId || '',
+    requestId: productAssign.requestId || '',
     imeiNumberFrom: productAssign.imeiNumberFrom || '',
     imeiNumberTo: productAssign.imeiNumberTo || '',
     companyCode: initialAuthState.companyCode,
@@ -34,16 +33,23 @@ const AddEditProductAssign = () => {
     assignedQty: productAssign.assignedQty,
     isAssign: productAssign.isAssign,
     assignTime: productAssign.assignTime,
-    inHands: productAssign.inHands
+    inHands: productAssign.inHands,
   };
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [branches, setBranches] = useState([]);
+  const [request, setRequest] = useState([]);
+  const [image, setImage] = useState(productAssign?.file || '');
+  const [staff, setStaff] = useState([]);
+  const [product, setProduct] = useState([]);
 
   useEffect(() => {
     const getProductNamesDropDown = async () => {
       try {
-        const response = await ApiService.post('/products/getProductNamesDropDown');
+        const response = await ApiService.post('/api/products/getProductNamesDropDown');
         setProduct(response.data);
       } catch (error) {
-        console.error('Failed to fetch vendors:', error);
+        console.error('Failed to fetch product names:', error);
       }
     };
     getProductNamesDropDown();
@@ -52,9 +58,9 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post('/api/branch/getBranchNamesDropDown');
         if (response.status) {
-          setBranches(response.data); // Set branches to state
+          setBranches(response.data);
         } else {
           console.error('Failed to fetch branches');
         }
@@ -64,6 +70,36 @@ const AddEditProductAssign = () => {
     };
 
     fetchBranches();
+  }, []);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post('/api/requests/getRequestsDropDown');
+        if (response.status) {
+          setRequest(response.data);
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const res = await ApiService.post('/api/staff/getStaffNamesDropDown');
+        setStaff(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaff([]);
+      }
+    };
+    fetchStaff();
   }, []);
 
   const handleInputChange = (e) => {
@@ -82,33 +118,27 @@ const AddEditProductAssign = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const res = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaff(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch staff:', err);
-        setStaff([]);
-      }
-    };
-    fetchStaff();
-  }, []);
-
   const handleProductChange = (e) => {
-    const selectProduct = product.find((pa) => pa.id === e.target.value);
+    const selectedProductId = parseInt(e.target.value, 10); // Parse the selected ID from the event
+    console.log(selectedProductId, "selectedProductId");
+
+    // Find the selected product directly
+    const selectedProduct = product.find((pr) => pr.id === selectedProductId);
+    console.log(selectedProduct, "selectedProduct");
+
+    // Update the form data state
     setFormData((prev) => ({
       ...prev,
-      productId: selectProduct?.productId || '',
-      productName: selectProduct?.productName || '',
-      imeiNumberFrom: selectProduct?.imeiNumberFrom || '',
-      imeiNumberTo: selectProduct?.imeiNumberTo || '',
-      productType: selectProduct?.productType || '',
+      productId: selectedProduct?.id || '',
+      productName: selectedProduct?.productName || '',
+      imeiNumberFrom: selectedProduct?.imeiNumber || '',
+      imeiNumberTo: selectedProduct?.imeiNumber || '', // Assuming this is a range scenario
+      productType: selectedProduct?.productType || '', // If `productType` exists
     }));
   };
 
-  const handleSave = async () => {
 
+  const handleSave = async () => {
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
@@ -118,26 +148,29 @@ const AddEditProductAssign = () => {
       }
     });
     try {
-      const endpoint = formData.id ? '/product-assign/handleProductDetails' : '/product-assign/handleProductDetails';
+      const endpoint = formData.id
+        ? '/api/product-assign/handleProductDetails'
+        : '/api/product-assign/handleProductDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (response.data.status) {
-        alert(formData.id ? 'product updated successfully!' : 'product added successfully!');
+        alert(formData.id ? 'Product updated successfully!' : 'Product added successfully!');
         navigate('/product_assign');
       } else {
-        alert('Failed to save employee details. Please try again.');
+        alert('Failed to save product details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving employee details:', error);
-      alert('Failed to save employee details. Please try again.');
+      console.error('Error saving product details:', error);
+      alert('Failed to save product details. Please try again.');
     }
   };
 
   const handleCancel = () => {
     navigate('/product_assign');
   };
+
 
   const renderField = (label, name, type = 'text', placeholder = '') => (
     <div>
@@ -201,14 +234,14 @@ const AddEditProductAssign = () => {
                   <div>
                     <p className="font-semibold mb-1">Branch</p>
                     <select
-                      name="branch"
-                      value={formData.branch}
+                      name="branchId"
+                      value={formData.branchId}
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
                       <option value="" disabled>Select a Branch</option>
                       {branches.map((branch) => (
-                        <option key={branch.id} value={branch.branchName}>
+                        <option key={branch.id} value={branch.id}>
                           {branch.branchName}
                         </option>
                       ))}
@@ -219,7 +252,7 @@ const AddEditProductAssign = () => {
             </div>
             {staff.length > 0 && (
               <div className="flex flex-col">
-                <label className="font-semibold mb-2">Assign To:</label>
+                <label className="font-semibold mb-2">Person:</label>
                 <select
                   name="staffId"
                   value={formData.staffId}
@@ -230,7 +263,7 @@ const AddEditProductAssign = () => {
                     Select Staff
                   </option>
                   {staff.map((staffMember) => (
-                    <option key={staffMember.staffId} value={staffMember.staffId}>
+                    <option key={staffMember.id} value={staffMember.id}>
                       {staffMember.name}
                     </option>
                   ))}
@@ -248,10 +281,11 @@ const AddEditProductAssign = () => {
                       onChange={handleProductChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>Select a Branch</option>
+                      <option value="" disabled>Select a product</option>
                       {product.map((pa) => (
-                        <option key={pa.id} value={pa.productName}>
-                          {pa.productName}
+                        <option key={pa.id} value={pa.id}>
+                          {pa.productName
+                          }
                         </option>
                       ))}
                     </select>
@@ -259,12 +293,35 @@ const AddEditProductAssign = () => {
                 </div>
               )}
             </div>
+            <div className="flex mb-4">
+              {request.length > 0 && (
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-semibold mb-1">request</p>
+                    <select
+                      name="requestId"
+                      value={formData.requestId}
+                      onChange={handleInputChange}
+                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    >
+                      <option value="" disabled>Select a request</option>
+                      {request.map((re) => (
+                        <option key={re.id} value={re.id}>
+                          {re.requestId}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+            </div>
             {renderField('product Type', 'productType')}
-            {renderField('Product Name', 'productName')}
+            {/* {renderField('Product Name', 'productName')} */}
             {renderField('name', 'name')}
             {renderField('IMEI Number from', 'imeiNumberFrom')}
             {renderField('IMEI Number To', 'imeiNumberTo')}
-            {renderField('numberOfProducts', 'numberOfProducts')}
+            {/* {renderField('numberOfProducts', 'numberOfProducts')} */}
 
 
           </div>
