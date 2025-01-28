@@ -115,7 +115,7 @@ const TableWithSearchFilter = ({
 
   const getVoucherDetailsAgainstSearch = useCallback(async () => {
     try {
-      const response = await ApiService.post('/dashboards/getAllVouchers', {
+      const response = await ApiService.post('/api/dashboards/getAllVouchers', {
         voucherId: ticketData?.ticketId,
         branchName: ticketData?.branchName,
         companyCode: initialAuthState?.companyCode,
