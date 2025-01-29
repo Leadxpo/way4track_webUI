@@ -1,6 +1,10 @@
 export const menuOptions = {
   ceo: [
-    { name: 'Home', icon: <img src="home.png" />, route: '/home' },
+    {
+      name: 'Home',
+      icon: <img src="home.png" />,
+      route: '/home',
+    },
     { name: 'Branches', icon: <img src="branch.png" />, route: '/branches' },
     { name: 'Asserts', icon: <img src="asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="users.png" />, route: '/staff' },
@@ -144,12 +148,16 @@ export const menuOptions = {
     { name: 'Tickets', icon: <img src="tickets.png" />, route: '/tickets' },
   ],
   customer_care: [
-    { name: 'Home', icon: <img src="home.png" />, route: '/home' },
+    {
+      name: 'Home',
+      icon: <img src="home.png" />,
+      route: '/customer-care-home',
+    },
     { name: 'Tickets', icon: <img src="tickets.png" />, route: '/tickets' },
     {
       name: 'Tickets Assign',
       icon: <img src="tickets.png" />,
-      route: '/tickets',
+      route: '/ticket-assign',
     },
   ],
 };
