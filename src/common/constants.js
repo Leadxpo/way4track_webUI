@@ -173,6 +173,7 @@ export const formattedPaths = {
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/add-estimate': { name: 'Add Estimate', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': { name: 'Edit Estimate', icon: <img src="./estimate.png" /> },
     '/estimate-details': {
       name: 'Estimate Details',
       icon: <img src="./estimate.png" />,
@@ -403,6 +404,7 @@ export const formattedPaths = {
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/add-estimate': { name: 'Add Estimate', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': { name: 'edit Estimate', icon: <img src="./estimate.png" /> },
     '/estimate-details': {
       name: 'Estimate Details',
       icon: <img src="./estimate.png" />,

@@ -7,7 +7,7 @@ import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 const Estimates = () => {
   const navigate = useNavigate();
   const handleEdit = (estimate) => {
-    navigate('/add-estimate', { state: { estimateDetails: { estimate } } });
+    navigate('/edit-estimate', { state: { estimateDetails: { estimate } } });
   };
   const handleDetails = (estimate) => {
     navigate('/estimate-details', { state: { estimateDetails: { estimate } } });
