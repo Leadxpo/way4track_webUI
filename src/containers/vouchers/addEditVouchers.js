@@ -16,7 +16,7 @@ const AddEditVouchers = () => {
   const [branches, setBranches] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [clients, setCleints] = useState([]);
-  
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -42,7 +42,7 @@ const AddEditVouchers = () => {
           unitCode: 'WAY4',
         };
         const response = await ApiService.post(
-          '/api/account/getAccountsDropDown',
+          '/account/getAccountsDropDown',
           requestData
         );
         const formattedOptions = response.data.map((account) => ({

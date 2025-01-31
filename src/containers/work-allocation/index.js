@@ -68,7 +68,7 @@ const WorkAllocation = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await ApiService.post('/api/client/getClientNamesDropDown');
+        const res = await ApiService.post('/client/getClientNamesDropDown');
         setClient(res.data || []);
       } catch (err) {
         console.error('Failed to fetch client details:', err);
@@ -81,7 +81,7 @@ const WorkAllocation = () => {
   useEffect(() => {
     const getVoucherNamesDropDown = async () => {
       try {
-        const res = await ApiService.post('/api/voucher/getVoucherNamesDropDown');
+        const res = await ApiService.post('/voucher/getVoucherNamesDropDown');
         setVoucher(res.data || []);
       } catch (err) {
         console.error('Failed to fetch client details:', err);
@@ -104,7 +104,7 @@ const WorkAllocation = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await ApiService.post('/api/staff/getStaffNamesDropDown');
+        const res = await ApiService.post('/staff/getStaffNamesDropDown');
         setStaff(res.data || []);
       } catch (err) {
         console.error('Failed to fetch staff:', err);
@@ -124,8 +124,8 @@ const WorkAllocation = () => {
     console.log(payload, '+++++++++++++++++++++++');
     try {
       const endpoint = selectedWorkAllocation.id
-        ? '/api/work-allocations/handleWorkAllocationDetails'
-        : '/api/work-allocations/handleWorkAllocationDetails';
+        ? '/work-allocations/handleWorkAllocationDetails'
+        : '/work-allocations/handleWorkAllocationDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
