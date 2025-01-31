@@ -3,6 +3,7 @@ import Table from '../../components/Table';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 
 const TechnicianHome = () => {
+  const attendanceData = [];
   return (
     <div>
       <p>Total Appointments: </p>

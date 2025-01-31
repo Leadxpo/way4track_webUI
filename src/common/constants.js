@@ -1,7 +1,15 @@
 export const menuOptions = {
   ceo: [
-    { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
-    { name: 'Branches', icon: <img src="./branch.png" />, route: '/branches' },
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/home',
+    },
+    {
+      name: 'Branches',
+      icon: <img src="./branch.png" />,
+      route: '/warehouse-manager-branch',
+    },
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
@@ -159,8 +167,16 @@ export const menuOptions = {
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
   warehouse_manager: [
-    { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
-    { name: 'Branches', icon: <img src="./branch.png" />, route: '/branches' },
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/warehouse-manager-home',
+    },
+    {
+      name: 'Branches',
+      icon: <img src="./branch.png" />,
+      route: '/warehouse-manager-branch',
+    },
     {
       name: 'Request',
       icon: <img src="./request_raise.png" />,
@@ -194,7 +210,7 @@ export const menuOptions = {
     },
   ],
   technician: [
-    { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
+    { name: 'Home', icon: <img src="./home.png" />, route: '/technician-home' },
     {
       name: 'Products',
       icon: <img src="./products.png" />,
@@ -229,7 +245,7 @@ export const menuOptions = {
     {
       name: 'Tickets Assign',
       icon: <img src="./tickets.png" />,
-      route: '/tickets',
+      route: '/ticket-aasign',
     },
   ],
 };
