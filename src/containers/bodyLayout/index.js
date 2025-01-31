@@ -75,6 +75,12 @@ import BankDetailsDashboard from '../bank-details';
 import AddEditBankDetails from '../bank-details/addEditBankDetails';
 import AddAmount from '../bank-details/addAmount';
 import BankDetails from '../bank-details/bankDetails';
+import TicketAssign from '../tickets-assign';
+import { CustomSource } from 'mapbox-gl';
+import CustomerCareHome from '../home/customerCareHome';
+import WarehouseManagerBranch from '../branches/warehouseManagerBranch';
+import WarehouseManagerHome from '../home/warehouseManagerHome';
+import TechnicianHome from '../home/technicianHome';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -279,6 +285,17 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-bank-account" element={<AddEditBankDetails />} />
           <Route path="/add-amount" element={<AddAmount />} />
           <Route path="/bank-details" element={<BankDetails />} />
+          <Route path="/ticket-assign" element={<TicketAssign />} />
+          <Route path="/customer-care-home" element={<CustomerCareHome />} />
+          <Route
+            path="/warehouse-manager-branch"
+            element={<WarehouseManagerBranch />}
+          />
+          <Route
+            path="/warehouse-manager-home"
+            element={<WarehouseManagerHome />}
+          />
+          <Route path="/technician-home" element={<TechnicianHome />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>
