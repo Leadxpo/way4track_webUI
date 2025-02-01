@@ -31,9 +31,9 @@ const AddEditProductAssign = () => {
     numberOfProducts: productAssign.numberOfProducts,
     branchOrPerson: productAssign.branchOrPerson,
     assignedQty: productAssign.assignedQty,
-    isAssign: productAssign.isAssign,
+    isAssign: false,
     assignTime: productAssign.assignTime,
-    inHands: productAssign.inHands,
+    inHands: false,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -46,7 +46,7 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const getProductNamesDropDown = async () => {
       try {
-        const response = await ApiService.post('/api/products/getProductNamesDropDown');
+        const response = await ApiService.post('/products/getProductNamesDropDown');
         setProduct(response.data);
       } catch (error) {
         console.error('Failed to fetch product names:', error);
@@ -58,7 +58,7 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/api/branch/getBranchNamesDropDown');
+        const response = await ApiService.post('/branch/getBranchNamesDropDown');
         if (response.status) {
           setBranches(response.data);
         } else {
@@ -75,7 +75,7 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/api/requests/getRequestsDropDown');
+        const response = await ApiService.post('/requests/getRequestsDropDown');
         if (response.status) {
           setRequest(response.data);
         } else {
@@ -92,7 +92,7 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await ApiService.post('/api/staff/getStaffNamesDropDown');
+        const res = await ApiService.post('/staff/getStaffNamesDropDown');
         setStaff(res.data || []);
       } catch (err) {
         console.error('Failed to fetch staff:', err);
@@ -103,8 +103,11 @@ const AddEditProductAssign = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, type, checked, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
   };
 
   const handleFileChange = (e) => {
@@ -137,6 +140,42 @@ const AddEditProductAssign = () => {
     }));
   };
 
+  // const getActiveStatus = async (productAssignId) => {
+  //   const payload = { productAssignId };
+  //   const res = await ApiService.post('/product-assign/markIsAssign', payload);
+  //   if (res.status) {
+  //     alert(res.internalMessage);
+  //     handleSave();
+  //   } else {
+  //     alert('Failed to update assignment status.');
+  //   }
+  // };
+
+  // const getActiveStatusInHands = async (productAssignId) => {
+  //   const payload = { productAssignId };
+  //   const res = await ApiService.post('/product-assign/markInHands', payload);
+  //   if (res.status) {
+  //     alert(res.internalMessage);
+  //     handleSave();
+  //   } else {
+  //     alert('Failed to update in-hands status.');
+  //   }
+  // };
+
+
+
+  // const switchStatus = (record) => {
+  //   getActiveStatus(record.id);
+  // }
+
+
+  // const switchInHandsStatus = (record) => {
+  //   getActiveStatusInHands(record.id);
+  // }
+
+
+
+
 
   const handleSave = async () => {
     const payload = new FormData();
@@ -149,8 +188,8 @@ const AddEditProductAssign = () => {
     });
     try {
       const endpoint = formData.id
-        ? '/api/product-assign/handleProductDetails'
-        : '/api/product-assign/handleProductDetails';
+        ? '/product-assign/handleProductDetails'
+        : '/product-assign/handleProductDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -317,11 +356,37 @@ const AddEditProductAssign = () => {
 
             </div>
             {renderField('product Type', 'productType')}
-            {/* {renderField('Product Name', 'productName')} */}
+            {/* {renderField('Is Assign', 'isAssign', 'boolean')} */}
+            {/* {renderField('In Hands', 'inHands', 'boolean')} */}
             {renderField('name', 'name')}
             {renderField('IMEI Number from', 'imeiNumberFrom')}
             {renderField('IMEI Number To', 'imeiNumberTo')}
+            {/* {renderField('assigned Qty', 'assignedQty')} */}
+            {renderField('assign Time', 'assignTime', 'date')}
+
             {/* {renderField('numberOfProducts', 'numberOfProducts')} */}
+
+            <label className="block">
+              <span className="block text-gray-700">In Hands:</span>
+              <input
+                type="checkbox"
+                name="inHands"
+                checked={formData.inHands === true}  // ensure it is boolean true or false
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </label>
+
+            <label className="block">
+              <span className="block text-gray-700">Is Assign:</span>
+              <input
+                type="checkbox"
+                name="isAssign"
+                checked={formData.isAssign === true}  // ensure it is boolean true or false
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </label>
 
 
           </div>

@@ -10,7 +10,7 @@ const ProductAssignDetails = () => {
   useEffect(() => {
     const productAssignDetails = async () => {
       try {
-        const response = await ApiService.post('/api/product-assign/getProductAssign', {
+        const response = await ApiService.post('/product-assign/getProductAssign', {
           id: productAssign.id,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,

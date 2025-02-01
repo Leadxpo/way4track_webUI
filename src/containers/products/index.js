@@ -20,7 +20,7 @@ const Products = () => {
   useEffect(() => {
     const getAllproductDetails = async () => {
       try {
-        const response = await ApiService.post('/api/products/getAllproductDetails', {
+        const response = await ApiService.post('/products/getAllproductDetails', {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });

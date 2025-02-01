@@ -7,6 +7,7 @@ const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState([]);
+  const [ticketDetails, setTicketDetails] = useState([])
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [staffList, setStaffList] = useState([]); // Store fetched staff names
@@ -18,7 +19,7 @@ const Tickets = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const tickettData = location.state?.tickettDetails || {};
+  const ticketData = location.state?.tickettDetails || {};
   useEffect(() => {
     if (isModalOpen) {
       fetchStaffNames();
@@ -81,6 +82,41 @@ const Tickets = () => {
     setDate(''); // Reset date for Add
   };
 
+  const fetchTicketDetails = async (ticketId) => {
+    if (!ticketId) return; // Prevent API call if ID is missing
+
+    try {
+      const response = await ApiService.post('/tickets/getTicketDetailsById', {
+        id: ticketId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+
+      if (response.status) {
+        const staff = response.data?.[0];
+        setTicketDetails({
+          staffName: staff?.staffName || '',
+          addressingDepartment: staff?.addressingDepartment || '',
+          ticketNumber: staff?.ticketNumber || '',
+          branchId: staff?.branchId || '',
+          date: staff?.date || '',
+          problem: staff?.problem || '',
+          branchName: staff?.branchName || '',
+          staffNumber: staff?.staffNumber || '',
+          staffId: staff?.staffId || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      alert('Failed to fetch staff details.');
+    }
+  };
+
+  const handleOpenMoreDetailsModal = async (ticket) => {
+    await fetchTicketDetails(ticket.id); // Ensure data is fetched before opening modal
+    setSelectedTicket(ticket);
+    setIsMoreDetailsModalOpen(true);
+  };
   const handleOpenModalForEdit = (ticket) => {
     setSelectedTicket(ticket);
     setIsEditMode(true);
@@ -99,10 +135,12 @@ const Tickets = () => {
     setDate('');
   };
 
-  const handleOpenMoreDetailsModal = (ticket) => {
-    setSelectedTicket(ticket);
-    setIsMoreDetailsModalOpen(true);
-  };
+
+
+
+
+
+
 
   const handleCloseMoreDetailsModal = () => {
     setIsMoreDetailsModalOpen(false);
@@ -111,13 +149,12 @@ const Tickets = () => {
 
   const handleSaveTicket = async () => {
     const payload = {
-      id: tickettData.id,
+      id: ticketData.id,
       staffId: selectedStaffId,
       date: date,
-      // date: tickettData.date,
       branchId: selectedBranch,
       problem: document.querySelector('[name="problem"]').value,
-      addressingDepartment: tickettData.addressingDepartment || '',
+      addressingDepartment: ticketData.addressingDepartment || '',
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
@@ -310,9 +347,9 @@ const Tickets = () => {
         type="tickets"
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
-        onDetails={handleOpenMoreDetailsModal}
-        onDelete={() => {}}
-      />
+        onDetails={handleOpenMoreDetailsModal} // Pass function correctly
+        onDelete={() => { }}
+      />;
     </div>
   );
 };

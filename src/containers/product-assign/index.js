@@ -34,7 +34,7 @@ const ProductAssign = () => {
         payload.branchName = branchName;
       }
 
-      const res = await ApiService.post('/api/dashboards/productAssignDetails', payload);
+      const res = await ApiService.post('/dashboards/productAssignDetails', payload);
 
       if (res.status) {
         setproduct(res.data.rawResults);

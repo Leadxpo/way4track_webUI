@@ -23,7 +23,7 @@ const DeleteProductAsign = () => {
         unitCode: initialAuthState.unitCode,
       };
 
-      const res = await ApiService.post('/api/product-assign//product-assign/deleteProductAssign', payload);
+      const res = await ApiService.post('/product-assign//product-assign/deleteProductAssign', payload);
 
       if (res.status) {
         alert('Client deleted successfully.');
