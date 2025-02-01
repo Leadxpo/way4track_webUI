@@ -39,7 +39,8 @@ import Clients from '../clients';
 import AddEditClient from '../clients/addClient';
 import DeleteClient from '../clients/deleteClient';
 import ClientProfile from '../clients/clientProfile';
-import AddEditEstimate from '../estimates/AddEditEstimate';
+import AddEstimate from '../estimates/AddEstimate';
+import EditEstimate from '../estimates/EditEstimate';
 import Estimates from '../estimates';
 import EstimateDetails from '../estimates/estimateDetails';
 import Invoices from '../invoices';
@@ -208,7 +209,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEditEstimate />} />
+          <Route path="/add-estimate" element={<AddEstimate />} />
+          <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />
           <Route path="/add-invoice" element={<AddEditInvoice />} />
