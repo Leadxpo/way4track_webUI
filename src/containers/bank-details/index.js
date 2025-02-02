@@ -1,64 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 const BankDetailsDashboard = () => {
   const navigate = useNavigate();
   const [searchAcc, setSearchAcc] = useState('');
   const [searchBank, setSearchBank] = useState('');
-  const handleSearch = () => {};
-  const onEdit = () => {};
-  const onDelete = () => {};
+  const [bankData, setBankData] = useState([])
+  const handleSearch = () => { };
+  const onEdit = () => { };
+  const onDelete = () => { };
   const onDetails = () => {
     navigate('/bank-details');
   };
-  const bankData = [
-    {
-      No: 1,
-      'A/C Holder': 'John Doe',
-      'A/C Type': 'Savings',
-      'A/C Number': '123456789012',
-      Branch: 'Vishakapatnam',
-      'IFSC Code': 'VIJB0001234',
-      Amount: 15000.5,
-    },
-    {
-      No: 2,
-      'A/C Holder': 'Jane Smith',
-      'A/C Type': 'Current',
-      'A/C Number': '987654321098',
-      Branch: 'Hyderabad',
-      'IFSC Code': 'HYDB0005678',
-      Amount: 25000.75,
-    },
-    {
-      No: 3,
-      'A/C Holder': 'Alice Johnson',
-      'A/C Type': 'Savings',
-      'A/C Number': '456123789045',
-      Branch: 'Vijayawada',
-      'IFSC Code': 'VIJB0003456',
-      Amount: 18000.25,
-    },
-    {
-      No: 4,
-      'A/C Holder': 'Bob Brown',
-      'A/C Type': 'Current',
-      'A/C Number': '321789654012',
-      Branch: 'Kakinada',
-      'IFSC Code': 'KAKN0007890',
-      Amount: 22000.0,
-    },
-    {
-      No: 5,
-      'A/C Holder': 'Charlie Wilson',
-      'A/C Type': 'Savings',
-      'A/C Number': '654321987654',
-      Branch: 'Vishakapatnam',
-      'IFSC Code': 'VIJB0006789',
-      Amount: 19500.3,
-    },
+
+  useEffect(() => {
+    const fetchAccountDetails = async () => {
+      try {
+        const response = await ApiService.post('/account/getAccountsDetails', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+
+        if (response.status) {
+          const data = response.data;
+          setBankData(data);
+        } else {
+          setBankData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching account details:', error);
+        alert('Failed to fetch account details.');
+      }
+    };
+
+    fetchAccountDetails();
+  }, []);
+
+  const columns = [
+    { title: 'No', dataIndex: 'id', key: 'id' },
+    { title: 'A/C Holder', dataIndex: 'name', key: 'name' },
+    { title: 'A/C Type', dataIndex: 'accountType', key: 'accountType' },
+    { title: 'A/C Number', dataIndex: 'accountNumber', key: 'accountNumber' },
+    { title: 'IFSC Code', dataIndex: 'ifscCode', key: 'ifscCode' },
+    { title: 'Amount', dataIndex: 'totalAmount', key: 'totalAmount' },
   ];
+
 
   return (
     <div className="p-10">
@@ -101,8 +90,16 @@ const BankDetailsDashboard = () => {
         </button>
       </div>
       <Table
-        columns={Object.keys(bankData[0])}
-        data={bankData}
+        columns={columns}
+        dataSource={bankData.map((item, index) => ({
+          key: item.id,
+          id: index + 1,
+          name: item.name,
+          accountType: item.accountType,
+          accountNumber: item.accountNumber,
+          ifscCode: item.ifscCode,
+          totalAmount: parseFloat(item.totalAmount),
+        }))}
         onEdit={onEdit}
         onDetails={onDetails}
         onDelete={onDelete}
@@ -113,6 +110,7 @@ const BankDetailsDashboard = () => {
         deleteText={'Delete'}
         detailsText={'Details'}
       />
+
     </div>
   );
 };
