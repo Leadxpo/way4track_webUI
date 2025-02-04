@@ -9,7 +9,7 @@ const AddEditEmployeeForm = () => {
 
   // Check if data is available from the location state
   const employeeData = location.state?.staffDetails || {};
-  const [staffList, setStaffList] = useState([]);
+  // const [staffList, setStaffList] = useState([]);
 
   // Initialize form data with defaults
   const initialFormData = {
@@ -18,6 +18,7 @@ const AddEditEmployeeForm = () => {
     phoneNumber: employeeData.phoneNumber || '',
     staffId: employeeData.staffId || '', // Will be ignored during creation
     designation: employeeData.designation || '',
+    // branchId: employeeData.branchId || '',
     branch: employeeData.branchName || '', // Initialize branch with existing data
     dob: employeeData.dob || '',
     email: employeeData.email || '',
@@ -81,8 +82,9 @@ const AddEditEmployeeForm = () => {
       alert('Phone number is required.');
       return; // Prevent submission if phone number is missing
     }
+    const { id, ...payloadData } = formData;
     const payload = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(payloadData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
         payload.append(key, value);
       } else {
@@ -117,26 +119,26 @@ const AddEditEmployeeForm = () => {
 
 
   // Fetch branch list
-  const fetchStaffList = async () => {
-    try {
-      const response = await ApiService.post('/staff/getStaffDetails', {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-      if (response.data.success) {
-        setStaffList(response.data.data);
-      } else {
-        alert(response.data.message || 'Failed to fetch branch list.');
-      }
-    } catch (error) {
-      console.error('Error fetching branch list:', error);
-      alert('Failed to fetch branch list.');
-    }
-  };
+  // const fetchStaffList = async () => {
+  //   try {
+  //     const response = await ApiService.post('/staff/getStaffDetails', {
+  //       companyCode: initialAuthState?.companyCode,
+  //       unitCode: initialAuthState?.unitCode,
+  //     });
+  //     if (response.data.success) {
+  //       setStaffList(response.data.data);
+  //     } else {
+  //       alert(response.data.message || 'Failed to fetch branch list.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching branch list:', error);
+  //     alert('Failed to fetch branch list.');
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchStaffList();
-  }, []);
+  // useEffect(() => {
+  //   fetchStaffList();
+  // }, []);
 
   // Handle cancel button
   const handleCancel = () => {
@@ -194,7 +196,7 @@ const AddEditEmployeeForm = () => {
                   Select a Branch
                 </option>
                 {branches.map((branch) => (
-                  <option key={branch.id} value={branch.branchName}>
+                  <option key={branch.id} value={branch.id}>
                     {branch.branchName}
                   </option>
                 ))}

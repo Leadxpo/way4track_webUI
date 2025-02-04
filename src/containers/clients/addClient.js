@@ -169,7 +169,7 @@ const AddEditClient = () => {
                 >
                   <option value="" disabled>Select a Branch</option>
                   {branches.map((branch) => (
-                    <option key={branch.id} value={branch.branchName}>
+                    <option key={branch.id} value={branch.id}>
                       {branch.branchName}
                     </option>
                   ))}
