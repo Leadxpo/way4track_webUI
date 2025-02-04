@@ -1,5 +1,5 @@
 // BodyLayout.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUserCircle, FaCog, FaBell } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router';
@@ -85,8 +85,11 @@ import TechnicianHome from '../home/technicianHome';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [userLocation, setUserLocation] = useState(null);
+  let locationInterval = null;
   const role = localStorage.getItem('userRole');
   const getPathname = (role = 'ceo') => {
     return formattedPaths[role][location.pathname]?.name || '';
@@ -125,6 +128,48 @@ const BodyLayout = ({ children }) => {
       </div>
     ) : null;
   };
+
+  const toggleLocation = () => {
+    setIsLocationEnabled(!isLocationEnabled);
+  };
+
+  useEffect(() => {
+    if (isLocationEnabled) {
+      fetchLocation(); // Fetch immediately when enabled
+
+      locationInterval = setInterval(
+        () => {
+          fetchLocation();
+        },
+        5 * 60 * 1000
+      ); // Fetch every 5 minutes
+    } else {
+      clearInterval(locationInterval);
+      setUserLocation(null); // Reset location when disabled
+    }
+
+    return () => clearInterval(locationInterval); // Cleanup interval on unmount
+  }, [isLocationEnabled]);
+
+  const fetchLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          console.log('User location updated:', position.coords);
+        },
+        (error) => {
+          console.error('Error fetching location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="p-4 flex flex-wrap md:flex-nowrap justify-between items-center">
@@ -180,6 +225,24 @@ const BodyLayout = ({ children }) => {
             </div>
           )}
 
+          <div className="flex items-center">
+            <span className="text-sm font-medium mr-2">Enable Location</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={isLocationEnabled}
+                onChange={toggleLocation}
+              />
+              <div
+                className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer 
+                          peer-checked:after:translate-x-5 peer-checked:after:border-white 
+                          after:content-[''] after:absolute after:top-0.5 after:left-0.5 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
+              ></div>
+            </label>
+          </div>
           {/* Icons */}
           <div className="flex space-x-4">
             <FaUserCircle
