@@ -8,7 +8,8 @@ import ContraForm from './contraForm';
 import ApiService from '../../services/ApiService';
 import PurchaseForm from './purchaseForm';
 import InvoiceForm from './invoiceForm';
-const TABS = ['Receipt', 'Payment', 'Journal', 'Contra', 'Purchase'];
+import EmiForm from './emiForm';
+const TABS = ['Receipt', 'Payment', 'Journal', 'Contra', 'Purchase', 'EMI'];
 const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
 
 const AddEditVouchers = () => {
@@ -32,7 +33,6 @@ const AddEditVouchers = () => {
         console.error('Error fetching branches:', error);
       }
     };
-
 
     const fetchBankOptions = async () => {
       try {
@@ -108,6 +108,8 @@ const AddEditVouchers = () => {
         return <ContraForm branches={branches} bankOptions={bankOptions} />;
       case 'Purchase':
         return <PurchaseForm branches={branches} bankOptions={bankOptions} />;
+      case 'EMI':
+        return <EmiForm branches={branches} bankOptions={bankOptions} />;
       // case 'Invoice':
       //   return <InvoiceForm branches={branches} />;
     }

@@ -8,7 +8,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
   const [selectedTab, setSelectedTab] = useState('Journal');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
@@ -101,6 +101,10 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
         type: 'dropdown',
         options: bankOptions,
       },
+      { name: 'amount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    EMI: [
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
     ],

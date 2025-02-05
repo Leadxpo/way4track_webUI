@@ -36,6 +36,12 @@ const Login = ({ handleLoginFlag }) => {
         localStorage.setItem('companyCode', initialAuthState.companyCode);
         localStorage.setItem('unitCode', initialAuthState.unitCode);
 
+        await fetchUserPermissions(
+          userId,
+          initialAuthState.companyCode,
+          initialAuthState.unitCode
+        );
+
         handleLoginFlag();
         navigate('/home');
       } else {
@@ -44,10 +50,30 @@ const Login = ({ handleLoginFlag }) => {
     } catch (err) {
       setError(
         err?.response?.data?.internalMessage ||
-        'Failed to login. Please check your credentials.'
+          'Failed to login. Please check your credentials.'
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserPermissions = async (userId, companyCode, unitCode) => {
+    try {
+      const payload = { userId, companyCode, unitCode };
+      const response = await ApiService.post(
+        '/permissions/getPermissionDetails',
+        payload
+      );
+
+      if (response && response.status) {
+        const permissions = response.data; // Assuming API returns an object of permissions
+        localStorage.setItem('userPermissions', JSON.stringify(permissions));
+        console.log('Permissions fetched successfully:', permissions);
+      } else {
+        console.error('Failed to fetch permissions:', response);
+      }
+    } catch (err) {
+      console.error('Error fetching permissions:', err);
     }
   };
 
@@ -58,7 +84,10 @@ const Login = ({ handleLoginFlag }) => {
         <form className="space-y-8" onSubmit={handleLogin}>
           {/* User ID Input */}
           <div className="mb-4">
-            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="userId"
+              className="block text-sm font-medium text-gray-700"
+            >
               Registered ID
             </label>
             <input
@@ -74,7 +103,10 @@ const Login = ({ handleLoginFlag }) => {
 
           {/* Password Input */}
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
@@ -88,7 +120,7 @@ const Login = ({ handleLoginFlag }) => {
             />
           </div>
 
-              {/* Role Selection */}
+          {/* Role Selection */}
           <div className="mb-6">
             <label
               htmlFor="role"
@@ -116,7 +148,6 @@ const Login = ({ handleLoginFlag }) => {
             </select>
           </div>
 
-
           {/* Login Button */}
           <button
             type="submit"
@@ -132,4 +163,3 @@ const Login = ({ handleLoginFlag }) => {
 };
 
 export default Login;
-

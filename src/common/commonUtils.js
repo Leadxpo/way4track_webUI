@@ -214,6 +214,7 @@ export const PurchaseOrderPDF = ({ data }) => (
 
 export function formatString(input) {
   // Convert camelCase to space-separated words
+  console.log(input);
   const camelCaseToSpaces = input.replace(/([a-z])([A-Z])/g, '$1 $2');
 
   // Convert snake_case to space-separated words
@@ -226,3 +227,22 @@ export function formatString(input) {
 
   return formattedString;
 }
+
+const getPermissions = (roleName) => {
+  const permissions = JSON.parse(
+    localStorage.getItem('userPermissions') || '[]'
+  );
+
+  const rolePermissions = permissions.find((perm) => perm.name === roleName);
+
+  if (rolePermissions) {
+    return {
+      add: rolePermissions.add || false,
+      edit: rolePermissions.edit || false,
+      view: rolePermissions.view || false,
+      delete: rolePermissions.delete || false,
+    };
+  }
+
+  return { add: false, edit: false, view: false, delete: false }; // Default if role not found
+};
