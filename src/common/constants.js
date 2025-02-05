@@ -8,7 +8,7 @@ export const menuOptions = {
     {
       name: 'Branches',
       icon: <img src="./branch.png" />,
-      route: '/warehouse-manager-branch',
+      route: '/branches',
     },
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
@@ -563,4 +563,5 @@ export const pageTitles = {
   hiring: 'Hiring',
   invoice: 'Invoices',
   estimate: 'Estimates',
+  payments: 'Payments',
 };

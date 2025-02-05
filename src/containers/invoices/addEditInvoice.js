@@ -17,7 +17,7 @@ const AddEditInvoice = () => {
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{ product: '', description: '', amount: '' }],
+    items: [{ name: '', qauntity: '', rate: '', hsnCode: '', amount: '' }],
     terms: '',
   };
 
@@ -187,10 +187,10 @@ const AddEditInvoice = () => {
               {/* Header Row */}
               <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
                 <span className="col-span-1 font-semibold">#</span>
-                <span className="col-span-4 font-semibold">
-                  Service/Product
-                </span>
-                <span className="col-span-5 font-semibold">Description</span>
+                <span className="col-span-2 font-semibold">Name</span>
+                <span className="col-span-2 font-semibold">Quantity</span>
+                <span className="col-span-2 font-semibold">Rate</span>
+                <span className="col-span-2 font-semibold">HSN Code</span>
                 <span className="col-span-2 font-semibold">Amount</span>
               </div>
 
@@ -204,19 +204,35 @@ const AddEditInvoice = () => {
                     <span className="col-span-1">{index + 1}</span>
                     <input
                       type="text"
-                      name="product"
-                      value={item.product}
+                      name="name"
+                      value={item.name}
                       onChange={(e) => handleItemChange(index, e)}
-                      placeholder="Service/Product"
-                      className="col-span-4 p-2 border rounded-md"
+                      placeholder="Name"
+                      className="col-span-2 p-2 border rounded-md"
                     />
                     <input
                       type="text"
-                      name="description"
-                      value={item.description}
+                      name="qauntity"
+                      value={item.qauntity}
                       onChange={(e) => handleItemChange(index, e)}
-                      placeholder="Description"
-                      className="col-span-5 p-2 border rounded-md"
+                      placeholder="Quantity"
+                      className="col-span-2 p-2 border rounded-md"
+                    />
+                    <input
+                      type="number"
+                      name="rate"
+                      value={item.rate}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="Rate"
+                      className="col-span-2 p-2 border rounded-md"
+                    />
+                    <input
+                      type="number"
+                      name="hsnCode"
+                      value={item.hsnCode}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="HSN Code"
+                      className="col-span-2 p-2 border rounded-md"
                     />
                     <input
                       type="number"

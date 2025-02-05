@@ -6,7 +6,7 @@ const ReceiptForm = ({ branches, bankOptions }) => {
   const { control, handleSubmit } = useForm();
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
@@ -100,6 +100,10 @@ const ReceiptForm = ({ branches, bankOptions }) => {
         type: 'dropdown',
         options: dropdownOptions.bankFrom,
       },
+      { name: 'amount', label: 'Amount' },
+      { name: 'remainingAmount', label: 'Remaining Amount' },
+    ],
+    EMI: [
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
     ],

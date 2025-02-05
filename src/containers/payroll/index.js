@@ -58,7 +58,10 @@ const Payroll = () => {
 
   // Columns for the table
   const columns = payrollData.length
-    ? Object.keys(payrollData[0]).map((key, index) => ({ title: key, dataIndex: index }))
+    ? Object.keys(payrollData[0]).map((key, index) => ({
+        title: key,
+        dataIndex: index,
+      }))
     : [];
 
   // Handle tab click
@@ -87,10 +90,11 @@ const Payroll = () => {
           <button
             key={branch.branchName} // Use branchName as the key
             onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
-            className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
-              ? 'border-b-2 border-black text-black'
-              : 'text-gray-500'
-              }`}
+            className={`pb-2 text-sm font-semibold ${
+              activeTab === branch.branchName
+                ? 'border-b-2 border-black text-black'
+                : 'text-gray-500'
+            }`}
           >
             {branch.branchName}
           </button>
@@ -99,12 +103,12 @@ const Payroll = () => {
 
       {/* Table */}
       <Table
-        columns={columns}
+        columns={payrollData.length > 0 ? Object.keys(payrollData[0]) : []}
         data={payrollData.filter(
           (row) => activeTab === 'All' || row.branchName === activeTab
         )}
         onEdit={handleChangePayroll}
-        onDetails={() => { }}
+        onDetails={() => {}}
         showDelete={false}
       />
 
