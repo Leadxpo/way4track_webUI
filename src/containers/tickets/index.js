@@ -82,12 +82,11 @@ const Tickets = () => {
     setDate(''); // Reset date for Add
   };
 
-  const fetchTicketDetails = async (ticketId) => {
-    if (!ticketId) return; // Prevent API call if ID is missing
+  const fetchTicketDetails = async () => {
 
     try {
       const response = await ApiService.post('/tickets/getTicketDetailsById', {
-        id: ticketId,
+        id: ticketData.id,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
@@ -113,7 +112,7 @@ const Tickets = () => {
   };
 
   const handleOpenMoreDetailsModal = async (ticket) => {
-    await fetchTicketDetails(ticket.id); // Ensure data is fetched before opening modal
+    await fetchTicketDetails(); // Ensure data is fetched before opening modal
     setSelectedTicket(ticket);
     setIsMoreDetailsModalOpen(true);
   };

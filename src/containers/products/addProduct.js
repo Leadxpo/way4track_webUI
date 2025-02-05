@@ -97,7 +97,7 @@ const AddProductForm = () => {
       bulkPayload.append('file', bulkFile);
 
       try {
-        const response = await ApiService.post('/api/products/bulk-upload', bulkPayload, {
+        const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         if (response.data.status) {
