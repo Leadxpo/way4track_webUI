@@ -563,4 +563,5 @@ export const pageTitles = {
   hiring: 'Hiring',
   invoice: 'Invoices',
   estimate: 'Estimates',
+  payments: 'Payments',
 };

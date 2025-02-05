@@ -214,6 +214,7 @@ export const PurchaseOrderPDF = ({ data }) => (
 
 export function formatString(input) {
   // Convert camelCase to space-separated words
+  console.log(input);
   const camelCaseToSpaces = input.replace(/([a-z])([A-Z])/g, '$1 $2');
 
   // Convert snake_case to space-separated words

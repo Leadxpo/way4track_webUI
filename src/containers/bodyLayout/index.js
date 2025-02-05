@@ -82,6 +82,7 @@ import CustomerCareHome from '../home/customerCareHome';
 import WarehouseManagerBranch from '../branches/warehouseManagerBranch';
 import WarehouseManagerHome from '../home/warehouseManagerHome';
 import TechnicianHome from '../home/technicianHome';
+import Payments from '../payments';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -278,10 +279,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/invoice" element={<Invoices />} />
           <Route path="/add-invoice" element={<AddEditInvoice />} />
           <Route path="/invoice-details" element={<InvoiceDetails />} />
-          <Route
-            path="/payments"
-            element={<TableWithDateFilter type={'payments'} />}
-          />
+          <Route path="/payments" element={<Payments />} />
           <Route path="/requests" element={<RequestRaise />} />
           <Route path="/delete-request" element={<DeleteRequest />} />
           <Route path="/add-request" element={<AddEditRequestForm />} />

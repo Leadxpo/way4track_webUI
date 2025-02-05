@@ -9,22 +9,25 @@ const Settings = () => {
   const [staffId, setStaffId] = useState('');
   const [staffData, setStaffData] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [mockData, setMockData] = useState([]);  // Holds all staff data
+  const [mockData, setMockData] = useState([]); // Holds all staff data
   const [isLoading, setIsLoading] = useState(true);
-
+  const [profiles, setProfiles] = useState([]);
   useEffect(() => {
     const getStaffPermissions = async () => {
       try {
-        const response = await ApiService.post('/permissions/getStaffPermissions', {
-          staffId: employeeData.staffId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/permissions/getStaffPermissions',
+          {
+            staffId: employeeData.staffId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           const staff = response.data?.[0];
-          setMockData(response.data);  // Save entire data for all staff
-          console.log(staff, "_________________");
-          setStaffData(staff || null);  // Initial staff data from the first response
+          setMockData(response.data); // Save entire data for all staff
+          console.log(staff, '_________________');
+          setStaffData(staff || null); // Initial staff data from the first response
         }
       } catch (error) {
         console.error('Error fetching staff details:', error);
@@ -37,15 +40,27 @@ const Settings = () => {
     getStaffPermissions();
   }, [employeeData.staffId]);
 
-  const handleSearch = () => {
-    // Search for the staff based on staffId
-    const foundStaff = mockData.find((staff) => staff.staffId === staffId);
-    if (foundStaff) {
-      setStaffData(foundStaff);  // Set the found staff data
-      setNotFound(false);
-    } else {
-      setStaffData(null);
-      setNotFound(true);  // Display not found message
+  const handleSearch = async () => {
+    try {
+      const response = await ApiService.post('/staff/getStaffDetails', {
+        userId: staffId,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        setProfiles(response.data || []);
+        setNotFound(false);
+      } else {
+        alert(
+          response.data.internalMessage || 'Failed to fetch staff details.'
+        );
+        setNotFound(true);
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      setNotFound(true);
+      alert('Failed to fetch staff details.');
     }
   };
   const handleCheckboxChange = (permissionType, permissionName) => {
@@ -61,18 +76,21 @@ const Settings = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const response = await ApiService.post('/permissions/handlePermissionDetails', {
-        staffId: staffData.staffId,
-        permissions: staffData.permissions,  // Ensure you're sending the updated permissions
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
+      const response = await ApiService.post(
+        '/permissions/handlePermissionDetails',
+        {
+          staffId: staffData.staffId,
+          permissions: staffData.permissions, // Ensure you're sending the updated permissions
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
       if (response.status) {
         alert('Permissions updated successfully!');
         // Optionally, you can also update the staffData or mockData after saving changes
-        setStaffData(prevData => ({
+        setStaffData((prevData) => ({
           ...prevData,
-          permissions: [...staffData.permissions]  // Make sure to update the state with the new permissions
+          permissions: [...staffData.permissions], // Make sure to update the state with the new permissions
         }));
       } else {
         alert('Failed to update permissions.');
@@ -82,7 +100,6 @@ const Settings = () => {
       alert('Error while saving changes.');
     }
   };
-
 
   return (
     <div className="min-h-screen flex justify-center">
@@ -127,7 +144,8 @@ const Settings = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {staffData.permissions && staffData.permissions.length > 0 ? (
+                    {staffData.permissions &&
+                    staffData.permissions.length > 0 ? (
                       staffData.permissions.map((permission, index) => (
                         <tr key={index} className="border-t">
                           <td className="p-2">{permission.name}</td>
@@ -136,17 +154,20 @@ const Settings = () => {
                               <input
                                 type="checkbox"
                                 checked={permission.view}
-                                onChange={() => handleCheckboxChange('view', permission.name)}
+                                onChange={() =>
+                                  handleCheckboxChange('view', permission.name)
+                                }
                                 className="accent-green-500 outline-none"
                               />
                             </td>
-
                           </td>
                           <td className="p-2 text-center">
                             <input
                               type="checkbox"
                               checked={permission.edit}
-                              onChange={() => handleCheckboxChange('edit', permission.name)}
+                              onChange={() =>
+                                handleCheckboxChange('edit', permission.name)
+                              }
                               className="accent-green-500 outline-none"
                             />
                           </td>
@@ -154,7 +175,9 @@ const Settings = () => {
                             <input
                               type="checkbox"
                               checked={permission.add}
-                              onChange={() => handleCheckboxChange('add', permission.name)}
+                              onChange={() =>
+                                handleCheckboxChange('add', permission.name)
+                              }
                               className="accent-green-500 outline-none"
                             />
                           </td>
@@ -162,14 +185,20 @@ const Settings = () => {
                             <input
                               type="checkbox"
                               checked={permission.delete}
-                              onChange={() => handleCheckboxChange('delete', permission.name)}
+                              onChange={() =>
+                                handleCheckboxChange('delete', permission.name)
+                              }
                               className="accent-green-500 outline-none"
                             />
                           </td>
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan="4" className="text-center p-2">No permissions found.</td></tr>
+                      <tr>
+                        <td colSpan="4" className="text-center p-2">
+                          No permissions found.
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -178,37 +207,48 @@ const Settings = () => {
               {/* Staff Details Section */}
               <div className="bg-white p-4 rounded-lg shadow-md min-w-[35%] flex flex-col items-center flex-grow">
                 <img
-                  src={staffData.staffPhoto || "https://i.pravatar.cc/150?img=1"} // Placeholder
+                  src={
+                    staffData.staffPhoto || 'https://i.pravatar.cc/150?img=1'
+                  } // Placeholder
                   alt="Staff"
                   className="w-32 h-32 rounded-full mb-4 object-cover shadow-lg"
                 />
                 <div className="text-left mb-6 space-y-4">
                   <p>
-                    <span className="font-bold">Name:</span> {staffData.staffName}
+                    <span className="font-bold">Name:</span>{' '}
+                    {staffData.staffName}
                   </p>
                   <p>
-                    <span className="font-bold">Number:</span> {staffData.phoneNumber}
+                    <span className="font-bold">Number:</span>{' '}
+                    {staffData.phoneNumber}
                   </p>
                   <p>
-                    <span className="font-bold">Staff ID:</span> {staffData.staffId}
+                    <span className="font-bold">Staff ID:</span>{' '}
+                    {staffData.staffId}
                   </p>
                   <p>
-                    <span className="font-bold">Designation:</span> {staffData.designation}
+                    <span className="font-bold">Designation:</span>{' '}
+                    {staffData.designation}
                   </p>
                   <p>
-                    <span className="font-bold">Branch:</span> {staffData.branchName}
+                    <span className="font-bold">Branch:</span>{' '}
+                    {staffData.branchName}
                   </p>
                   <p>
-                    <span className="font-bold">Date Of Birth:</span> {staffData.dob}
+                    <span className="font-bold">Date Of Birth:</span>{' '}
+                    {staffData.dob}
                   </p>
                   <p>
-                    <span className="font-bold">Email ID:</span> {staffData.email}
+                    <span className="font-bold">Email ID:</span>{' '}
+                    {staffData.email}
                   </p>
                   <p>
-                    <span className="font-bold">Aadhar Number:</span> {staffData.aadharNumber}
+                    <span className="font-bold">Aadhar Number:</span>{' '}
+                    {staffData.aadharNumber}
                   </p>
                   <p>
-                    <span className="font-bold">Address:</span> {staffData.address}
+                    <span className="font-bold">Address:</span>{' '}
+                    {staffData.address}
                   </p>
                 </div>
                 <button

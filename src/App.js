@@ -14,6 +14,10 @@ const App = () => {
     setIsLoggedIn(true);
   };
 
+  const handleLogoutFlag = () => {
+    setIsLoggedIn(false);
+  };
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -41,7 +45,7 @@ const App = () => {
             >
               ✕
             </button>
-            <Sidebar role={role} />
+            <Sidebar role={role} handleLogoutFlag={handleLogoutFlag} />
           </div>
 
           {/* Main Content */}

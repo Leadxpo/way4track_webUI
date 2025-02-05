@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 // Replace with your own Google Maps API key
-const apiKey = 'YOUR_API_KEY';
+const apiKey = 'AIzaSyCmiyc8iXq1KDOmW_-yWsjALkQVY1z8krw';
 
 const Tracker = () => {
   const [map, setMap] = useState(null);

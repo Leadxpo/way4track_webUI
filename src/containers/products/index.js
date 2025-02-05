@@ -12,7 +12,8 @@ const Products = () => {
   const [totalBranch, setTotalBranch] = useState('All Branches');
   const [inHandBranch, setInHandBranch] = useState('All Branches');
   const [installationBranch, setInstallationBranch] = useState('All Branches');
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
+  const [branches, setBranches] = useState([]);
   const handleSelectChange = (e) => {
     setSelectedBranch(e.target.value);
   };
@@ -20,20 +21,38 @@ const Products = () => {
   useEffect(() => {
     const getAllproductDetails = async () => {
       try {
-        const response = await ApiService.post('/products/getAllproductDetails', {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/products/getAllproductDetails',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
-          console.log(response.data, "res++++++++++++++")
+          console.log(response.data, 'res++++++++++++++');
           setProducts(response.data);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching staff details:', error);
         alert('Failed to fetch staff details.');
       }
     };
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
 
     getAllproductDetails();
   }, []);
@@ -84,6 +103,7 @@ const Products = () => {
           bgColor="red"
           title="Total Products"
           count={500}
+          branches={branches}
           selectedBranch={totalBranch}
           setSelectedBranch={setTotalBranch}
         />
@@ -91,6 +111,7 @@ const Products = () => {
           bgColor="green"
           title="In Hand Products"
           count={220}
+          branches={branches}
           selectedBranch={inHandBranch}
           setSelectedBranch={setInHandBranch}
         />
@@ -98,6 +119,7 @@ const Products = () => {
           bgColor="purple"
           title="Installation Products"
           count={280}
+          branches={branches}
           selectedBranch={installationBranch}
           setSelectedBranch={setInstallationBranch}
         />
