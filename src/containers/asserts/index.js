@@ -8,11 +8,11 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 const Asserts = () => {
   const navigate = useNavigate();
-  const [branches, setBranches] = useState([{ branchName: 'All' }]);
+  const [branches, setBranches] = useState([]);
   const [isGridView, setIsGridView] = useState(true);
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('All');
-  const [filteredData, setFilteredData] = useState([])
+  const [filteredData, setFilteredData] = useState([]);
   const [assetCounts, setAssetCounts] = useState({
     totalAsserts: 0,
     officeAsserts: 0,
@@ -35,9 +35,17 @@ const Asserts = () => {
 
       const res = await ApiService.post('/dashboards/assertsCardData', payload);
       if (res.status) {
-        const { groupedBranches, totalAsserts, officeAsserts, transportAsserts } = res.data;
+        const {
+          groupedBranches,
+          totalAsserts,
+          officeAsserts,
+          transportAsserts,
+        } = res.data;
 
-        setBranches([{ branchName: 'All' }, ...groupedBranches.map((b) => ({ branchName: b.branchName }))]);
+        setBranches([
+          { branchName: 'All' },
+          ...groupedBranches.map((b) => ({ branchName: b.branchName })),
+        ]);
         setAssetCounts({
           totalAsserts,
           officeAsserts,
@@ -71,20 +79,39 @@ const Asserts = () => {
         alert('Failed to fetch subDealer details data.');
       }
     };
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
     getAllAssertDetails();
   }, []);
   useEffect(() => {
     getAssertDataByDate();
   }, []);
-  
+
   const getAssertDataByDate = useCallback(async () => {
     try {
-      const response = await ApiService.post('/dashboards/getAssertDataByDate', {
-        fromDate: assetDetailsFromState?.purchaseDate,
-        toDate: assetDetailsFromState?.purchaseDate,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getAssertDataByDate',
+        {
+          fromDate: assetDetailsFromState?.purchaseDate,
+          toDate: assetDetailsFromState?.purchaseDate,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
@@ -98,9 +125,8 @@ const Asserts = () => {
   }, [assetDetailsFromState?.fromDate, assetDetailsFromState?.toDate]);
   // Populate columns and data based on the type
 
-
   const handleSearch = async () => {
-    await getAssertDataByDate()
+    await getAssertDataByDate();
   };
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
@@ -180,7 +206,7 @@ const Asserts = () => {
                 {/* Display Asset Photo */}
                 {profile.assetPhoto ? (
                   <img
-                    src={`https://your-image-server-url/${profile.assetPhoto}`}  // Update with correct image URL
+                    src={`https://your-image-server-url/${profile.assetPhoto}`} // Update with correct image URL
                     alt={profile.assertsName}
                     className="w-24 h-24 rounded-full object-cover"
                   />
@@ -193,12 +219,25 @@ const Asserts = () => {
 
               {/* Content Section */}
               <div className="flex-grow space-y-2">
-                <h2 className="text-2xl font-bold text-black">{profile.assertsName}</h2>
+                <h2 className="text-2xl font-bold text-black">
+                  {profile.assertsName}
+                </h2>
                 <p className="text-gray-500">
-                  {profile.branchId ? profile.branchId.branchName : 'Branch not available'}
+                  {profile.branchId
+                    ? profile.branchId.branchName
+                    : 'Branch not available'}
                 </p>
-                <p className="text-red-500 font-medium"> {profile.voucherId ? profile.voucherId.paymentType : 'paymentType not available'}</p>
-                <h3 className="text-2xl font-bold text-black mt-2">{profile.voucherId ? profile.voucherId.amount : 'amount not available'}</h3>
+                <p className="text-red-500 font-medium">
+                  {' '}
+                  {profile.voucherId
+                    ? profile.voucherId.paymentType
+                    : 'paymentType not available'}
+                </p>
+                <h3 className="text-2xl font-bold text-black mt-2">
+                  {profile.voucherId
+                    ? profile.voucherId.amount
+                    : 'amount not available'}
+                </h3>
               </div>
 
               {/* Button Section */}
@@ -212,7 +251,6 @@ const Asserts = () => {
               </div>
             </div>
           ))}
-
         </div>
       ) : (
         <div>
@@ -252,7 +290,7 @@ const Asserts = () => {
           <Table
             columns={Object.keys(filteredData[0])}
             data={filteredData}
-            onDetails={() => { }}
+            onDetails={() => {}}
             showEdit={false}
             showDelete={false}
             showDetails={true}
