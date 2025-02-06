@@ -14,6 +14,8 @@ const Products = () => {
   const [installationBranch, setInstallationBranch] = useState('All Branches');
   const [products, setProducts] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [columns, setColumns] = useState([]);
   const handleSelectChange = (e) => {
     setSelectedBranch(e.target.value);
   };
@@ -30,6 +32,11 @@ const Products = () => {
         );
         if (response.status) {
           console.log(response.data, 'res++++++++++++++');
+          const filteredData = response.data.map(
+            ({ vendorId, ...rest }) => rest
+          );
+          setTableData(filteredData);
+          setColumns(Object.keys(filteredData[0]));
           setProducts(response.data);
         }
       } catch (error) {
@@ -141,10 +148,11 @@ const Products = () => {
           <option value="" disabled>
             Select Branch
           </option>
-          <option value="Hyderabad">Hyderabad</option>
-          <option value="Vishakapatnam">Vishakapatnam</option>
-          <option value="Vijayawada">Vijayawada</option>
-          <option value="Kakinada">Kakinada</option>
+          {branches.map((branch) => (
+            <option key={branch.id} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
         </select>
         <button className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
           Search
@@ -174,7 +182,7 @@ const Products = () => {
               <div className="text-center mt-4">
                 <h2 className="text-lg font-semibold">{profile.productName}</h2>
                 <p className="text-sm text-gray-500">
-                  {truncateString(profile.productDescription)}
+                  {profile.productDescription}
                 </p>
               </div>
 
@@ -189,8 +197,8 @@ const Products = () => {
         </div>
       ) : (
         <Table
-          columns={Object.keys(products[0])}
-          data={products}
+          columns={columns}
+          data={tableData}
           onEdit={(profile) => console.log('Edit:', profile)}
           onDetails={(profile) => console.log('Details:', profile)}
         />

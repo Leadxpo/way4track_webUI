@@ -113,8 +113,10 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const filteredData = response.data.map(
+          ({ productDetails, ...rest }) => rest
+        );
+        setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
       }
@@ -147,6 +149,28 @@ const TableWithDateFilter = ({
   }, [dateFrom, dateTo, statusFilter]);
 
   const getRequestsData = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/requests/getRequestsBySearch', {
+        fromDate: dateFrom,
+        toDate: dateTo,
+        status: statusFilter,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch request details.');
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+      alert('Failed to fetch request details.');
+    }
+  }, [dateFrom, dateTo, statusFilter]);
+
+  const getInvoicesData = useCallback(async () => {
     try {
       const response = await ApiService.post('/requests/getRequestsBySearch', {
         fromDate: dateFrom,
