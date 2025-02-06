@@ -13,7 +13,7 @@ const AddEditEstimate = () => {
 
   // Check if editing or creating
   const isEditMode = location.state?.estimateDetails ? true : false;
-isEditMode && console.log("edit : ",location.state?.estimateDetails);
+  isEditMode && console.log("edit : ", location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
     client: '',
@@ -23,9 +23,9 @@ isEditMode && console.log("edit : ",location.state?.estimateDetails);
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{productId:'', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
+    items: [{ productId: '', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
     terms: '',
-    totalAmount:0
+    totalAmount: 0
   };
 
   const calculateTotal = (items) => {
@@ -162,25 +162,25 @@ isEditMode && console.log("edit : ",location.state?.estimateDetails);
       ),
       companyCode: 'COMPANY_CODE', // Replace with actual company code
       unitCode: 'UNIT_CODE', // Replace with actual unit code
-      // estimateId: formData.estimateId || undefined,
-      // invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
-      // GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
-      // SCST: formData.SCST || 0, // Default or from formData
-      // CGST: formData.CGST || 0, // Default or from formData
-      // quantity: formData.items.reduce(
-      //   (total, item) => total + parseInt(item.quantity, 10),
-      //   0
-      // ),
-      // hsnCode: formData.items[0].hsnCode,
-      // cgstPercentage: formData.cgstPercentage || 0, // For temporary use
-      // scstPercentage: formData.scstPercentage || 0, // For temporary use
-      // convertToInvoice: formData.convertToInvoice || false, // Boolean value
+      estimateId: formData.estimateId || undefined,
+      invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
+      GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
+      SCST: formData.SCST || 0, // Default or from formData
+      CGST: formData.CGST || 0, // Default or from formData
+      quantity: formData.items.reduce(
+        (total, item) => total + parseInt(item.quantity, 10),
+        0
+      ),
+      hsnCode: formData.items[0].hsnCode,
+      cgstPercentage: formData.cgstPercentage || 0, // For temporary use
+      scstPercentage: formData.scstPercentage || 0, // For temporary use
+      convertToInvoice: formData.convertToInvoice || false, // Boolean value
       productDetails: formData.items.map((item) => ({
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
-       amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
-       hsnCode: parseFloat(item.hsnCode), // Total cost calculation
+        amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
+        hsnCode: parseFloat(item.hsnCode), // Total cost calculation
       })),
     };
 

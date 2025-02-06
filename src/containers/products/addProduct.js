@@ -97,14 +97,9 @@ const AddProductForm = () => {
       bulkPayload.append('file', bulkFile);
 
       try {
-        const response = await ApiService.post(
-          '/products/bulk-upload',
-          bulkPayload,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
-
+        const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         if (response.data.status) {
           alert('Bulk upload successful!');
           navigate('/products');
@@ -123,14 +118,9 @@ const AddProductForm = () => {
       });
 
       try {
-        const response = await ApiService.post(
-          '/products/createOrUpdateProduct',
-          payload,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
-
+        const response = await ApiService.post('/api/products/createOrUpdateProduct', payload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         if (response.data.status) {
           alert('Product saved successfully!');
           navigate('/staff');

@@ -38,6 +38,7 @@ const TableWithDateFilter = ({
   const location = useLocation();
   const vendorData = location.state?.vendorsData || {};
   const subDealerData = location.state?.subDealersData || {};
+  const requestData = location.state?.requestData || {};
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -126,6 +127,38 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
+  const getRequestsData = useCallback(async () => {
+    try {
+      const requestBody = {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      };
+
+      // Add branchName only if it is defined (not undefined/null/empty)
+      if (requestData.branchName) {
+        requestBody.branchName = requestData.branchName;
+      }
+
+      const response = await ApiService.post(
+        '/requests/getRequestsBySearch',
+        requestBody
+      );
+
+      if (response.status) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
+      } else {
+        console.warn('Request failed:', response.data?.message);
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+    }
+  }, [
+    requestData.branchName,
+    initialAuthState?.companyCode,
+    initialAuthState?.unitCode,
+  ]);
+
   const getPaymentsData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getPaymentData', {
@@ -148,49 +181,27 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
-  const getRequestsData = useCallback(async () => {
-    try {
-      const response = await ApiService.post('/requests/getRequestsBySearch', {
-        fromDate: dateFrom,
-        toDate: dateTo,
-        status: statusFilter,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+  // const getRequestsData = useCallback(async () => {
+  //   try {
+  //     const response = await ApiService.post('/requests/getRequestsBySearch', {
+  //       fromDate: dateFrom,
+  //       toDate: dateTo,
+  //       status: statusFilter,
+  //       companyCode: initialAuthState?.companyCode,
+  //       unitCode: initialAuthState?.unitCode,
+  //     });
 
-      if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
-      } else {
-        alert(response.data.message || 'Failed to fetch request details.');
-      }
-    } catch (error) {
-      console.error('Error fetching request details:', error);
-      alert('Failed to fetch request details.');
-    }
-  }, [dateFrom, dateTo, statusFilter]);
-
-  const getInvoicesData = useCallback(async () => {
-    try {
-      const response = await ApiService.post('/requests/getRequestsBySearch', {
-        fromDate: dateFrom,
-        toDate: dateTo,
-        status: statusFilter,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-
-      if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
-      } else {
-        alert(response.data.message || 'Failed to fetch request details.');
-      }
-    } catch (error) {
-      console.error('Error fetching request details:', error);
-      alert('Failed to fetch request details.');
-    }
-  }, [dateFrom, dateTo, statusFilter]);
+  //     if (response.status) {
+  //       console.log(response.data, 'Response Data'); // Log data to verify it
+  //       setFilteredData(response.data); // Assuming the structure is as expected
+  //     } else {
+  //       alert(response.data.message || 'Failed to fetch request details.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching request details:', error);
+  //     alert('Failed to fetch request details.');
+  //   }
+  // }, [dateFrom, dateTo, statusFilter]);
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':

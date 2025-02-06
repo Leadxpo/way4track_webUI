@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { FaEllipsisVertical } from 'react-icons/fa6';
-import { FaList, FaTh, FaPlus } from 'react-icons/fa';
+import { FaList, FaTh, FaPlus, FaSearch } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router';
 import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
@@ -13,6 +13,8 @@ const Staff = () => {
 
   const [selectedBranch, setSelectedBranch] = useState('');
   const [branches, setBranches] = useState([]);
+  const [staffId, setStaffId] = useState('');
+  const [staffName, setStaffName] = useState('');
   const [isGridView, setIsGridView] = useState(true);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const [profiles, setProfiles] = useState([]);
@@ -62,6 +64,10 @@ const Staff = () => {
     }
   };
 
+
+  const handleSearch = async () => {
+    await getStaffSearchDetails();
+  };
   // Initial API calls
   useEffect(() => {
     getStaffSearchDetails();
@@ -113,6 +119,11 @@ const Staff = () => {
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
+    },
+    {
+      title: 'Attendance Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
       title: 'Actions',
@@ -172,10 +183,16 @@ const Staff = () => {
       <div className="flex space-x-4 my-4">
         <input
           placeholder="Staff ID"
+          onChange={(e) => setStaffId(e.target.value)}
+          id="staffId"
+          value={staffId}
           className="h-12 w-full block px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
         <input
           placeholder="Staff Name"
+          onChange={(e) => setStaffName(e.target.value)}
+          id="staffName"
+          value={staffName}
           className="h-12 w-full block px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
         <select
@@ -190,8 +207,8 @@ const Staff = () => {
             </option>
           ))}
         </select>
-        <button className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
-          Search
+        <button onClick={handleSearch} className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
+          <FaSearch className="mr-2" />Search
         </button>
       </div>
       {/* Staff Table */}
@@ -241,7 +258,8 @@ const Staff = () => {
           ))}
         </div>
       ) : (
-        <Table columns={columns} data={profiles} />
+
+        <Table columns={columns} data={Array.isArray(profiles) ? profiles : []} />
       )}{' '}
     </div>
   );

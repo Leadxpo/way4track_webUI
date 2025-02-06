@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 
 const Ledger = () => {
@@ -31,10 +32,10 @@ const Ledger = () => {
     setError(null);
 
     try {
-      const response = await ApiService.post('/dashboards/getLedgerData', {
+      const response = await ApiService.post('/dashboards/getLedgerDataTable', {
         ...searchData,
-        companyCode: ApiService.initialAuthState?.companyCode,
-        unitCode: ApiService.initialAuthState?.unitCode,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
       });
 
       if (response.status) {

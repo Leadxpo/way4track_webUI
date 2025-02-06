@@ -37,7 +37,9 @@ const Products = () => {
           );
           setTableData(filteredData);
           setColumns(Object.keys(filteredData[0]));
-          setProducts(response.data);
+          setProducts(response.data || []);
+        } else {
+          setProducts([]);
         }
       } catch (error) {
         console.error('Error fetching staff details:', error);
@@ -182,7 +184,7 @@ const Products = () => {
               <div className="text-center mt-4">
                 <h2 className="text-lg font-semibold">{profile.productName}</h2>
                 <p className="text-sm text-gray-500">
-                  {profile.productDescription}
+                  {profile.productDescription || ''}
                 </p>
               </div>
 
