@@ -10,6 +10,8 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [loading, setLoading] = useState(false);
+
+
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
       const payload = {
@@ -53,7 +55,7 @@ const Appointments = () => {
         unitCode: initialAuthState.unitCode,
       };
 
-      const res = await ApiService.post('/appointment/deleteAppointmentDetails', payload);
+      const res = await ApiService.post('/api/appointment/deleteAppointmentDetails', payload);
 
       if (res.status) {
         setAppointments((prevAppointments) =>
@@ -79,9 +81,7 @@ const Appointments = () => {
     navigate('/add-appointment', { state: { appointmentDetails: appt } });
   };
 
-  // const handleDelete = (appt) => {
-  //   navigate('/delete-appointment');
-  // };
+ 
   const handleDelete = (appt) => {
     if (window.confirm(`Are you sure you want to delete appointment ${appt.appointmentId}?`)) {
       deleteAppointmentDetails(appt.appointmentId);
@@ -93,9 +93,7 @@ const Appointments = () => {
     });
   };
 
-  // useEffect(() => {
-  //   fetchAppointmentDetails();
-  // }, []);
+
 
   useEffect(() => {
     fetchAppointmentDetails(selectedBranch);

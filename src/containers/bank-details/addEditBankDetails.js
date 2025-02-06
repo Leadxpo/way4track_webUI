@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FaFileCirclePlus } from 'react-icons/fa6';
-import { useNavigate, useLocation } from 'react-router';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const AddEditBankDetails = () => {
   const navigate = useNavigate();
@@ -11,33 +11,56 @@ const AddEditBankDetails = () => {
 
   // Initialize form data with existing bank details if available
   const initialFormData = {
-    accountHolderName: bankData.accountHolderName || '',
+    accountHolderName: bankData.accountName || '',
     accountType: bankData.accountType || '',
     accountNumber: bankData.accountNumber || '',
-    branch: bankData.branch || '',
+    branch: bankData.branchId || '',
     ifscCode: bankData.ifscCode || '',
-    bankPhoneNumber: bankData.bankPhoneNumber || '',
-    bankNumber: bankData.bankNumber || '',
-    bankAddress: bankData.bankAddress || '',
+    bankPhoneNumber: bankData.phoneNumber || '',
+    // bankNumber: bankData.bankNumber || '',
+    bankAddress: bankData.address || '',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
   };
 
   const [formData, setFormData] = useState(initialFormData);
-
-  useEffect(() => {
-    if (bankData) {
-      setFormData(bankData);
-    }
-  }, [bankData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    // Handle save action (e.g., API call or state update)
-    navigate('/bank-details');
+  const handleSave = async () => {
+
+    // const payload = {
+    //   ...formData,
+    // };
+
+    const payload = new FormData();
+
+    try {
+      const endpoint = formData.id
+        ? '/account/createAccount'
+        : '/account/createAccount';
+      const response = await ApiService.post(endpoint, payload);
+
+      if (response.data.status) {
+        alert(
+          formData.id
+            ? 'account updated successfully!'
+            : 'account created successfully!'
+        );
+        navigate('/bank-details');
+      } else {
+        alert('Failed to save appointment details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving appointment details:', error);
+      alert('Failed to save appointment details. Please try again.');
+    }
   };
+
+
 
   const handleCancel = () => {
     navigate('/bank-details');
@@ -79,7 +102,7 @@ const AddEditBankDetails = () => {
             <input
               type="text"
               name="accountHolderName"
-              value={formData.accountHolderName}
+              value={formData.accountName}
               onChange={handleInputChange}
               placeholder="Enter Account Holder Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -88,14 +111,16 @@ const AddEditBankDetails = () => {
           {/* Account Type */}
           <div>
             <p className="font-semibold mb-1">Account Type</p>
-            <input
-              type="text"
+            <select
               name="accountType"
               value={formData.accountType}
               onChange={handleInputChange}
-              placeholder="Enter Account Type"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
+            >
+              <option value="">Select accountType</option>
+              <option value="savings">savings</option>
+              <option value="current">current</option>
+            </select>
           </div>
           {/* Account Number */}
           <div>
@@ -146,7 +171,7 @@ const AddEditBankDetails = () => {
             />
           </div>
           {/* Bank Number */}
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">Bank Number</p>
             <input
               type="text"
@@ -156,7 +181,7 @@ const AddEditBankDetails = () => {
               placeholder="Enter Bank Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-          </div>
+          </div> */}
           {/* Bank Address */}
           <div>
             <p className="font-semibold mb-1">Bank Address</p>

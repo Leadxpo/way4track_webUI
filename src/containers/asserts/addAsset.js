@@ -22,6 +22,9 @@ const AddAsset = () => {
     companyCode: initialAuthState.companyCode,
     photo: assetData?.photo || null,
     unitCode: initialAuthState.unitCode,
+    assertName: assetData.assertName,
+    quantity: assetData.quantity,
+    assertAmount: assetData.assertAmount
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -86,14 +89,14 @@ const AddAsset = () => {
     Object.entries(formData).forEach(([key, value]) => {
       // Do not include 'id' if it is null
       if (key === 'id' && !value) return;
-  
+
       if (key === 'photo' && value instanceof File) {
         payload.append(key, value);
       } else {
         payload.append(key, value);
       }
     });
-  
+
     try {
       const endpoint = formData.id
         ? '/asserts/update' // Use an update endpoint if 'id' exists
@@ -101,7 +104,7 @@ const AddAsset = () => {
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+
       if (response.data.status) {
         alert(
           formData.id
@@ -117,7 +120,7 @@ const AddAsset = () => {
       alert('Failed to save asset details. Please try again.');
     }
   };
-  
+
 
   const handleCancel = () => {
     navigate('/add-assets');
@@ -223,6 +226,15 @@ const AddAsset = () => {
           <input
             type="text"
             name="description"
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          />
+        </div>
+        <div>
+          <p className="font-semibold mb-1">Quantity</p>
+          <input
+            type="number"
+            name="quantity"
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />

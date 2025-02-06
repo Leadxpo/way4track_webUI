@@ -31,7 +31,7 @@ const Home = () => {
   const [solidLiquidData, setSolidLiquidData] = useState({});
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState(
-    {}
+    []
   );
   const [totalProducts, setTotalProducts] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState([]);
@@ -357,10 +357,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-                ...item,
-                count: response.data.last30DaysTickets,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysTickets,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -384,10 +384,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-                ...item,
-                count: response.data.last30DaysProducts,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysProducts,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -411,10 +411,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-                ...item,
-                count: response.data.last30DaysPurchases,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysPurchases,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -437,10 +437,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-                ...item,
-                count: response.data.last30DaysExpenses,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysExpenses,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -518,6 +518,7 @@ const Home = () => {
       });
 
       if (response.status) {
+        console.log(response.data, "purchase")
         setTotalPurchases(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
@@ -556,6 +557,7 @@ const Home = () => {
         }
       );
       if (response.status) {
+        console.log(response.data, "OOOOOOOOOOOOOOOOOOOO")
         setBranchWiseSolidLiquidData(response.data);
       } else {
         alert(
@@ -573,10 +575,11 @@ const Home = () => {
         '/dashboards/getTotalProductAndServiceSales',
         {
           companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
+          unitCode: initialAuthState?.unitCode
         }
       );
       if (response.status) {
+        console.log(response.data, "{{{{{{{{{{{{{{{{{{{{{{{{")
         setBranchDetails(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch total sales details.');
@@ -701,6 +704,58 @@ const Home = () => {
       </div>
 
       {/* second section */}
+      <div className="flex items-center justify-center space-x-10">
+        <div>
+          {bracnhWiseSolidLiquidData.map((cash) => (
+            <div className="grid grid-cols-4 gap-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  src="logo-name-square.png"
+                  alt="Branch Logo"
+                  className="w-10 h-10 object-cover"
+                />
+                <div>
+                  <p className="text-gray-800 font-semibold">Branch</p>
+                  <p className="text-green-700 font-semibold">
+                    {cash.branchName}
+                  </p>
+                </div>
+              </div>
+              <div className="text-left">
+                <p className="text-gray-500">Solid Cash</p>
+                <p className="text-gray-800 font-bold">
+                  {cash.solidCash}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div>
+          {bracnhWiseSolidLiquidData.map((cash) => (
+            <div className="grid grid-cols-4 gap-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  src="logo-name-square.png"
+                  alt="Branch Logo"
+                  className="w-10 h-10 object-cover"
+                />
+                <div>
+                  <p className="text-gray-800 font-semibold">Branch</p>
+                  <p className="text-green-700 font-semibold">
+                    {cash.branchName}
+                  </p>
+                </div>
+              </div>
+              <div className="text-left">
+                <p className="text-gray-500">Liquid Cash</p>
+                <p className="text-gray-800 font-bold">
+                  {cash.liquidCash}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"

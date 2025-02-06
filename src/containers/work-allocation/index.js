@@ -22,8 +22,10 @@ const WorkAllocation = () => {
     staffId: workAllocationData.assignedTo,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
+    voucherId: workAllocationData.voucherId || '',
+    install: workAllocationData.install,
     // clientName: workAllocationData?.clientName,
-    // clientId: workAllocationData?.clientId || null,
+    clientId: workAllocationData?.clientId || null,
     // phoneNumber: workAllocationData?.phoneNumber,
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,25 +34,26 @@ const WorkAllocation = () => {
     useState(initialFormData);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [client, setClient] = useState([]);
+  const [voucher, setVoucher] = useState([]);
   const [staff, setStaff] = useState([]);
   const handleOpenModalForAdd = () => {
     setSelectedWorkAllocation(null);
     setIsEditMode(false);
     setIsModalOpen(true);
   };
-  // const handleDropdownChange = (e) => {
-  //   const selectedClientId = e.target.value;
-  //   const selectedClient = client.find(
-  //     (clientDetails) => String(clientDetails.clientId) === String(selectedClientId)
-  //   );
+  const handleDropdownChange = (e) => {
+    const selectedClientId = e.target.value;
+    const selectedClient = client.find(
+      (clientDetails) => String(clientDetails.clientId) === String(selectedClientId)
+    );
 
-  //   setSelectedWorkAllocation((prev) => ({
-  //     ...prev,
-  //     clientId: selectedClientId,
-  //     clientName: selectedClient?.name || '',
-  //     phoneNumber: selectedClient?.phoneNumber || '',
-  //   }));
-  // };
+    setSelectedWorkAllocation((prev) => ({
+      ...prev,
+      clientId: selectedClientId,
+      clientName: selectedClient?.name || '',
+      phoneNumber: selectedClient?.phoneNumber || '',
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,6 +76,19 @@ const WorkAllocation = () => {
       }
     };
     fetchClients();
+  }, []);
+
+  useEffect(() => {
+    const getVoucherNamesDropDown = async () => {
+      try {
+        const res = await ApiService.post('/voucher/getVoucherNamesDropDown');
+        setVoucher(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch client details:', err);
+        setVoucher([]); // Ensure state is always an array
+      }
+    };
+    getVoucherNamesDropDown();
   }, []);
 
   const handleCloseModal = () => {
@@ -155,7 +171,7 @@ const WorkAllocation = () => {
             </h2>
             <form onSubmit={handleSave}>
               <div className="grid grid-cols-3 gap-4 mb-4">
-                {/* <div>
+                <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Client Name
                   </label>
@@ -168,14 +184,36 @@ const WorkAllocation = () => {
                     >
                       <option value="" disabled>Select Client</option>
                       {client.map((clientItem) => (
-                        <option key={clientItem.clientId} value={clientItem.clientId}>
+                        <option key={clientItem.id} value={clientItem.id}>
                           {clientItem.name}
                         </option>
                       ))}
                     </select>
                   )}
 
-                </div> */}
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    voucher Name
+                  </label>
+                  {voucher.length > 0 && (
+                    <select
+                      name="voucherId"
+                      value={selectedWorkAllocation.voucherId || ''}
+                      onChange={handleInputChange}
+                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    >
+                      <option value="" disabled>Select voucher</option>
+                      {voucher.map((clientItem) => (
+                        <option key={clientItem.id} value={clientItem.id}>
+                          {clientItem.voucherId}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                </div>
                 {/* <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Client Number
@@ -230,6 +268,22 @@ const WorkAllocation = () => {
                     }
                   />
                 </div>
+                {/* <div>
+                  <p className="font-semibold mb-1">Installation</p>
+                  <select
+                    name="install"
+                    value={selectedWorkAllocation.install}
+                    onChange={handleInputChange}
+                    defaultValue={
+                      isEditMode && selectedWorkAllocation.install
+                    }
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="">Select install</option>
+                    <option value="assigned">assigned</option>
+                    <option value="installed">installed</option>
+                  </select>
+                </div> */}
                 {/* Assign To */}
                 {staff.length > 0 && (
                   <div className="flex flex-col">

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
-import axios from 'axios';
-import { initialAuthState } from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 class CommonReq {
   constructor(unitCode, companyCode, userId, userName) {
@@ -26,7 +25,7 @@ const Purchase = ({ onEdit, onDetails }) => {
           initialAuthState.userName
         );
 
-        const response = await axios.post(
+        const response = await ApiService.post(
           '/dashboards/getPurchaseData',
           payload
         );
