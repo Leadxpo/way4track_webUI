@@ -18,7 +18,7 @@ const Staff = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const [profiles, setProfiles] = useState([]);
-
+  const [columns, setColumns] = useState([]);
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -35,6 +35,7 @@ const Staff = () => {
 
       if (response.status) {
         setProfiles(response.data || []);
+        setColumns(response.data.length ? Object.keys(response.data[0]) : []);
       } else {
         alert(
           response.data.internalMessage || 'Failed to fetch staff details.'
@@ -64,7 +65,6 @@ const Staff = () => {
     }
   };
 
-
   const handleSearch = async () => {
     await getStaffSearchDetails();
   };
@@ -93,59 +93,6 @@ const Staff = () => {
   const handleMoreDetails = (profile) => {
     navigate('/staff-details', { state: { staffDetails: profile } });
   };
-
-  const columns = [
-    {
-      title: 'Staff ID',
-      dataIndex: 'staffId',
-      key: 'staffId',
-    },
-    {
-      title: 'Name',
-      dataIndex: 'staffName',
-      key: 'staffName',
-    },
-    {
-      title: 'Designation',
-      dataIndex: 'designation',
-      key: 'designation',
-    },
-    {
-      title: 'Branch',
-      dataIndex: 'branchName',
-      key: 'branchName',
-    },
-    {
-      title: 'Phone Number',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
-    },
-    {
-      title: 'Attendance Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, profile) => (
-        <div className="flex space-x-2">
-          <button
-            className="text-blue-500 hover:underline"
-            onClick={() => handleEdit(profile)}
-          >
-            Edit
-          </button>
-          <button
-            className="text-green-500 hover:underline"
-            onClick={() => handleMoreDetails(profile)}
-          >
-            Details
-          </button>
-        </div>
-      ),
-    },
-  ];
 
   return (
     <div className="m-2">
@@ -207,8 +154,12 @@ const Staff = () => {
             </option>
           ))}
         </select>
-        <button onClick={handleSearch} className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
-          <FaSearch className="mr-2" />Search
+        <button
+          onClick={handleSearch}
+          className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500"
+        >
+          <FaSearch className="mr-2" />
+          Search
         </button>
       </div>
       {/* Staff Table */}
@@ -258,8 +209,10 @@ const Staff = () => {
           ))}
         </div>
       ) : (
-
-        <Table columns={columns} data={Array.isArray(profiles) ? profiles : []} />
+        <Table
+          columns={columns}
+          data={Array.isArray(profiles) ? profiles : []}
+        />
       )}{' '}
     </div>
   );
