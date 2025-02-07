@@ -38,7 +38,7 @@ const TableWithDateFilter = ({
   const location = useLocation();
   const vendorData = location.state?.vendorsData || {};
   const subDealerData = location.state?.subDealersData || {};
-  const requestData = location.state?.requestData || {}
+  const requestData = location.state?.requestData || {};
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -114,8 +114,10 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const filteredData = response.data.map(
+          ({ productDetails, ...rest }) => rest
+        );
+        setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
       }
@@ -137,7 +139,10 @@ const TableWithDateFilter = ({
         requestBody.branchName = requestData.branchName;
       }
 
-      const response = await ApiService.post('/requests/getRequestsBySearch', requestBody);
+      const response = await ApiService.post(
+        '/requests/getRequestsBySearch',
+        requestBody
+      );
 
       if (response.status) {
         console.log(response.data, 'Response Data');
@@ -148,8 +153,11 @@ const TableWithDateFilter = ({
     } catch (error) {
       console.error('Error fetching request details:', error);
     }
-  }, [requestData.branchName, initialAuthState?.companyCode, initialAuthState?.unitCode]);
-
+  }, [
+    requestData.branchName,
+    initialAuthState?.companyCode,
+    initialAuthState?.unitCode,
+  ]);
 
   const getPaymentsData = useCallback(async () => {
     try {
@@ -172,8 +180,6 @@ const TableWithDateFilter = ({
       alert('Failed to fetch estimate details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
-
-
 
   // const getRequestsData = useCallback(async () => {
   //   try {
