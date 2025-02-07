@@ -113,7 +113,6 @@ const AddEditEstimate = () => {
     updatedItems[index]['hsnCode'] = selectedProduct.imeiNumber;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
-
   const handleProductItemQuantityChange = (index, e) => {
 
     const { name, value } = e.target;

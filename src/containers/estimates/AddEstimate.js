@@ -24,7 +24,7 @@ const AddEstimate = () => {
     terms: '',
     totalAmount:0
   };
-
+  // name: string; quantity: number; amount: number, costPerUnit: number, totalCost: number, hsnCode: string
   const calculateTotal = (items) => {
     return items.reduce((total, item) => {
       const itemAmount = parseFloat(item.amount) || 0; // Ensure amount is treated as a number
@@ -107,7 +107,7 @@ const AddEstimate = () => {
     updatedItems[index][name] = value;
     updatedItems[index]['productId'] = selectedProduct.id;
     updatedItems[index]['rate'] = selectedProduct.price;
-    updatedItems[index]['hsnCode'] = selectedProduct.imeiNumber;
+    updatedItems[index]['hsnCode'] = selectedProduct.hsnCode;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
 
