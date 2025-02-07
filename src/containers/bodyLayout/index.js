@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import Staff from '../staff';
 import { Routes, Route } from 'react-router-dom';
 import Products from '../products';
+import ProductDetails from '../products/productMoreDetails';
 import Branches from '../branches';
 import Home from '../home';
 import TableWithDateFilter from '../tablesDateFilter';
@@ -269,6 +270,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
           <Route path="/products" element={<Products />} />
+          <Route
+            path="/product-details"
+            element={<ProductDetails />}
+          />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />

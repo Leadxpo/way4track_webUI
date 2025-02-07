@@ -13,7 +13,7 @@ const AddEditEstimate = () => {
 
   // Check if editing or creating
   const isEditMode = location.state?.estimateDetails ? true : false;
-isEditMode && console.log("edit : ",location.state?.estimateDetails);
+  isEditMode && console.log("edit : ", location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
     client: '',
@@ -23,9 +23,9 @@ isEditMode && console.log("edit : ",location.state?.estimateDetails);
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{productId:'', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
+    items: [{ productId: '', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
     terms: '',
-    totalAmount:0
+    totalAmount: 0
   };
 
   const calculateTotal = (items) => {
@@ -113,7 +113,6 @@ isEditMode && console.log("edit : ",location.state?.estimateDetails);
     updatedItems[index]['hsnCode'] = selectedProduct.imeiNumber;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
-
   const handleProductItemQuantityChange = (index, e) => {
 
     const { name, value } = e.target;
@@ -179,8 +178,8 @@ isEditMode && console.log("edit : ",location.state?.estimateDetails);
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
-       amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
-       hsnCode: parseFloat(item.hsnCode), // Total cost calculation
+        amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
+        hsnCode: parseFloat(item.hsnCode), // Total cost calculation
       })),
     };
 

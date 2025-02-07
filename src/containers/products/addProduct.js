@@ -33,7 +33,12 @@ const AddProductForm = () => {
     planName: '',
     remarks1: '',
     remarks2: '',
+    remarks3: '',
     deviceModel: '',
+    BASKET_NAME: '',
+    SIM_IMSI: '',
+    SIM_NO: '',
+    MOBILE_NUMBER: '',
     file: null,
     ...employeeData,
   };
@@ -229,6 +234,12 @@ const AddProductForm = () => {
         {renderField('Remarks 2', 'remarks2')}
         {renderField('Device Model', 'deviceModel')}
         {renderField('Category Name', 'categoryName')}
+        {renderField('Remarks 3', 'remarks3')}
+        {renderField('BASKET_NAME', 'BASKET_NAME')}
+        {renderField('SIM_IMSI', 'SIM_IMSI')}
+        {renderField('SIM_NO', 'SIM_NO')}
+        {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')}
+
 
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
