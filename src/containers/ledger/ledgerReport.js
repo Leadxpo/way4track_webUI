@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
-
+import { initialAuthState } from '../../services/ApiService';
 const LedgerReport = () => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [filterData, setFilteredData] = useState([]);
@@ -17,8 +17,8 @@ const LedgerReport = () => {
                     fromDate: ledger?.generationDate,
                     toDate: ledger?.generationDate,
                     clientName: ledger?.clientName,
-                    companyCode: ApiService.initialAuthState?.companyCode,
-                    unitCode: ApiService.initialAuthState?.unitCode,
+                    companyCode: initialAuthState?.companyCode,
+                    unitCode: initialAuthState?.unitCode,
                 });
 
                 if (response.status) {

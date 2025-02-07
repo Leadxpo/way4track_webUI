@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
-import axios from 'axios';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
 class CommonReq {

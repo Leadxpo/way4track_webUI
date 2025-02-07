@@ -161,19 +161,19 @@ const AddEditEstimate = () => {
       ),
       companyCode: 'COMPANY_CODE', // Replace with actual company code
       unitCode: 'UNIT_CODE', // Replace with actual unit code
-      // estimateId: formData.estimateId || undefined,
-      // invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
-      // GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
-      // SCST: formData.SCST || 0, // Default or from formData
-      // CGST: formData.CGST || 0, // Default or from formData
-      // quantity: formData.items.reduce(
-      //   (total, item) => total + parseInt(item.quantity, 10),
-      //   0
-      // ),
-      // hsnCode: formData.items[0].hsnCode,
-      // cgstPercentage: formData.cgstPercentage || 0, // For temporary use
-      // scstPercentage: formData.scstPercentage || 0, // For temporary use
-      // convertToInvoice: formData.convertToInvoice || false, // Boolean value
+      estimateId: formData.estimateId || undefined,
+      invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
+      GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
+      SCST: formData.SCST || 0, // Default or from formData
+      CGST: formData.CGST || 0, // Default or from formData
+      quantity: formData.items.reduce(
+        (total, item) => total + parseInt(item.quantity, 10),
+        0
+      ),
+      hsnCode: formData.items[0].hsnCode,
+      cgstPercentage: formData.cgstPercentage || 0, // For temporary use
+      scstPercentage: formData.scstPercentage || 0, // For temporary use
+      convertToInvoice: formData.convertToInvoice || false, // Boolean value
       productDetails: formData.items.map((item) => ({
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,

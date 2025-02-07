@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
+
 
 const DayBook = () => {
   const [selectedRow, setSelectedRow] = useState(null);
@@ -17,8 +19,8 @@ const DayBook = () => {
           fromDate: dayBook?.generationDate,
           toDate: dayBook?.generationDate,
           branchName: dayBook?.branchName,
-          companyCode: ApiService.initialAuthState?.companyCode,
-          unitCode: ApiService.initialAuthState?.unitCode,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
         });
 
         if (response.status) {

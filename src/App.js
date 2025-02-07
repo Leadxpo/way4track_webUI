@@ -4,9 +4,9 @@ import BodyLayout from './containers/bodyLayout';
 import Login from './containers/login';
 
 const App = () => {
-  const [role, setRole] = useState('ceo'); // You can switch between 'ceo' and 'subdealer'
+  const [role, setRole] = useState(localStorage.getItem('role') || 'CEO'); // You can switch between 'ceo' and 'subdealer'
   const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem('userRole') || false
+    localStorage.getItem('role') || false
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to handle sidebar visibility
 

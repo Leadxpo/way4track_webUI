@@ -12,51 +12,49 @@ const Settings = () => {
   const [mockData, setMockData] = useState([]); // Holds all staff data
   const [isLoading, setIsLoading] = useState(true);
   const [profiles, setProfiles] = useState([]);
-  useEffect(() => {
-    const getStaffPermissions = async () => {
-      try {
-        const response = await ApiService.post(
-          '/permissions/getStaffPermissions',
-          {
-            staffId: employeeData.staffId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-        if (response.status) {
-          const staff = response.data?.[0];
-          setMockData(response.data); // Save entire data for all staff
-          console.log(staff, '_________________');
-          setStaffData(staff || null); // Initial staff data from the first response
-        }
-      } catch (error) {
-        console.error('Error fetching staff details:', error);
-        alert('Failed to fetch staff details.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
-    getStaffPermissions();
-  }, [employeeData.staffId]);
+  const getStaffPermissions = async () => {
+    try {
+      const response = await ApiService.post(
+        '/permissions/getStaffPermissions',
+        {
+          staffId: staffId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+      if (response.status) {
+        const staff = response.data?.[0];
+        setMockData(staff); // Save entire data for all staff
+        console.log(staff, '_________________');
+        setStaffData(staff || null); // Initial staff data from the first response
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      alert('Failed to fetch staff details.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = async () => {
     try {
-      const response = await ApiService.post('/staff/getStaffDetails', {
-        userId: staffId,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      // const response = await ApiService.post('/staff/getStaffDetails', {
+      //   userId: staffId,
+      //   companyCode: initialAuthState?.companyCode,
+      //   unitCode: initialAuthState?.unitCode,
+      // });
 
-      if (response.status) {
-        setProfiles(response.data || []);
-        setNotFound(false);
-      } else {
-        alert(
-          response.data.internalMessage || 'Failed to fetch staff details.'
-        );
-        setNotFound(true);
-      }
+      // if (response.status) {
+      // setProfiles(response.data || []);
+      setNotFound(false);
+      getStaffPermissions();
+      // } else {
+      //   alert(
+      //     response.data.internalMessage || 'Failed to fetch staff details.'
+      //   );
+      //   setNotFound(true);
+      // }
     } catch (error) {
       console.error('Error fetching staff details:', error);
       setNotFound(true);
