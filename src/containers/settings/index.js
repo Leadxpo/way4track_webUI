@@ -18,7 +18,7 @@ const Settings = () => {
       const response = await ApiService.post(
         '/permissions/getStaffPermissions',
         {
-          staffId: employeeData.staffId,
+          staffId: staffId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         }
@@ -37,7 +37,6 @@ const Settings = () => {
     }
   };
 
-
   const handleSearch = async () => {
     try {
       // const response = await ApiService.post('/staff/getStaffDetails', {
@@ -49,7 +48,7 @@ const Settings = () => {
       // if (response.status) {
       // setProfiles(response.data || []);
       setNotFound(false);
-      getStaffPermissions()
+      getStaffPermissions();
       // } else {
       //   alert(
       //     response.data.internalMessage || 'Failed to fetch staff details.'
@@ -144,7 +143,7 @@ const Settings = () => {
                   </thead>
                   <tbody>
                     {staffData.permissions &&
-                      staffData.permissions.length > 0 ? (
+                    staffData.permissions.length > 0 ? (
                       staffData.permissions.map((permission, index) => (
                         <tr key={index} className="border-t">
                           <td className="p-2">{permission.name}</td>
