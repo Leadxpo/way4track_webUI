@@ -4,8 +4,15 @@ import { useNavigate } from 'react-router';
 import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
+import { getPermissions } from '../../common/commonUtils';
+import { useEffect, useState } from 'react';
 const Estimates = () => {
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('estimate');
+    setPermissions(perms);
+  }, []);
   const handleEdit = (estimate) => {
     navigate('/edit-estimate', { state: { estimateDetails: { estimate } } });
   };
@@ -20,7 +27,10 @@ const Estimates = () => {
         onDelete={() => {}}
         onDetails={handleDetails}
         showStatusFilter={true}
-        showDelete={false}
+        showCreateBtn={permissions.add}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
       />
       {/* <div style={{ height: '100vh', width: '50vw' }}>
         <PDFViewer style={{ width: '100%', height: '100%' }}>

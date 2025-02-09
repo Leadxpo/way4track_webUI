@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const Branches = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
   const [branches, setBranches] = useState([]);
   const [percentages, setPercentages] = useState([]);
-
+  const [permissions, setPermissions] = useState({});
   // Fetch branches and percentages on component load
   useEffect(() => {
+    const perms = getPermissions('branch');
+    setPermissions(perms);
     const fetchBranchesAndPercentages = async () => {
       try {
         // Fetch branch names
-        const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
+        const branchResponse = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (branchResponse.status) {
           setBranches(branchResponse.data);
         } else {
@@ -23,10 +27,13 @@ const Branches = () => {
         }
 
         // Fetch percentages
-        const percentageResponse = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', {
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        });
+        const percentageResponse = await ApiService.post(
+          '/dashboards/getLast30DaysCreditAndDebitPercentages',
+          {
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
+          }
+        );
         if (percentageResponse.status) {
           setPercentages(percentageResponse.data);
         } else {
@@ -61,8 +68,12 @@ const Branches = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await ApiService.post('/branch/deleteBranchDetails', { id: branchToDelete.id });
-      setBranches((prev) => prev.filter((branch) => branch.id !== branchToDelete.id));
+      await ApiService.post('/branch/deleteBranchDetails', {
+        id: branchToDelete.id,
+      });
+      setBranches((prev) =>
+        prev.filter((branch) => branch.id !== branchToDelete.id)
+      );
       alert('Branch deleted successfully');
     } catch (error) {
       console.error('Error deleting branch:', error);
@@ -82,8 +93,10 @@ const Branches = () => {
     <div className="">
       <div className="flex justify-end">
         <button
-          className="px-4 py-2 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+          className={`px-4 py-2 text-white rounded-md transition 
+            ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-branch')}
+          disabled={!permissions.add}
         >
           Add Branch
         </button>
@@ -135,20 +148,29 @@ const Branches = () => {
 
               <div className="mt-6 flex justify-center space-x-4">
                 <button
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-blue-600"
+                  className={`px-4 py-2 text-white rounded-md transition 
+              ${permissions.edit ? 'bg-green-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleEdit(branch)}
+                  disabled={!permissions.edit}
                 >
                   Edit
                 </button>
+
                 <button
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  className={`px-4 py-2 text-white rounded-md transition 
+                    ${permissions.delete ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleDeleteClick(branch)}
+                  disabled={!permissions.delete}
                 >
                   Delete
                 </button>
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-gray-600"
-                  onClick={() => navigate('/branch-details', { state: { branch } })}
+                  className={`px-4 py-2 text-white rounded-md transition 
+                    ${permissions.view ? 'bg-blue-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+                  onClick={() =>
+                    navigate('/branch-details', { state: { branch } })
+                  }
+                  disabled={!permissions.view}
                 >
                   More Details
                 </button>
@@ -157,15 +179,22 @@ const Branches = () => {
           </div>
         ))
       ) : (
-        <div className="text-center mt-10 text-xl text-gray-700">No branches available.</div>
+        <div className="text-center mt-10 text-xl text-gray-700">
+          No branches available.
+        </div>
       )}
 
       {showPopup && (
         <div className="fixed inset-0 top-0 left-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white shadow-lg pb-4 w-full max-w-md">
             <div className="flex justify-between items-center bg-red-500 p-2">
-              <h2 className="text-white font-bold text-xl text-center flex-grow">Alert</h2>
-              <button onClick={handleClosePopup} className="text-white hover:text-gray-800">
+              <h2 className="text-white font-bold text-xl text-center flex-grow">
+                Alert
+              </h2>
+              <button
+                onClick={handleClosePopup}
+                className="text-white hover:text-gray-800"
+              >
                 &#10005;
               </button>
             </div>

@@ -228,7 +228,7 @@ export function formatString(input) {
   return formattedString;
 }
 
-const getPermissions = (roleName) => {
+export const getPermissions = (roleName) => {
   const permissions = JSON.parse(
     localStorage.getItem('userPermissions') || '[]'
   );

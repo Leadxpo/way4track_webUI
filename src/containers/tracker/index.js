@@ -29,7 +29,6 @@ const Tracker = () => {
         throw new Error('Staff not found');
       }
       const data = await response.data;
-      console.log(response.data);
       setStaffDetails(data);
       setError('');
     } catch (err) {
@@ -41,8 +40,8 @@ const Tracker = () => {
   useEffect(() => {
     if (map && staffDetails) {
       map.setCenter({
-        lat: latitude,
-        lng: longitude,
+        lat: staffDetails.latitude || latitude,
+        lng: staffDetails.longitude || longitude,
       });
     }
   }, [map, staffDetails]);
@@ -70,14 +69,17 @@ const Tracker = () => {
         <LoadScript googleMapsApiKey={apiKey}>
           <GoogleMap
             mapContainerStyle={containerStyle}
-            center={{ lat: latitude, lng: longitude }}
+            center={{
+              lat: staffDetails.latitude || latitude,
+              lng: staffDetails.longitude || longitude,
+            }}
             zoom={13}
             onLoad={(mapInstance) => setMap(mapInstance)}
           >
             <Marker
               position={{
-                lat: latitude,
-                lng: longitude,
+                lat: staffDetails.latitude || latitude,
+                lng: staffDetails.longitude || longitude,
               }}
             />
           </GoogleMap>

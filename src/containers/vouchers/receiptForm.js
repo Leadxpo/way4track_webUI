@@ -115,7 +115,7 @@ const ReceiptForm = ({ branches, bankOptions }) => {
       data.paymentType = selectedPaymentMode.toLowerCase();
       data.companyCode = initialAuthState.companyCode;
       data.unitCode = initialAuthState.unitCode;
-      const response = await ApiService.post('/voucher/save', data); // Adjust the endpoint URL as needed
+      const response = await ApiService.post('/voucher/saveVoucher', data); // Adjust the endpoint URL as needed
       console.log('Response:', response);
       // Handle the response (e.g., show a success message or redirect)
     } catch (error) {

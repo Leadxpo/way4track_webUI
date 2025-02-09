@@ -217,6 +217,11 @@ export const menuOptions = {
       route: '/products',
     },
     {
+      name: 'Install Products',
+      icon: <img src="./products.png" />,
+      route: '/install-product',
+    },
+    {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
       route: '/requests',

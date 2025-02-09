@@ -14,11 +14,12 @@ const AddEditRequestForm = () => {
 
   // Initialize form data, using employeeData if available
   const initialFormData = {
+    id: requestData.id,
     requestType: requestData.requestType || '',
     // requestBy: requestData.requestBy || '',
     requestFrom: localStorage.getItem('userId') || '',
-    requestTo: requestData.requestTo || '',
-    branch: requestData.branch || '',
+    requestTo: requestData.RequestTo || '',
+    branch: requestData.branchName || '',
     description: requestData.description || '',
     // amount: requestData.amount || '',
     createdDate: requestData.createdDate || '',
@@ -104,6 +105,9 @@ const AddEditRequestForm = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
+      if (formData.id) {
+        payload.id = formData.id;
+      }
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -130,7 +134,7 @@ const AddEditRequestForm = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {requestData.requestId ? 'Edit Request' : 'Add Request'}
+            {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
           </h1>
         </div>
 
@@ -185,7 +189,7 @@ const AddEditRequestForm = () => {
                 <p className="font-semibold mb-1">Branch</p>
                 <select
                   name="branch"
-                  value={formData.branch}
+                  value={formData.branchName}
                   onChange={handleInputChange}
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >

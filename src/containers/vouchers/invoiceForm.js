@@ -97,7 +97,10 @@ const InvoiceForm = () => {
       console.log('Form Data:', voucherFormData);
       voucherFormData.voucherType = 'invoice';
 
-      const response = await ApiService.post('/voucher/save', voucherFormData); // Adjust the endpoint URL as needed
+      const response = await ApiService.post(
+        '/voucher/saveVoucher',
+        voucherFormData
+      ); // Adjust the endpoint URL as needed
       console.log('Response:', response);
       // Handle the response (e.g., show a success message or redirect)
     } catch (error) {
