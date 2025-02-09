@@ -8,7 +8,7 @@ import ledgerData from '../../mockData/mockLedger.json';
 import receiptsData from '../../mockData/mockReceipts.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const TableWithSearchFilter = ({
   type,
   onCreateNew,
@@ -72,6 +72,7 @@ const TableWithSearchFilter = ({
         unitCode: initialAuthState?.unitCode,
       });
 
+      console.log(response);
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected

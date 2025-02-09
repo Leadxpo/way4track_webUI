@@ -3,6 +3,8 @@ import ApiService from '../../services/ApiService'; // Adjust the import based o
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { initialAuthState } from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getPermissions } from '../../common/commonUtils';
+
 const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -29,7 +31,11 @@ const Tickets = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [branches, setBranches] = useState([]);
-
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('tickets');
+    setPermissions(perms);
+  }, []);
   const ticketData = location.state?.tickettDetails || {};
   useEffect(() => {
     if (isModalOpen) {
@@ -427,6 +433,10 @@ const Tickets = () => {
 
       <TableWithSearchFilter
         type="tickets"
+        showCreateBtn={permissions.add}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal} // Pass function correctly

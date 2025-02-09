@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const ProductAssign = () => {
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
   const handleCreateNew = () => {
     navigate('/add-product-assign');
   };
   const onEdit = (product) => {
-    navigate('/add-product-assign', { state: { productAssignDetails: product } });
+    navigate('/add-product-assign', {
+      state: { productAssignDetails: product },
+    });
   };
   const onDelete = () => {
     navigate('/delete-product-assign');
@@ -23,7 +26,7 @@ const ProductAssign = () => {
   const [product, setproduct] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
 
- const productAssignDetails = async (branchName = 'All') => {
+  const productAssignDetails = async (branchName = 'All') => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
@@ -34,7 +37,10 @@ const ProductAssign = () => {
         payload.branchName = branchName;
       }
 
-      const res = await ApiService.post('/dashboards/productAssignDetails', payload);
+      const res = await ApiService.post(
+        '/dashboards/productAssignDetails',
+        payload
+      );
 
       if (res.status) {
         setproduct(res.data.rawResults);
@@ -60,6 +66,8 @@ const ProductAssign = () => {
     setSelectedBranch(branch);
   };
   useEffect(() => {
+    const perms = getPermissions('productassign');
+    setPermissions(perms);
     productAssignDetails(selectedBranch);
   }, [selectedBranch]);
 
@@ -69,8 +77,9 @@ const ProductAssign = () => {
       {/* Create New Button Row */}
       <div className="flex justify-end mb-4">
         <button
-          className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+          className={`h-12 px-4 text-white font-bold rounded-md hover:cursor-pointer ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleCreateNew}
+          disabled={!permissions.add}
         >
           Create New
         </button>
@@ -96,13 +105,15 @@ const ProductAssign = () => {
 
       <div className="mt-8">
         <Table
-          columns={product.length > 0 ? Object.keys(product[0]) : []}  // Ensure product is not empty
+          columns={product.length > 0 ? Object.keys(product[0]) : []} // Ensure product is not empty
           data={product}
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
+          showDelete={permissions.delete}
+          showEdit={permissions.edit}
+          showDetails={permissions.view}
         />
-
       </div>
     </div>
   );

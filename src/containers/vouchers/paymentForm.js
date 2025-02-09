@@ -145,7 +145,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
         role: data.role,
         toAccount: data.toAccount,
       };
-      const response = await ApiService.post('/voucher/save', payload);
+      const response = await ApiService.post('/voucher/saveVoucher', payload);
       navigate('/vouchers');
     } catch (error) {
       console.error('Error submitting data:', error);

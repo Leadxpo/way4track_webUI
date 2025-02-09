@@ -144,9 +144,9 @@ const TableWithDateFilter = ({
         requestBody
       );
 
-      if (response.status) {
+      if (response.length) {
         console.log(response.data, 'Response Data');
-        setFilteredData(response.data);
+        setFilteredData(response);
       } else {
         console.warn('Request failed:', response.data?.message);
       }
@@ -282,6 +282,9 @@ const TableWithDateFilter = ({
         break;
       case 'estimate':
         await getEstimateData();
+        break;
+      case 'requsts':
+        await getRequestsData();
         break;
       default:
         break;
