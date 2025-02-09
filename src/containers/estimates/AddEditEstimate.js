@@ -16,7 +16,7 @@ const AddEditEstimate = () => {
   isEditMode && console.log("edit : ", location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
-    client: '',
+    client: null,
     clientNumber: '',
     email: '',
     clientAddress: '',
@@ -149,7 +149,7 @@ const AddEditEstimate = () => {
     console.log(formData.items)
     const estimateDto = {
       id: formData.id || '',
-      clientId: formData.clientNumber,
+      clientId: formData.id,
       buildingAddress: formData.billingAddress,
       estimateDate: formData.estimateDate,
       expireDate: formData.expiryDate,
@@ -229,7 +229,7 @@ const AddEditEstimate = () => {
               >
                 <option value="">Select Client</option>
                 {clients.map((client) => (
-                  <option key={client.id} value={client.name}>
+                  <option key={client.id} value={client.id}>
                     {client.name}
                   </option>
                 ))}

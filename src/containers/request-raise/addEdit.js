@@ -14,49 +14,50 @@ const AddEditRequestForm = () => {
 
   // Initialize form data, using employeeData if available
   const initialFormData = {
+    id: requestData.id || null,
     requestType: requestData.requestType || '',
     // requestBy: requestData.requestBy || '',
-    requestFrom: requestData.requestFrom || '',
-    requestTo: requestData.requestTo || '',
-    branch: requestData.branch || '',
+    requestFrom: Number(requestData.requestFrom) || null,
+    requestTo: Number(requestData.requestTo) || null,
+    branch: Number(requestData.branch) || null,
     description: requestData.description || '',
     // amount: requestData.amount || '',
     createdDate: requestData.createdDate || '',
     status: requestData.status || '',
-    subDealerId: requestData.subDealerId || '',
+    subDealerId: Number(requestData.subDealerId) || null,
     requestId: requestData.requestId || '',
     companyCode: initialAuthState.companyCode,
-    unitCode: initialAuthState.unitCode
+    unitCode: initialAuthState.unitCode,
   };
 
   const [formData, setFormData] = useState(initialFormData);
 
 
   useEffect(() => {
-    try {
-      const response = ApiService.post('/staff/getStaffNamesDropDown');
-      if (response.status) {
-        setStaffData(response.data);
-      } else {
-        console.error('Error');
+    const fetchStaff = async () => {
+      try {
+        const res = await ApiService.post('/staff/getStaffNamesDropDown');
+        setStaffData(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaffData([]);
       }
-    } catch (e) {
-      console.error('error');
-    }
-  }, [staffData]);
+    };
+    fetchStaff();
+  }, []);
 
   useEffect(() => {
-    try {
-      const response = ApiService.post('/subdealer/getSubDealerNamesDropDown');
-      if (response.status) {
-        setSubDealer(response.data);
-      } else {
-        console.error('Error');
+    const fetchSubDealer = async () => {
+      try {
+        const res = await ApiService.post('/subdealer/getSubDealerNamesDropDown');
+        setSubDealer(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setSubDealer([]);
       }
-    } catch (e) {
-      console.error('error');
-    }
-  }, [subDealer]);
+    };
+    fetchSubDealer();
+  }, []);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -81,10 +82,32 @@ const AddEditRequestForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  const handleSave = async () => {
 
-  const handleSave = () => {
-    // Handle save action
-    navigate('/requests');
+    const payload = {
+      ...formData
+    };
+
+    try {
+      const endpoint = formData.id
+        ? '/requests/handleRequestDetails'
+        : '/requests/handleRequestDetails';
+      const response = await ApiService.post(endpoint, payload);
+
+      if (response.data.status) {
+        alert(
+          formData.id
+            ? 'requests updated successfully!'
+            : 'requests created successfully!'
+        );
+        navigate('/requests');
+      } else {
+        alert('Failed to save appointment details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving appointment details:', error);
+      alert('Failed to save appointment details. Please try again.');
+    }
   };
 
   const handleCancel = () => {
@@ -127,13 +150,10 @@ const AddEditRequestForm = () => {
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Request By
+                  Select Staff
                 </option>
                 {staffData.map((staffMember) => (
-                  <option
-                    key={staffMember.id}
-                    value={staffMember.staffId}
-                  >
+                  <option key={staffMember.id} value={staffMember.id}>
                     {staffMember.name}
                   </option>
                 ))}
@@ -201,7 +221,7 @@ const AddEditRequestForm = () => {
                 {staffData.map((staffMember) => (
                   <option
                     key={staffMember.id}
-                    value={staffMember.staffId}
+                    value={staffMember.id}
                   >
                     {staffMember.name}
                   </option>
@@ -249,6 +269,16 @@ const AddEditRequestForm = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+        </div>
+        <div>
+          <p className="font-semibold mb-1">created Date</p>
+          <input
+            type="date"
+            name="createdDate"
+            value={formData.createdDate}
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          />
         </div>
 
         {/* Buttons */}

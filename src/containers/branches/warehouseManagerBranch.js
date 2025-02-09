@@ -1,49 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
+// const data = [
+//   {
+//     branchName: 'Visakhapatnam',
+//     products: [
+//       {
+//         id: 1,
+//         name: 'Bike GPS Tracker',
+//         type: 'Bike GPS Tracker',
+//         count: 45,
+//         img: 'bike.jpg',
+//       },
+//       {
+//         id: 2,
+//         name: 'Car GPS Tracker',
+//         type: 'Car GPS Tracker',
+//         count: 56,
+//         img: 'car.jpg',
+//       },
+//       {
+//         id: 3,
+//         name: 'Bike GPS Tracker',
+//         type: 'Bike GPS Tracker',
+//         count: 509,
+//         img: 'bike.jpg',
+//       },
+//       {
+//         id: 4,
+//         name: 'Car GPS Tracker',
+//         type: 'Car GPS Tracker',
+//         count: 346,
+//         img: 'car.jpg',
+//       },
+//     ],
+//   },
+//   { branchName: 'Hyderabad', products: [] },
+//   { branchName: 'Vijayawada', products: [] },
+//   { branchName: 'Kakinada', products: [] },
+// ];
 
-const data = [
-  {
-    location: 'Visakhapatnam',
-    products: [
-      {
-        id: 1,
-        name: 'Bike GPS Tracker',
-        type: 'Bike GPS Tracker',
-        count: 45,
-        img: 'bike.jpg',
-      },
-      {
-        id: 2,
-        name: 'Car GPS Tracker',
-        type: 'Car GPS Tracker',
-        count: 56,
-        img: 'car.jpg',
-      },
-      {
-        id: 3,
-        name: 'Bike GPS Tracker',
-        type: 'Bike GPS Tracker',
-        count: 509,
-        img: 'bike.jpg',
-      },
-      {
-        id: 4,
-        name: 'Car GPS Tracker',
-        type: 'Car GPS Tracker',
-        count: 346,
-        img: 'car.jpg',
-      },
-    ],
-  },
-  { location: 'Hyderabad', products: [] },
-  { location: 'Vijayawada', products: [] },
-  { location: 'Kakinada', products: [] },
-];
+
 
 const WarehouseManagerBranch = () => {
   const [expandedLocation, setExpandedLocation] = useState(null);
+  const [data, setData] = useState([])
+  // const location = useLocation();
+  // const assetDetailsFromState = location.state?.assetDetails || {};
 
-  const toggleExpand = (location) => {
-    setExpandedLocation((prev) => (prev === location ? null : location));
+  useEffect(() => {
+    const getProductDetailsByBranch = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getProductDetailsByBranch', {
+          // id: assetDetailsFromState.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          setData(response.data || []);
+        } else {
+          setData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching client details data:', error);
+        alert('Failed to fetch client details data.');
+      }
+    };
+    getProductDetailsByBranch();
+  }, []);
+  const toggleExpand = (branchName) => {
+    setExpandedLocation((prev) => (prev === branchName ? null : branchName));
   };
 
   return (
@@ -55,12 +80,12 @@ const WarehouseManagerBranch = () => {
         >
           <div
             className="bg-green-500 text-white px-4 py-2 flex justify-between items-center cursor-pointer"
-            onClick={() => toggleExpand(item.location)}
+            onClick={() => toggleExpand(item.branchName)}
           >
-            <span>{item.location}</span>
-            <span>{expandedLocation === item.location ? '▲' : '▼'}</span>
+            <span>{item.branchName}</span>
+            <span>{expandedLocation === item.branchName ? '▲' : '▼'}</span>
           </div>
-          {expandedLocation === item.location && item.products.length > 0 && (
+          {expandedLocation === item.branchName && item.products.length > 0 && (
             <div className="bg-white">
               <table className="w-full text-left border-t">
                 <thead className="bg-gray-100">
@@ -99,7 +124,7 @@ const WarehouseManagerBranch = () => {
               </table>
             </div>
           )}
-          {expandedLocation === item.location && item.products.length === 0 && (
+          {expandedLocation === item.branchName && item.products.length === 0 && (
             <div className="bg-white p-4 text-gray-500">
               No products available.
             </div>
