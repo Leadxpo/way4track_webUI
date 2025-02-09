@@ -16,7 +16,7 @@ const AddEditRequestForm = () => {
   const initialFormData = {
     requestType: requestData.requestType || '',
     // requestBy: requestData.requestBy || '',
-    requestFrom: requestData.requestFrom || '',
+    requestFrom: localStorage.getItem('userId') || '',
     requestTo: requestData.requestTo || '',
     branch: requestData.branch || '',
     description: requestData.description || '',
@@ -100,7 +100,7 @@ const AddEditRequestForm = () => {
         branch: Number(formData.branch),
         description: formData.description,
         status: formData.status,
-        subDealerId: formData.subDealerId || 0,
+        subDealerId: formData.subDealerId || 1,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
@@ -151,7 +151,16 @@ const AddEditRequestForm = () => {
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request By:</label>
-              <select
+              <input
+                type="text"
+                name="requestType"
+                value={formData.requestFrom}
+                onChange={handleInputChange}
+                placeholder="Enter Name"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                disabled
+              />
+              {/* <select
                 name="requestFrom"
                 value={formData.requestFrom}
                 onChange={handleInputChange}
@@ -165,7 +174,7 @@ const AddEditRequestForm = () => {
                     {staffMember.name}
                   </option>
                 ))}
-              </select>
+              </select> */}
             </div>
           </div>
 
@@ -193,7 +202,7 @@ const AddEditRequestForm = () => {
             </div>
           )}
           <div>
-            <p className="font-semibold mb-1">status</p>
+            <p className="font-semibold mb-1">Status</p>
             <select
               name="status"
               value={formData.status}
