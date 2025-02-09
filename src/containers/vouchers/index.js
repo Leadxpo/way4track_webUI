@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { useNavigate } from 'react-router';
+import { formatString } from '../../common/commonUtils';
 
 const Vouchers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,42 +57,40 @@ const Vouchers = () => {
 
       {isMoreDetailsModalOpen && selectedVoucher && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative w-[550px]">
+          <div className="bg-white p-8 rounded-md shadow-lg relative w-[700px] max-h-[80vh] overflow-auto">
             <button
               onClick={handleCloseMoreDetailsModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
+              className="absolute top-2 right-4 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
             >
               X
             </button>
             <h2 className="text-xl font-bold text-center mb-4">
               Voucher Details
             </h2>
-            <div>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Voucher Issued Person:</strong>{' '}
-                {selectedVoucher.issuedPerson}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Voucher Taken Person:</strong>{' '}
-                {selectedVoucher.takenPerson}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Purposes:</strong> {selectedVoucher.Purpose}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Amount:</strong> {selectedVoucher.Amount}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Payment Mode:</strong> {selectedVoucher.paymentMode}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Date:</strong> {selectedVoucher.Date}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Other Information:</strong>{' '}
-                {selectedVoucher.otherInformation}
-              </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              {Object.entries(selectedVoucher).map(([key, value]) => {
+                const formattedKey = key
+                  .replace(/^cl_/, 'Client ') // Replace "cl_" with "Client "
+                  .replace(/^branch_/, 'Branch ') // Replace "branch_" with "Branch "
+                  .replace(/_/g, ' ') // Replace underscores with spaces
+                  .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+                return (
+                  <div
+                    key={key}
+                    className="shadow-md rounded-md p-3 border border-gray-200"
+                  >
+                    <strong className="block text-gray-700">
+                      {formattedKey}:
+                    </strong>
+                    <span className="text-gray-900">
+                      {value !== null ? value.toString() : 'N/A'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
+
             <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
               Download PDF
             </button>

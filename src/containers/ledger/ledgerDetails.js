@@ -1,51 +1,85 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
+import { useLocation } from 'react-router';
 
 const LedgerDetails = () => {
-  const clientData = {
-    name: 'Sai Kumar',
-    email: 'way4teack@gmail.com',
-    phone: '+91 45645 64556',
-    gst: '**********',
-    image: 'https://randomuser.me/api/portraits/men/45.jpg', // Sample image URL
-  };
+  const location = useLocation();
+  const ledgerDetails = location.state?.ledgerDetails || {};
+  // Determine voucherId based on available values
+  const voucherId =
+    ledgerDetails.clientId ||
+    ledgerDetails.vendorId ||
+    ledgerDetails.subDealerId ||
+    '';
 
-  const ledgerData = [
-    {
-      no: '001',
-      voucherId: 'way4track23',
-      purpose: 'Car GPS Tracker',
-      date: 'Petrol',
-      debit: '₹5000',
-      credit: '₹0',
-    },
-    {
-      no: '002',
-      voucherId: 'way4track23',
-      purpose: 'Car GPS Tracker',
-      date: 'Books',
-      debit: '₹1000',
-      credit: '₹0',
-    },
-    {
-      no: '003',
-      voucherId: 'way4track23',
-      purpose: 'Car GPS Tracker',
-      date: 'Pens',
-      debit: '₹3000',
-      credit: '₹0',
-    },
-    {
-      no: '004',
-      voucherId: 'way4track23',
-      purpose: 'Car GPS Tracker',
-      date: 'Advances',
-      debit: '₹2000',
-      credit: '₹0',
-    },
-  ];
+  // State to store ledger data and client information
+  const [ledgerData, setLedgerData] = useState([]);
+  const [clientData, setClientData] = useState({
+    name:
+      ledgerDetails.clientName ||
+      ledgerDetails.vendorName ||
+      ledgerDetails.subDealerName ||
+      'N/A',
+    phone: ledgerDetails.phoneNumber || 'N/A',
+    email: ledgerDetails.email || 'N/A',
+    gst: ledgerDetails.GSTNumber || 'N/A',
+    image: '', // To be set from API response
+  });
 
+  useEffect(() => {
+    const fetchLedgerDetailsById = async () => {
+      if (!voucherId) return; // Prevent API call if there's no valid voucherId
+
+      try {
+        const response = await ApiService.post(
+          '/dashboards/getLedgerDataById',
+          {
+            voucherId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+
+        if (response.status && response.data.length > 0) {
+          const ledgerEntries = response.data;
+
+          // Extract client details from the first valid entry
+          const firstEntry = ledgerEntries.find(
+            (entry) =>
+              entry.clientName || entry.vendorName || entry.subDealerName
+          );
+          if (firstEntry) {
+            setClientData({
+              name:
+                firstEntry.clientName ||
+                firstEntry.vendorName ||
+                firstEntry.subDealerName ||
+                clientData.name,
+              phone: firstEntry.phoneNumber || clientData.phone,
+              email: firstEntry.email || clientData.email,
+              gst: firstEntry.GSTNumber || clientData.gst,
+              image:
+                firstEntry.clientPhoto ||
+                firstEntry.vendorPhoto ||
+                firstEntry.subDealerPhoto ||
+                '',
+            });
+          }
+
+          // Set ledger data
+          setLedgerData(ledgerEntries);
+        }
+      } catch (error) {
+        console.error('Error fetching ledger details:', error);
+      }
+    };
+
+    fetchLedgerDetailsById();
+  }, [voucherId]);
+
+  // Calculate total amount
   const totalAmount = ledgerData.reduce(
-    (total, entry) => total + parseInt(entry.debit.replace('₹', '')),
+    (total, entry) => total + (parseInt(entry.debitAmount) || 0),
     0
   );
 
@@ -53,11 +87,13 @@ const LedgerDetails = () => {
     <div className="p-8 space-y-6">
       {/* Client Profile Section */}
       <div className="flex items-center bg-white p-6 rounded-lg shadow-lg">
-        <img
-          src={clientData.image}
-          alt="Client Profile"
-          className="w-24 h-24 rounded-full object-cover mr-6"
-        />
+        {clientData.image && (
+          <img
+            src={clientData.image}
+            alt="Client Profile"
+            className="w-24 h-24 rounded-full object-cover mr-6"
+          />
+        )}
         <div>
           <h2 className="text-xl font-semibold">Client Profile</h2>
           <p>Name: {clientData.name}</p>
@@ -74,7 +110,7 @@ const LedgerDetails = () => {
           <thead className="bg-gray-100">
             <tr>
               <th className="py-2 px-4">NO.</th>
-              <th className="py-2 px-4">Voucher ID</th>
+              <th className="py-2 px-4">Ledger ID</th>
               <th className="py-2 px-4">Purpose</th>
               <th className="py-2 px-4">Date/Time</th>
               <th className="py-2 px-4">Debit</th>
@@ -84,21 +120,23 @@ const LedgerDetails = () => {
           <tbody className="divide-y divide-gray-200">
             {ledgerData.map((entry, index) => (
               <tr
-                key={entry.no}
+                key={entry.ledgerId}
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
-                <td className="py-2 px-4">{entry.no}</td>
-                <td className="py-2 px-4">{entry.voucherId}</td>
+                <td className="py-2 px-4">{index + 1}</td>
+                <td className="py-2 px-4">{entry.ledgerId}</td>
                 <td className="py-2 px-4">{entry.purpose}</td>
-                <td className="py-2 px-4">{entry.date}</td>
-                <td className="py-2 px-4">{entry.debit}</td>
-                <td className="py-2 px-4">{entry.credit}</td>
+                <td className="py-2 px-4">
+                  {new Date(entry.generationDate).toLocaleString()}
+                </td>
+                <td className="py-2 px-4">₹{entry.debitAmount}</td>
+                <td className="py-2 px-4">₹{entry.creditAmount}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <div className="mt-4 text-right font-semibold">
-          Total Amount: ₹{totalAmount}
+          Total Debit Amount: ₹{totalAmount}
         </div>
       </div>
     </div>

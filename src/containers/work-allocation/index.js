@@ -44,7 +44,8 @@ const WorkAllocation = () => {
   const handleDropdownChange = (e) => {
     const selectedClientId = e.target.value;
     const selectedClient = client.find(
-      (clientDetails) => String(clientDetails.clientId) === String(selectedClientId)
+      (clientDetails) =>
+        String(clientDetails.clientId) === String(selectedClientId)
     );
 
     setSelectedWorkAllocation((prev) => ({
@@ -178,11 +179,13 @@ const WorkAllocation = () => {
                   {client.length > 0 && (
                     <select
                       name="clientId"
-                      value={selectedWorkAllocation.clientId || ''}
+                      value={selectedWorkAllocation?.clientId || ''}
                       onChange={handleDropdownChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>Select Client</option>
+                      <option value="" disabled>
+                        Select Client
+                      </option>
                       {client.map((clientItem) => (
                         <option key={clientItem.id} value={clientItem.id}>
                           {clientItem.name}
@@ -190,7 +193,6 @@ const WorkAllocation = () => {
                       ))}
                     </select>
                   )}
-
                 </div>
 
                 <div>
@@ -204,7 +206,9 @@ const WorkAllocation = () => {
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>Select voucher</option>
+                      <option value="" disabled>
+                        Select voucher
+                      </option>
                       {voucher.map((clientItem) => (
                         <option key={clientItem.id} value={clientItem.id}>
                           {clientItem.voucherId}
@@ -212,7 +216,6 @@ const WorkAllocation = () => {
                       ))}
                     </select>
                   )}
-
                 </div>
                 {/* <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -290,7 +293,7 @@ const WorkAllocation = () => {
                     <label className="font-semibold mb-2">Assign To:</label>
                     <select
                       name="staffId"
-                      value={selectedWorkAllocation.staffId}
+                      value={selectedWorkAllocation?.staffId}
                       onChange={handleInputChange}
                       defaultValue={
                         isEditMode && selectedWorkAllocation.staffId

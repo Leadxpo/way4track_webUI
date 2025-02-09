@@ -7,17 +7,17 @@ const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    problem: "",
-    date: "",
-    addressingDepartment: "",  // Ensure this exists
+    problem: '',
+    date: '',
+    addressingDepartment: '', // Ensure this exists
     staffId: null,
     branchId: null,
-    companyCode: "",
-    unitCode: "",
-    workStatus: "",
-    description: "",
+    companyCode: '',
+    unitCode: '',
+    workStatus: '',
+    description: '',
   });
-  const [ticketDetails, setTicketDetails] = useState([])
+  const [ticketDetails, setTicketDetails] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [staffList, setStaffList] = useState([]); // Store fetched staff names
@@ -80,7 +80,7 @@ const Tickets = () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       setBranchList(response.data || []);
-      console.log(response.data, "{{{{{{{{{{{")
+      console.log(response.data, '{{{{{{{{{{{');
     } catch (error) {
       console.error('Failed to fetch branches:', error);
     }
@@ -96,10 +96,9 @@ const Tickets = () => {
   };
 
   const handleBranchChange = (e) => {
-    console.log("Selected Branch ID:", e.target.value);
+    console.log('Selected Branch ID:', e.target.value);
     setSelectedBranch(e.target.value);
   };
-
 
   const handleDateChange = (e) => {
     setDate(e.target.value); // Update date when changed
@@ -116,7 +115,6 @@ const Tickets = () => {
   };
 
   const fetchTicketDetails = async () => {
-
     try {
       const response = await ApiService.post('/tickets/getTicketDetailsById', {
         id: ticketData.id,
@@ -177,7 +175,7 @@ const Tickets = () => {
       date: date || '',
       branchId: Number(formData.branchId) || null,
       problem: formData.problem,
-      addressingDepartment: formData.addressingDepartment,  // Ensure this is included
+      addressingDepartment: formData.addressingDepartment, // Ensure this is included
       staffId: Number(selectedStaffId) || null,
       staffName: selectedStaffId || '',
       workStatus: formData.workStatus,
@@ -185,7 +183,6 @@ const Tickets = () => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
-
 
     try {
       const endpoint = selectedTicket?.id
@@ -240,7 +237,7 @@ const Tickets = () => {
                     Staff Name
                   </label>
                   <select
-                    name='staffId'
+                    name="staffId"
                     value={selectedStaffId}
                     onChange={handleStaffChange}
                     className="border p-2 rounded w-full focus:outline-none"
@@ -286,7 +283,7 @@ const Tickets = () => {
                   <textarea
                     className="w-full border p-2 rounded mb-4 focus:outline-none"
                     onChange={handleInputChange}
-                    name='description'
+                    name="description"
                     defaultValue={
                       isEditMode && selectedTicket
                         ? selectedTicket.description
@@ -301,11 +298,9 @@ const Tickets = () => {
                   <textarea
                     className="w-full border p-2 rounded mb-4 focus:outline-none"
                     onChange={handleInputChange}
-                    name='problem'
+                    name="problem"
                     defaultValue={
-                      isEditMode && selectedTicket
-                        ? selectedTicket.problem
-                        : ''
+                      isEditMode && selectedTicket ? selectedTicket.problem : ''
                     }
                   ></textarea>
                 </div>
@@ -358,7 +353,7 @@ const Tickets = () => {
                   </label>
                   <input
                     type="text"
-                    name='address'
+                    name="address"
                     className="border p-2 rounded w-full focus:outline-none"
                     onChange={handleInputChange}
                     defaultValue={
@@ -384,14 +379,13 @@ const Tickets = () => {
                     <option value="Sales Man">Sales Man</option>
                     <option value="Call Center">Call Center</option>
                     <option value="Warehouse Manager">Warehouse Manager</option>
-
                   </select>
                 </div>
                 <div>
                   <p className="font-semibold mb-1">Work Status</p>
                   <select
                     name="workStatus"
-                    value={formData.workStatus || "Pending"}
+                    value={formData.workStatus || 'Pending'}
                     onChange={handleInputChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                   >
@@ -399,8 +393,6 @@ const Tickets = () => {
                     <option value="allocated">Allocated</option>
                     <option value="completed">Completed</option>
                     <option value="incomplete">Incomplete</option>
-
-
                   </select>
                 </div>
               </div>
@@ -438,8 +430,8 @@ const Tickets = () => {
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal} // Pass function correctly
-        onDelete={() => { }}
-      />;
+        onDelete={() => {}}
+      />
     </div>
   );
 };

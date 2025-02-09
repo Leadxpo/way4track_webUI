@@ -43,9 +43,9 @@ const TableWithSearchFilter = ({
       const response = await ApiService.post(
         '/dashboards/getSearchDetailClient',
         {
-          clientId: clientData?.clientId,
+          clientId: searchID,
           branchName: clientData?.branchName,
-          name: clientData?.name,
+          name: searchName,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
@@ -60,12 +60,12 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [clientData?.clientId, clientData?.branchName, clientData?.name]);
+  }, [searchID, searchName, clientData?.branchName]);
 
   const getHiringSearchDetails = useCallback(async () => {
     try {
       const response = await ApiService.post('/hiring/getHiringSearchDetails', {
-        hiringId: hiringData?.hiringId,
+        hiringId: searchID,
         candidateName: hiringData?.candidateName,
         status: hiringData?.status,
         companyCode: initialAuthState?.companyCode,
@@ -82,14 +82,14 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [hiringData?.hiringId, hiringData?.candidateName, hiringData?.status]);
+  }, [searchID, searchName, hiringData?.status]);
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
       const response = await ApiService.post(
         '/dashboards/getTicketDetailsAgainstSearch',
         {
-          ticketId: ticketData?.ticketId,
+          ticketId: searchID,
           staffId: ticketData?.staffId,
           branchName: ticketData?.branchName,
           companyCode: initialAuthState?.companyCode,
@@ -106,12 +106,12 @@ const TableWithSearchFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [ticketData?.ticketId, ticketData?.staffId, ticketData?.branchName]);
+  }, [searchID, searchName, ticketData?.branchName]);
 
   const getVoucherDetailsAgainstSearch = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getAllVouchers', {
-        voucherId: ticketData?.ticketId,
+        voucherId: searchID,
         branchName: ticketData?.branchName,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -126,7 +126,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [voucherData?.voucherId, voucherData?.staffId, voucherData?.branchName]);
+  }, [searchID, searchName, voucherData?.branchName]);
   useEffect(() => {
     switch (type) {
       case 'tickets':

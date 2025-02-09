@@ -16,25 +16,6 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
   const [credits, setCredits] = useState([]);
   const [debits, setDebits] = useState([]);
 
-  const calculatePercentageChange = (data) => {
-    return data.map((item, index, array) => {
-      if (index === 0) {
-        return { ...item, growthPercentage: 0 }; // First month has no growth
-      }
-      const previousBalance = array[index - 1].balanceAmount;
-      const currentBalance = item.balanceAmount;
-
-      const growthPercentage = previousBalance
-        ? ((currentBalance - previousBalance) / previousBalance) * 100
-        : 0;
-
-      return {
-        ...item,
-        growthPercentage: parseFloat(growthPercentage.toFixed(2)), // Limit to 2 decimals
-      };
-    });
-  };
-
   const getAnalysis = async () => {
     try {
       const date = new Date();
@@ -52,21 +33,44 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
       );
 
       if (response.status) {
-        const fetchedData = response.data;
+        // const fetchedData = {
+        //   status: true,
+        //   errorCode: 200,
+        //   internalMessage: 'Data retrieved successfully',
+        //   data: [
+        //     {
+        //       year: 2025,
+        //       month: 1,
+        //       monthName: 'January',
+        //       creditAmount: 280500,
+        //       debitAmount: 0,
+        //       balanceAmount: 280500,
+        //     },
+        //     {
+        //       year: 2025,
+        //       month: 2,
+        //       monthName: 'February',
+        //       creditAmount: 14000,
+        //       debitAmount: 0,
+        //       balanceAmount: 14000,
+        //     },
+        //   ],
+        // };
+        const fetchedData = response.data.data;
+        // Format data for the chart
+        const formattedChartData = fetchedData.data.map((item) => ({
+          name: item.monthName,
+          balance: item.balanceAmount, // Using balanceAmount for the chart
+        }));
 
-        const formattedChartData = calculatePercentageChange(fetchedData).map(
-          (item) => ({
-            name: item.monthName,
-            value: item.growthPercentage,
-          })
-        );
         setChartData(formattedChartData);
 
-        const totalCreditAmount = fetchedData.reduce(
+        // Compute total credits & debits
+        const totalCreditAmount = fetchedData.data.reduce(
           (sum, item) => sum + item.creditAmount,
           0
         );
-        const totalDebitAmount = fetchedData.reduce(
+        const totalDebitAmount = fetchedData.data.reduce(
           (sum, item) => sum + item.debitAmount,
           0
         );
@@ -75,17 +79,20 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
           {
             label: 'Products',
             percentage:
-              ((fetchedData[0]?.creditAmount || 0) / totalCreditAmount) * 100,
+              ((fetchedData.data[0]?.creditAmount || 0) / totalCreditAmount) *
+              100,
           },
           {
             label: 'Sales',
             percentage:
-              ((fetchedData[1]?.creditAmount || 0) / totalCreditAmount) * 100,
+              ((fetchedData.data[1]?.creditAmount || 0) / totalCreditAmount) *
+              100,
           },
           {
-            label: 'Serves',
+            label: 'Services',
             percentage:
-              ((fetchedData[2]?.creditAmount || 0) / totalCreditAmount) * 100,
+              ((fetchedData.data[2]?.creditAmount || 0) / totalCreditAmount) *
+              100,
           },
         ]);
 
@@ -93,17 +100,14 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
           {
             label: 'Salaries',
             percentage:
-              ((fetchedData[0]?.debitAmount || 0) / totalDebitAmount) * 100,
+              ((fetchedData.data[0]?.debitAmount || 0) / totalDebitAmount) *
+              100,
           },
           {
             label: 'Expenses',
             percentage:
-              ((fetchedData[1]?.debitAmount || 0) / totalDebitAmount) * 100,
-          },
-          {
-            label: 'Vouchers',
-            percentage:
-              ((fetchedData[2]?.debitAmount || 0) / totalDebitAmount) * 100,
+              ((fetchedData.data[1]?.debitAmount || 0) / totalDebitAmount) *
+              100,
           },
         ]);
       } else {
@@ -131,7 +135,7 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="white"
-              horizontal={true}
+              horizontal
               vertical={false}
             />
             <XAxis dataKey="name" axisLine={false} tickLine={false} />
@@ -139,10 +143,10 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
             <Tooltip />
             <Line
               type="monotone"
-              dataKey="value"
+              dataKey="balance"
               stroke="#fff"
               strokeWidth={4}
-              dot={{ fill: '#fff', r: 8 }}
+              dot={{ fill: '#fff', r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -150,38 +154,17 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
 
       {/* Credit and Debit Section */}
       <div className="flex justify-around mt-8">
-        {/* No. of Credits */}
+        {/* Credits */}
         <div className="text-center">
           <h3 className="text-green-600 font-semibold text-xl">
             No. of Credits
           </h3>
           <ul className="text-gray-700 text-lg mt-2">
-            {/* {credits.map((credit, index) => (
+            {credits.map((credit, index) => (
               <li key={index}>
                 {index + 1}. {credit.label}: {credit.percentage.toFixed(2)}%
               </li>
-            ))} */}
-            <li>
-              1. Sales:{' '}
-              {creditDebitPercent.reduce((sum, item) => {
-                return sum + (item.salesCreditPercentage || 0); // Add value or default to 0
-              }, 0) / creditDebitPercent.length}
-              %
-            </li>
-            <li>
-              2. Products:
-              {creditDebitPercent.reduce((sum, item) => {
-                return sum + (item.productCreditPercentage || 0); // Add value or default to 0
-              }, 0) / creditDebitPercent.length}
-              %
-            </li>
-            <li>
-              3. Services:{' '}
-              {creditDebitPercent.reduce((sum, item) => {
-                return sum + (item.serviceCreditPercentage || 0); // Add value or default to 0
-              }, 0) / creditDebitPercent.length}
-              %
-            </li>
+            ))}
           </ul>
           <button
             className="bg-green-500 text-white px-4 py-2 mt-4 rounded-full"
@@ -191,31 +174,20 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
           </button>
         </div>
 
-        {/* No. of Debits */}
+        {/* Debits */}
         <div className="text-center">
           <h3 className="text-red-600 font-semibold text-xl">No. of Debits</h3>
           <ul className="text-gray-700 text-lg mt-2">
-            {/* {debits.map((debit, index) => (
+            {debits.map((debit, index) => (
               <li key={index}>
                 {index + 1}. {debit.label}: {debit.percentage.toFixed(2)}%
               </li>
-            ))} */}
-            <li>
-              1. Salaries:{' '}
-              {creditDebitPercent.reduce((sum, item) => {
-                return sum + (item.salariesDebitPercentage || 0); // Add value or default to 0
-              }, 0) / creditDebitPercent.length}
-              %
-            </li>
-            <li>
-              2. Expenses:{' '}
-              {creditDebitPercent.reduce((sum, item) => {
-                return sum + (item.expansesDebitPercentage || 0); // Add value or default to 0
-              }, 0) / creditDebitPercent.length}
-              %
-            </li>
+            ))}
           </ul>
-          <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded-full">
+          <button
+            className="bg-red-600 text-white px-4 py-2 mt-4 rounded-full"
+            onClick={togglePopup}
+          >
             For More
           </button>
         </div>

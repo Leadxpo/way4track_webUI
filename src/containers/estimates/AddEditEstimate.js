@@ -13,7 +13,7 @@ const AddEditEstimate = () => {
 
   // Check if editing or creating
   const isEditMode = location.state?.estimateDetails ? true : false;
-  isEditMode && console.log("edit : ", location.state?.estimateDetails);
+  isEditMode && console.log('edit : ', location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
     client: '',
@@ -23,9 +23,18 @@ const AddEditEstimate = () => {
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
-    items: [{ productId: '', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
+    items: [
+      {
+        productId: '',
+        name: '',
+        quantity: '',
+        rate: '',
+        amount: '',
+        hsnCode: '',
+      },
+    ],
     terms: '',
-    totalAmount: 0
+    totalAmount: 0,
   };
 
   const calculateTotal = (items) => {
@@ -94,18 +103,13 @@ const AddEditEstimate = () => {
   };
 
   const handleProductItemChange = (index, e) => {
-
     const { name, value } = e.target;
-    const selectedProduct = products.find(
+    const selectedProduct = products.find((product) => {
+      console.log(product.productName, ' ===', e.target.value);
+      return product.productName === e.target.value;
+    });
 
-      (product) => {
-        console.log(product.productName, " ===", e.target.value)
-        return (
-          product.productName === e.target.value
-        )
-      });
-
-    console.log("rrr : ", selectedProduct)
+    console.log('rrr : ', selectedProduct);
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
     updatedItems[index]['productId'] = selectedProduct.id;
@@ -114,19 +118,20 @@ const AddEditEstimate = () => {
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
   const handleProductItemQuantityChange = (index, e) => {
-
     const { name, value } = e.target;
 
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
-    const productPrice = updatedItems[index]['rate'] ? updatedItems[index]['rate'] : 0
+    const productPrice = updatedItems[index]['rate']
+      ? updatedItems[index]['rate']
+      : 0;
     updatedItems[index]['amount'] = parseInt(value) * parseInt(productPrice);
-    console.log("items :", updatedItems);
-    const totalProductsAmount = calculateTotal(updatedItems)
+    console.log('items :', updatedItems);
+    const totalProductsAmount = calculateTotal(updatedItems);
     setFormData((prevData) => ({
       ...prevData,
       totalAmount: totalProductsAmount,
-      items: updatedItems
+      items: updatedItems,
     }));
   };
 
@@ -146,7 +151,7 @@ const AddEditEstimate = () => {
   };
 
   const handleSave = async () => {
-    console.log(formData.items)
+    console.log(formData.items);
     const estimateDto = {
       id: formData.id || '',
       clientId: formData.clientNumber,
@@ -182,10 +187,26 @@ const AddEditEstimate = () => {
         hsnCode: parseFloat(item.hsnCode), // Total cost calculation
       })),
     };
+    const client = clients.find(
+      (c) => c.id === (formData.id || estimateDto.id)
+    );
+    const pdfData = {
+      ...estimateDto,
+      clientName: client ? client.name : 'Unknown',
+      clientGST: client ? client.gstNumber : '',
+    };
 
     console.log(estimateDto);
     console.log('date type', typeof estimateDto.estimateDate);
+    const generatePdf = async (data) => {
+      return await pdf(<EstimatePDF data={data} />).toBlob();
+    };
     try {
+      const pdfBlob = await generatePdf(pdfData);
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      estimateDto.pdfUrl = pdfUrl;
+      console.log(pdfUrl);
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
       console.log('Estimate saved:', estimateDto);
       navigate('/estimate');
@@ -359,7 +380,9 @@ const AddEditEstimate = () => {
                       type="text"
                       name="quantity"
                       value={item.quantity}
-                      onChange={(e) => handleProductItemQuantityChange(index, e)}
+                      onChange={(e) =>
+                        handleProductItemQuantityChange(index, e)
+                      }
                       placeholder="Quantity"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -407,7 +430,9 @@ const AddEditEstimate = () => {
               </div>
             </div>
           </div>
-          <strong className="col-span-2 font-semibold">Total Estimate Amount : {formData.totalAmount}</strong>
+          <strong className="col-span-2 font-semibold">
+            Total Estimate Amount : {formData.totalAmount}
+          </strong>
           {/* Terms & Conditions */}
           <div>
             <label className="block text-sm font-semibold mb-1">

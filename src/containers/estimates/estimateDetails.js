@@ -185,17 +185,17 @@ const EstimateDetails = () => {
         </div>
 
         {/* Footer Buttons */}
-        {/* <div className="flex items-center justify-center space-x-4">
-          <button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">
+        <div className="flex items-center justify-center space-x-4">
+          {/* <button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">
             Save & Send
           </button>
           <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Save
-          </button>
+          </button> */}
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
             Download PDF
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );
