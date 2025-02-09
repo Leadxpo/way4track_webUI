@@ -7,8 +7,8 @@ const AddEditRequestForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [staffData, setStaffData] = useState([]);
-  const [subDealer, setSubDealer] = useState([])
-  const [branch, setBranches] = useState([])
+  const [subDealer, setSubDealer] = useState([]);
+  const [branch, setBranches] = useState([]);
   // Check if data is available from the location state
   const requestData = location.state?.requestDetails || {};
 
@@ -20,6 +20,9 @@ const AddEditRequestForm = () => {
     requestFrom: Number(requestData.requestFrom) || null,
     requestTo: Number(requestData.requestTo) || null,
     branch: Number(requestData.branch) || null,
+    // requestFrom: localStorage.getItem('userId') || '',
+    // requestTo: requestData.requestTo || '',
+    // branch: requestData.branch || '',
     description: requestData.description || '',
     // amount: requestData.amount || '',
     createdDate: requestData.createdDate || '',
@@ -32,31 +35,42 @@ const AddEditRequestForm = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-
   useEffect(() => {
-    const fetchStaff = async () => {
+    const fetchStaffData = async () => {
       try {
-        const res = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaffData(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch staff:', err);
-        setStaffData([]);
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        if (response.status) {
+          setStaffData(response.data);
+        } else {
+          console.error('Error fetching staff data');
+        }
+      } catch (e) {
+        console.error('Error fetching staff data', e);
       }
     };
-    fetchStaff();
+
+    fetchStaffData();
   }, []);
 
+  
+
   useEffect(() => {
-    const fetchSubDealer = async () => {
+    const fetchSubDealers = async () => {
       try {
-        const res = await ApiService.post('/subdealer/getSubDealerNamesDropDown');
-        setSubDealer(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch staff:', err);
-        setSubDealer([]);
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerNamesDropDown'
+        );
+        if (response.status) {
+          setSubDealer(response.data);
+        } else {
+          console.error('Error fetching sub dealers');
+        }
+      } catch (e) {
+        console.error('Error fetching sub dealers', e);
       }
     };
-    fetchSubDealer();
+
+    fetchSubDealers();
   }, []);
 
   useEffect(() => {
@@ -108,7 +122,33 @@ const AddEditRequestForm = () => {
       console.error('Error saving appointment details:', error);
       alert('Failed to save appointment details. Please try again.');
     }
-  };
+  // const handleSave = async () => {
+  //   try {
+  //     const payload = {
+  //       requestType: formData.requestType,
+  //       requestTo: Number(formData.requestTo),
+  //       requestFrom: Number(formData.requestFrom),
+  //       branch: Number(formData.branch),
+  //       description: formData.description,
+  //       status: formData.status,
+  //       subDealerId: formData.subDealerId || 1,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+  //     const response = await ApiService.post(
+  //       '/requests/handleRequestDetails',
+  //       payload
+  //     );
+  //     if (response.status) {
+  //       navigate('/requests');
+  //     } else {
+  //       alert('failed to raise request');
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert('failed to raise request');
+  //   }
+  // };
 
   const handleCancel = () => {
     // Handle cancel action
@@ -140,10 +180,18 @@ const AddEditRequestForm = () => {
             />
           </div>
           <div>
-
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request By:</label>
-              <select
+              <input
+                type="text"
+                name="requestType"
+                value={formData.requestFrom}
+                onChange={handleInputChange}
+                placeholder="Enter Name"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                disabled
+              />
+              {/* <select
                 name="requestFrom"
                 value={formData.requestFrom}
                 onChange={handleInputChange}
@@ -157,9 +205,8 @@ const AddEditRequestForm = () => {
                     {staffMember.name}
                   </option>
                 ))}
-              </select>
+              </select> */}
             </div>
-
           </div>
 
           {/* Branch */}
@@ -186,7 +233,7 @@ const AddEditRequestForm = () => {
             </div>
           )}
           <div>
-            <p className="font-semibold mb-1">status</p>
+            <p className="font-semibold mb-1">Status</p>
             <select
               name="status"
               value={formData.status}
@@ -205,14 +252,12 @@ const AddEditRequestForm = () => {
             </select>
           </div>
           <div>
-
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
               <select
                 name="requestTo"
                 value={formData.requestTo}
                 onChange={handleInputChange}
-
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
@@ -228,27 +273,24 @@ const AddEditRequestForm = () => {
                 ))}
               </select>
             </div>
-
           </div>
           <div>
             {subDealer.length > 0 && (
               <div className="flex flex-col">
-                <label className="font-semibold mb-2">Request To subDealer:</label>
+                <label className="font-semibold mb-2">
+                  Request To subDealer:
+                </label>
                 <select
                   name="subDealerId"
                   value={formData.subDealerId}
                   onChange={handleInputChange}
-
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
                   <option value="" disabled>
                     Request To subDealer
                   </option>
                   {subDealer.map((staffMember) => (
-                    <option
-                      key={staffMember.id}
-                      value={staffMember.id}
-                    >
+                    <option key={staffMember.id} value={staffMember.id}>
                       {staffMember.name}
                     </option>
                   ))}
@@ -300,5 +342,5 @@ const AddEditRequestForm = () => {
     </div>
   );
 };
-
+}
 export default AddEditRequestForm;

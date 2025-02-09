@@ -8,7 +8,9 @@ import {
   PDFViewer,
   Image,
 } from '@react-pdf/renderer';
+import { ToWords } from 'to-words';
 
+const toWords = new ToWords();
 const estMockRows = [
   {
     column1: '1',
@@ -376,7 +378,7 @@ export const EstimatePDF = ({ data }) => (
         <View style={estStyles.billToBlock}>
           <Text style={estStyles.billToText1}>Bill To</Text>
           <Text style={estStyles.billToText2}>{data.clientName}</Text>
-          <Text style={estStyles.billToText3}>GSTIN 37AAGFV7908J1ZM</Text>
+          <Text style={estStyles.billToText3}>{data.clientGST}</Text>
         </View>
 
         <View style={estStyles.tableBlock}>
@@ -411,48 +413,52 @@ export const EstimatePDF = ({ data }) => (
           </View>
 
           {/* Table Rows */}
-          {estMockRows.map((row, index) => (
-            <View style={estStyles.tableRow} key={index}>
-              <Text
-                style={[estStyles.tableRowText, estStyles.serialNumberColumn]}
-              >
-                {row.column1}
-              </Text>
-              <Text style={[estStyles.tableRowText, estStyles.secondColumn]}>
-                {row.column2}
-              </Text>
-              <Text style={estStyles.tableRowText}>{row.column3}</Text>
-              <Text style={estStyles.tableRowText}>{row.column4}</Text>
-              <Text style={estStyles.tableRowText}>{row.column5}</Text>
-              <View style={estStyles.subColumnTextContainer}>
-                <Text style={estStyles.subColumnTextRowItem}>
-                  {row.cgstPercent}
+          {data &&
+            data.productDetails &&
+            data.productDetails.map((row, index) => (
+              <View style={estStyles.tableRow} key={index}>
+                <Text
+                  style={[estStyles.tableRowText, estStyles.serialNumberColumn]}
+                >
+                  {index + 1}
                 </Text>
-                <Text style={estStyles.subColumnTextRowItem}>
-                  {row.cgstAmt}
+                <Text style={[estStyles.tableRowText, estStyles.secondColumn]}>
+                  {row.productName}
+                </Text>
+                <Text style={estStyles.tableRowText}>{row.hsnCode}</Text>
+                <Text style={estStyles.tableRowText}>{row.quantity}</Text>
+                <Text style={estStyles.tableRowText}>
+                  {row.amount / row.quantity}
+                </Text>
+                <View style={estStyles.subColumnTextContainer}>
+                  <Text style={estStyles.subColumnTextRowItem}>9%</Text>
+                  <Text style={estStyles.subColumnTextRowItem}>
+                    {(row.amount * 0.09).toFixed(2)}
+                  </Text>
+                </View>
+                <View style={estStyles.subColumnTextContainer}>
+                  <Text style={estStyles.subColumnTextRowItem}>9%</Text>
+                  <Text style={estStyles.subColumnTextRowItem}>
+                    {(row.amount * 0.09).toFixed(2)}
+                  </Text>
+                </View>
+                <Text style={estStyles.tableRowAmtText}>
+                  {row.amount +
+                    (row.amount * 0.09).toFixed(2) +
+                    (row.amount * 0.09).toFixed(2)}
                 </Text>
               </View>
-              <View style={estStyles.subColumnTextContainer}>
-                <Text style={estStyles.subColumnTextRowItem}>
-                  {row.sgstPercent}
-                </Text>
-                <Text style={estStyles.subColumnTextRowItem}>
-                  {row.sgstAmt}
-                </Text>
-              </View>
-              <Text style={estStyles.tableRowAmtText}>{row.column6}</Text>
-            </View>
-          ))}
+            ))}
         </View>
 
         <View style={estStyles.totalBlock}>
           <View style={estStyles.totalBlockLeft}>
             <Text style={estStyles.totalBlockLeftText1}>
-              Items in Total 8.00
+              Items in Total {data.quantity}
             </Text>
             <Text style={estStyles.totalBlockLeftText2}>Total In Words</Text>
             <Text style={estStyles.totalBlockLeftText3}>
-              Indian Rupee Fifty-Two Thousand Only
+              {toWords.convert(data.totalAmount || 0, { currency: false })}
             </Text>
             <Text style={estStyles.totalBlockLeftText2}>Notes</Text>
             <Text style={estStyles.totalBlockLeftText2}>Looking forward</Text>
@@ -488,20 +494,29 @@ export const EstimatePDF = ({ data }) => (
                 <Text style={estStyles.totalBlockRightText}>
                   Total Taxable Amount:
                 </Text>
-                <Text style={estStyles.totalBlockRightText}>44,067.80</Text>
+                <Text style={estStyles.totalBlockRightText}>
+                  {data.totalAmount}
+                </Text>
               </View>
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.totalBlockRightText}>CGST9 (9%)</Text>
-                <Text style={estStyles.totalBlockRightText}>3,966.10</Text>
+                <Text style={estStyles.totalBlockRightText}>
+                  {(data.totalAmount * 0.09).toFixed(2)}
+                </Text>
               </View>
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.totalBlockRightText}>SGST9 (9%)</Text>
-                <Text style={estStyles.totalBlockRightText}>3,966.10</Text>
+                <Text style={estStyles.totalBlockRightText}>
+                  {(data.totalAmount * 0.09).toFixed(2)}
+                </Text>
               </View>
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.totalBlockRightTextBold}>Total</Text>
                 <Text style={estStyles.totalBlockRightTextBold}>
-                  ₹{data.amount}
+                  ₹
+                  {data.totalAmount +
+                    (data.totalAmount * 0.09).toFixed(2) +
+                    (data.totalAmount * 0.09).toFixed(2)}
                 </Text>
               </View>
             </View>

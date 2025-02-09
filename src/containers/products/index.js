@@ -21,6 +21,8 @@ const Products = () => {
     totalInHandsQty: 0,
     totalQty: 0,
   });
+  const [tableData, setTableData] = useState([]);
+  const [columns, setColumns] = useState([]);
 
   const fetchData = async (branchName) => {
     try {
@@ -32,14 +34,13 @@ const Products = () => {
         payload.branch = branchName;
       }
 
-      const res = await ApiService.post('/dashboards/getProductAssignmentSummary', payload);
+      const res = await ApiService.post(
+        '/dashboards/getProductAssignmentSummary',
+        payload
+      );
       if (res.status) {
-        const {
-          groupedBranches,
-          totalAssignedQty,
-          totalInHandsQty,
-          totalQty,
-        } = res.data;
+        const { groupedBranches, totalAssignedQty, totalInHandsQty, totalQty } =
+          res.data;
 
         setBranches([
           { branchName: 'All' },
@@ -71,6 +72,17 @@ const Products = () => {
       );
 
       if (response.status) {
+        const filteredData = response.data.map((item) => ({
+          productId: item.id,
+          productName: item.productName || 'N/A',
+          productDescription: item.productDescription || 'N/A',
+          vendorName: item.vendorName || (item.vendorId?.name ?? 'N/A'),
+          imeiNumber: item.imeiNumber || 'N/A',
+          presentStock: item.quantity || 0, // Assuming stock is quantity
+        }));
+
+        setTableData(filteredData);
+        setColumns(Object.keys(filteredData[0] || []));
         setProducts(response.data || []);
       } else {
         alert(
@@ -82,7 +94,6 @@ const Products = () => {
       alert('Failed to fetch staff details.');
     }
   }, [searchData]); // ✅ Fix applied here
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -98,66 +109,65 @@ const Products = () => {
 
   const handleSearch = async () => {
     getSearchDetailProduct();
-  }
+  };
 
   // Navigate to details page
   const handleMoreDetails = () => {
     navigate('/product-details');
   };
 
-
-  const columns = [
-    {
-      title: 'Product ID',
-      dataIndex: 'productId',
-      key: 'productId',
-    },
-    {
-      title: 'Name',
-      dataIndex: 'productName',
-      key: 'productName',
-    },
-    {
-      title: 'Description',
-      dataIndex: 'productDescription',
-      key: 'productDescription',
-    },
-    {
-      title: 'Vendor Name',
-      dataIndex: 'vendorName',
-      key: 'vendorName',
-    },
-    {
-      title: 'IMEI Number',
-      dataIndex: 'imeiNumber',
-      key: 'imeiNumber',
-    },
-    {
-      title: 'Present Stock',
-      dataIndex: 'presentStock',
-      key: 'presentStock',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, profile) => (
-        <div className="flex space-x-2">
-          {/* <button
-            className="text-blue-500 hover:underline"
-            onClick={() => handleEdit(profile)}
-          >
-            Edit
-          </button> */}
-          <button
-            className="text-green-500 hover:underline"
-            onClick={handleMoreDetails}
-          >
-            Details
-          </button>
-        </div>
-      ),
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: 'Product ID',
+  //     dataIndex: 'productId',
+  //     key: 'productId',
+  //   },
+  //   {
+  //     title: 'Name',
+  //     dataIndex: 'productName',
+  //     key: 'productName',
+  //   },
+  //   {
+  //     title: 'Description',
+  //     dataIndex: 'productDescription',
+  //     key: 'productDescription',
+  //   },
+  //   {
+  //     title: 'Vendor Name',
+  //     dataIndex: 'vendorName',
+  //     key: 'vendorName',
+  //   },
+  //   {
+  //     title: 'IMEI Number',
+  //     dataIndex: 'imeiNumber',
+  //     key: 'imeiNumber',
+  //   },
+  //   {
+  //     title: 'Present Stock',
+  //     dataIndex: 'presentStock',
+  //     key: 'presentStock',
+  //   },
+  //   {
+  //     title: 'Actions',
+  //     key: 'actions',
+  //     render: (_, profile) => (
+  //       <div className="flex space-x-2">
+  //         {/* <button
+  //           className="text-blue-500 hover:underline"
+  //           onClick={() => handleEdit(profile)}
+  //         >
+  //           Edit
+  //         </button> */}
+  //         <button
+  //           className="text-green-500 hover:underline"
+  //           onClick={handleMoreDetails}
+  //         >
+  //           Details
+  //         </button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
@@ -218,7 +228,6 @@ const Products = () => {
           setSelectedBranch={setSelectedBranch}
         />
       </div>
-
 
       <div className="flex mb-4">
         <div className="flex-grow mr-2">
@@ -291,7 +300,10 @@ const Products = () => {
 
               {/* Button */}
               <div className="mt-4 flex justify-center">
-                <button className="px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer" onClick={handleMoreDetails}>
+                <button
+                  className="px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer"
+                  onClick={handleMoreDetails}
+                >
                   View Details
                 </button>
               </div>
@@ -301,8 +313,9 @@ const Products = () => {
       ) : (
         <Table
           columns={columns}
-          data={products}
+          data={tableData}
           // onEdit={(profile) => console.log('Edit:', profile)}
+          showEdit={false}
           onDetails={handleMoreDetails}
         />
       )}
