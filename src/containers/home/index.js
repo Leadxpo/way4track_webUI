@@ -14,6 +14,7 @@ import { initialAuthState } from '../../services/ApiService';
 import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
+import Analysis from '../analysis';
 const Home = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -246,7 +247,7 @@ const Home = () => {
         }
       } catch (error) {
         console.error('Error fetching staff details:', error);
-        alert('Failed to fetch staff details.');
+        //alert('Failed to fetch staff details.');
       }
     };
 
@@ -357,10 +358,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-              ...item,
-              count: response.data.last30DaysTickets,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysTickets,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -384,10 +385,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-              ...item,
-              count: response.data.last30DaysProducts,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysProducts,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -411,10 +412,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-              ...item,
-              count: response.data.last30DaysPurchases,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysPurchases,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -437,10 +438,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-              ...item,
-              count: response.data.last30DaysExpenses,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysExpenses,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -468,7 +469,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching tickets data:', error);
-      alert('Failed to fetch tickets data.');
+      //alert('Failed to fetch tickets data.');
     }
   };
 
@@ -482,7 +483,15 @@ const Home = () => {
       });
 
       if (response.status) {
-        setTotalProducts(response.data);
+        const filteredData = response.data.map((item) => ({
+          productId: item.id,
+          productName: item.productName || 'N/A',
+          productDescription: item.productDescription || 'N/A',
+          vendorName: item.vendorName || (item.vendorId?.name ?? 'N/A'),
+          imeiNumber: item.imeiNumber || 'N/A',
+          presentStock: item.quantity || 0, // Assuming stock is quantity
+        }));
+        setTotalProducts(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
       }
@@ -518,7 +527,7 @@ const Home = () => {
       });
 
       if (response.status) {
-        console.log(response.data, "purchase")
+        console.log(response.data, 'purchase');
         setTotalPurchases(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
@@ -557,7 +566,7 @@ const Home = () => {
         }
       );
       if (response.status) {
-        console.log(response.data, "OOOOOOOOOOOOOOOOOOOO")
+        console.log(response.data, 'OOOOOOOOOOOOOOOOOOOO');
         setBranchWiseSolidLiquidData(response.data);
       } else {
         alert(
@@ -575,11 +584,11 @@ const Home = () => {
         '/dashboards/getTotalProductAndServiceSales',
         {
           companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode
+          unitCode: initialAuthState?.unitCode,
         }
       );
       if (response.status) {
-        console.log(response.data, "{{{{{{{{{{{{{{{{{{{{{{{{")
+        console.log(response.data, '{{{{{{{{{{{{{{{{{{{{{{{{');
         setBranchDetails(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch total sales details.');
@@ -723,9 +732,7 @@ const Home = () => {
               </div>
               <div className="text-left">
                 <p className="text-gray-500">Solid Cash</p>
-                <p className="text-gray-800 font-bold">
-                  {cash.solidCash}
-                </p>
+                <p className="text-gray-800 font-bold">{cash.solidCash}</p>
               </div>
             </div>
           ))}
@@ -748,9 +755,7 @@ const Home = () => {
               </div>
               <div className="text-left">
                 <p className="text-gray-500">Liquid Cash</p>
-                <p className="text-gray-800 font-bold">
-                  {cash.liquidCash}
-                </p>
+                <p className="text-gray-800 font-bold">{cash.liquidCash}</p>
               </div>
             </div>
           ))}
@@ -846,7 +851,8 @@ const Home = () => {
             barpercentage1={75}
             barpercentage2={25}
         /> */}
-      <AnalysisCardBarChart creditDebitPercent={creditDebitPercent} />
+      {/* <AnalysisCardBarChart creditDebitPercent={creditDebitPercent} /> */}
+      <Analysis />
     </div>
   );
 };

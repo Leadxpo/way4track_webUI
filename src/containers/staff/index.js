@@ -158,7 +158,7 @@ const Staff = () => {
           onClick={handleSearch}
           className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500"
         >
-          <FaSearch className="mr-2" />
+          {/* <FaSearch className="mr-2" /> */}
           Search
         </button>
       </div>
@@ -211,6 +211,9 @@ const Staff = () => {
       ) : (
         <Table
           columns={columns}
+          onEdit={handleEdit}
+          showDelete={false}
+          onDetails={handleMoreDetails}
           data={Array.isArray(profiles) ? profiles : []}
         />
       )}{' '}

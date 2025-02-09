@@ -288,7 +288,9 @@ const Asserts = () => {
             </button>
           </div>
           <Table
-            columns={Object.keys(filteredData[0])}
+            columns={
+              filteredData.length > 0 ? Object.keys(filteredData[0]) : []
+            }
             data={filteredData}
             onDetails={() => {}}
             showEdit={false}

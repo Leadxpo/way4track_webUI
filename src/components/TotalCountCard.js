@@ -16,7 +16,7 @@ const TotalCountCard = ({ data }) => {
         <div className="ml-auto text-right">
           <h3 className="text-lg font-semibold">{data.title}</h3>
           <p className="text-sm text-gray-500">{data.subTitle}</p>
-          <p className="text-3xl font-bold">{data.count}</p>
+          <p className="text-3xl font-bold">{data.count || 0}</p>
         </div>
       </div>
 

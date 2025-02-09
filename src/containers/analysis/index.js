@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import AnalysisCard from '../../components/AnalysisCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+
 const Analysis = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
+  const [totalCredit, setTotalCredit] = useState({ sales: 0, services: 0 });
+  const [totalDebit, setTotalDebit] = useState({ salaries: 0, expenses: 0 });
+
   // Handle popup visibility
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
@@ -20,121 +23,173 @@ const Analysis = () => {
           unitCode: initialAuthState?.unitCode,
         }
       );
-      if (response.status) {
+      if (response?.status && Array.isArray(response.data)) {
         setCreditDebitPercent(response.data);
+
+        // Calculate total credit and debit amounts
+        const totalCredit = response.data.reduce(
+          (acc, item) => {
+            acc.sales += item.salesTotalCreditAmount || 0;
+            acc.services += item.servicesTotalCreditAmount || 0;
+            return acc;
+          },
+          { sales: 0, services: 0 }
+        );
+
+        const totalDebit = response.data.reduce(
+          (acc, item) => {
+            acc.salaries += item.salariesTotalDebitAmount || 0;
+            acc.expenses += item.expensesTotalDebitAmount || 0;
+            return acc;
+          },
+          { salaries: 0, expenses: 0 }
+        );
+
+        setTotalCredit(totalCredit);
+        setTotalDebit(totalDebit);
       } else {
-        alert(response.data.message || 'Failed to analysis details.');
+        setCreditDebitPercent([]);
       }
     } catch (e) {
-      console.error('error in fetching analysis details');
+      console.error('Error fetching analysis details:', e);
+      setCreditDebitPercent([]);
     }
   };
+
   useEffect(() => {
     getProductTypeCreditAndDebitPercentages();
   }, []);
 
   return (
     <div className="mx-32">
-      {/* Analysis Components */}
       <AnalysisCardBarChart
         togglePopup={togglePopup}
         creditDebitPercent={creditDebitPercent}
       />
-      {/* <AnalysisCard
-        bartitle1={'Resolved Issues'}
-        bartitle2={'Pending Issues'}
-        barpercentage1={60}
-        barpercentage2={40}
-      /> */}
-
-      {/* Popup Modal */}
       {isPopupVisible && (
         <div className="fixed inset-0 bg-gray-200 bg-opacity-70 flex items-center justify-center rounded-lg">
-          <div className="bg-white rounded-lg shadow-lg p-12 w-1/2">
-            {/* Popup Content */}
-            <h2 className="text-center text-green-700 font-bold text-xl mb-4">
-              Total Credit Amount: 15000 /-
+          <div className="bg-white rounded-lg shadow-lg p-6 w-2/3 h-2/3 overflow-y-auto border border-gray-300">
+            <h2 className="text-center text-green-700 font-bold text-xl mb-2">
+              Total Credit Amount: {totalCredit.sales + totalCredit.services} /-
             </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Sales Section */}
-              <div className="border border-green-500 rounded-md p-4">
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-4">
-                  Sales : 30% - 10000 Rs
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                  Sales: {totalCredit.sales} Rs
                 </h3>
-                <table className="table-auto w-full text-gray-600">
-                  <thead>
-                    <tr className="bg-gray-200">
-                      <th className="px-4 py-2 text-left">Branch</th>
-                      <th className="px-4 py-2 text-center">%</th>
-                      <th className="px-4 py-2 text-right">Rs.</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Visakhapatnam</td>
-                      <td className="px-4 py-2 text-center">05%</td>
-                      <td className="px-4 py-2 text-right">3000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Hyderabad</td>
-                      <td className="px-4 py-2 text-center">10%</td>
-                      <td className="px-4 py-2 text-right">2000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Vijayawada</td>
-                      <td className="px-4 py-2 text-center">05%</td>
-                      <td className="px-4 py-2 text-right">3000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Kakinada</td>
-                      <td className="px-4 py-2 text-center">10%</td>
-                      <td className="px-4 py-2 text-right">2000</td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
-
-              {/* Services Section */}
-              <div className="border border-green-500 rounded-md p-4">
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-4">
-                  Services : 5% - 5000 Rs
+              <div>
+                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                  Services: {totalCredit.services} Rs
                 </h3>
-                <table className="table-auto w-full text-gray-600">
-                  <thead>
-                    <tr className="bg-gray-200">
-                      <th className="px-4 py-2 text-left">Branch</th>
-                      <th className="px-4 py-2 text-center">%</th>
-                      <th className="px-4 py-2 text-right">Rs.</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Visakhapatnam</td>
-                      <td className="px-4 py-2 text-center">05%</td>
-                      <td className="px-4 py-2 text-right">2000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Hyderabad</td>
-                      <td className="px-4 py-2 text-center">10%</td>
-                      <td className="px-4 py-2 text-right">1000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Vijayawada</td>
-                      <td className="px-4 py-2 text-center">05%</td>
-                      <td className="px-4 py-2 text-right">1000</td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="px-4 py-2">Kakinada</td>
-                      <td className="px-4 py-2 text-center">10%</td>
-                      <td className="px-4 py-2 text-right">1000</td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
             </div>
-
-            {/* Close Button */}
-            <div className="flex justify-center mt-6">
+            <h2 className="text-center text-green-700 font-bold text-xl mt-4 mb-2">
+              Branch-wise Credit Details
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                  Sales
+                </h3>
+                {creditDebitPercent.length > 0 ? (
+                  creditDebitPercent.map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-green-500 rounded-md p-2 mb-2"
+                    >
+                      <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                        {item.branchName} : {item.salesCreditPercentage}% -{' '}
+                        {item.salesTotalCreditAmount} Rs
+                      </h3>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-600">No data available</p>
+                )}
+              </div>
+              <div>
+                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                  Services
+                </h3>
+                {creditDebitPercent.length > 0 ? (
+                  creditDebitPercent.map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-green-500 rounded-md p-2 mb-2"
+                    >
+                      <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
+                        {item.branchName} : {item.servicesCreditPercentage}% -{' '}
+                        {item.servicesTotalCreditAmount} Rs
+                      </h3>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-600">No data available</p>
+                )}
+              </div>
+            </div>
+            <h2 className="text-center text-red-700 font-bold text-xl mt-4 mb-2">
+              Total Debit Amount: {totalDebit.salaries + totalDebit.expenses} /-
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                  Salaries: {totalDebit.salaries} Rs
+                </h3>
+              </div>
+              <div>
+                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                  Expenses: {totalDebit.expenses} Rs
+                </h3>
+              </div>
+            </div>
+            <h2 className="text-center text-red-700 font-bold text-xl mt-4 mb-2">
+              Branch-wise Debit Details
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                  Salaries
+                </h3>
+                {creditDebitPercent.length > 0 ? (
+                  creditDebitPercent.map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-red-500 rounded-md p-2 mb-2"
+                    >
+                      <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                        {item.branchName} : {item.salariesDebitPercentage}% -{' '}
+                        {item.salariesTotalDebitAmount} Rs
+                      </h3>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-600">No data available</p>
+                )}
+              </div>
+              <div>
+                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                  Expenses
+                </h3>
+                {creditDebitPercent.length > 0 ? (
+                  creditDebitPercent.map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-red-500 rounded-md p-2 mb-2"
+                    >
+                      <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
+                        {item.branchName} : {item.expensesDebitPercentage}% -{' '}
+                        {item.expensesTotalDebitAmount} Rs
+                      </h3>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-600">No data available</p>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-center mt-4">
               <button
                 onClick={togglePopup}
                 className="bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600 transition"

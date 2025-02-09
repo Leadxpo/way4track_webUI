@@ -92,7 +92,7 @@ const BodyLayout = ({ children }) => {
   const location = useLocation();
   const [userLocation, setUserLocation] = useState(null);
   let locationInterval = null;
-  const role = localStorage.getItem('userRole');
+  const role = localStorage.getItem('role');
   const getPathname = (role = 'ceo') => {
     return formattedPaths[role][location.pathname]?.name || '';
   };
@@ -195,7 +195,7 @@ const BodyLayout = ({ children }) => {
 
         {/* Search and Icons */}
         <div className="flex flex-col md:flex-row items-center md:space-x-6 w-full md:w-auto">
-          {role === 'Accountant' ? (
+          {role === 'accountant' ? (
             <button
               className="bg-red-500 text-sm text-white p-1 mb-4 md:mb-0"
               onClick={() => navigate('/bank-details-dashboard')}
@@ -270,10 +270,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
           <Route path="/products" element={<Products />} />
-          <Route
-            path="/product-details"
-            element={<ProductDetails />}
-          />
+          <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />

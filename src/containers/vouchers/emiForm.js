@@ -9,7 +9,7 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const [selectedFormTab, setSelectedFormTab] = useState('InitialDownload');
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
@@ -170,7 +170,7 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
           className={`px-4 py-2 rounded ${selectedFormTab === 'InitialDownload' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
           onClick={() => handleTabChange('InitialDownload')}
         >
-          Initial Download
+          Initial Downpayment
         </button>
         <button
           className={`px-4 py-2 ml-2 rounded ${selectedFormTab === 'EMIAmount' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}

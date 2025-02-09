@@ -62,8 +62,8 @@ const TableWithDateFilter = ({
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
-        fromDate: vendorData?.joiningDate,
-        toDate: vendorData?.joiningDate,
+        fromDate: dateFrom,
+        toDate: dateTo,
         paymentStatus: vendorData?.paymentStatus,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -79,13 +79,13 @@ const TableWithDateFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [vendorData?.joiningDate, vendorData?.paymentStatus]);
+  }, [dateFrom, dateTo, vendorData?.paymentStatus]);
 
   const getSubDealerData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getSubDealerData', {
-        fromDate: subDealerData?.joiningDate,
-        toDate: subDealerData?.joiningDate,
+        fromDate: dateFrom,
+        toDate: dateTo,
         paymentStatus: subDealerData?.paymentStatus,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -101,7 +101,7 @@ const TableWithDateFilter = ({
       console.error('Error fetching sub-dealer details:', error);
       alert('Failed to fetch sub-dealer details.');
     }
-  }, [subDealerData?.joiningDate, subDealerData?.paymentStatus]);
+  }, [dateFrom, dateTo, subDealerData?.paymentStatus]);
 
   const getEstimateData = useCallback(async () => {
     try {
@@ -181,27 +181,27 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
-  // const getRequestsData = useCallback(async () => {
-  //   try {
-  //     const response = await ApiService.post('/requests/getRequestsBySearch', {
-  //       fromDate: dateFrom,
-  //       toDate: dateTo,
-  //       status: statusFilter,
-  //       companyCode: initialAuthState?.companyCode,
-  //       unitCode: initialAuthState?.unitCode,
-  //     });
+  const getInvoiceData = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getVoucherData', {
+        fromDate: dateFrom,
+        toDate: dateTo,
+        status: statusFilter,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
 
-  //     if (response.status) {
-  //       console.log(response.data, 'Response Data'); // Log data to verify it
-  //       setFilteredData(response.data); // Assuming the structure is as expected
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch request details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching request details:', error);
-  //     alert('Failed to fetch request details.');
-  //   }
-  // }, [dateFrom, dateTo, statusFilter]);
+      if (response.status) {
+        console.log(response.data, 'Response Data'); // Log data to verify it
+        setFilteredData(response.data); // Assuming the structure is as expected
+      } else {
+        alert(response.data.message || 'Failed to fetch request details.');
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+      alert('Failed to fetch request details.');
+    }
+  }, [dateFrom, dateTo, statusFilter]);
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':
@@ -216,10 +216,16 @@ const TableWithDateFilter = ({
       case 'requests':
         getRequestsData();
         break;
+      case 'invoice':
+        getInvoiceData();
+        break;
+      case 'vendors':
+        getVendorData();
+        break;
       default:
         break;
     }
-  }, [type, getSubDealerData, getEstimateData]);
+  }, [type]);
 
   useEffect(() => {
     let dataSource = [];
@@ -228,7 +234,7 @@ const TableWithDateFilter = ({
         dataSource = filteredData;
         break;
       case 'invoice':
-        dataSource = invoicesData;
+        dataSource = filteredData;
         break;
       case 'payments':
         dataSource = filteredData;

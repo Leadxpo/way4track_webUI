@@ -95,13 +95,14 @@ const BankDetails = () => {
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Enter Amount"
           className="p-2 border rounded-md bg-gray-100 w-1/2"
+          disabled
         />
-        <button
+        {/* <button
           onClick={() => navigate('/add-amount')}
           className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
         >
           Add Amount
-        </button>
+        </button> */}
       </div>
 
       {/* Transaction Table */}

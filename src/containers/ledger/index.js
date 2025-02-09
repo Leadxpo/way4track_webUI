@@ -20,9 +20,7 @@ const Ledger = () => {
 
   const fetchBranches = async () => {
     try {
-      const response = await ApiService.post(
-        '/branch/getBranchNamesDropDown'
-      );
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
       if (response.status) {
         setBranches(response.data); // Set branches to state
       } else {
@@ -34,8 +32,8 @@ const Ledger = () => {
   };
 
   useEffect(() => {
-    fetchBranches()
-  }, [])
+    fetchBranches();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,14 +122,15 @@ const Ledger = () => {
         {branches.length > 0 && (
           <div className="space-y-4">
             <div>
-              <p className="font-semibold mb-1">Branch</p>
               <select
                 name="branch"
                 value={searchData.branch}
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select a Branch</option>
+                <option value="" disabled>
+                  Select a Branch
+                </option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.branchName}

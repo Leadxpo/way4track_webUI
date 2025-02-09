@@ -72,7 +72,51 @@ const AddEditEmployeeForm = () => {
         console.error('Error fetching branches:', error);
       }
     };
+    const fetchStaffDetails = async () => {
+      if (!location.state?.staffDetails) return;
+      try {
+        const response = await ApiService.post('/staff/getStaffDetailsById', {
+          staffId: location.state?.staffDetails.staffId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (!response.status) {
+          throw new Error('Staff not found');
+        }
+        if (response.status && response.data.length > 0) {
+          const fetchedData = response.data[0]; // Extract the first staff object
 
+          // Map API response fields to formData structure
+          const updatedFormData = {
+            id: fetchedData.id || null,
+            name: fetchedData.name || '',
+            phoneNumber: fetchedData.phoneNumber || '',
+            staffId: fetchedData.staffId || '',
+            designation: fetchedData.designation || '',
+            branch: fetchedData.branchName || '',
+            dob: fetchedData.dob || '',
+            email: fetchedData.email || '',
+            aadharNumber: fetchedData.aadharNumber || '',
+            address: fetchedData.address || '',
+            companyCode:
+              fetchedData.companyCode || initialAuthState.companyCode,
+            unitCode: fetchedData.unitCode || initialAuthState.unitCode,
+            joiningDate: fetchedData.joiningDate || '',
+            attendance: fetchedData.attendance || '',
+            basicSalary: fetchedData.basicSalary || '',
+            beforeExperience: fetchedData.beforeExperience || 0,
+            password: '', // Leave password empty for security reasons
+            photo: fetchedData.staffPhoto || null,
+          };
+
+          setFormData(updatedFormData);
+          setImage(fetchedData.staffPhoto || '');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStaffDetails();
     fetchBranches();
   }, []);
 
@@ -115,8 +159,6 @@ const AddEditEmployeeForm = () => {
       alert('Failed to save employee details. Please try again.');
     }
   };
-
-
 
   // Fetch branch list
   // const fetchStaffList = async () => {
