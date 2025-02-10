@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 import Table from '../../components/Table';
 import { formatString } from '../../common/commonUtils';
+
 // Color Mapping Function
 const getColorClasses = (color) => {
   switch (color) {
@@ -17,154 +19,118 @@ const getColorClasses = (color) => {
   }
 };
 
-const tableData = [
-  {
-    id: 1,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 223,
-    value2: 346,
-    status: 'Available',
-  },
-  {
-    id: 2,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 345,
-    value2: 568,
-    status: 'Available',
-  },
-  {
-    id: 3,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 234,
-    value2: 234,
-    status: 'Out of stock',
-  },
-  {
-    id: 4,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 345,
-    value2: 345,
-    status: 'Out of stock',
-  },
-  {
-    id: 5,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 223,
-    value2: 346,
-    status: 'Available',
-  },
-  {
-    id: 6,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 345,
-    value2: 568,
-    status: 'Available',
-  },
-  {
-    id: 7,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 234,
-    value2: 234,
-    status: 'Out of stock',
-  },
-  {
-    id: 8,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 278,
-    value2: 400,
-    status: 'Available',
-  },
-  {
-    id: 9,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 300,
-    value2: 320,
-    status: 'Out of stock',
-  },
-  {
-    id: 10,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 500,
-    value2: 600,
-    status: 'Available',
-  },
-];
-
-const requestsData = [
-  {
-    location: 'Visakhapatnam',
-    color: 'blue',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-  {
-    location: 'Hyderabad',
-    color: 'red',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-  {
-    location: 'Vijayawada',
-    color: 'green',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-  {
-    location: 'Kakinada',
-    color: 'orange',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-];
-
 const WarehouseManagerHome = () => {
+  const [requestsData, setRequestsData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('');
+  const [columns, setColumns] = useState([]);
+
+  const [userProfile, setUserProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = () => {
+      const userProfileData = localStorage.getItem('userProfile');
+      if (userProfileData) {
+        try {
+          const parsedData = JSON.parse(userProfileData);
+          setUserProfile(parsedData);
+        } catch (error) {
+          console.error('Error parsing user profile data:', error);
+          setUserProfile(null);  // Set to null or handle accordingly
+        }
+      } else {
+        setUserProfile(null);  // Set to null if no data in localStorage
+      }
+    };
+
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const fetchPurchaseOrderData = async () => {
+      try {
+        const response = await ApiService.post('/requests/getTodayRequestBranchWise', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+        if (response.status) {
+          setRequestsData(response.data || []);
+        } else {
+          setRequestsData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching purchase order data:', error);
+        alert('Failed to fetch purchase order data.');
+      }
+    };
+
+    fetchPurchaseOrderData();
+  }, []);
+  // useEffect(() => {
+  //   const fetchProductDetails = async () => {
+  //     try {
+  //       const response = await ApiService.post('dashboards/getProductDetailsByBranch', {
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //         branchName: selectedBranch,
+  //       });
+  //       if (response.status) {
+  //         // Access the nested 'data' array
+  //         setTableData(response.data.data || []);  // Change this line to access response.data.data
+  //         setColumns(generateColumns(response.data.data));  // Change this line to access response.data.data
+  //       } else {
+  //         setTableData([]);
+  //         setColumns([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching product details:', error);
+  //       alert('Failed to fetch product details.');
+  //     }
+  //   };
+
+  //   fetchProductDetails();
+  // }, [selectedBranch]);
+
+
+  // Function to generate table columns dynamically based on the product data
+  const generateColumns = (data) => {
+    if (data.length === 0) return [];
+
+    const sampleProduct = data[0].products[0];  // Using the first product to define columns
+    const productColumns = Object.keys(sampleProduct).map((key) => ({
+      title: formatString(key),  // Using formatString to make the key human-readable
+      dataIndex: key,
+      key,
+    }));
+
+    // Add custom columns if needed
+    return productColumns;
+  };
+
   return (
     <div className="p-6">
       {/* Profile Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Profile"
-          className="w-24 h-24 rounded-full"
-        />
-        <div className="w-full">
-          <h2 className="text-xl font-semibold p-3 bg-gray-200 rounded-md m-2">
-            Name: Vikram.
-          </h2>
-          <p className="p-3 m-2 bg-gray-200 rounded-md">
-            Phone number: 99999 99999
-          </p>
-          <p className="p-3 m-2 bg-gray-200 rounded-md">
-            Email: Way4track@gmail.com
-          </p>
+      {userProfile && (
+        <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
+          <img
+            src={userProfile.profilePicPath || "https://via.placeholder.com/100"}
+            alt="Profile"
+            className="w-24 h-24 rounded-full"
+          />
+          <div className="w-full">
+            <h2 className="text-xl font-semibold p-3 bg-gray-200 rounded-md m-2">
+              Name: {userProfile.name}
+            </h2>
+            <p className="p-3 m-2 bg-gray-200 rounded-md">
+              Phone number: {userProfile.phoneNumber}
+            </p>
+            <p className="p-3 m-2 bg-gray-200 rounded-md">
+              Email: {userProfile.email}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Requests Section */}
       <h2 className="text-2xl font-bold mt-8">Requests</h2>
@@ -188,16 +154,29 @@ const WarehouseManagerHome = () => {
           );
         })}
       </div>
-      <select className="h-12 block w-1/3 mt-6 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none">
-        <option value="" disabled>
-          Select a Branch
-        </option>
-      </select>
+
+      {/* Branch Selection */}
+      {/* <select
+        className="h-12 block w-1/3 mt-6 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none"
+        value={selectedBranch}
+        onChange={(e) => setSelectedBranch(e.target.value)}
+      >
+        <option value="" disabled>Select a Branch</option>
+        {requestsData.map((branch, index) => (
+          <option key={index} value={branch.branchName}>
+            {branch.branchName}
+          </option>
+        ))}
+      </select> */}
+
+      {/* Table Section */}
       <div className="mt-6">
-        <Table data={tableData} columns={Object.keys(tableData[0])} />
+        {/* <Table data={tableData} columns={columns} /> */}
       </div>
     </div>
   );
 };
 
 export default WarehouseManagerHome;
+
+

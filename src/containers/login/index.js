@@ -13,6 +13,49 @@ const Login = ({ handleLoginFlag }) => {
 
   const navigate = useNavigate();
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+  //   setLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       staffId: userId,
+  //       password: password,
+  //       designation: role,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+
+  //     const response = await ApiService.post('/login/LoginDetails', payload);
+
+  //     if (response && response.status) {
+  //       // Store login details in localStorage
+  //       localStorage.setItem('userId', userId);
+  //       localStorage.setItem('password', password);
+  //       localStorage.setItem('role', role);
+  //       localStorage.setItem('companyCode', initialAuthState.companyCode);
+  //       localStorage.setItem('unitCode', initialAuthState.unitCode);
+
+  //       await fetchUserPermissions(
+  //         userId,
+  //         initialAuthState.companyCode,
+  //         initialAuthState.unitCode
+  //       );
+
+  //       handleLoginFlag();
+  //     } else {
+  //       setError(response?.internalMessage || 'Invalid login credentials.');
+  //     }
+  //   } catch (err) {
+  //     setError(
+  //       err?.response?.data?.internalMessage ||
+  //         'Failed to login. Please check your credentials.'
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -30,12 +73,12 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
 
       if (response && response.status) {
-        // Store login details in localStorage
+        // Store login details and user profile info in localStorage
+        const userProfile = response.data.profile;  // Assuming API returns user profile info
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
-        localStorage.setItem('companyCode', initialAuthState.companyCode);
-        localStorage.setItem('unitCode', initialAuthState.unitCode);
+        localStorage.setItem('userProfile', JSON.stringify(userProfile)); // Store user profile
 
         await fetchUserPermissions(
           userId,
@@ -50,7 +93,7 @@ const Login = ({ handleLoginFlag }) => {
     } catch (err) {
       setError(
         err?.response?.data?.internalMessage ||
-          'Failed to login. Please check your credentials.'
+        'Failed to login. Please check your credentials.'
       );
     } finally {
       setLoading(false);
@@ -142,7 +185,7 @@ const Login = ({ handleLoginFlag }) => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              //required
+            //required
             >
               <option value="">Select Role</option>
               <option value="CEO">CEO</option>

@@ -5,6 +5,7 @@ import Login from './containers/login';
 import { useNavigate } from 'react-router';
 
 const App = () => {
+  // const [role, setRole] = useState(localStorage.getItem('role') || 'technician'); // You can switch between 'ceo' and 'subdealer'
   const navigate = useNavigate();
   const [role, setRole] = useState(localStorage.getItem('role') || 'CEO'); // You can switch between 'ceo' and 'subdealer'
   const [isLoggedIn, setIsLoggedIn] = useState(
