@@ -14,17 +14,18 @@ const AddEditRequestForm = () => {
 
   // Initialize form data, using employeeData if available
   const initialFormData = {
-    id: requestData.id,
+    id: requestData.id || null,
     requestType: requestData.requestType || '',
     // requestBy: requestData.requestBy || '',
-    requestFrom: localStorage.getItem('userId') || '',
-    requestTo: requestData.RequestTo || '',
-    branch: requestData.branchName || '',
+    requestFrom: Number(requestData.requestFrom) || null,
+    requestTo: Number(requestData.requestTo) || null,
+    branch: Number(requestData.branch) || null,
+
     description: requestData.description || '',
     // amount: requestData.amount || '',
     createdDate: requestData.createdDate || '',
     status: requestData.status || '',
-    subDealerId: requestData.subDealerId || '',
+    subDealerId: Number(requestData.subDealerId) || null,
     requestId: requestData.requestId || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
@@ -48,6 +49,8 @@ const AddEditRequestForm = () => {
 
     fetchStaffData();
   }, []);
+
+
 
   useEffect(() => {
     const fetchSubDealers = async () => {
@@ -91,87 +94,109 @@ const AddEditRequestForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSave = async () => {
+
+    const payload = {
+      ...formData
+    };
+
     try {
-      const payload = {
-        requestType: formData.requestType,
-        requestTo: Number(formData.requestTo),
-        requestFrom: Number(formData.requestFrom),
-        branch: Number(formData.branch),
-        description: formData.description,
-        status: formData.status,
-        subDealerId: formData.subDealerId || 1,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      };
-      if (formData.id) {
-        payload.id = formData.id;
-      }
-      const response = await ApiService.post(
-        '/requests/handleRequestDetails',
-        payload
-      );
-      if (response.status) {
+      const endpoint = formData.id
+        ? '/requests/handleRequestDetails'
+        : '/requests/handleRequestDetails';
+      const response = await ApiService.post(endpoint, payload);
+
+      if (response.data.status) {
+        alert(
+          formData.id
+            ? 'requests updated successfully!'
+            : 'requests created successfully!'
+        );
         navigate('/requests');
       } else {
-        alert('failed to raise request');
+        alert('Failed to save appointment details. Please try again.');
       }
     } catch (error) {
-      console.error(error);
-      alert('failed to raise request');
+      console.error('Error saving appointment details:', error);
+      alert('Failed to save appointment details. Please try again.');
     }
-  };
+    // const handleSave = async () => {
+    //   try {
+    //     const payload = {
+    //       requestType: formData.requestType,
+    //       requestTo: Number(formData.requestTo),
+    //       requestFrom: Number(formData.requestFrom),
+    //       branch: Number(formData.branch),
+    //       description: formData.description,
+    //       status: formData.status,
+    //       subDealerId: formData.subDealerId || 1,
+    //       companyCode: initialAuthState.companyCode,
+    //       unitCode: initialAuthState.unitCode,
+    //     };
+    //     const response = await ApiService.post(
+    //       '/requests/handleRequestDetails',
+    //       payload
+    //     );
+    //     if (response.status) {
+    //       navigate('/requests');
+    //     } else {
+    //       alert('failed to raise request');
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //     alert('failed to raise request');
+    //   }
+    // };
 
-  const handleCancel = () => {
-    // Handle cancel action
-    navigate('/requests');
-  };
+    const handleCancel = () => {
+      // Handle cancel action
+      navigate('/requests');
+    };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
-        {/* Header */}
-        <div className="flex items-center space-x-4 mb-8">
-          <h1 className="text-3xl font-bold">
-            {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
-          </h1>
-        </div>
-
-        {/* Form Fields */}
-        <div className="space-y-4">
-          {/* Form field for Name */}
-          <div>
-            <p className="font-semibold mb-1">Request Type</p>
-            <input
-              type="text"
-              name="requestType"
-              value={formData.requestType}
-              onChange={handleInputChange}
-              placeholder="Enter Name"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
+          {/* Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <h1 className="text-3xl font-bold">
+              {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
+            </h1>
           </div>
-          <div>
-            <div className="flex flex-col">
-              <label className="font-semibold mb-2">Request By:</label>
+
+          {/* Form Fields */}
+          <div className="space-y-4">
+            {/* Form field for Name */}
+            <div>
+              <p className="font-semibold mb-1">Request Type</p>
               <input
                 type="text"
                 name="requestType"
-                value={formData.requestFrom}
+                value={formData.requestType}
                 onChange={handleInputChange}
                 placeholder="Enter Name"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                disabled
               />
-              {/* <select
+            </div>
+            <div>
+              <div className="flex flex-col">
+                <label className="font-semibold mb-2">Request By:</label>
+                <input
+                  type="text"
+                  name="requestType"
+                  value={formData.requestFrom}
+                  onChange={handleInputChange}
+                  placeholder="Enter Name"
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  disabled
+                />
+                {/* <select
                 name="requestFrom"
                 value={formData.requestFrom}
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Request By
+                  Select Staff
                 </option>
                 {staffData.map((staffMember) => (
                   <option key={staffMember.id} value={staffMember.id}>
@@ -179,128 +204,141 @@ const AddEditRequestForm = () => {
                   </option>
                 ))}
               </select> */}
-            </div>
-          </div>
-
-          {/* Branch */}
-          {branch.length > 0 && (
-            <div className="space-y-4">
-              <div>
-                <p className="font-semibold mb-1">Branch</p>
-                <select
-                  name="branch"
-                  value={formData.branchName}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Select a Branch
-                  </option>
-                  {branch.map((br) => (
-                    <option key={br.id} value={br.id}>
-                      {br.branchName}
-                    </option>
-                  ))}
-                </select>
               </div>
             </div>
-          )}
-          <div>
-            <p className="font-semibold mb-1">Status</p>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select a status
-              </option>
-              <option value="accepted">accepted</option>
-              <option value="rejected">rejected</option>
-              <option value="expire">expire</option>
-              <option value="sent">sent</option>
-              <option value="declined">declined</option>
-              <option value="pending">pending</option>
-            </select>
-          </div>
-          <div>
-            <div className="flex flex-col">
-              <label className="font-semibold mb-2">Request To:</label>
+
+            {/* Branch */}
+            {branch.length > 0 && (
+              <div className="space-y-4">
+                <div>
+                  <p className="font-semibold mb-1">Branch</p>
+                  <select
+                    name="branch"
+                    value={formData.branchName}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Select a Branch
+                    </option>
+                    {branch.map((br) => (
+                      <option key={br.id} value={br.id}>
+                        {br.branchName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+            <div>
+              <p className="font-semibold mb-1">Status</p>
               <select
-                name="requestTo"
-                value={formData.requestTo}
+                name="status"
+                value={formData.status}
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Request To
+                  Select a status
                 </option>
-                {staffData.map((staffMember) => (
-                  <option key={staffMember.id} value={staffMember.id}>
-                    {staffMember.name}
-                  </option>
-                ))}
+                <option value="accepted">accepted</option>
+                <option value="rejected">rejected</option>
+                <option value="expire">expire</option>
+                <option value="sent">sent</option>
+                <option value="declined">declined</option>
+                <option value="pending">pending</option>
               </select>
             </div>
-          </div>
-          <div>
-            {subDealer.length > 0 && (
+            <div>
               <div className="flex flex-col">
-                <label className="font-semibold mb-2">
-                  Request To subDealer:
-                </label>
+                <label className="font-semibold mb-2">Request To:</label>
                 <select
-                  name="subDealerId"
-                  value={formData.subDealerId}
+                  name="requestTo"
+                  value={formData.requestTo}
                   onChange={handleInputChange}
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
                   <option value="" disabled>
-                    Request To subDealer
+                    Request To
                   </option>
-                  {subDealer.map((staffMember) => (
-                    <option key={staffMember.id} value={staffMember.id}>
+                  {staffData.map((staffMember) => (
+                    <option
+                      key={staffMember.id}
+                      value={staffMember.id}
+                    >
                       {staffMember.name}
                     </option>
                   ))}
                 </select>
               </div>
-            )}
-          </div>
+            </div>
+            <div>
+              {subDealer.length > 0 && (
+                <div className="flex flex-col">
+                  <label className="font-semibold mb-2">
+                    Request To subDealer:
+                  </label>
+                  <select
+                    name="subDealerId"
+                    value={formData.subDealerId}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Request To subDealer
+                    </option>
+                    {subDealer.map((staffMember) => (
+                      <option key={staffMember.id} value={staffMember.id}>
+                        {staffMember.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
 
-          {/* Address */}
+            {/* Address */}
+            <div>
+              <p className="font-semibold mb-1">Description</p>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Enter Address"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              />
+            </div>
+          </div>
           <div>
-            <p className="font-semibold mb-1">Description</p>
+            <p className="font-semibold mb-1">created Date</p>
             <input
-              type="text"
-              name="description"
-              value={formData.description}
+              type="date"
+              name="createdDate"
+              value={formData.createdDate}
               onChange={handleInputChange}
-              placeholder="Enter Address"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-        </div>
 
-        {/* Buttons */}
-        <div className="flex justify-center space-x-4 mt-6">
-          <button
-            onClick={handleSave}
-            className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
-          >
-            Cancel
-          </button>
+          {/* Buttons */}
+          <div className="flex justify-center space-x-4 mt-6">
+            <button
+              onClick={handleSave}
+              className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
+    );
+  };
+}
 export default AddEditRequestForm;

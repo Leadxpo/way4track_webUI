@@ -5,6 +5,7 @@ import Login from './containers/login';
 import { useNavigate } from 'react-router';
 
 const App = () => {
+  // const [role, setRole] = useState(localStorage.getItem('role') || 'technician'); // You can switch between 'ceo' and 'subdealer'
   const navigate = useNavigate();
   const [role, setRole] = useState(localStorage.getItem('role') || 'CEO'); // You can switch between 'ceo' and 'subdealer'
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -61,11 +62,10 @@ const App = () => {
         <div className="flex min-h-screen">
           {/* Sidebar */}
           <div
-            className={`bg-gray-800 text-white transition-transform transform z-50 ${
-              isSidebarOpen
-                ? 'fixed top-0 left-0 h-full translate-x-0'
-                : 'fixed top-0 left-0 h-full -translate-x-full'
-            } md:static md:translate-x-0 md:h-auto md:min-h-full `}
+            className={`bg-gray-800 text-white transition-transform transform z-50 ${isSidebarOpen
+              ? 'fixed top-0 left-0 h-full translate-x-0'
+              : 'fixed top-0 left-0 h-full -translate-x-full'
+              } md:static md:translate-x-0 md:h-auto md:min-h-full `}
           >
             {/* Close button for mobile */}
             <button
