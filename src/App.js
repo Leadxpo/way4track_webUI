@@ -11,6 +11,7 @@ const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to handle sidebar visibility
 
   const handleLoginFlag = () => {
+    setRole(localStorage.getItem('role'));
     setIsLoggedIn(true);
   };
 
