@@ -83,7 +83,7 @@ export const menuOptions = {
     },
   ],
   'sub dealer': [
-    { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
+    { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
     {
       name: 'Products',
       icon: <img src="./products.png" />,
@@ -217,6 +217,11 @@ export const menuOptions = {
       route: '/products',
     },
     {
+      name: 'Install Products',
+      icon: <img src="./products.png" />,
+      route: '/install-product',
+    },
+    {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
       route: '/requests',
@@ -240,7 +245,11 @@ export const menuOptions = {
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
   'call center': [
-    { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/customer-care-home',
+    },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
     {
       name: 'Tickets Assign',
@@ -268,6 +277,7 @@ export const formattedPaths = {
     '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': { name: 'Edit Estimate', icon: <img src="./estimate.png" /> },
     '/add-estimate': {
       name: 'Add Estimate',
       icon: <img src="./estimate.png" />,

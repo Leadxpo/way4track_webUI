@@ -84,6 +84,10 @@ import WarehouseManagerBranch from '../branches/warehouseManagerBranch';
 import WarehouseManagerHome from '../home/warehouseManagerHome';
 import TechnicianHome from '../home/technicianHome';
 import Payments from '../payments';
+import { initialAuthState } from '../../services/ApiService';
+import ApiService from '../../services/ApiService';
+import InstallProductsForm from '../products/installProduct';
+import SubDealerHome from '../home/subDealerHome';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -153,23 +157,62 @@ const BodyLayout = ({ children }) => {
     return () => clearInterval(locationInterval); // Cleanup interval on unmount
   }, [isLocationEnabled]);
 
-  const fetchLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-          console.log('User location updated:', position.coords);
-        },
-        (error) => {
-          console.error('Error fetching location:', error);
-        }
-      );
-    } else {
+  const fetchLocation = async () => {
+    if (!navigator.geolocation) {
       console.error('Geolocation is not supported by this browser.');
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ latitude, longitude });
+        console.log('User location updated:', latitude, longitude);
+
+        try {
+          // First API Call: Fetch staff details
+          const staffResponse = await ApiService.post(
+            '/staff/getStaffDetailsById',
+            {
+              staffId: localStorage.getItem('userId'),
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+
+          if (!staffResponse.status) {
+            throw new Error('Staff not found');
+          }
+
+          const staffData = staffResponse.data;
+          //setStaffDetails(staffData);
+
+          // Second API Call: Store latitude and longitude
+          const updateResponse = await ApiService.post(
+            '/staff/handleStaffDetails',
+            {
+              id: staffData[0].id, // Extracted ID
+              latitude, // Storing location data
+              longitude,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+
+          if (updateResponse.status) {
+            console.log('Location stored successfully');
+          } else {
+            console.error('Failed to update staff location');
+          }
+        } catch (err) {
+          console.error('Error processing location update:', err);
+          //setStaffDetails(null);
+        }
+      },
+      (error) => {
+        console.error('Error fetching location:', error);
+      }
+    );
   };
 
   return (
@@ -361,6 +404,8 @@ const BodyLayout = ({ children }) => {
             element={<WarehouseManagerHome />}
           />
           <Route path="/technician-home" element={<TechnicianHome />} />
+          <Route path="/install-product" element={<InstallProductsForm />} />
+          <Route path="/sub-dealer-home" element={<SubDealerHome />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

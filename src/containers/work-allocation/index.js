@@ -3,6 +3,7 @@ import TableWithSearchFilter from '../tablesSearchFilter';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 const WorkAllocation = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,6 +37,12 @@ const WorkAllocation = () => {
   const [client, setClient] = useState([]);
   const [voucher, setVoucher] = useState([]);
   const [staff, setStaff] = useState([]);
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('work-allocation');
+    setPermissions(perms);
+  }, []);
+
   const handleOpenModalForAdd = () => {
     setSelectedWorkAllocation(null);
     setIsEditMode(false);
@@ -151,8 +158,9 @@ const WorkAllocation = () => {
       <div className="flex justify-between mb-4">
         <p className="text-xl font-bold">Work Allocation</p>
         <button
-          className="h-12 px-8 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+          className={`h-12 px-8 text-white font-bold rounded-md hover:cursor-pointer  ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleOpenModalForAdd}
+          disabled={!permissions.add}
         >
           Create Work Allocation
         </button>
@@ -410,8 +418,10 @@ const WorkAllocation = () => {
         type="vouchers"
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
-        showDelete={false}
         showCreateBtn={false}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
       />
     </div>
   );

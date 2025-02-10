@@ -44,7 +44,6 @@ const Login = ({ handleLoginFlag }) => {
         );
 
         handleLoginFlag();
-        navigate('/home');
       } else {
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
@@ -67,7 +66,7 @@ const Login = ({ handleLoginFlag }) => {
       );
 
       if (response && response.status) {
-        const permissions = response.data; // Assuming API returns an object of permissions
+        const permissions = response.data.permissions; // Assuming API returns an object of permissions
         localStorage.setItem('userPermissions', JSON.stringify(permissions));
         console.log('Permissions fetched successfully:', permissions);
       } else {

@@ -5,12 +5,14 @@ import DropdownCard from '../../components/DropdownCard';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import Table from '../../components/Table';
+import { getPermissions } from '../../common/commonUtils';
 const Products = () => {
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isGridView, setIsGridView] = useState(true);
   const [products, setProducts] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [permissions, setPermissions] = useState({});
   const [searchData, setSearchData] = useState({
     productId: '',
     productName: '',
@@ -57,6 +59,8 @@ const Products = () => {
     }
   };
   useEffect(() => {
+    const perms = getPermissions('product');
+    setPermissions(perms);
     fetchData(selectedBranch);
   }, [selectedBranch]);
 
@@ -195,8 +199,9 @@ const Products = () => {
             <FaTh size={18} />
           </button>
           <button
-            className="flex items-center space-x-2 bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer"
+            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-product')}
+            disabled={!permissions.add}
           >
             <span>Add Product</span>
           </button>
@@ -301,8 +306,9 @@ const Products = () => {
               {/* Button */}
               <div className="mt-4 flex justify-center">
                 <button
-                  className="px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer"
+                  className={`px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer  ${permissions.add ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={handleMoreDetails}
+                  disabled={!permissions.view}
                 >
                   View Details
                 </button>
@@ -316,6 +322,8 @@ const Products = () => {
           data={tableData}
           // onEdit={(profile) => console.log('Edit:', profile)}
           showEdit={false}
+          showDelete={permissions.delete}
+          showDetails={permissions.view}
           onDetails={handleMoreDetails}
         />
       )}

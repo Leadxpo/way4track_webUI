@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { useNavigate } from 'react-router';
 import { formatString } from '../../common/commonUtils';
-
+import { getPermissions } from '../../common/commonUtils';
 const Vouchers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -12,6 +12,12 @@ const Vouchers = () => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('voucher');
+    setPermissions(perms);
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -48,8 +54,9 @@ const Vouchers = () => {
       <div className="flex justify-between mb-4">
         <p className="text-xl font-bold">Vouchers</p>
         <button
-          className="h-12 px-8 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+          className={`h-12 px-8 text-white font-bold rounded-md hover:cursor-pointer  ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleOpenModalForAdd}
+          disabled={!permissions.add}
         >
           Create Voucher
         </button>
@@ -103,8 +110,10 @@ const Vouchers = () => {
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
         onDelete={() => {}}
-        showDelete={false}
         showCreateBtn={false}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
       />
     </div>
   );

@@ -139,7 +139,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
         toAccount: data.toAccount,
       };
       console.log('Payload:', payload);
-      const response = await ApiService.post('/voucher/save', payload);
+      const response = await ApiService.post('/voucher/saveVoucher', payload);
       navigate('/vouchers');
       console.log('Response:', response);
     } catch (error) {

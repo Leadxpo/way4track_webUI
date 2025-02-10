@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router';
 import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const Staff = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ const Staff = () => {
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [permissions, setPermissions] = useState({});
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -70,6 +71,8 @@ const Staff = () => {
   };
   // Initial API calls
   useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
     getStaffSearchDetails();
     fetchBranches();
   }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
@@ -119,8 +122,9 @@ const Staff = () => {
             <span>Payroll</span>
           </button>
           <button
-            className="flex items-center space-x-2 bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer"
+            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
+            disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>Add Staff</span>
@@ -179,17 +183,22 @@ const Staff = () => {
               {menuOpenIndex === index && (
                 <div className="absolute top-10 right-4 bg-white border border-gray-300 rounded-md shadow-md p-2 z-10">
                   <button
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
+                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.edit ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleEdit(profile)}
+                    disabled={!permissions.edit}
                   >
                     Edit
                   </button>
-                  <button className="block w-full text-left px-2 py-1 text-sm text-red-500 hover:bg-gray-100">
+                  <button
+                    className={`block w-full text-left text-red-500 px-2 py-1 text-sm hover:bg-gray-100 ${permissions.delete ? '' : ' cursor-not-allowed opacity-50'}`}
+                    disabled={!permissions.delete}
+                  >
                     Delete
                   </button>
                   <button
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
+                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.view ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleMoreDetails(profile)}
+                    disabled={!permissions.view}
                   >
                     More Details
                   </button>
@@ -212,7 +221,9 @@ const Staff = () => {
         <Table
           columns={columns}
           onEdit={handleEdit}
-          showDelete={false}
+          showDelete={permissions.delete}
+          showEdit={permissions.edit}
+          showDetails={permissions.view}
           onDetails={handleMoreDetails}
           data={Array.isArray(profiles) ? profiles : []}
         />

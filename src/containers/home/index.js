@@ -8,7 +8,7 @@ import Table from '../../components/Table';
 // import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { FaSearch } from 'react-icons/fa';
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { PDFViewer } from '@react-pdf/renderer';
@@ -16,6 +16,7 @@ import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
 const Home = () => {
+  const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [tableColumns, setTableColumns] = useState([]);

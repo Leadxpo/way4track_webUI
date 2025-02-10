@@ -2,15 +2,38 @@ import React, { useState } from 'react';
 import Sidebar from './containers/sidebar';
 import BodyLayout from './containers/bodyLayout';
 import Login from './containers/login';
+import { useNavigate } from 'react-router';
 
 const App = () => {
-  const [role, setRole] = useState(localStorage.getItem('role') || 'technician'); // You can switch between 'ceo' and 'subdealer'
+  const navigate = useNavigate();
+  const [role, setRole] = useState(localStorage.getItem('role') || 'CEO'); // You can switch between 'ceo' and 'subdealer'
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem('role') || false
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to handle sidebar visibility
 
   const handleLoginFlag = () => {
+    setRole(localStorage.getItem('role'));
+    switch (localStorage.getItem('role')) {
+      case 'CEO':
+        navigate('/home');
+        break;
+      case 'Call Center':
+        navigate('/customer-care-home');
+        break;
+      case 'Accountant':
+        navigate('/home');
+        break;
+      case 'Technician':
+        navigate('/technician-home');
+        break;
+      case 'Warehouse Manager':
+        navigate('/warehouse-manager-home');
+        break;
+      case 'sub dealer':
+        navigate('/sub-dealer-home');
+        break;
+    }
     setIsLoggedIn(true);
   };
 
