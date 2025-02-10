@@ -82,7 +82,7 @@ export const menuOptions = {
       route: '/purchase',
     },
   ],
-  subdealer: [
+  'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
     {
       name: 'Products',
@@ -166,7 +166,7 @@ export const menuOptions = {
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  warehouse_manager: [
+  'warehouse manager': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -217,6 +217,11 @@ export const menuOptions = {
       route: '/products',
     },
     {
+      name: 'Install Products',
+      icon: <img src="./products.png" />,
+      route: '/install-product',
+    },
+    {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
       route: '/requests',
@@ -239,7 +244,7 @@ export const menuOptions = {
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  customer_care: [
+  'call center': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
     {
@@ -386,7 +391,7 @@ export const formattedPaths = {
       icon: <img src="./appointments.png" />,
     },
   },
-  subdealer: {
+  'sub dealer': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/requests': { name: 'Requests', icon: <img src="./request.png" /> },
@@ -402,7 +407,7 @@ export const formattedPaths = {
     '/payments': { name: 'Payments', icon: <img src="./payments.png" /> },
     '/tickets': { name: 'Tickets', icon: <img src="./tickets.png" /> },
   },
-  warehouse_manager: {
+  'warehouse manager': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/inventory': { name: 'Inventory', icon: <img src="./inventory.png" /> },
     '/add-inventory': {
@@ -468,7 +473,7 @@ export const formattedPaths = {
       icon: <img src="./maintenance.png" />,
     },
   },
-  customer_care: {
+  'call center': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/customer-requests': {
       name: 'Customer Requests',

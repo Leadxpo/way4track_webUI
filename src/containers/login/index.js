@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 const Login = ({ handleLoginFlag }) => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -66,7 +67,7 @@ const Login = ({ handleLoginFlag }) => {
       );
 
       if (response && response.status) {
-        const permissions = response.data; // Assuming API returns an object of permissions
+        const permissions = response.data.permissions; // Assuming API returns an object of permissions
         localStorage.setItem('userPermissions', JSON.stringify(permissions));
         console.log('Permissions fetched successfully:', permissions);
       } else {
@@ -81,6 +82,7 @@ const Login = ({ handleLoginFlag }) => {
     <div className="flex items-center justify-center h-screen">
       <div className="p-8 rounded-lg w-96 space-y-12 bg-white shadow-md">
         {/* Form */}
+        <img src="way4tracklogo.png" className="mx-auto" alt="Logo" />
         <form className="space-y-8" onSubmit={handleLogin}>
           {/* User ID Input */}
           <div className="mb-4">
@@ -109,15 +111,23 @@ const Login = ({ handleLoginFlag }) => {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter your Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-              required
-            />
+            <div className="relative w-full">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter your Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                required
+              />
+              <span
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </span>
+            </div>
           </div>
 
           {/* Role Selection */}

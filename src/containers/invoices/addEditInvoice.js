@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { initialAuthState } from '../../services/ApiService';
+import ApiService from '../../services/ApiService';
 const AddEditInvoice = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   // Check if editing or creating
-  const isEditMode = location.state?.invoiceDetails ? true : false;
+  const isEditMode = location.state?.invoiceDetails
+    ? location.state?.isConvert
+      ? false
+      : true
+    : false;
+
+  useEffect(() => {
+    console.log(location.state);
+    if (location.state?.invoiceDetails) {
+      const { estimateData } = location.state.invoiceDetails;
+      setFormData({
+        client: estimateData.billTo.name,
+        clientNumber: estimateData.billTo.phone,
+        email: estimateData.billTo.email,
+        clientAddress: estimateData.billTo.address,
+        billingAddress: estimateData.billTo.address,
+        estimateDate: estimateData.estimateDetails.date.split('T')[0],
+        expiryDate: estimateData.estimateDetails.expiryDate,
+        items: estimateData.products.map((product) => ({
+          name: product.name,
+          qauntity: product.quantity,
+          rate: product.amount,
+          hsnCode: product.hsnCode,
+          amount: product.totalAmount,
+        })),
+        terms: estimateData.terms,
+      });
+    }
+  }, [location.state]);
 
   // Initial state for form
   const initialFormState = {
@@ -22,10 +51,7 @@ const AddEditInvoice = () => {
   };
 
   // Populate form state for edit mode
-  const [formData, setFormData] = useState(
-    //isEditMode ? location.state.invoiceDetails : initialFormState
-    initialFormState
-  );
+  const [formData, setFormData] = useState(initialFormState);
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [sgst, setSgst] = useState(0);
@@ -61,12 +87,58 @@ const AddEditInvoice = () => {
   const addNewItem = () => {
     setFormData((prevData) => ({
       ...prevData,
-      items: [...prevData.items, { product: '', description: '', amount: '' }],
+      items: [
+        ...prevData.items,
+        { name: '', qauntity: '', rate: '', hsnCode: '', amount: '' },
+      ],
     }));
   };
 
-  const handleSave = () => {
-    console.log('Saving estimate:', formData);
+  const handleSave = async () => {
+    const estimateDto = {
+      clientId: location.state.invoiceDetails.estimateData.billTo.clientId,
+      buildingAddress: formData.billingAddress,
+      estimateDate: formData.estimateDate,
+      expireDate: formData.expiryDate,
+      productOrService: formData.items.map((item) => item.name).join(', '),
+      description: formData.terms,
+      totalAmount: formData.items.reduce(
+        (total, item) => total + parseFloat(item.amount || 0),
+        0
+      ),
+      convertToInvoice: true,
+      companyCode: initialAuthState.companyCode, // Replace with actual company code
+      unitCode: initialAuthState.unitCode, // Replace with actual unit code
+      // estimateId: formData.estimateId || undefined,
+      // invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
+      // GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO
+      SCST: sgst || 0, // Default or from formData
+      CGST: cgst || 0, // Default or from formData
+      // quantity: formData.items.reduce(
+      //   (total, item) => total + parseInt(item.quantity, 10),
+      //   0
+      // ),
+      // hsnCode: formData.items[0].hsnCode,
+      cgstPercentage: 9, // For temporary use
+      scstPercentage: 9, // For temporary use
+      productDetails: formData.items.map((item) => ({
+        productId: item.productId, // Assuming each item has a productId
+        productName: item.name,
+        quantity: parseInt(item.quantity, 10),
+        amount: parseFloat(item.rate) * parseInt(item.quantity, 10), // Total cost calculation
+        hsnCode: parseFloat(item.hsnCode), // Total cost calculation
+      })),
+    };
+
+    console.log(estimateDto);
+    console.log('date type', typeof estimateDto.estimateDate);
+    try {
+      await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
+      console.log('Estimate saved:', estimateDto);
+      navigate('/estimate');
+    } catch (err) {
+      console.error('Failed to save estimate:', err);
+    }
     navigate('/invoice');
   };
 

@@ -25,6 +25,26 @@ const InHandProductsForm = () => {
     console.log('Form Data Submitted:', formData);
   };
 
+  // const handleSubmit = async () => {
+  //   const payload = new FormData();
+  //   try {
+  //     const endpoint =
+  //       '/api/product-assign/handleProductDetails';
+  //     const response = await ApiService.post(endpoint, payload, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //     });
+
+  //     if (response.data.status) {
+  //       navigate('/product_assign');
+  //     } else {
+  //       alert('Failed to save product details. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error saving product details:', error);
+  //     alert('Failed to save product details. Please try again.');
+  //   }
+  // };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -150,3 +170,4 @@ const InHandProductsForm = () => {
 };
 
 export default InHandProductsForm;
+

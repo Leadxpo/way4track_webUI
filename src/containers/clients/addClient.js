@@ -10,7 +10,7 @@ const AddEditClient = () => {
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
     clientId: clientData.clientId || '',
-    branch: clientData.branchName || '',
+    branch: clientData.branch || '',
     dob: clientData.dob || '',
     email: clientData.email || '',
     address: clientData.address || '',
@@ -25,9 +25,10 @@ const AddEditClient = () => {
   const [image, setImage] = useState(clientData?.file || '');
 
 
-
+console.log(formData,"+++++++++++++++++==")
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value,"++++++++++++++++++")
     setFormData({ ...formData, [name]: value });
   };
 
@@ -59,8 +60,8 @@ const AddEditClient = () => {
     fetchBranches();
   }, []);
 
- 
- 
+
+
 
   const handleSave = async () => {
 
@@ -72,6 +73,7 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
+    console.log(payload,"___________")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -169,7 +171,7 @@ const AddEditClient = () => {
                 >
                   <option value="" disabled>Select a Branch</option>
                   {branches.map((branch) => (
-                    <option key={branch.id} value={branch.branchName}>
+                    <option key={branch.id} value={branch.id}>
                       {branch.branchName}
                     </option>
                   ))}

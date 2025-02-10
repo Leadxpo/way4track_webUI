@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { FaEllipsisVertical } from 'react-icons/fa6';
-import { FaList, FaTh, FaPlus } from 'react-icons/fa';
+import { FaList, FaTh, FaPlus, FaSearch } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router';
 import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const Staff = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -13,10 +13,13 @@ const Staff = () => {
 
   const [selectedBranch, setSelectedBranch] = useState('');
   const [branches, setBranches] = useState([]);
+  const [staffId, setStaffId] = useState('');
+  const [staffName, setStaffName] = useState('');
   const [isGridView, setIsGridView] = useState(true);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const [profiles, setProfiles] = useState([]);
-
+  const [columns, setColumns] = useState([]);
+  const [permissions, setPermissions] = useState({});
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -33,6 +36,7 @@ const Staff = () => {
 
       if (response.status) {
         setProfiles(response.data || []);
+        setColumns(response.data.length ? Object.keys(response.data[0]) : []);
       } else {
         alert(
           response.data.internalMessage || 'Failed to fetch staff details.'
@@ -62,8 +66,13 @@ const Staff = () => {
     }
   };
 
+  const handleSearch = async () => {
+    await getStaffSearchDetails();
+  };
   // Initial API calls
   useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
     getStaffSearchDetails();
     fetchBranches();
   }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
@@ -87,54 +96,6 @@ const Staff = () => {
   const handleMoreDetails = (profile) => {
     navigate('/staff-details', { state: { staffDetails: profile } });
   };
-
-  const columns = [
-    {
-      title: 'Staff ID',
-      dataIndex: 'staffId',
-      key: 'staffId',
-    },
-    {
-      title: 'Name',
-      dataIndex: 'staffName',
-      key: 'staffName',
-    },
-    {
-      title: 'Designation',
-      dataIndex: 'designation',
-      key: 'designation',
-    },
-    {
-      title: 'Branch',
-      dataIndex: 'branchName',
-      key: 'branchName',
-    },
-    {
-      title: 'Phone Number',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, profile) => (
-        <div className="flex space-x-2">
-          <button
-            className="text-blue-500 hover:underline"
-            onClick={() => handleEdit(profile)}
-          >
-            Edit
-          </button>
-          <button
-            className="text-green-500 hover:underline"
-            onClick={() => handleMoreDetails(profile)}
-          >
-            Details
-          </button>
-        </div>
-      ),
-    },
-  ];
 
   return (
     <div className="m-2">
@@ -161,8 +122,9 @@ const Staff = () => {
             <span>Payroll</span>
           </button>
           <button
-            className="flex items-center space-x-2 bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer"
+            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
+            disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>Add Staff</span>
@@ -172,10 +134,16 @@ const Staff = () => {
       <div className="flex space-x-4 my-4">
         <input
           placeholder="Staff ID"
+          onChange={(e) => setStaffId(e.target.value)}
+          id="staffId"
+          value={staffId}
           className="h-12 w-full block px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
         <input
           placeholder="Staff Name"
+          onChange={(e) => setStaffName(e.target.value)}
+          id="staffName"
+          value={staffName}
           className="h-12 w-full block px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />
         <select
@@ -190,7 +158,11 @@ const Staff = () => {
             </option>
           ))}
         </select>
-        <button className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500">
+        <button
+          onClick={handleSearch}
+          className="h-12 w-full bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-500"
+        >
+          {/* <FaSearch className="mr-2" /> */}
           Search
         </button>
       </div>
@@ -211,17 +183,22 @@ const Staff = () => {
               {menuOpenIndex === index && (
                 <div className="absolute top-10 right-4 bg-white border border-gray-300 rounded-md shadow-md p-2 z-10">
                   <button
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
+                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.edit ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleEdit(profile)}
+                    disabled={!permissions.edit}
                   >
                     Edit
                   </button>
-                  <button className="block w-full text-left px-2 py-1 text-sm text-red-500 hover:bg-gray-100">
+                  <button
+                    className={`block w-full text-left text-red-500 px-2 py-1 text-sm hover:bg-gray-100 ${permissions.delete ? '' : ' cursor-not-allowed opacity-50'}`}
+                    disabled={!permissions.delete}
+                  >
                     Delete
                   </button>
                   <button
-                    className="block w-full text-left px-2 py-1 text-sm hover:bg-gray-100"
+                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.view ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleMoreDetails(profile)}
+                    disabled={!permissions.view}
                   >
                     More Details
                   </button>
@@ -241,7 +218,15 @@ const Staff = () => {
           ))}
         </div>
       ) : (
-        <Table columns={columns} data={profiles} />
+        <Table
+          columns={columns}
+          onEdit={handleEdit}
+          showDelete={permissions.delete}
+          showEdit={permissions.edit}
+          showDetails={permissions.view}
+          onDetails={handleMoreDetails}
+          data={Array.isArray(profiles) ? profiles : []}
+        />
       )}{' '}
     </div>
   );

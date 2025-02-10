@@ -38,6 +38,7 @@ const TableWithDateFilter = ({
   const location = useLocation();
   const vendorData = location.state?.vendorsData || {};
   const subDealerData = location.state?.subDealersData || {};
+  const requestData = location.state?.requestData || {};
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -61,8 +62,8 @@ const TableWithDateFilter = ({
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
-        fromDate: vendorData?.joiningDate,
-        toDate: vendorData?.joiningDate,
+        fromDate: dateFrom,
+        toDate: dateTo,
         paymentStatus: vendorData?.paymentStatus,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -78,13 +79,13 @@ const TableWithDateFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [vendorData?.joiningDate, vendorData?.paymentStatus]);
+  }, [dateFrom, dateTo, vendorData?.paymentStatus]);
 
   const getSubDealerData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getSubDealerData', {
-        fromDate: subDealerData?.joiningDate,
-        toDate: subDealerData?.joiningDate,
+        fromDate: dateFrom,
+        toDate: dateTo,
         paymentStatus: subDealerData?.paymentStatus,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -100,7 +101,7 @@ const TableWithDateFilter = ({
       console.error('Error fetching sub-dealer details:', error);
       alert('Failed to fetch sub-dealer details.');
     }
-  }, [subDealerData?.joiningDate, subDealerData?.paymentStatus]);
+  }, [dateFrom, dateTo, subDealerData?.paymentStatus]);
 
   const getEstimateData = useCallback(async () => {
     try {
@@ -113,8 +114,10 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const filteredData = response.data.map(
+          ({ productDetails, ...rest }) => rest
+        );
+        setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
       }
@@ -123,6 +126,38 @@ const TableWithDateFilter = ({
       alert('Failed to fetch estimate details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
+
+  const getRequestsData = useCallback(async () => {
+    try {
+      const requestBody = {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      };
+
+      // Add branchName only if it is defined (not undefined/null/empty)
+      if (requestData.branchName) {
+        requestBody.branchName = requestData.branchName;
+      }
+
+      const response = await ApiService.post(
+        '/requests/getRequestsBySearch',
+        requestBody
+      );
+
+      if (response.length) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response);
+      } else {
+        console.warn('Request failed:', response.data?.message);
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+    }
+  }, [
+    requestData.branchName,
+    initialAuthState?.companyCode,
+    initialAuthState?.unitCode,
+  ]);
 
   const getPaymentsData = useCallback(async () => {
     try {
@@ -146,9 +181,9 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
-  const getRequestsData = useCallback(async () => {
+  const getInvoiceData = useCallback(async () => {
     try {
-      const response = await ApiService.post('/requests/getRequestsBySearch', {
+      const response = await ApiService.post('/dashboards/getVoucherData', {
         fromDate: dateFrom,
         toDate: dateTo,
         status: statusFilter,
@@ -181,10 +216,16 @@ const TableWithDateFilter = ({
       case 'requests':
         getRequestsData();
         break;
+      case 'invoice':
+        getInvoiceData();
+        break;
+      case 'vendors':
+        getVendorData();
+        break;
       default:
         break;
     }
-  }, [type, getSubDealerData, getEstimateData]);
+  }, [type]);
 
   useEffect(() => {
     let dataSource = [];
@@ -193,7 +234,7 @@ const TableWithDateFilter = ({
         dataSource = filteredData;
         break;
       case 'invoice':
-        dataSource = invoicesData;
+        dataSource = filteredData;
         break;
       case 'payments':
         dataSource = filteredData;
@@ -241,6 +282,9 @@ const TableWithDateFilter = ({
         break;
       case 'estimate':
         await getEstimateData();
+        break;
+      case 'requsts':
+        await getRequestsData();
         break;
       default:
         break;

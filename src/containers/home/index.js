@@ -14,6 +14,7 @@ import { initialAuthState } from '../../services/ApiService';
 import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
+import Analysis from '../analysis';
 const Home = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -31,7 +32,7 @@ const Home = () => {
   const [solidLiquidData, setSolidLiquidData] = useState({});
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState(
-    {}
+    []
   );
   const [totalProducts, setTotalProducts] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState([]);
@@ -246,7 +247,7 @@ const Home = () => {
         }
       } catch (error) {
         console.error('Error fetching staff details:', error);
-        alert('Failed to fetch staff details.');
+        //alert('Failed to fetch staff details.');
       }
     };
 
@@ -468,7 +469,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching tickets data:', error);
-      alert('Failed to fetch tickets data.');
+      //alert('Failed to fetch tickets data.');
     }
   };
 
@@ -482,7 +483,15 @@ const Home = () => {
       });
 
       if (response.status) {
-        setTotalProducts(response.data);
+        const filteredData = response.data.map((item) => ({
+          productId: item.id,
+          productName: item.productName || 'N/A',
+          productDescription: item.productDescription || 'N/A',
+          vendorName: item.vendorName || (item.vendorId?.name ?? 'N/A'),
+          imeiNumber: item.imeiNumber || 'N/A',
+          presentStock: item.quantity || 0, // Assuming stock is quantity
+        }));
+        setTotalProducts(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
       }
@@ -518,6 +527,7 @@ const Home = () => {
       });
 
       if (response.status) {
+        console.log(response.data, 'purchase');
         setTotalPurchases(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
@@ -556,6 +566,7 @@ const Home = () => {
         }
       );
       if (response.status) {
+        console.log(response.data, 'OOOOOOOOOOOOOOOOOOOO');
         setBranchWiseSolidLiquidData(response.data);
       } else {
         alert(
@@ -577,6 +588,7 @@ const Home = () => {
         }
       );
       if (response.status) {
+        console.log(response.data, '{{{{{{{{{{{{{{{{{{{{{{{{');
         setBranchDetails(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch total sales details.');
@@ -702,6 +714,54 @@ const Home = () => {
 
       {/* second section */}
       <div className="flex items-center justify-center space-x-10">
+        <div>
+          {bracnhWiseSolidLiquidData.map((cash) => (
+            <div className="grid grid-cols-4 gap-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  src="logo-name-square.png"
+                  alt="Branch Logo"
+                  className="w-10 h-10 object-cover"
+                />
+                <div>
+                  <p className="text-gray-800 font-semibold">Branch</p>
+                  <p className="text-green-700 font-semibold">
+                    {cash.branchName}
+                  </p>
+                </div>
+              </div>
+              <div className="text-left">
+                <p className="text-gray-500">Solid Cash</p>
+                <p className="text-gray-800 font-bold">{cash.solidCash}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div>
+          {bracnhWiseSolidLiquidData.map((cash) => (
+            <div className="grid grid-cols-4 gap-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  src="logo-name-square.png"
+                  alt="Branch Logo"
+                  className="w-10 h-10 object-cover"
+                />
+                <div>
+                  <p className="text-gray-800 font-semibold">Branch</p>
+                  <p className="text-green-700 font-semibold">
+                    {cash.branchName}
+                  </p>
+                </div>
+              </div>
+              <div className="text-left">
+                <p className="text-gray-500">Liquid Cash</p>
+                <p className="text-gray-800 font-bold">{cash.liquidCash}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"
           amount={solidLiquidData.solidCash}
@@ -791,7 +851,8 @@ const Home = () => {
             barpercentage1={75}
             barpercentage2={25}
         /> */}
-      <AnalysisCardBarChart creditDebitPercent={creditDebitPercent} />
+      {/* <AnalysisCardBarChart creditDebitPercent={creditDebitPercent} /> */}
+      <Analysis />
     </div>
   );
 };

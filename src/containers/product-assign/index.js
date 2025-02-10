@@ -1,82 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import Table from '../../components/Table';
-import { FaSearch } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const ProductAssign = () => {
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
   const handleCreateNew = () => {
     navigate('/add-product-assign');
   };
   const onEdit = (product) => {
-    navigate('/add-product-assign', { state: { productDetails: product } });
+    navigate('/add-product-assign', {
+      state: { productAssignDetails: product },
+    });
   };
   const onDelete = () => {
     navigate('/delete-product-assign');
   };
-  const onDetails = () => {
-    navigate('/product-assign-details');
+  const onDetails = (appt) => {
+    navigate('/product-assign-details', {
+      state: { productAssignDetails: appt },
+    });
   };
+  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [product, setproduct] = useState([]);
+  const [branches, setBranches] = useState([{ branchName: 'All' }]);
 
-  const [tableData, setTableData] = useState([]);
-  useEffect(() => {
-    const productAssignDetails = async () => {
-      try {
-        const response = await ApiService.post(
-          '/dashboards/productAssignDetails',
-          {
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-        if (response.status) {
-          setTableData(response.data || []);
-        } else {
-          setTableData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching staff details:', error);
-        alert('Failed to fetch staff details.');
+  const productAssignDetails = async (branchName = 'All') => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+
+      if (branchName !== 'All') {
+        payload.branchName = branchName;
       }
-    };
 
-    productAssignDetails();
-  }, []);
-  // const tableData = [
-  //   {
-  //     'Request Number': 'REQ001',
-  //     'Branch/Person': 'Branch A',
-  //     Name: 'John Doe',
-  //     'IME-From': 232344555555,
-  //     'IME-To': 232344555556,
-  //     'Number of Products': 5,
-  //   },
-  //   {
-  //     'Request Number': 'REQ002',
-  //     'Branch/Person': 'Person B',
-  //     Name: 'Jane Smith',
-  //     'IME-From': 232344555557,
-  //     'IME-To': 232344555558,
-  //     'Number of Products': 3,
-  //   },
-  //   {
-  //     'Request Number': 'REQ003',
-  //     'Branch/Person': 'Branch C',
-  //     Name: 'Michael Johnson',
-  //     'IME-From': 232344555559,
-  //     'IME-To': 232344555560,
-  //     'Number of Products': 8,
-  //   },
-  //   {
-  //     'Request Number': 'REQ004',
-  //     'Branch/Person': 'Person D',
-  //     Name: 'Emily Davis',
-  //     'IME-From': 232344555561,
-  //     'IME-To': 232344555562,
-  //     'Number of Products': 2,
-  //   },
-  // ];
+      const res = await ApiService.post(
+        '/dashboards/productAssignDetails',
+        payload
+      );
+
+      if (res.status) {
+        setproduct(res.data.rawResults);
+        if (branchName === 'All') {
+          const branchOptions = [
+            { branchName: 'All' },
+            ...res.data.result.map((branch) => ({
+              branchName: branch.branchName,
+            })),
+          ];
+          setBranches(branchOptions);
+        }
+      } else {
+        setproduct([]);
+        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err);
+      setproduct([]);
+    }
+  };
+  const handleBranchSelection = (branch) => {
+    setSelectedBranch(branch);
+  };
+  useEffect(() => {
+    const perms = getPermissions('productassign');
+    setPermissions(perms);
+    productAssignDetails(selectedBranch);
+  }, [selectedBranch]);
 
   return (
     <div className="p-10">
@@ -84,37 +77,42 @@ const ProductAssign = () => {
       {/* Create New Button Row */}
       <div className="flex justify-end mb-4">
         <button
-          className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+          className={`h-12 px-4 text-white font-bold rounded-md hover:cursor-pointer ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleCreateNew}
+          disabled={!permissions.add}
         >
           Create New
         </button>
       </div>
 
-      <div className="flex mb-4">
-        <div className="flex-grow mx-2">
-          <select className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none">
-            <option value="">All Branches</option>
-            <option>Vishakapatnam</option>
-            <option>Hyderabad</option>
-            <option>Vijayawada</option>
-            <option>Kakinada</option>
-          </select>
-        </div>
-        <div className="flex-grow mx-2">
-          <button className="h-12 w-full px-6 bg-green-700 text-white rounded-md flex items-center">
-            <FaSearch className="mr-2" /> Search
-          </button>
-        </div>
+      <div className="mb-4">
+        <label htmlFor="branchDropdown" className="font-medium mr-2">
+          Select Branch:
+        </label>
+        <select
+          id="branchDropdown"
+          value={selectedBranch}
+          onChange={(e) => handleBranchSelection(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md"
+        >
+          {branches.map((branch) => (
+            <option key={branch.branchName} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="mt-8">
         <Table
-          columns={tableData.length > 0 ? Object.keys(tableData[0]) : []}
-          data={tableData}
+          columns={product.length > 0 ? Object.keys(product[0]) : []} // Ensure product is not empty
+          data={product}
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
+          showDelete={permissions.delete}
+          showEdit={permissions.edit}
+          showDetails={permissions.view}
         />
       </div>
     </div>

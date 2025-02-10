@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 
-const EmiForm = ({ branches, bankOptions, clients }) => {
+const EmiForm = ({ branches, bankOptions }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
-  const [selectedTab, setSelectedTab] = useState('EMI');
+  const [selectedTab, setSelectedTab] = useState('InitialDownload');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
-  const [selectedFormTab, setSelectedFormTab] = useState('InitialDownload');
+  const [selectedEmiTo, setSelectedEmiTo] = useState('');
+  const [dynamicOptions, setDynamicOptions] = useState([]);
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
@@ -120,7 +121,8 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
         .filter(
           (key) =>
             relevantFields.includes(key) ||
-            formFieldsByTab[selectedTab].some((field) => field.name === key)
+            (formFieldsByTab[selectedTab] &&
+              formFieldsByTab[selectedTab].some((field) => field.name === key))
         )
         .reduce((obj, key) => {
           obj[key] = data[key];
@@ -133,12 +135,21 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
         paymentType: selectedPaymentMode.toLowerCase(),
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        branchId: parseInt(data.branchId, 10),
+        //branchId: data.branchId ? parseInt(data.branchId, 10) : null,
         role: data.role,
         toAccount: data.toAccount,
       };
+
+      if (selectedEmiTo === 'Client') {
+        payload.clientId = Number(data.dynamicSelection);
+      } else if (selectedEmiTo === 'Vendor') {
+        payload.vendorId = Number(data.dynamicSelection);
+      } else if (selectedEmiTo === 'Sub-Dealer') {
+        payload.subDealerId = Number(data.dynamicSelection);
+      }
+
       console.log('Payload:', payload);
-      const response = await ApiService.post('/voucher/save', payload);
+      const response = await ApiService.post('/voucher/saveVoucher', payload);
       navigate('/vouchers');
       console.log('Response:', response);
     } catch (error) {
@@ -159,28 +170,57 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
   };
 
   const handleTabChange = (tab) => {
-    setSelectedFormTab(tab);
+    setSelectedTab(tab);
     reset();
+  };
+
+  const handleEmiToChange = async (value) => {
+    setSelectedEmiTo(value);
+    setDynamicOptions([]);
+    setValue('dynamicSelection', '');
+
+    try {
+      let response;
+      if (value === 'Client') {
+        response = await ApiService.post('/client/getClientNamesDropDown');
+        setDynamicOptions(response.data || []);
+      } else if (value === 'Vendor') {
+        response = await ApiService.post('/vendor/getVendorNamesDropDown');
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          vendorName: item.name,
+          name: undefined,
+        }));
+        setDynamicOptions(modifiedData);
+      } else if (value === 'Sub-Dealer') {
+        response = await ApiService.post(
+          '/subdealer/getSubDealerNamesDropDown'
+        );
+        setDynamicOptions(response.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   return (
     <div>
       <div className="flex mb-4">
         <button
-          className={`px-4 py-2 rounded ${selectedFormTab === 'InitialDownload' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+          className={`px-4 py-2 rounded ${selectedTab === 'InitialDownload' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
           onClick={() => handleTabChange('InitialDownload')}
         >
-          Initial Download
+          Initial Downpayment
         </button>
         <button
-          className={`px-4 py-2 ml-2 rounded ${selectedFormTab === 'EMIAmount' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+          className={`px-4 py-2 ml-2 rounded ${selectedTab === 'EMIAmount' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
           onClick={() => handleTabChange('EMIAmount')}
         >
           EMI Amount
         </button>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {formFieldsByTab[selectedFormTab]?.map((field) => (
+        {formFieldsByTab[selectedTab]?.map((field) => (
           <Controller
             key={field.name}
             name={field.name}
@@ -201,6 +241,12 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
                       <select
                         {...controllerField}
                         className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => {
+                          controllerField.onChange(e);
+                          if (field.name === 'emiTo') {
+                            handleEmiToChange(e.target.value);
+                          }
+                        }}
                       >
                         {field.options.map((option) => {
                           if (typeof option === 'string') {
@@ -236,6 +282,31 @@ const EmiForm = ({ branches, bankOptions, clients }) => {
             }}
           />
         ))}
+
+        {selectedEmiTo && (
+          <div className="mb-4">
+            <label className="block font-semibold mb-2">
+              {selectedEmiTo} Selection
+            </label>
+            <Controller
+              name="dynamicSelection"
+              control={control}
+              defaultValue=""
+              render={({ field: controllerField }) => (
+                <select
+                  {...controllerField}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  {dynamicOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name || option.vendorName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+        )}
 
         <h3 className="font-bold mb-2">Payment Mode</h3>
         <div className="flex space-x-2 mb-4">

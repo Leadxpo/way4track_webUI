@@ -3,13 +3,15 @@ import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-
+import { getPermissions } from '../../common/commonUtils';
 const Appointments = () => {
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [appointments, setAppointments] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [loading, setLoading] = useState(false);
+  const [permissions, setPermissions] = useState({});
+
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
       const payload = {
@@ -21,7 +23,10 @@ const Appointments = () => {
         payload.branchName = branchName;
       }
 
-      const res = await ApiService.post('/dashboards/getAllAppointmentDetails', payload);
+      const res = await ApiService.post(
+        '/dashboards/getAllAppointmentDetails',
+        payload
+      );
 
       if (res.status) {
         setAppointments(res.data.appointments);
@@ -53,11 +58,16 @@ const Appointments = () => {
         unitCode: initialAuthState.unitCode,
       };
 
-      const res = await ApiService.post('/appointment/deleteAppointmentDetails', payload);
+      const res = await ApiService.post(
+        '/api/appointment/deleteAppointmentDetails',
+        payload
+      );
 
       if (res.status) {
         setAppointments((prevAppointments) =>
-          prevAppointments.filter((appt) => appt.appointmentId !== appointmentId)
+          prevAppointments.filter(
+            (appt) => appt.appointmentId !== appointmentId
+          )
         );
         alert('Appointment deleted successfully.');
       } else {
@@ -79,11 +89,12 @@ const Appointments = () => {
     navigate('/add-appointment', { state: { appointmentDetails: appt } });
   };
 
-  // const handleDelete = (appt) => {
-  //   navigate('/delete-appointment');
-  // };
   const handleDelete = (appt) => {
-    if (window.confirm(`Are you sure you want to delete appointment ${appt.appointmentId}?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete appointment ${appt.appointmentId}?`
+      )
+    ) {
       deleteAppointmentDetails(appt.appointmentId);
     }
   };
@@ -93,11 +104,9 @@ const Appointments = () => {
     });
   };
 
-  // useEffect(() => {
-  //   fetchAppointmentDetails();
-  // }, []);
-
   useEffect(() => {
+    const perms = getPermissions('appointments');
+    setPermissions(perms);
     fetchAppointmentDetails(selectedBranch);
   }, [selectedBranch]);
 
@@ -125,7 +134,8 @@ const Appointments = () => {
 
       <button
         onClick={() => navigate('/add-appointment')}
-        className="bg-yellow-400 text-black font-bold p-2 rounded-md shadow-lg hover:bg-yellow-500 transition-all mb-4"
+        className={`text-black font-bold p-2 rounded-md shadow-lg transition-all mb-4  ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600 hover:bg-yellow-500' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+        disabled={!permissions.add}
       >
         Create New Appointment
       </button>
@@ -144,6 +154,9 @@ const Appointments = () => {
           'status',
           'assignedTo',
         ]}
+        showEdit={permissions.edit}
+        showDelete={permissions.delete}
+        showDetails={permissions.view}
         data={appointments}
         onEdit={handleEdit}
         onDelete={handleDelete}

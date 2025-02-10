@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const RequestDetails = () => {
   const location = useLocation();
@@ -12,17 +13,34 @@ const RequestDetails = () => {
     requestType: requestData.requestType || '',
     requestBy: requestData.requestBy || '',
     requestFor: requestData.requestFor || '',
-    requestTo: requestData.requestTo || '',
-    branch: requestData.branch || '',
+    requestTo: requestData.RequestTo || '',
+    branch: requestData.branchName || '',
     description: requestData.description || '',
     amount: requestData.amount || '',
+    id: requestData.requestNumber || '',
   };
 
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
-    // If requestData is present, update form data
+    console.log(location.state.requestDetails);
     if (requestData) {
+      const getRequestDetails = async () => {
+        try {
+          const response = await ApiService.post(
+            '/requests/getRequestDetails',
+            {
+              id: location.state?.requestDetails.requestNumber,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+          console.log(response);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getRequestDetails();
       setFormData(requestData);
     }
   }, [requestData]);
@@ -54,64 +72,43 @@ const RequestDetails = () => {
           </div>
           <div>
             <p className="font-semibold mb-1">Request By</p>
-            <select
-              name="requestBy"
-              value={formData.requestBy}
+            <input
+              type="text"
+              name="requestType"
+              value={formData.requestType}
               disabled
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select Request By:
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            />
           </div>
           <div>
-            <p className="font-semibold mb-1">Request For</p>
+            <p className="font-semibold mb-1">Status</p>
             <input
               type="text"
               name="requestFor"
-              value={formData.requestFor}
+              value={formData.status}
               disabled
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
           <div>
             <p className="font-semibold mb-1">Branch</p>
-            <select
-              name="branch"
-              value={formData.branch}
+            <input
+              type="text"
+              name="requestType"
+              value={formData.branchName}
               disabled
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select a Branch
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            />
           </div>
           <div>
             <p className="font-semibold mb-1">Request To</p>
-            <select
-              name="requestTo"
-              value={formData.requestTo}
+            <input
+              type="text"
+              name="requestType"
+              value={formData.RequestTo}
               disabled
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select Request To:
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            />
           </div>
           <div>
             <p className="font-semibold mb-1">Description</p>

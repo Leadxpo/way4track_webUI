@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import Staff from '../staff';
 import { Routes, Route } from 'react-router-dom';
 import Products from '../products';
+import ProductDetails from '../products/productMoreDetails';
 import Branches from '../branches';
 import Home from '../home';
 import TableWithDateFilter from '../tablesDateFilter';
@@ -83,6 +84,9 @@ import WarehouseManagerBranch from '../branches/warehouseManagerBranch';
 import WarehouseManagerHome from '../home/warehouseManagerHome';
 import TechnicianHome from '../home/technicianHome';
 import Payments from '../payments';
+import { initialAuthState } from '../../services/ApiService';
+import ApiService from '../../services/ApiService';
+import InstallProductsForm from '../products/installProduct';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -91,7 +95,7 @@ const BodyLayout = ({ children }) => {
   const location = useLocation();
   const [userLocation, setUserLocation] = useState(null);
   let locationInterval = null;
-  const role = localStorage.getItem('userRole');
+  const role = localStorage.getItem('role');
   const getPathname = (role = 'ceo') => {
     return formattedPaths[role][location.pathname]?.name || '';
   };
@@ -152,23 +156,62 @@ const BodyLayout = ({ children }) => {
     return () => clearInterval(locationInterval); // Cleanup interval on unmount
   }, [isLocationEnabled]);
 
-  const fetchLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-          console.log('User location updated:', position.coords);
-        },
-        (error) => {
-          console.error('Error fetching location:', error);
-        }
-      );
-    } else {
+  const fetchLocation = async () => {
+    if (!navigator.geolocation) {
       console.error('Geolocation is not supported by this browser.');
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ latitude, longitude });
+        console.log('User location updated:', latitude, longitude);
+
+        try {
+          // First API Call: Fetch staff details
+          const staffResponse = await ApiService.post(
+            '/staff/getStaffDetailsById',
+            {
+              staffId: localStorage.getItem('userId'),
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+
+          if (!staffResponse.status) {
+            throw new Error('Staff not found');
+          }
+
+          const staffData = staffResponse.data;
+          //setStaffDetails(staffData);
+
+          // Second API Call: Store latitude and longitude
+          const updateResponse = await ApiService.post(
+            '/staff/handleStaffDetails',
+            {
+              id: staffData[0].id, // Extracted ID
+              latitude, // Storing location data
+              longitude,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+
+          if (updateResponse.status) {
+            console.log('Location stored successfully');
+          } else {
+            console.error('Failed to update staff location');
+          }
+        } catch (err) {
+          console.error('Error processing location update:', err);
+          //setStaffDetails(null);
+        }
+      },
+      (error) => {
+        console.error('Error fetching location:', error);
+      }
+    );
   };
 
   return (
@@ -194,7 +237,7 @@ const BodyLayout = ({ children }) => {
 
         {/* Search and Icons */}
         <div className="flex flex-col md:flex-row items-center md:space-x-6 w-full md:w-auto">
-          {role === 'Accountant' ? (
+          {role === 'accountant' ? (
             <button
               className="bg-red-500 text-sm text-white p-1 mb-4 md:mb-0"
               onClick={() => navigate('/bank-details-dashboard')}
@@ -269,6 +312,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
@@ -359,6 +403,7 @@ const BodyLayout = ({ children }) => {
             element={<WarehouseManagerHome />}
           />
           <Route path="/technician-home" element={<TechnicianHome />} />
+          <Route path="/install-product" element={<InstallProductsForm />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

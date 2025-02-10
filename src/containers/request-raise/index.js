@@ -9,7 +9,7 @@ const RequestRaise = () => {
   };
 
   const handleDelete = (request) => {
-    navigate('/delete-request');
+    navigate('/delete-request', { state: { requestDetails: request } });
   };
 
   const handleDetails = (request) => {

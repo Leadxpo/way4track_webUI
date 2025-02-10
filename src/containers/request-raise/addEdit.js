@@ -1,55 +1,126 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const AddEditRequestForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [staff, setStaff] = useState([]);
+  const [staffData, setStaffData] = useState([]);
+  const [subDealer, setSubDealer] = useState([]);
+  const [branch, setBranches] = useState([]);
   // Check if data is available from the location state
   const requestData = location.state?.requestDetails || {};
 
   // Initialize form data, using employeeData if available
   const initialFormData = {
+    id: requestData.id,
     requestType: requestData.requestType || '',
-    requestBy: requestData.requestBy || '',
-    requestFor: requestData.requestFor || '',
-    requestTo: requestData.requestTo || '',
-    branch: requestData.branch || '',
+    // requestBy: requestData.requestBy || '',
+    requestFrom: localStorage.getItem('userId') || '',
+    requestTo: requestData.RequestTo || '',
+    branch: requestData.branchName || '',
     description: requestData.description || '',
-    amount: requestData.amount || '',
+    // amount: requestData.amount || '',
+    createdDate: requestData.createdDate || '',
+    status: requestData.status || '',
+    subDealerId: requestData.subDealerId || '',
+    requestId: requestData.requestId || '',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
   };
 
   const [formData, setFormData] = useState(initialFormData);
 
-  // useEffect(() => {
-  //   // If employee data is present, update form data
-  //   if (requestData) {
-  //     setFormData(requestData);
-  //   }
-  // }, [requestData]);
+  useEffect(() => {
+    const fetchStaffData = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        if (response.status) {
+          setStaffData(response.data);
+        } else {
+          console.error('Error fetching staff data');
+        }
+      } catch (e) {
+        console.error('Error fetching staff data', e);
+      }
+    };
+
+    fetchStaffData();
+  }, []);
 
   useEffect(() => {
-    try {
-      const response = ApiService.post('/staff/getStaffNamesDropDown');
-      if (response.status) {
-        setStaff(response.data);
-      } else {
-        console.error('Error');
+    const fetchSubDealers = async () => {
+      try {
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerNamesDropDown'
+        );
+        if (response.status) {
+          setSubDealer(response.data);
+        } else {
+          console.error('Error fetching sub dealers');
+        }
+      } catch (e) {
+        console.error('Error fetching sub dealers', e);
       }
-    } catch (e) {
-      console.error('error');
-    }
-  }, [staff]);
+    };
+
+    fetchSubDealers();
+  }, []);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    // Handle save action
-    navigate('/requests');
+  const handleSave = async () => {
+    try {
+      const payload = {
+        requestType: formData.requestType,
+        requestTo: Number(formData.requestTo),
+        requestFrom: Number(formData.requestFrom),
+        branch: Number(formData.branch),
+        description: formData.description,
+        status: formData.status,
+        subDealerId: formData.subDealerId || 1,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      if (formData.id) {
+        payload.id = formData.id;
+      }
+      const response = await ApiService.post(
+        '/requests/handleRequestDetails',
+        payload
+      );
+      if (response.status) {
+        navigate('/requests');
+      } else {
+        alert('failed to raise request');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('failed to raise request');
+    }
   };
 
   const handleCancel = () => {
@@ -63,7 +134,7 @@ const AddEditRequestForm = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {requestData.amount ? 'Edit Request' : 'Add Request'}
+            {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
           </h1>
         </div>
 
@@ -74,75 +145,128 @@ const AddEditRequestForm = () => {
             <p className="font-semibold mb-1">Request Type</p>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="requestType"
+              value={formData.requestType}
               onChange={handleInputChange}
               placeholder="Enter Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
           <div>
-            <p className="font-semibold mb-1">Request By</p>
-            <select
-              name="branch"
-              value={formData.branch}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select Request By:
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-2">Request By:</label>
+              <input
+                type="text"
+                name="requestType"
+                value={formData.requestFrom}
+                onChange={handleInputChange}
+                placeholder="Enter Name"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                disabled
+              />
+              {/* <select
+                name="requestFrom"
+                value={formData.requestFrom}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Request By
+                </option>
+                {staffData.map((staffMember) => (
+                  <option key={staffMember.id} value={staffMember.id}>
+                    {staffMember.name}
+                  </option>
+                ))}
+              </select> */}
+            </div>
           </div>
-          <div>
-            <p className="font-semibold mb-1">Request For</p>
-            <input
-              type="text"
-              name="staffId"
-              value={formData.staffId}
-              onChange={handleInputChange}
-              placeholder="Enter Staff ID"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
+
           {/* Branch */}
+          {branch.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
+                <select
+                  name="branch"
+                  value={formData.branchName}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Select a Branch
+                  </option>
+                  {branch.map((br) => (
+                    <option key={br.id} value={br.id}>
+                      {br.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
           <div>
-            <p className="font-semibold mb-1">Branch</p>
+            <p className="font-semibold mb-1">Status</p>
             <select
-              name="branch"
-              value={formData.branch}
+              name="status"
+              value={formData.status}
               onChange={handleInputChange}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             >
               <option value="" disabled>
-                Select a Branch
+                Select a status
               </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
+              <option value="accepted">accepted</option>
+              <option value="rejected">rejected</option>
+              <option value="expire">expire</option>
+              <option value="sent">sent</option>
+              <option value="declined">declined</option>
+              <option value="pending">pending</option>
             </select>
           </div>
           <div>
-            <p className="font-semibold mb-1">Request To</p>
-            <select
-              name="branch"
-              value={formData.branch}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select Request To:
-              </option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-2">Request To:</label>
+              <select
+                name="requestTo"
+                value={formData.requestTo}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Request To
+                </option>
+                {staffData.map((staffMember) => (
+                  <option key={staffMember.id} value={staffMember.id}>
+                    {staffMember.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            {subDealer.length > 0 && (
+              <div className="flex flex-col">
+                <label className="font-semibold mb-2">
+                  Request To subDealer:
+                </label>
+                <select
+                  name="subDealerId"
+                  value={formData.subDealerId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Request To subDealer
+                  </option>
+                  {subDealer.map((staffMember) => (
+                    <option key={staffMember.id} value={staffMember.id}>
+                      {staffMember.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Address */}
@@ -150,8 +274,8 @@ const AddEditRequestForm = () => {
             <p className="font-semibold mb-1">Description</p>
             <input
               type="text"
-              name="address"
-              value={formData.address}
+              name="description"
+              value={formData.description}
               onChange={handleInputChange}
               placeholder="Enter Address"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"

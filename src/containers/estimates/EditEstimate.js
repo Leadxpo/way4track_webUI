@@ -11,21 +11,29 @@ const EditEstimate = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const estimateDetails = location.state?.estimateDetails;
-  const estimateID = estimateDetails.estimate.id
-  const [formData, setFormData] = useState(
-    {
-      id: '',
-      client: '',
-      clientNumber: '',
-      email: '',
-      clientAddress: '',
-      billingAddress: '',
-      estimateDate: '',
-      expiryDate: '',
-      items: [{ productId: '', name: '', quantity: '', rate: '', amount: '', hsnCode: '' }],
-      terms: '',
-      totalAmount: 0
-    });
+  const estimateID = estimateDetails.estimate.id;
+  const [formData, setFormData] = useState({
+    id: '',
+    client: '',
+    clientNumber: '',
+    email: '',
+    clientAddress: '',
+    billingAddress: '',
+    estimateDate: '',
+    expiryDate: '',
+    items: [
+      {
+        productId: '',
+        name: '',
+        quantity: '',
+        rate: '',
+        amount: '',
+        hsnCode: '',
+      },
+    ],
+    terms: '',
+    totalAmount: 0,
+  });
 
   // Check if editing or creating
   // Initial state for form
@@ -36,17 +44,15 @@ const EditEstimate = () => {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        const estimateData = response.data; // Assuming the structure is as expected
-        const items = estimateData.products.map(product => ({
-          productId: "estimateData", // Replace with the actual productId if available
+        const estimateData = response.data[0]; // Assuming the structure is as expected
+        const items = estimateData.products.map((product) => ({
+          productId: 'estimateData', // Replace with the actual productId if available
           name: product.name,
           quantity: product.quantity,
           rate: product.amount / product.quantity, // Calculate rate
           amount: product.amount,
-          hsnCode: "estimateData" // Replace with the actual HSN code if available
+          hsnCode: 'estimateData', // Replace with the actual HSN code if available
         }));
         setFormData({
           id: estimateData.id,
@@ -59,20 +65,20 @@ const EditEstimate = () => {
           expiryDate: estimateData.expireDate,
           items: items,
           terms: estimateData.description,
-          totalAmount: estimateData.totalAmount
-        })
+          totalAmount: estimateData.totalAmount,
+        });
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
       }
     } catch (error) {
       console.error('Error fetching estimate details:', error);
-      alert('Failed to fetch estimate details.');
+      alert('Failed to fetch estimate details..');
     }
   }, [estimateID]);
 
   useEffect(() => {
-    getEstimateIDData()
-  }, [])
+    getEstimateIDData();
+  }, []);
 
   const calculateTotal = (items) => {
     return items.reduce((total, item) => {
@@ -136,16 +142,11 @@ const EditEstimate = () => {
   };
 
   const handleProductItemChange = (index, e) => {
-
     const { name, value } = e.target;
-    const selectedProduct = products.find(
-
-      (product) => {
-        console.log(product.productName, " ===", e.target.value)
-        return (
-          product.productName === e.target.value
-        )
-      });
+    const selectedProduct = products.find((product) => {
+      console.log(product.productName, ' ===', e.target.value);
+      return product.productName === e.target.value;
+    });
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
     updatedItems[index]['productId'] = selectedProduct.id;
@@ -155,19 +156,20 @@ const EditEstimate = () => {
   };
 
   const handleProductItemQuantityChange = (index, e) => {
-
     const { name, value } = e.target;
 
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
-    const productPrice = updatedItems[index]['rate'] ? updatedItems[index]['rate'] : 0
+    const productPrice = updatedItems[index]['rate']
+      ? updatedItems[index]['rate']
+      : 0;
     updatedItems[index]['amount'] = parseInt(value) * parseInt(productPrice);
-    console.log("items :", updatedItems);
-    const totalProductsAmount = calculateTotal(updatedItems)
+    console.log('items :', updatedItems);
+    const totalProductsAmount = calculateTotal(updatedItems);
     setFormData((prevData) => ({
       ...prevData,
       totalAmount: totalProductsAmount,
-      items: updatedItems
+      items: updatedItems,
     }));
   };
 
@@ -187,7 +189,7 @@ const EditEstimate = () => {
   };
 
   const handleSave = async () => {
-    console.log(formData.items)
+    console.log(formData.items);
     const estimateDto = {
       clientId: formData.clientNumber,
       buildingAddress: formData.billingAddress,
@@ -251,9 +253,7 @@ const EditEstimate = () => {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-xl w-11/12 max-w-4xl p-8 shadow-md">
         {/* Title */}
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Edit Estimate
-        </h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Edit Estimate</h1>
 
         {/* Form */}
         <form className="space-y-6">
@@ -399,7 +399,9 @@ const EditEstimate = () => {
                       type="text"
                       name="quantity"
                       value={item.quantity}
-                      onChange={(e) => handleProductItemQuantityChange(index, e)}
+                      onChange={(e) =>
+                        handleProductItemQuantityChange(index, e)
+                      }
                       placeholder="Quantity"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -447,7 +449,9 @@ const EditEstimate = () => {
               </div>
             </div>
           </div>
-          <strong className="col-span-2 font-semibold">Total Estimate Amount : {formData.totalAmount}</strong>
+          <strong className="col-span-2 font-semibold">
+            Total Estimate Amount : {formData.totalAmount}
+          </strong>
           {/* Terms & Conditions */}
           <div>
             <label className="block text-sm font-semibold mb-1">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 
 const Ledger = () => {
@@ -12,11 +12,28 @@ const Ledger = () => {
     clientName: '',
     branch: '',
   });
-
+  const [branches, setBranches] = useState([]);
   const [records, setRecords] = useState([]);
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const fetchBranches = async () => {
+    try {
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      if (response.status) {
+        setBranches(response.data); // Set branches to state
+      } else {
+        console.error('Failed to fetch branches');
+      }
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBranches();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,10 +48,10 @@ const Ledger = () => {
     setError(null);
 
     try {
-      const response = await ApiService.post('/dashboards/getLedgerData', {
+      const response = await ApiService.post('/dashboards/getLedgerDataTable', {
         ...searchData,
-        companyCode: ApiService.initialAuthState?.companyCode,
-        unitCode: ApiService.initialAuthState?.unitCode,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
       });
 
       if (response.status) {
@@ -102,18 +119,27 @@ const Ledger = () => {
             style={{ paddingLeft: '8px' }}
           />
         </div>
-        <div className="flex-grow mx-2">
-          <select
-            name="branch"
-            value={searchData.branch}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-          >
-            <option value="">Select Branch</option>
-            <option value="Branch1">Branch 1</option>
-            <option value="Branch2">Branch 2</option>
-          </select>
-        </div>
+        {branches.length > 0 && (
+          <div className="space-y-4">
+            <div>
+              <select
+                name="branch"
+                value={searchData.branch}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select a Branch
+                </option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

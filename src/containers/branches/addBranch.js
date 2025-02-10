@@ -33,17 +33,44 @@ const AddBranchForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- 
-
   // Fetch branch list
   const fetchBranchList = async () => {
+    if (!location.state?.branchDetails) return;
     try {
       const response = await ApiService.post('/branch/getBranchDetails', {
+        id: location.state.branchDetails.id,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-      if (response.status) {
-        setBranchList(response.data.data);
+      if (response.status && response.data.length > 0) {
+        const matchedBranch = response.data.find(
+          (branch) => branch.id === location.state.branchDetails.id
+        );
+
+        if (matchedBranch) {
+          const updatedFormData = {
+            id: matchedBranch.id || null,
+            branchName: matchedBranch.branchName || '',
+            branchNumber: matchedBranch.branchNumber || '',
+            branchAddress: matchedBranch.branchAddress || '',
+            addressLine1: matchedBranch.addressLine1 || '',
+            addressLine2: matchedBranch.addressLine2 || '',
+            city: matchedBranch.city || '',
+            state: matchedBranch.state || '',
+            pincode: matchedBranch.pincode || '',
+            branchOpening: matchedBranch.branchOpening
+              ? matchedBranch.branchOpening.split('T')[0]
+              : '',
+            email: matchedBranch.email || '',
+            photo: matchedBranch.branchPhoto || null,
+            companyCode:
+              matchedBranch.companyCode || initialAuthState.companyCode,
+            unitCode: matchedBranch.unitCode || initialAuthState.unitCode,
+          };
+
+          setFormData(updatedFormData);
+          setImage(matchedBranch.branchPhoto || '');
+        }
       } else {
         alert(response.data.message || 'Failed to fetch branch list.');
       }
@@ -54,6 +81,7 @@ const AddBranchForm = () => {
   };
 
   useEffect(() => {
+    console.log(location.state.branchDetails);
     fetchBranchList();
   }, []);
 
@@ -70,7 +98,6 @@ const AddBranchForm = () => {
   };
 
   const handleSubmit = async () => {
-
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {

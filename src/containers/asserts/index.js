@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState, useCallback } from 'react';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 const Asserts = () => {
   const navigate = useNavigate();
   const [branches, setBranches] = useState([]);
@@ -13,6 +14,7 @@ const Asserts = () => {
   const [products, setProducts] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [filteredData, setFilteredData] = useState([]);
+  const [permissions, setPermissions] = useState({});
   const [assetCounts, setAssetCounts] = useState({
     totalAsserts: 0,
     officeAsserts: 0,
@@ -58,6 +60,8 @@ const Asserts = () => {
   };
 
   useEffect(() => {
+    const perms = getPermissions('assets');
+    setPermissions(perms);
     fetchData(selectedBranch);
   }, [selectedBranch]);
 
@@ -155,8 +159,9 @@ const Asserts = () => {
           </button>
           {/* Add Assert Button */}
           <button
-            className="flex items-center space-x-2 bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer"
+            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer  ${permissions.add ? 'bg-green-600 ' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-asset')}
+            disabled={!permissions.add}
           >
             <span>Add Assert</span>
           </button>
@@ -243,8 +248,9 @@ const Asserts = () => {
               {/* Button Section */}
               <div className="absolute bottom-4 right-4">
                 <button
-                  className="text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200"
+                  className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => navigate('/asset-details')}
+                  disabled={!permissions.view}
                 >
                   More Details
                 </button>
@@ -288,12 +294,14 @@ const Asserts = () => {
             </button>
           </div>
           <Table
-            columns={Object.keys(filteredData[0])}
+            columns={
+              filteredData.length > 0 ? Object.keys(filteredData[0]) : []
+            }
             data={filteredData}
             onDetails={() => {}}
-            showEdit={false}
-            showDelete={false}
-            showDetails={true}
+            showEdit={permissions.edit}
+            showDelete={permissions.delete}
+            showDetails={permissions.view}
             editText="Edit"
             deleteText="Delete"
             detailsText="More Details"

@@ -33,7 +33,12 @@ const AddProductForm = () => {
     planName: '',
     remarks1: '',
     remarks2: '',
+    remarks3: '',
     deviceModel: '',
+    BASKET_NAME: '',
+    SIM_IMSI: '',
+    SIM_NO: '',
+    MOBILE_NUMBER: '',
     file: null,
     ...employeeData,
   };
@@ -97,14 +102,9 @@ const AddProductForm = () => {
       bulkPayload.append('file', bulkFile);
 
       try {
-        const response = await ApiService.post(
-          '/products/bulk-upload',
-          bulkPayload,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
-
+        const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         if (response.data.status) {
           alert('Bulk upload successful!');
           navigate('/products');
@@ -123,14 +123,9 @@ const AddProductForm = () => {
       });
 
       try {
-        const response = await ApiService.post(
-          '/products/createOrUpdateProduct',
-          payload,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
-
+        const response = await ApiService.post('/api/products/createOrUpdateProduct', payload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         if (response.data.status) {
           alert('Product saved successfully!');
           navigate('/staff');
@@ -229,6 +224,12 @@ const AddProductForm = () => {
         {renderField('Remarks 2', 'remarks2')}
         {renderField('Device Model', 'deviceModel')}
         {renderField('Category Name', 'categoryName')}
+        {renderField('Remarks 3', 'remarks3')}
+        {renderField('BASKET_NAME', 'BASKET_NAME')}
+        {renderField('SIM_IMSI', 'SIM_IMSI')}
+        {renderField('SIM_NO', 'SIM_NO')}
+        {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')}
+
 
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>

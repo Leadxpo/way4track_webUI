@@ -3,22 +3,40 @@ import ApiService from '../../services/ApiService'; // Adjust the import based o
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { initialAuthState } from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getPermissions } from '../../common/commonUtils';
+
 const Tickets = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState({
+    problem: '',
+    date: '',
+    addressingDepartment: '', // Ensure this exists
+    staffId: null,
+    branchId: null,
+    companyCode: '',
+    unitCode: '',
+    workStatus: '',
+    description: '',
+  });
+  const [ticketDetails, setTicketDetails] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [staffList, setStaffList] = useState([]); // Store fetched staff names
   const [branchList, setBranchList] = useState([]); // Store fetched branches
-  const [selectedStaffId, setSelectedStaffId] = useState(''); // Selected staff ID
+  const [selectedStaffId, setSelectedStaffId] = useState(null); // Selected staff ID
   const [selectedStaffNumber, setSelectedStaffNumber] = useState(''); // Staff number
   const [selectedBranch, setSelectedBranch] = useState(''); // Selected branch
   const [date, setDate] = useState(''); // Date state
   const navigate = useNavigate();
   const location = useLocation();
-
-  const tickettData = location.state?.tickettDetails || {};
+  const [branches, setBranches] = useState([]);
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('tickets');
+    setPermissions(perms);
+  }, []);
+  const ticketData = location.state?.tickettDetails || {};
   useEffect(() => {
     if (isModalOpen) {
       fetchStaffNames();
@@ -33,8 +51,10 @@ const Tickets = () => {
   }, [isEditMode, selectedTicket]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
   const fetchStaffNames = async () => {
     try {
@@ -44,26 +64,45 @@ const Tickets = () => {
       console.error('Failed to fetch staff names:', error);
     }
   };
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
 
+    fetchBranches();
+  }, []);
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       setBranchList(response.data || []);
+      console.log(response.data, '{{{{{{{{{{{');
     } catch (error) {
       console.error('Failed to fetch branches:', error);
     }
   };
 
   const handleStaffChange = (e) => {
-    const staffName = e.target.value;
-    setSelectedStaffId(staffName);
+    const staffId = e.target.value;
+    setSelectedStaffId(staffId);
 
     // Find the selected staff and set their number
-    const selectedStaff = staffList.find((staff) => staff.name === staffName);
-    setSelectedStaffNumber(selectedStaff?.staffId || '');
+    const selectedStaff = staffList.find((staff) => staff.id === staffId);
+    setSelectedStaffNumber(selectedStaff?.staffNumber || '');
   };
 
   const handleBranchChange = (e) => {
+    console.log('Selected Branch ID:', e.target.value);
     setSelectedBranch(e.target.value);
   };
 
@@ -77,17 +116,50 @@ const Tickets = () => {
     setIsModalOpen(true);
     setSelectedStaffId('');
     setSelectedStaffNumber('');
-    setSelectedBranch('');
+    setSelectedBranch(null);
     setDate(''); // Reset date for Add
   };
 
+  const fetchTicketDetails = async () => {
+    try {
+      const response = await ApiService.post('/tickets/getTicketDetailsById', {
+        id: ticketData.id,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+
+      if (response.status) {
+        const staff = response.data?.[0];
+        setTicketDetails({
+          staffName: staff?.staffName || '',
+          addressingDepartment: staff?.addressingDepartment || '',
+          ticketNumber: staff?.ticketNumber || '',
+          branchId: staff?.branchId || '',
+          date: staff?.date || '',
+          problem: staff?.problem || '',
+          branchName: staff?.branchName || '',
+          staffNumber: staff?.staffNumber || '',
+          staffId: staff?.staffId || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      alert('Failed to fetch staff details.');
+    }
+  };
+
+  const handleOpenMoreDetailsModal = async (ticket) => {
+    await fetchTicketDetails(); // Ensure data is fetched before opening modal
+    setSelectedTicket(ticket);
+    setIsMoreDetailsModalOpen(true);
+  };
   const handleOpenModalForEdit = (ticket) => {
     setSelectedTicket(ticket);
     setIsEditMode(true);
     setIsModalOpen(true);
     setSelectedStaffId(ticket?.staffId || '');
     setSelectedStaffNumber(ticket?.staffNumber || '');
-    setSelectedBranch(ticket?.branch || '');
+    setSelectedBranch(ticket?.branch || null);
   };
 
   const handleCloseModal = () => {
@@ -95,54 +167,52 @@ const Tickets = () => {
     setSelectedTicket(null);
     setSelectedStaffId('');
     setSelectedStaffNumber('');
-    setSelectedBranch('');
+    setSelectedBranch(null);
     setDate('');
-  };
-
-  const handleOpenMoreDetailsModal = (ticket) => {
-    setSelectedTicket(ticket);
-    setIsMoreDetailsModalOpen(true);
   };
 
   const handleCloseMoreDetailsModal = () => {
     setIsMoreDetailsModalOpen(false);
     setSelectedTicket(null);
   };
-
   const handleSaveTicket = async () => {
     const payload = {
-      id: tickettData.id,
-      staffId: selectedStaffId,
-      date: date,
-      // date: tickettData.date,
-      branchId: selectedBranch,
-      problem: document.querySelector('[name="problem"]').value,
-      addressingDepartment: tickettData.addressingDepartment || '',
+      id: selectedTicket?.id || null,
+      date: date || '',
+      branchId: Number(formData.branchId) || null,
+      problem: formData.problem,
+      addressingDepartment: formData.addressingDepartment, // Ensure this is included
+      staffId: Number(selectedStaffId) || null,
+      staffName: selectedStaffId || '',
+      workStatus: formData.workStatus,
+      description: formData.description,
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
 
     try {
-      const endpoint = formData.id
+      const endpoint = selectedTicket?.id
         ? '/tickets/handleTicketDetails'
         : '/tickets/handleTicketDetails';
+
       const response = await ApiService.post(endpoint, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'application/json' },
       });
+
       if (response.data.status) {
         alert(
-          formData.id
+          selectedTicket?.id
             ? 'Ticket updated successfully!'
             : 'Ticket saved successfully!'
         );
         navigate('/vendors');
       } else {
-        alert('Failed to save employee details. Please try again.');
+        alert('Failed to save ticket details. Please try again.');
       }
       handleCloseModal();
     } catch (error) {
-      console.error('Error saving ticket', error);
-      alert('Failed to save employee details. Please try again.');
+      console.error('Error saving ticket:', error);
+      alert('Failed to save ticket details. Please try again.');
     }
   };
 
@@ -173,13 +243,14 @@ const Tickets = () => {
                     Staff Name
                   </label>
                   <select
+                    name="staffId"
                     value={selectedStaffId}
                     onChange={handleStaffChange}
                     className="border p-2 rounded w-full focus:outline-none"
                   >
                     <option value="">Select Staff</option>
                     {staffList.map((staff) => (
-                      <option key={staff.id} value={staff.name}>
+                      <option key={staff.id} value={staff.id}>
                         {staff.name}
                       </option>
                     ))}
@@ -213,36 +284,74 @@ const Tickets = () => {
                 {/* Problem */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    className="w-full border p-2 rounded mb-4 focus:outline-none"
+                    onChange={handleInputChange}
+                    name="description"
+                    defaultValue={
+                      isEditMode && selectedTicket
+                        ? selectedTicket.description
+                        : ''
+                    }
+                  ></textarea>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
                     Problem
                   </label>
-                  <input
-                    type="text"
-                    name="problem"
+                  <textarea
+                    className="w-full border p-2 rounded mb-4 focus:outline-none"
                     onChange={handleInputChange}
-                    className="border p-2 rounded w-full focus:outline-none"
+                    name="problem"
                     defaultValue={
                       isEditMode && selectedTicket ? selectedTicket.problem : ''
                     }
-                  />
+                  ></textarea>
                 </div>
                 {/* Branch Dropdown */}
-                <div>
+                {/* <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Select Branch
                   </label>
                   <select
-                    value={selectedBranch}
+                    value={formData.branchId}
+                    name='branchId'
                     onChange={handleBranchChange}
                     className="border p-2 rounded w-full focus:outline-none"
                   >
                     <option value="">Select Branch</option>
                     {branchList.map((branch) => (
-                      <option key={branch.id} value={branch.branchName}>
+                      <option key={branch.id} value={branch.id}>
                         {branch.branchName}
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
+
+                {branches.length > 0 && (
+                  <div className="space-y-4">
+                    <div>
+                      <p className="font-semibold mb-1">Branch</p>
+                      <select
+                        name="branchId"
+                        value={formData.branchId}
+                        onChange={handleInputChange}
+                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                      >
+                        <option value="" disabled>
+                          Select a Branch
+                        </option>
+                        {branches.map((branch) => (
+                          <option key={branch.id} value={branch.id}>
+                            {branch.branchName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
                 {/* Address */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -250,6 +359,7 @@ const Tickets = () => {
                   </label>
                   <input
                     type="text"
+                    name="address"
                     className="border p-2 rounded w-full focus:outline-none"
                     onChange={handleInputChange}
                     defaultValue={
@@ -269,19 +379,34 @@ const Tickets = () => {
                     <option value="CEO">CEO</option>
                     <option value="HR">HR</option>
                     <option value="Accountant">Accountant</option>
-                    <option value="BranchManager">Branch Manager</option>
-                    <option value="SubDealer">Sub Dealer</option>
+                    <option value="Branch Manager">Branch Manager</option>
+                    <option value="Sub Dealer">Sub Dealer</option>
                     <option value="Technician">Technician</option>
-                    <option value="SalesMan">Sales Man</option>
-                    <option value="CallCenter">Call Center</option>
+                    <option value="Sales Man">Sales Man</option>
+                    <option value="Call Center">Call Center</option>
                     <option value="Warehouse Manager">Warehouse Manager</option>
                   </select>
                 </div>
+                <div>
+                  <p className="font-semibold mb-1">Work Status</p>
+                  <select
+                    name="workStatus"
+                    value={formData.workStatus || 'Pending'}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="allocated">Allocated</option>
+                    <option value="completed">Completed</option>
+                    <option value="incomplete">Incomplete</option>
+                  </select>
+                </div>
               </div>
+
               {/* Problems */}
               <div>
                 <label className="block text-gray-700 font-semibold mb-1">
-                  Problems
+                  other Information
                 </label>
                 <textarea
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
@@ -308,9 +433,13 @@ const Tickets = () => {
 
       <TableWithSearchFilter
         type="tickets"
+        showCreateBtn={permissions.add}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
-        onDetails={handleOpenMoreDetailsModal}
+        onDetails={handleOpenMoreDetailsModal} // Pass function correctly
         onDelete={() => {}}
       />
     </div>
