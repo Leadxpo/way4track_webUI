@@ -87,6 +87,7 @@ import Payments from '../payments';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import InstallProductsForm from '../products/installProduct';
+import SubDealerHome from '../home/subDealerHome';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -404,6 +405,7 @@ const BodyLayout = ({ children }) => {
           />
           <Route path="/technician-home" element={<TechnicianHome />} />
           <Route path="/install-product" element={<InstallProductsForm />} />
+          <Route path="/sub-dealer-home" element={<SubDealerHome />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>
