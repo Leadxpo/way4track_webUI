@@ -47,7 +47,7 @@
 //   useEffect(() => {
 //     const markAsRead = async (id) => {
 //       try {
-//         const response = await ApiService.post('/notifications/markAsRead', {
+//         const response = await ApiService.post('/notifications/markAllAsRead', {
 //           id
 //         });
 //         if (response.status) {
@@ -232,9 +232,11 @@ function Notifications() {
   // Mark single notification as read
   const markAsRead = async (id) => {
     try {
-      const response = await ApiService.post('/notifications/markAsRead', {
+      const response = await ApiService.post('/notifications/markAllAsRead', {
         ids: [id], // Send an array with one id for single mark as read
         isRead: true,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode
       });
       if (response.status) {
         setNotifications((prevNotifications) =>
@@ -261,10 +263,11 @@ function Notifications() {
   const markAllAsRead = async () => {
     try {
       const ids = notifications.map((notification) => notification.id);
-      const response = await ApiService.post('/notifications/markAsRead', {
+      const response = await ApiService.post('/notifications/markAllAsRead', {
         ids, // Send an array of all ids
         isRead: true,
-      });
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode      });
       if (response.status) {
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) => ({
@@ -326,7 +329,7 @@ function Notifications() {
         {filteredNotifications.map((notification) => (
           <div
             key={notification.id}
-            onClick={() => markAsRead(notification.id)} 
+            onClick={() => markAsRead(notification.id)}
             className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
           >
             <div
