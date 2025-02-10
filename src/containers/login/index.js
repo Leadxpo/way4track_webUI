@@ -44,7 +44,6 @@ const Login = ({ handleLoginFlag }) => {
         );
 
         handleLoginFlag();
-        navigate('/home');
       } else {
         setError(response?.internalMessage || 'Invalid login credentials.');
       }

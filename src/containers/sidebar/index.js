@@ -40,7 +40,26 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
   const items = menuOptions[role.toLowerCase()] || [];
 
   useEffect(() => {
-    navigate('/home');
+    switch (localStorage.getItem('role')) {
+      case 'CEO':
+        navigate('/home');
+        break;
+      case 'Call Center':
+        navigate('/customer-care-home');
+        break;
+      case 'Accountant':
+        navigate('/home');
+        break;
+      case 'Technician':
+        navigate('/technician-home');
+        break;
+      case 'Warehouse Manager':
+        navigate('/warehouse-manager-home');
+        break;
+      case 'sub dealer':
+        navigate('/sub-dealer-home');
+        break;
+    }
   }, []);
   const handleLogout = () => {
     localStorage.clear();
