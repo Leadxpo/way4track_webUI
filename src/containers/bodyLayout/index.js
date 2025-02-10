@@ -88,6 +88,11 @@ import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import InstallProductsForm from '../products/installProduct';
 import SubDealerHome from '../home/subDealerHome';
+import SalesmanHome from '../home/salesmanHome';
+import BranchManagerHome from '../home/branchManagerHome';
+import Performance from '../performance';
+import HrHome from '../home/hrHome';
+import HrBranch from '../branches/hrBranch';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -143,12 +148,9 @@ const BodyLayout = ({ children }) => {
     if (isLocationEnabled) {
       fetchLocation(); // Fetch immediately when enabled
 
-      locationInterval = setInterval(
-        () => {
-          fetchLocation();
-        },
-        5 * 60 * 1000
-      ); // Fetch every 5 minutes
+      locationInterval = setInterval(() => {
+        fetchLocation();
+      }, 5 * 1000); // Fetch every 5 minutes
     } else {
       clearInterval(locationInterval);
       setUserLocation(null); // Reset location when disabled
@@ -187,11 +189,12 @@ const BodyLayout = ({ children }) => {
           const staffData = staffResponse.data;
           //setStaffDetails(staffData);
 
+          console.log(staffData);
           // Second API Call: Store latitude and longitude
           const updateResponse = await ApiService.post(
             '/staff/handleStaffDetails',
             {
-              id: staffData[0].id, // Extracted ID
+              id: staffData?.id, // Extracted ID
               latitude, // Storing location data
               longitude,
               companyCode: initialAuthState.companyCode,
@@ -406,6 +409,11 @@ const BodyLayout = ({ children }) => {
           <Route path="/technician-home" element={<TechnicianHome />} />
           <Route path="/install-product" element={<InstallProductsForm />} />
           <Route path="/sub-dealer-home" element={<SubDealerHome />} />
+          <Route path="/salesman-home" element={<SalesmanHome />} />
+          <Route path="/branch-manager-home" element={<BranchManagerHome />} />
+          <Route path="/hr-home" element={<HrHome />} />
+          <Route path="/performance" element={<Performance />} />
+          <Route path="/hr-branch" element={<HrBranch />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

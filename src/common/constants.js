@@ -257,6 +257,136 @@ export const menuOptions = {
       route: '/ticket-aasign',
     },
   ],
+  'sales man': [
+    { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
+    {
+      name: 'Products',
+      icon: <img src="./products.png" />,
+      route: '/products',
+    },
+
+    {
+      name: 'Request Raise',
+      icon: <img src="./request_raise.png" />,
+      route: '/requests',
+    },
+    {
+      name: 'Vouchers',
+      icon: <img src="./vouchers.png" />,
+      route: '/vouchers',
+    },
+    { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+      route: '/work_allocation',
+    },
+    {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+      route: '/appointments',
+    },
+  ],
+  'branch manager': [
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/branch-manager-home',
+    },
+    { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
+    { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
+    { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
+    { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
+    {
+      name: 'Sub Dealers',
+      icon: <img src="./subdealers.png" />,
+      route: '/sub_dealers',
+    },
+    {
+      name: 'Products',
+      icon: <img src="./products.png" />,
+      route: '/products',
+    },
+    {
+      name: 'Product Assign',
+      icon: <img src="./product_assign.png" />,
+      route: '/products_assign',
+    },
+    {
+      name: 'Request Raise',
+      icon: <img src="./request_raise.png" />,
+      route: '/requests',
+    },
+    { name: 'Tracker', icon: <img src="./tracker.png" />, route: '/tracker' },
+    {
+      name: 'Vouchers',
+      icon: <img src="./vouchers.png" />,
+      route: '/vouchers',
+    },
+    { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+      route: '/work_allocation',
+    },
+    {
+      name: 'Estimate',
+      icon: <img src="./estimate.png" />,
+      route: '/estimate',
+    },
+    {
+      name: 'Payments',
+      icon: <img src="./payments.png" />,
+      route: '/payments',
+    },
+    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
+    {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+      route: '/appointments',
+    },
+    {
+      name: 'Performance',
+      icon: <img src="./performance.png" />,
+      route: '/performance',
+    },
+  ],
+  hr: [
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/hr-home',
+    },
+    {
+      name: 'Branches',
+      icon: <img src="./branch.png" />,
+      route: '/hr-branch',
+    },
+    { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
+    {
+      name: 'Vouchers',
+      icon: <img src="./vouchers.png" />,
+      route: '/vouchers',
+    },
+    { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+      route: '/work_allocation',
+    },
+    {
+      name: 'Payroll',
+      icon: <img src="./payroll.png" />,
+      route: '/payroll',
+    },
+    { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
+    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
+    {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+      route: '/appointments',
+    },
+  ],
 };
 
 export const formattedPaths = {

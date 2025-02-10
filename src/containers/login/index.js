@@ -149,6 +149,7 @@ const Login = ({ handleLoginFlag }) => {
               <option value="HR">HR</option>
               <option value="Accountant">Accountant</option>
               <option value="Operator">Operator</option>
+              <option value="Branch Manager">Branch Manager</option>
               <option value="Warehouse Manager">Warehouse Manager</option>
               <option value="Sub Dealer">Sub Dealer</option>
               <option value="Technician">Technician</option>
