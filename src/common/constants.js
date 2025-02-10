@@ -268,6 +268,7 @@ export const formattedPaths = {
     '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': { name: 'Edit Estimate', icon: <img src="./estimate.png" /> },
     '/add-estimate': {
       name: 'Add Estimate',
       icon: <img src="./estimate.png" />,
