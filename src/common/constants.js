@@ -407,7 +407,10 @@ export const formattedPaths = {
     '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
-    '/edit-estimate': { name: 'Edit Estimate', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': {
+      name: 'Edit Estimate',
+      icon: <img src="./estimate.png" />,
+    },
     '/add-estimate': {
       name: 'Add Estimate',
       icon: <img src="./estimate.png" />,
@@ -422,7 +425,7 @@ export const formattedPaths = {
       name: 'Invoice Details',
       icon: <img src="./invoice.png" />,
     },
-    '/payments': { name: 'Payments', icon: <img src="./payments.png" /> },
+
     '/requests': { name: 'Requests', icon: <img src="./request.png" /> },
     '/add-request': { name: 'Add Request', icon: <img src="./request.png" /> },
     '/delete-request': {
@@ -691,6 +694,185 @@ export const formattedPaths = {
     '/ledger': { name: 'Ledger', icon: <img src="./ledger.png" /> },
     '/receipts': { name: 'Receipts', icon: <img src="./receipts.png" /> },
     '/reports': { name: 'Reports', icon: <img src="./reports.png" /> },
+  },
+  'sales man': {
+    '/salesman-home': { name: 'Home', icon: <img src="./home.png" /> },
+    '/products': { name: 'Products', icon: <img src="./products.png" /> },
+    '/requests': { name: 'Requests', icon: <img src="./request.png" /> },
+    '/add-request': { name: 'Add Request', icon: <img src="./request.png" /> },
+    '/delete-request': {
+      name: 'Delete Request',
+      icon: <img src="./delete_request.png" />,
+    },
+    '/request-details': {
+      name: 'Request Details',
+      icon: <img src="./request_details.png" />,
+    },
+    '/add-product': { name: 'Add Product', icon: <img src="./products.png" /> },
+    '/vouchers': { name: 'Vouchers', icon: <img src="./vouchers.png" /> },
+    '/work_allocation': {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+    },
+    '/reports': { name: 'Reports', icon: <img src="./reports.png" /> },
+    '/download': { name: 'Download', icon: <img src="./download.png" /> },
+    '/appointments': {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+    },
+    '/add-appointment': {
+      name: 'Add Appointment',
+      icon: <img src="./appointments.png" />,
+    },
+    '/appointment-details': {
+      name: 'Appointment Details',
+      icon: <img src="./appointments.png" />,
+    },
+  },
+  hr: {
+    '/hr-home': { name: 'Home', icon: <img src="./home.png" /> },
+    '/hr-branch': { name: 'Branches', icon: <img src="./branch.png" /> },
+    '/add-branch': { name: 'Add Branch', icon: <img src="./branch.png" /> },
+    '/edit-branch': { name: 'Edit Branch', icon: <img src="./branch.png" /> },
+    '/branch-details': {
+      name: 'Branch Details',
+      icon: <img src="./branch.png" />,
+    },
+    '/staff': { name: 'Staff', icon: <img src="./users.png" /> },
+    '/add-staff': { name: 'Add Staff', icon: <img src="./users.png" /> },
+    '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
+    '/vouchers': { name: 'Vouchers', icon: <img src="./vouchers.png" /> },
+    '/work_allocation': {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+    },
+    '/reports': { name: 'Reports', icon: <img src="./reports.png" /> },
+    '/download': { name: 'Download', icon: <img src="./download.png" /> },
+    '/appointments': {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+    },
+    '/add-appointment': {
+      name: 'Add Appointment',
+      icon: <img src="./appointments.png" />,
+    },
+    '/appointment-details': {
+      name: 'Appointment Details',
+      icon: <img src="./appointments.png" />,
+    },
+    '/tickets': { name: 'Tickets', icon: <img src="./tickets.png" /> },
+    '/hiring': { name: 'Hiring', icon: <img src="./hiring.png" /> },
+    '/add-hiring': { name: 'Add Hiring', icon: <img src="./hiring.png" /> },
+    '/delete-hiring': {
+      name: 'Delete Hiring',
+      icon: <img src="./delete_hiring.png" />,
+    },
+    '/edit-hiring': {
+      name: 'Edit Hiring',
+      icon: <img src="./edit_hiring.png" />,
+    },
+    '/hiring-details': {
+      name: 'Hiring Details',
+      icon: <img src="./hiring_details.png" />,
+    },
+    '/payroll': { name: 'Payroll', icon: <img src="./payroll.png" /> },
+  },
+  'branh manager': {
+    '/branch-manager-home': { name: 'Home', icon: <img src="./home.png" /> },
+    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
+    '/staff': { name: 'Staff', icon: <img src="./users.png" /> },
+    '/add-staff': { name: 'Add Staff', icon: <img src="./users.png" /> },
+    '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
+    '/clients': { name: 'Clients', icon: <img src="./clients.png" /> },
+    '/add-client': { name: 'Add Client', icon: <img src="./clients.png" /> },
+    '/delete-client': {
+      name: 'Delete Client',
+      icon: <img src="./delete_client.png" />,
+    },
+    '/client-details': {
+      name: 'Client Details',
+      icon: <img src="./client_details.png" />,
+    },
+    '/vendors': { name: 'Vendors', icon: <img src="./vendors.png" /> },
+    '/add-vendor': { name: 'Add Vendor', icon: <img src="./vendors.png" /> },
+    '/delete-vendor': {
+      name: 'Delete Vendor',
+      icon: <img src="./delete_vendor.png" />,
+    },
+    '/sub_dealers': {
+      name: 'Sub Dealers',
+      icon: <img src="./subdealers.png" />,
+    },
+    '/add-sub-dealer': {
+      name: 'Add Sub Dealer',
+      icon: <img src="./subdealers.png" />,
+    },
+    '/delete-sub-dealer': {
+      name: 'Delete Sub Dealer',
+      icon: <img src="./delete_subdealer.png" />,
+    },
+    '/products_assign': {
+      name: 'Product Assign',
+      icon: <img src="./product_assign.png" />,
+    },
+    '/add-product-assign': {
+      name: 'Add Product Assign',
+      icon: <img src="./product_assign.png" />,
+    },
+    '/delete-product-assign': {
+      name: 'Delete Product Assign',
+      icon: <img src="./delete_product_assign.png" />,
+    },
+    '/requests': { name: 'Requests', icon: <img src="./request.png" /> },
+    '/add-request': { name: 'Add Request', icon: <img src="./request.png" /> },
+    '/delete-request': {
+      name: 'Delete Request',
+      icon: <img src="./delete_request.png" />,
+    },
+    '/request-details': {
+      name: 'Request Details',
+      icon: <img src="./request_details.png" />,
+    },
+    '/tracker': { name: 'Tracker', icon: <img src="./tracker.png" /> },
+    '/vouchers': { name: 'Vouchers', icon: <img src="./vouchers.png" /> },
+    '/work_allocation': {
+      name: 'Work Allocation',
+      icon: <img src="./work_allocation.png" />,
+    },
+    '/reports': { name: 'Reports', icon: <img src="./reports.png" /> },
+    '/download': { name: 'Download', icon: <img src="./download.png" /> },
+    '/appointments': {
+      name: 'Appointments',
+      icon: <img src="./appointments.png" />,
+    },
+    '/add-appointment': {
+      name: 'Add Appointment',
+      icon: <img src="./appointments.png" />,
+    },
+    '/appointment-details': {
+      name: 'Appointment Details',
+      icon: <img src="./appointments.png" />,
+    },
+    '/payments': { name: 'Payments', icon: <img src="./payments.png" /> },
+    '/tickets': { name: 'Tickets', icon: <img src="./tickets.png" /> },
+    '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
+    '/edit-estimate': {
+      name: 'Edit Estimate',
+      icon: <img src="./estimate.png" />,
+    },
+    '/add-estimate': {
+      name: 'Add Estimate',
+      icon: <img src="./estimate.png" />,
+    },
+    '/estimate-details': {
+      name: 'Estimate Details',
+      icon: <img src="./estimate.png" />,
+    },
+    '/performance': {
+      name: 'Performance',
+      icon: <img src="./performance.png" />,
+    },
   },
 };
 
