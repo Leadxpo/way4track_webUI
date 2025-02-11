@@ -2,15 +2,16 @@ import React from 'react';
 import Table from '../../components/Table';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 
-const TechnicianHome = () => {
+const SalesmanHome = () => {
   const attendanceData = [];
   return (
     <div>
-      <p className="my-4 font-bold">Total Appointments: </p>
-      <p className="my-4 font-bold">Success Appointments: </p>
+      <p className="my-4 font-bold">Total Appointments : </p>
+      <p className="my-4 font-bold">Success Appointments : </p>
+      <p className="my-4 font-bold">Total Sales Amount :</p>
       <Table />
       <AnalysisCardBarChart />
-      <div className="w-full overflow-auto border border-gray-300 rounded-md">
+      <div className="w-full overflow-auto border border-gray-300 rounded-md mt-6">
         <div className="p-4 text-center font-semibold text-lg border-b border-gray-300 min-w-full">
           Monthly Attendance Summary For Month October 2024
         </div>
@@ -108,4 +109,4 @@ const TechnicianHome = () => {
   );
 };
 
-export default TechnicianHome;
+export default SalesmanHome;

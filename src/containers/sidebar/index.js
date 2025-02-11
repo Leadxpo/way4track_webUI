@@ -56,8 +56,17 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'Warehouse Manager':
         navigate('/warehouse-manager-home');
         break;
-      case 'sub dealer':
+      case 'Sub Dealer':
         navigate('/sub-dealer-home');
+        break;
+      case 'Sales Man':
+        navigate('/salesman-home');
+        break;
+      case 'Branch Manager':
+        navigate('/branch-manager-home');
+        break;
+      case 'HR':
+        navigate('/hr-home');
         break;
     }
   }, []);
