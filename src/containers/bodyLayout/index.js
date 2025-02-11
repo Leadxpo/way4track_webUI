@@ -241,7 +241,7 @@ const BodyLayout = ({ children }) => {
 
         {/* Search and Icons */}
         <div className="flex flex-col md:flex-row items-center md:space-x-6 w-full md:w-auto">
-          {role === 'accountant' ? (
+          {role === 'Accountant' ? (
             <button
               className="bg-red-500 text-sm text-white p-1 mb-4 md:mb-0"
               onClick={() => navigate('/bank-details-dashboard')}

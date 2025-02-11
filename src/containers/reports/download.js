@@ -222,27 +222,64 @@ const DownloadComponent = () => {
 
   const getReceiptDataForReport = async () => {
     try {
-      const response = ApiService.post('/dashboards/getReceiptDataForReport', {
-        voucerID: inputId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getReceiptDataForReport',
+        {
+          voucerID: inputId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      const pdfUrl = response.data.receiptPdfUrl;
+
+      if (pdfUrl) {
+        // Trigger automatic PDF download
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'Receipt_Report.pdf'; // Change filename as needed
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('No PDF available for this receipt.');
+      }
+
       setReceiptData(response.data);
     } catch (e) {
-      console.error('error');
+      console.error('Error fetching receipt data:', e);
+      alert('Failed to fetch receipt data. Please try again.');
     }
   };
 
   const getEstimatesForReport = async () => {
     try {
-      const response = ApiService.post('/dashboards/getEstimatesForReport', {
-        estimateId: inputId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getEstimatesForReport',
+        {
+          estimateId: inputId,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      const pdfUrl = response.data.estimate_estimatePdfUrl;
+
+      if (pdfUrl) {
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'Estimate_Report.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('No PDF available for this estimate.');
+      }
+
       setEstimateData(response.data);
     } catch (e) {
-      console.error('error');
+      console.error('Error fetching estimate:', e);
+      alert('Failed to fetch estimate data. Please try again.');
     }
   };
 
