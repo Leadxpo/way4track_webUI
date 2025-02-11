@@ -20,21 +20,26 @@ const Payroll = () => {
       };
 
       if (branchName !== 'All') {
-        payload.branchName = branchName;
+        payload.branch = branchName; // Ensure correct key is sent
       }
+
 
       const res = await ApiService.post('/dashboards/payRoll', payload);
       if (res.status) {
         setPayrollData(res.data);
 
         if (branchName === 'All') {
-          const branchOptions = [
-            { branchName: 'All' },
-            ...res.data.map((branch) => ({
-              branchName: branch.branch,
-            })),
-          ];
-          setBranches(branchOptions);
+          // const branchOptions = [
+          //   { branchName: 'All' },
+          //   ...res.data.map((branch) => ({
+          //     branchName: branch.branch, // Ensure branch list uses the correct key
+          //   })),
+          // ];
+          const uniqueBranches = Array.from(new Set(res.data.map((b) => b.branch))).map((branch) => ({
+            branchName: branch,
+          }));
+          setBranches([{ branchName: 'All' }, ...uniqueBranches]);
+          // setBranches(branchOptions);
         }
       } else {
         setPayrollData([]);
@@ -46,10 +51,16 @@ const Payroll = () => {
     }
   };
 
+
   // Fetch data on initial render
   useEffect(() => {
     fetchPayrollData();
   }, []);
+
+  useEffect(() => {
+    fetchPayrollData(activeTab);
+  }, [activeTab]);
+
 
   // Fetch data when selected branch changes
   useEffect(() => {
@@ -59,16 +70,19 @@ const Payroll = () => {
   // Columns for the table
   const columns = payrollData.length
     ? Object.keys(payrollData[0]).map((key, index) => ({
-        title: key,
-        dataIndex: index,
-      }))
+      title: key,
+      dataIndex: index,
+    }))
     : [];
 
   // Handle tab click
   const handleTabClick = (branch) => {
     setActiveTab(branch);
     setSelectedBranch(branch);
+    fetchPayrollData(branch);  // Immediately fetch new data when a tab is clicked
   };
+
+
 
   // Handle row edit
   const handleChangePayroll = (row) => {
@@ -90,11 +104,10 @@ const Payroll = () => {
           <button
             key={branch.branchName} // Use branchName as the key
             onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
-            className={`pb-2 text-sm font-semibold ${
-              activeTab === branch.branchName
-                ? 'border-b-2 border-black text-black'
-                : 'text-gray-500'
-            }`}
+            className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
+              ? 'border-b-2 border-black text-black'
+              : 'text-gray-500'
+              }`}
           >
             {branch.branchName}
           </button>
@@ -105,10 +118,10 @@ const Payroll = () => {
       <Table
         columns={payrollData.length > 0 ? Object.keys(payrollData[0]) : []}
         data={payrollData.filter(
-          (row) => activeTab === 'All' || row.branchName === activeTab
+          (row) => activeTab === 'All' || row.branch === activeTab
         )}
         onEdit={handleChangePayroll}
-        onDetails={() => {}}
+        onDetails={() => { }}
         showDelete={false}
       />
 
@@ -126,44 +139,45 @@ const Payroll = () => {
 
             {/* Popup Content */}
             <h2 className="text-xl font-bold text-center mb-6 text-green-600">
-              Pay Roll
+              Payroll Details
             </h2>
             <div className="flex justify-center mb-6">
               <img
                 className="rounded-full h-28 w-28 object-cover shadow-lg"
-                src="https://via.placeholder.com/150"
-                alt="Profile"
+                src={selectedRow.staffPhoto || "/default-profile.png"}
+                alt={selectedRow.staffName}
               />
+
             </div>
             <div className="space-y-2">
               <p>
-                <strong>Client Name:</strong> {selectedRow.clientName}
+                <strong>Staff ID:</strong> {selectedRow.staffId}
               </p>
               <p>
-                <strong>Phone Number:</strong> {selectedRow.phoneNumber}
+                <strong>Staff Name:</strong> {selectedRow.staffName}
               </p>
               <p>
-                <strong>Email:</strong> {selectedRow.email}
+                <strong>Branch:</strong> {selectedRow.branch}
               </p>
               <p>
-                <strong>Client Branch:</strong> {selectedRow.branchName}
+                <strong>In-Company Experience:</strong> {selectedRow.inExperience} years
               </p>
               <p>
-                <strong>Date of Birth:</strong> {selectedRow.dob}
+                <strong>Overall Experience:</strong> {selectedRow.overallExperience} years
               </p>
               <p>
-                <strong>Address:</strong> {selectedRow.address}
+                <strong>Basic Salary:</strong> ${selectedRow.basicSalary}
               </p>
             </div>
 
             {/* Input Field */}
             <div className="mt-6">
               <label className="block text-green-600 font-bold mb-2">
-                Pay Roll
+                Enter New Payroll Amount
               </label>
               <input
                 type="text"
-                placeholder="Enter Pay Roll"
+                placeholder="Enter Payroll Amount"
                 className="w-full border border-green-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
@@ -175,6 +189,7 @@ const Payroll = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
