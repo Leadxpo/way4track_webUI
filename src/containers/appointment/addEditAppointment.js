@@ -11,7 +11,7 @@ const AddEditAppointmentForm = () => {
   const [formData, setFormData] = useState({
     appointmentType: appointmentDetails?.appointmentType || '',
     name: appointmentDetails?.name || '',
-    id: appointmentDetails?.id || '',
+    id: appointmentDetails?.id || null,
     status: appointmentDetails?.status || 'pending',
     assignedTo: appointmentDetails?.assignedTo || '',
     date: appointmentDetails?.date || '',
@@ -25,6 +25,7 @@ const AddEditAppointmentForm = () => {
     description: appointmentDetails?.description || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
+    voucherId: appointmentDetails ? appointmentDetails.voucherId || '' : '',
   });
 
   const [branchData, setBranchData] = useState([]);
@@ -55,6 +56,26 @@ const AddEditAppointmentForm = () => {
       clientAddress: selectedClient?.address || '',
     }));
   };
+  const [voucherList, setVoucherList] = useState([]);
+
+  useEffect(() => {
+    const fetchVoucher = async () => {
+      try {
+        const response = await ApiService.post(
+          '/voucher/getVoucherNamesDropDown'
+        );
+        if (response.status) {
+          setVoucherList(response.data);
+        } else {
+          console.error('Failed to fetch voucher');
+        }
+      } catch (error) {
+        console.error('Error fetching voucher:', error);
+      }
+    };
+
+    fetchVoucher();
+  }, []);
 
   // Fetch branch data
 
@@ -197,7 +218,7 @@ const AddEditAppointmentForm = () => {
               Select Staff
             </option>
             {staff.map((staffMember) => (
-              <option key={staffMember.staffId} value={staffMember.staffId}>
+              <option key={staffMember.id} value={staffMember.id}>
                 {staffMember.name}
               </option>
             ))}
@@ -229,6 +250,29 @@ const AddEditAppointmentForm = () => {
         />
       </div>
 
+      {voucherList.length > 0 && (
+        <div className="space-y-4">
+          <div>
+            <p className="font-semibold mb-1">Voucher Id</p>
+            <select
+              name="voucherId"
+              value={formData.voucherId}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="" disabled>
+                Select a voucherId
+              </option>
+              {voucherList.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.voucherId}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
       {/* Period */}
       <div className="flex flex-col">
         <label className="font-semibold mb-2">Period:</label>
@@ -242,6 +286,7 @@ const AddEditAppointmentForm = () => {
           <option value="PM">PM</option>
         </select>
       </div>
+
 
       {/* Branch */}
       {branchData.length > 0 && (
@@ -257,7 +302,7 @@ const AddEditAppointmentForm = () => {
               Select Branch
             </option>
             {branchData.map((branchItem) => (
-              <option key={branchItem.id} value={branchItem.branchName}>
+              <option key={branchItem.id} value={branchItem.id}>
                 {branchItem.branchName}
               </option>
             ))}
@@ -279,7 +324,7 @@ const AddEditAppointmentForm = () => {
               Select Client
             </option>
             {client.map((clientItem) => (
-              <option key={clientItem.clientId} value={clientItem.clientId}>
+              <option key={clientItem.id} value={clientItem.id}>
                 {clientItem.name}
               </option>
             ))}

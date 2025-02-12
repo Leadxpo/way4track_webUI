@@ -224,16 +224,13 @@ const AddEditProductAssign = () => {
       />
     </div>
   );
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {location.state?.productDetails
-              ? 'Edit Product Assign'
-              : 'Add Product Assign'}
+            {location.state?.productDetails ? 'Edit Product Assign' : 'Add Product Assign'}
           </h1>
         </div>
 
@@ -266,129 +263,116 @@ const AddEditProductAssign = () => {
 
         {/* Form Fields */}
         <div className="space-y-4">
-          <div>
-            <div className="flex mb-4">
-              {branches.length > 0 && (
-                <div className="space-y-4">
-                  <div>
-                    <p className="font-semibold mb-1">Branch</p>
-                    <select
-                      name="branchId"
-                      value={formData.branchId}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                      <option value="" disabled>Select a Branch</option>
-                      {branches.map((branch) => (
-                        <option key={branch.id} value={branch.id}>
-                          {branch.branchName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div>
-            {staff.length > 0 && (
-              <div className="flex flex-col">
-                <label className="font-semibold mb-2">Person:</label>
-                <select
-                  name="staffId"
-                  value={formData.staffId}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Select Staff
+          {/* Branch Selection */}
+          {branches.length > 0 && (
+            <div>
+              <p className="font-semibold mb-1">Branch</p>
+              <select
+                name="branchId"
+                value={formData.branchId}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>Select a Branch</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
                   </option>
-                  {staff.map((staffMember) => (
-                    <option key={staffMember.id} value={staffMember.id}>
-                      {staffMember.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <div className="flex mb-4">
-              {product.length > 0 && (
-                <div className="space-y-4">
-                  <div>
-                    <p className="font-semibold mb-1">product</p>
-                    <select
-                      name="product"
-                      value={formData.product}
-                      onChange={handleProductChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                      <option value="" disabled>Select a product</option>
-                      {product.map((pa) => (
-                        <option key={pa.id} value={pa.id}>
-                          {pa.productName
-                          }
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
+                ))}
+              </select>
             </div>
-            <div className="flex mb-4">
-              {request.length > 0 && (
-                <div className="space-y-4">
-                  <div>
-                    <p className="font-semibold mb-1">request</p>
-                    <select
-                      name="requestId"
-                      value={formData.requestId}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                      <option value="" disabled>Select a request</option>
-                      {request.map((re) => (
-                        <option key={re.id} value={re.id}>
-                          {re.requestId}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
+          )}
 
+          {/* Staff Selection */}
+          {staff.length > 0 && (
+            <div>
+              <p className="font-semibold mb-1">Person</p>
+              <select
+                name="staffId"
+                value={formData.staffId}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>Select Staff</option>
+                {staff.map((staffMember) => (
+                  <option key={staffMember.id} value={staffMember.id}>
+                    {staffMember.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            {renderField('product Type', 'productType')}
-            {/* {renderField('Is Assign', 'isAssign', 'boolean')} */}
-            {/* {renderField('In Hands', 'inHands', 'boolean')} */}
-            {renderField('name', 'name')}
-            {renderField('IMEI Number from', 'imeiNumberFrom')}
-            {renderField('IMEI Number To', 'imeiNumberTo')}
-            {/* {renderField('assigned Qty', 'assignedQty')} */}
-            {renderField('assign Time', 'assignTime', 'date')}
+          )}
 
-            {/* {renderField('numberOfProducts', 'numberOfProducts')} */}
+          {/* Product Selection */}
+          {product.length > 0 && (
+            <div>
+              <p className="font-semibold mb-1">Product</p>
+              <select
+                name="product"
+                value={formData.product}
+                onChange={handleProductChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>Select a product</option>
+                {product.map((pa) => (
+                  <option key={pa.id} value={pa.id}>
+                    {pa.productName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-            <label className="block">
-              <span className="block text-gray-700">In Hands:</span>
+          {/* Request Selection */}
+          {request.length > 0 && (
+            <div>
+              <p className="font-semibold mb-1">Request</p>
+              <select
+                name="requestId"
+                value={formData.requestId}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>Select a request</option>
+                {request.map((re) => (
+                  <option key={re.id} value={re.id}>
+                    {re.requestId}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Other Input Fields */}
+          {renderField('Product Type', 'productType')}
+          {renderField('Name', 'name')}
+          {renderField('IMEI Number From', 'imeiNumberFrom')}
+          {renderField('IMEI Number To', 'imeiNumberTo')}
+          {renderField('Assign Time', 'assignTime', 'date')}
+
+          {/* Boolean Fields */}
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center space-x-2">
+              <span className="text-gray-700">In Hands:</span>
               <input
                 type="checkbox"
                 name="inHands"
-                checked={formData.inHands === true}  // ensure it is boolean true or false
+                checked={formData.inHands === true}
                 onChange={handleInputChange}
-                className="w-full p-2 border rounded-md"
+                className="w-5 h-5"
               />
             </label>
 
-            <label className="block">
-              <span className="block text-gray-700">Is Assign:</span>
+            <label className="flex items-center space-x-2">
+              <span className="text-gray-700">Is Assign:</span>
               <input
                 type="checkbox"
                 name="isAssign"
-                checked={formData.isAssign === true}  // ensure it is boolean true or false
+                checked={formData.isAssign === true}
                 onChange={handleInputChange}
-                className="w-full p-2 border rounded-md"
+                className="w-5 h-5"
               />
             </label>
-
-
           </div>
         </div>
 
@@ -396,7 +380,7 @@ const AddEditProductAssign = () => {
         <div className="flex justify-center space-x-4 mt-6">
           <button
             onClick={handleSave}
-            className="bg-green-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+            className="bg-green-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-green-700 transition-all"
           >
             Save
           </button>
@@ -410,6 +394,192 @@ const AddEditProductAssign = () => {
       </div>
     </div>
   );
+
+  // return (
+  //   <div className="min-h-screen flex flex-col items-center justify-center">
+  //     <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
+  //       {/* Header */}
+  //       <div className="flex items-center space-x-4 mb-8">
+  //         <h1 className="text-3xl font-bold">
+  //           {location.state?.productDetails
+  //             ? 'Edit Product Assign'
+  //             : 'Add Product Assign'}
+  //         </h1>
+  //       </div>
+
+  //       {/* Photo Section */}
+  //       <div className="flex items-center space-x-2 mb-6">
+  //         <img
+  //           src={image || 'https://i.pravatar.cc/150?img=5'}
+  //           alt="Employee"
+  //           className="w-24 h-24 rounded-full object-cover"
+  //         />
+  //         <input
+  //           type="file"
+  //           accept="image/*"
+  //           name="file"
+  //           className="ml-4 border p-2 rounded"
+  //           onChange={handleFileChange}
+  //         />
+  //         {formData.file && (
+  //           <button
+  //             onClick={() => {
+  //               setFormData({ ...formData, file: null });
+  //               setImage('');
+  //             }}
+  //             className="ml-2 text-red-500"
+  //           >
+  //             Remove
+  //           </button>
+  //         )}
+  //       </div>
+
+  //       {/* Form Fields */}
+  //       <div className="space-y-4">
+  //         <div>
+  //           <div className="flex mb-4">
+  //             {branches.length > 0 && (
+  //               <div className="space-y-4">
+  //                 <div>
+  //                   <p className="font-semibold mb-1">Branch</p>
+  //                   <select
+  //                     name="branchId"
+  //                     value={formData.branchId}
+  //                     onChange={handleInputChange}
+  //                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  //                   >
+  //                     <option value="" disabled>Select a Branch</option>
+  //                     {branches.map((branch) => (
+  //                       <option key={branch.id} value={branch.id}>
+  //                         {branch.branchName}
+  //                       </option>
+  //                     ))}
+  //                   </select>
+  //                 </div>
+  //               </div>
+  //             )}
+  //           </div>
+  //           {staff.length > 0 && (
+  //             <div className="flex flex-col">
+  //               <label className="font-semibold mb-2">Person:</label>
+  //               <select
+  //                 name="staffId"
+  //                 value={formData.staffId}
+  //                 onChange={handleInputChange}
+  //                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  //               >
+  //                 <option value="" disabled>
+  //                   Select Staff
+  //                 </option>
+  //                 {staff.map((staffMember) => (
+  //                   <option key={staffMember.id} value={staffMember.id}>
+  //                     {staffMember.name}
+  //                   </option>
+  //                 ))}
+  //               </select>
+  //             </div>
+  //           )}
+  //           <div className="flex mb-4">
+  //             {product.length > 0 && (
+  //               <div className="space-y-4">
+  //                 <div>
+  //                   <p className="font-semibold mb-1">product</p>
+  //                   <select
+  //                     name="product"
+  //                     value={formData.product}
+  //                     onChange={handleProductChange}
+  //                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  //                   >
+  //                     <option value="" disabled>Select a product</option>
+  //                     {product.map((pa) => (
+  //                       <option key={pa.id} value={pa.id}>
+  //                         {pa.productName
+  //                         }
+  //                       </option>
+  //                     ))}
+  //                   </select>
+  //                 </div>
+  //               </div>
+  //             )}
+  //           </div>
+  //           <div className="flex mb-4">
+  //             {request.length > 0 && (
+  //               <div className="space-y-4">
+  //                 <div>
+  //                   <p className="font-semibold mb-1">request</p>
+  //                   <select
+  //                     name="requestId"
+  //                     value={formData.requestId}
+  //                     onChange={handleInputChange}
+  //                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  //                   >
+  //                     <option value="" disabled>Select a request</option>
+  //                     {request.map((re) => (
+  //                       <option key={re.id} value={re.id}>
+  //                         {re.requestId}
+  //                       </option>
+  //                     ))}
+  //                   </select>
+  //                 </div>
+  //               </div>
+  //             )}
+
+  //           </div>
+  //           {renderField('product Type', 'productType')}
+  //           {/* {renderField('Is Assign', 'isAssign', 'boolean')} */}
+  //           {/* {renderField('In Hands', 'inHands', 'boolean')} */}
+  //           {renderField('name', 'name')}
+  //           {renderField('IMEI Number from', 'imeiNumberFrom')}
+  //           {renderField('IMEI Number To', 'imeiNumberTo')}
+  //           {/* {renderField('assigned Qty', 'assignedQty')} */}
+  //           {renderField('assign Time', 'assignTime', 'date')}
+
+  //           {/* {renderField('numberOfProducts', 'numberOfProducts')} */}
+
+  //           <label className="block">
+  //             <span className="block text-gray-700">In Hands:</span>
+  //             <input
+  //               type="checkbox"
+  //               name="inHands"
+  //               checked={formData.inHands === true}  // ensure it is boolean true or false
+  //               onChange={handleInputChange}
+  //               className="w-full p-2 border rounded-md"
+  //             />
+  //           </label>
+
+  //           <label className="block">
+  //             <span className="block text-gray-700">Is Assign:</span>
+  //             <input
+  //               type="checkbox"
+  //               name="isAssign"
+  //               checked={formData.isAssign === true}  // ensure it is boolean true or false
+  //               onChange={handleInputChange}
+  //               className="w-full p-2 border rounded-md"
+  //             />
+  //           </label>
+
+
+  //         </div>
+  //       </div>
+
+  //       {/* Buttons */}
+  //       <div className="flex justify-center space-x-4 mt-6">
+  //         <button
+  //           onClick={handleSave}
+  //           className="bg-green-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+  //         >
+  //           Save
+  //         </button>
+  //         <button
+  //           onClick={handleCancel}
+  //           className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
+  //         >
+  //           Cancel
+  //         </button>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default AddEditProductAssign;

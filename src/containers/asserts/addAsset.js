@@ -14,10 +14,10 @@ const AddAsset = () => {
 
   const initialFormData = {
     id: assetData.id,
-    branchId: assetData.branchId || '',
+    // branchId: assetData.branchId || '',
     assetType: assetData.assetType || '',
     voucherId: assetData.voucherId || '',
-    branch: assetData.branchName || '',
+    branchId: assetData.branchName || '',
     description: initialAuthState.description || '',
     companyCode: initialAuthState.companyCode,
     photo: assetData?.photo || null,
@@ -179,8 +179,8 @@ const AddAsset = () => {
               <div>
                 <p className="font-semibold mb-1">Branch</p>
                 <select
-                  name="branch"
-                  value={formData.branch}
+                  name="branchId"
+                  value={formData.branchId}
                   onChange={handleInputChange}
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
@@ -188,7 +188,7 @@ const AddAsset = () => {
                     Select a Branch
                   </option>
                   {branches.map((branch) => (
-                    <option key={branch.id} value={branch.branchName}>
+                    <option key={branch.id} value={branch.id}>
                       {branch.branchName}
                     </option>
                   ))}
