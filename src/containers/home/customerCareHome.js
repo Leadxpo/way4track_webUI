@@ -1,32 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
+import { useNavigate } from 'react-router';
+import { initialAuthState } from '../../services/ApiService';
+import ApiService from '../../services/ApiService';
+class CommonReq {
+  constructor(unitCode, companyCode, userId, userName) {
+    this.unitCode = unitCode;
+    this.companyCode = companyCode;
+    this.userId = userId;
+    this.userName = userName;
+  }
+}
 const CustomerCareHome = () => {
   const [isPurchaseSelected, setIsPurchaseSelected] = useState('');
-  const getElement = () => {
-    switch (isPurchaseSelected) {
-      case 'purchase':
-        return <Table />;
-      case 'remaining':
-        return (
-          <div className="border border-green-500 rounded-md p-6">
-            <p>
-              <strong>Invoice:</strong>
-            </p>
-            <p>
-              <strong>Number of Items:</strong>
-            </p>
-            <p>
-              <strong>Mode of payment:</strong>
-            </p>
-            <p>
-              <strong>Amount:</strong>
-            </p>
-          </div>
-        );
-      default:
-        return null;
+  const [tableData, setTableData] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const navigate = useNavigate();
+
+  const getPurchaseTable = async () => {
+    try {
+      const payload = new CommonReq(
+        initialAuthState.unitCode,
+        initialAuthState.companyCode,
+        initialAuthState.userId,
+        initialAuthState.userName
+      );
+
+      const response = await ApiService.post(
+        '/dashboards/getPurchaseData',
+        payload
+      );
+      const data = response.data;
+
+      setTableData(data);
+      setColumns(Object.keys(data[0] || []));
+    } catch (error) {
+      console.error('Error fetching purchase data:', error);
     }
   };
+
+  useEffect(() => {
+    if (isPurchaseSelected === 'purchase') {
+      getPurchaseTable();
+    } else if (isPurchaseSelected === 'appointment') {
+      navigate('/add-appointment');
+    }
+  }, [isPurchaseSelected]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header Section */}
@@ -70,16 +90,16 @@ const CustomerCareHome = () => {
           </p>
           <div className="flex space-x-4">
             <button
-              className="px-4 py-2 bg-green-100 text-green-700 rounded-md"
+              className={`px-4 py-2 rounded-md ${isPurchaseSelected === 'purchase' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'}`}
               onClick={() => setIsPurchaseSelected('purchase')}
             >
               Purchase
             </button>
             <button
-              className="px-4 py-2 bg-green-500 text-white rounded-md"
-              onClick={() => setIsPurchaseSelected('remaining')}
+              className={`px-4 py-2 rounded-md ${isPurchaseSelected === 'appointment' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'}`}
+              onClick={() => setIsPurchaseSelected('appointment')}
             >
-              Remaining Order
+              Appointment
             </button>
           </div>
         </div>
@@ -92,9 +112,7 @@ const CustomerCareHome = () => {
         </div>
       </div>
 
-      {/* Invoice Details */}
-      {getElement()}
-
+      {tableData && <Table data={tableData} columns={columns} />}
       {/* Description */}
       <p className="text-gray-600">
         <strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur

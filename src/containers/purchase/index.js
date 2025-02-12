@@ -32,7 +32,7 @@ const Purchase = ({ onEdit, onDetails }) => {
         const data = response.data;
 
         setTableData(data);
-        setColumns(Object.keys(data[0] || {}));
+        setColumns(Object.keys(data[0] || []));
       } catch (error) {
         console.error('Error fetching purchase data:', error);
       }
