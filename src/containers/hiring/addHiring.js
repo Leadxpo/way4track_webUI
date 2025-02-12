@@ -8,7 +8,11 @@ const AddHiring = () => {
   const [qualifications, setQualifications] = useState([
     { name: '', marks: '', year: '' },
   ]);
-
+  const [levelWiseData, setLevelWiseData] = useState([ {  dateOfConductor: number,
+    conductorBy: DesignationEnum.HR,
+    conductorPlace: string,
+    result: string,
+    review: string, },]);
   const [formData, setFormData] = useState({
     candidateName: '',
     phoneNumber: '',
@@ -22,7 +26,12 @@ const AddHiring = () => {
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode
   });
-
+  const handleLevelUpdate = (level, data) => {
+    setLevelWiseData((prev) => ({
+      ...prev,
+      [level]: data,
+    }));
+  };
   const [fileUploadedMessage, setFileUploadedMessage] = useState('');
 
   // Handle Form Input Change
@@ -108,6 +117,16 @@ const AddHiring = () => {
 
         {/* Input Fields */}
         <div className="space-y-4">
+          <label className="block">
+            <span className="block text-gray-700">Candidate Name:</span>
+            <input
+              type="text"
+              name="candidateName"
+              value={formData.candidateName}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </label>
           <label className="block">
             <span className="block text-gray-700">Candidate Name:</span>
             <input
