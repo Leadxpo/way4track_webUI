@@ -205,7 +205,7 @@ const AddEditEstimate = () => {
       const pdfBlob = await generatePdf(pdfData);
 
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      estimateDto.pdfUrl = pdfUrl;
+      estimateDto.estimatePDF = pdfUrl;
       console.log(pdfUrl);
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
       console.log('Estimate saved:', estimateDto);
