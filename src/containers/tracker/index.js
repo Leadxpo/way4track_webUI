@@ -40,8 +40,8 @@ const Tracker = () => {
   useEffect(() => {
     if (map && staffDetails) {
       map.setCenter({
-        lat: staffDetails.latitude || latitude,
-        lng: staffDetails.longitude || longitude,
+        lat: Number(staffDetails.latitude) || latitude,
+        lng: Number(staffDetails.longitude) || longitude,
       });
     }
   }, [map, staffDetails]);
@@ -70,16 +70,16 @@ const Tracker = () => {
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={{
-              lat: staffDetails.latitude || latitude,
-              lng: staffDetails.longitude || longitude,
+              lat: Number(staffDetails.latitude) || latitude,
+              lng: Number(staffDetails.longitude) || longitude,
             }}
             zoom={13}
             onLoad={(mapInstance) => setMap(mapInstance)}
           >
             <Marker
               position={{
-                lat: staffDetails.latitude || latitude,
-                lng: staffDetails.longitude || longitude,
+                lat: Number(staffDetails.latitude) || latitude,
+                lng: Number(staffDetails.longitude) || longitude,
               }}
             />
           </GoogleMap>

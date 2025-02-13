@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
+
 class CommonReq {
   constructor(unitCode, companyCode, userId, userName) {
     this.unitCode = unitCode;
@@ -11,23 +12,29 @@ class CommonReq {
     this.userName = userName;
   }
 }
+
 const CustomerCareHome = () => {
   const [isPurchaseSelected, setIsPurchaseSelected] = useState('');
   const [tableData, setTableData] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const navigate = useNavigate();
 
   const getPurchaseTable = async () => {
+    if (!phoneNumber.trim()) {
+      alert('Please enter a phone number');
+      return;
+    }
+
     try {
       const payload = new CommonReq(
         initialAuthState.unitCode,
         initialAuthState.companyCode,
-        initialAuthState.userId,
-        initialAuthState.userName
+        phoneNumber
       );
 
       const response = await ApiService.post(
-        '/dashboards/getPurchaseData',
+        '/dashboards/getClientPurchaseOrderDataTable',
         payload
       );
       const data = response.data;
@@ -38,14 +45,6 @@ const CustomerCareHome = () => {
       console.error('Error fetching purchase data:', error);
     }
   };
-
-  useEffect(() => {
-    if (isPurchaseSelected === 'purchase') {
-      getPurchaseTable();
-    } else if (isPurchaseSelected === 'appointment') {
-      navigate('/add-appointment');
-    }
-  }, [isPurchaseSelected]);
 
   return (
     <div className="p-6 space-y-6">
@@ -70,9 +69,17 @@ const CustomerCareHome = () => {
           />
           <input
             type="text"
-            placeholder="Client Phone no"
-            className="bg-green-600 text-white px-2 outline-none rounded-md"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Enter Phone Number"
+            className="border p-2 mr-2"
           />
+          <button
+            onClick={getPurchaseTable}
+            className="bg-green-700 text-white p-2 rounded-md"
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -112,7 +119,9 @@ const CustomerCareHome = () => {
         </div>
       </div>
 
-      {tableData && <Table data={tableData} columns={columns} />}
+      {/* Table Data */}
+      {tableData.length > 0 && <Table data={tableData} columns={columns} />}
+
       {/* Description */}
       <p className="text-gray-600">
         <strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur
