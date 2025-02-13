@@ -12,8 +12,11 @@ const HrHome = () => {
     totalSales: 0,
   });
 
+  const [candidateStats, setCandidateStats] = useState({});
   useEffect(() => {
     fetchStaffDetails();
+    getHiringSearchDetails();
+    getCandidateStats();
   }, []);
 
   const fetchStaffDetails = async () => {
@@ -276,6 +279,22 @@ const HrHome = () => {
     }
   };
 
+  const getCandidateStats = async () => {
+    try {
+      const response = await ApiService.post(
+        '/hiring/getCandidatesStatsLast30Days',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      setCandidateStats(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between mx-6">
@@ -362,15 +381,15 @@ const HrHome = () => {
         <div className="bg-green-600 text-white p-3 text-lg font-semibold">
           Hiring Program
         </div>
-        {/* <div className="p-4 space-y-3">
+
+        <div className="p-4 space-y-3">
           <div className="bg-gray-300 p-3 rounded-lg text-lg font-semibold">
-            Requirement Persons : {selectedBranch.hiring.requirementPersons}
+            Total Attended : {candidateStats.totalAttended}
           </div>
           <div className="bg-gray-300 p-3 rounded-lg text-lg font-semibold">
-            Number of Requirement Persons :{' '}
-            {selectedBranch.hiring.numberOfRequirementPersons}
+            Total Qualified : {candidateStats.totalQualified}
           </div>
-        </div> */}
+        </div>
       </div>
       <div className="p-6">
         <Table
