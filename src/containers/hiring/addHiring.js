@@ -8,11 +8,27 @@ const AddHiring = () => {
   const [qualifications, setQualifications] = useState([
     { name: '', marks: '', year: '' },
   ]);
-  const [levelWiseData, setLevelWiseData] = useState([ {  dateOfConductor: number,
-    conductorBy: DesignationEnum.HR,
-    conductorPlace: string,
-    result: string,
-    review: string, },]);
+
+  // const [levelWiseData, setLevelWiseData] = useState([
+  //   {
+  //     dateOfConductor: '',
+  //     conductorBy: '',
+  //     conductorPlace: '',
+  //     result: '',
+  //     review: '',
+  //   },
+  // ]);
+
+  // const handleLevelUpdate = (index, data) => {
+  //   setLevelWiseData((prev) => {
+  //     const updated = [...prev];
+  //     updated[index] = data;
+  //     return updated;
+  //   });
+  // };
+
+
+
   const [formData, setFormData] = useState({
     candidateName: '',
     phoneNumber: '',
@@ -26,12 +42,7 @@ const AddHiring = () => {
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode
   });
-  const handleLevelUpdate = (level, data) => {
-    setLevelWiseData((prev) => ({
-      ...prev,
-      [level]: data,
-    }));
-  };
+
   const [fileUploadedMessage, setFileUploadedMessage] = useState('');
 
   // Handle Form Input Change
@@ -69,6 +80,7 @@ const AddHiring = () => {
       }));
     }
   };
+
   const handleSubmit = async () => {
     const payload = new FormData();
     payload.append('hiringLevel', formData.hiringLevel);
@@ -81,14 +93,18 @@ const AddHiring = () => {
     payload.append('companyCode', formData.companyCode);
     payload.append('unitCode', formData.unitCode);
 
+    // Append qualifications
     qualifications.forEach((q, index) => {
       payload.append(`qualifications[${index}][qualificationName]`, q.name);
       payload.append(`qualifications[${index}][marks]`, q.marks);
       payload.append(`qualifications[${index}][yearOfPass]`, q.year);
     });
 
+    // Append Level Wise Data
+    // payload.append('levelWiseData', JSON.stringify(levelWiseData));
+
     if (formData.resume) {
-      payload.append('file', formData.resume); // File field expected by backend
+      payload.append('file', formData.resume);
     }
 
     try {
@@ -108,6 +124,45 @@ const AddHiring = () => {
       alert('Failed to save hiring details. Please try again.');
     }
   };
+  // const handleSubmit = async () => {
+  //   const payload = new FormData();
+  //   payload.append('hiringLevel', formData.hiringLevel);
+  //   payload.append('candidateName', formData.candidateName);
+  //   payload.append('phoneNumber', formData.phoneNumber);
+  //   payload.append('email', formData.email);
+  //   payload.append('address', formData.address);
+  //   payload.append('dateOfUpload', formData.dateOfUpload);
+  //   payload.append('status', formData.status);
+  //   payload.append('companyCode', formData.companyCode);
+  //   payload.append('unitCode', formData.unitCode);
+
+  //   qualifications.forEach((q, index) => {
+  //     payload.append(`qualifications[${index}][qualificationName]`, q.name);
+  //     payload.append(`qualifications[${index}][marks]`, q.marks);
+  //     payload.append(`qualifications[${index}][yearOfPass]`, q.year);
+  //   });
+
+  //   if (formData.resume) {
+  //     payload.append('file', formData.resume); // File field expected by backend
+  //   }
+
+  //   try {
+  //     const endpoint = `/hiring/saveHiringDetailsWithResume`;
+  //     const response = await ApiService.post(endpoint, payload, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //     });
+
+  //     if (response.data.status) {
+  //       alert('Hiring details saved successfully!');
+  //       navigate('/hiring');
+  //     } else {
+  //       alert('Failed to save hiring details. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error saving hiring details:', error);
+  //     alert('Failed to save hiring details. Please try again.');
+  //   }
+  // };
 
 
   return (
