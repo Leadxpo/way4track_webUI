@@ -17,14 +17,16 @@ import {
 import DatePicker from 'react-datepicker';
 const SalesmanHome = () => {
   const [attendanceData, setAttendanceData] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-  const [totalSuccess, setTotalSuccess] = useState(0);
   const [totalAppointments, setTotalAppointments] = useState(0);
+  const [totalSuccessAppointments, setTotalSuccessAppointments] = useState(0);
+  const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [chartData, setCardData] = useState([]);
+  const [appointments, setAppointments] = useState([])
   const [selectedDate, setSelectedDate] = useState(null);
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
       const payload = {
+        staffId: localStorage.getItem('userId'),
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
@@ -33,20 +35,11 @@ const SalesmanHome = () => {
         payload.branchName = branchName;
       }
 
-      const res = await ApiService.post(
-        '/dashboards/getAllAppointmentDetails',
-        payload
-      );
+      const res = await ApiService.post('/dashboards/getAllAppointmentDetails', payload);
 
       if (res.status) {
         const appointmentsList = res.data.appointments || [];
-        setAppointments(res.data.appointments);
-        setTotalAppointments(appointmentsList.length);
-
-        const successCount = appointmentsList.filter(
-          (appt) => appt.status?.toLowerCase() === 'success'
-        ).length;
-        setTotalSuccess(successCount);
+        setAppointments(appointmentsList)
       } else {
         setAppointments([]);
       }
@@ -55,6 +48,7 @@ const SalesmanHome = () => {
       setAppointments([]);
     }
   };
+
   const fetchWorkAllocationChart = async () => {
     try {
       const currentYear = new Date().getFullYear();
@@ -68,6 +62,22 @@ const SalesmanHome = () => {
         }
       );
       setCardData(response.data);
+      const data = response.data;
+
+      // Using reduce to calculate totals
+      const totals = data.reduce(
+        (acc, monthData) => {
+          acc.totalAppointments += parseInt(monthData.totalAppointments, 10) || 0;
+          acc.totalSuccessAppointments += parseInt(monthData.totalSuccessAppointments, 10) || 0;
+          acc.totalSalesAmount += parseFloat(monthData.totalSalesAmount) || 0;
+          return acc;
+        },
+        { totalAppointments: 0, totalSuccessAppointments: 0, totalSalesAmount: 0 }
+      );
+
+      setTotalAppointments(totals.totalAppointments);
+      setTotalSuccessAppointments(totals.totalSuccessAppointments);
+      setTotalSalesAmount(totals.totalSalesAmount);
     } catch (error) {
       console.log(error);
     }
@@ -104,9 +114,11 @@ const SalesmanHome = () => {
   }, [selectedDate, localStorage.getItem('userId')]);
   return (
     <div>
-      <p className="my-4 font-bold">Total Appointments : {totalAppointments}</p>
-      <p className="my-4 font-bold">Success Appointments : {totalSuccess}</p>
-      <p className="my-4 font-bold">Total Sales Amount :</p>
+      <div>
+        <p className="my-4 font-bold">Total Appointments: {totalAppointments}</p>
+        <p className="my-4 font-bold">Success Appointments: {totalSuccessAppointments}</p>
+        <p className="my-4 font-bold">Total Sales Amount: {totalSalesAmount}</p>
+      </div>
       <Table
         columns={[
           'appointmentId',
@@ -125,9 +137,9 @@ const SalesmanHome = () => {
         showDelete={false}
         showDetails={false}
         data={appointments}
-        onEdit={() => {}}
-        onDelete={() => {}}
-        onDetails={() => {}}
+        onEdit={() => { }}
+        onDelete={() => { }}
+        onDetails={() => { }}
       />
       <div className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-lg p-4 shadow-md mb-6">
         <ResponsiveContainer width="100%" height={300}>
@@ -199,8 +211,8 @@ const SalesmanHome = () => {
                   >
                     {attendanceData[i]?.inTime.length > 0
                       ? new Date(
-                          attendanceData[i].inTime[0]
-                        ).toLocaleTimeString()
+                        attendanceData[i].inTime[0]
+                      ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}
@@ -218,8 +230,8 @@ const SalesmanHome = () => {
                   >
                     {attendanceData[i]?.outTime.length > 0
                       ? new Date(
-                          attendanceData[i].outTime[0]
-                        ).toLocaleTimeString()
+                        attendanceData[i].outTime[0]
+                      ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}

@@ -87,15 +87,28 @@ const TableWithSearchFilter = ({
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
+
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+        ticketId: searchID,
+        staffId: ticketData?.staffId,
+        branchName: ticketData?.branchName,
+      };
+
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
+
+
+
       const response = await ApiService.post(
-        '/dashboards/getTicketDetailsAgainstSearch',
-        {
-          ticketId: searchID,
-          staffId: ticketData?.staffId,
-          branchName: ticketData?.branchName,
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
+        '/dashboards/getTicketDetailsAgainstSearch', payload
+
       );
       if (response.status) {
         console.log(response.data, 'Response Data');
@@ -111,12 +124,24 @@ const TableWithSearchFilter = ({
 
   const getVoucherDetailsAgainstSearch = useCallback(async () => {
     try {
-      const response = await ApiService.post('/dashboards/getAllVouchers', {
+
+
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
         voucherId: searchID,
         branchName: ticketData?.branchName,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      };
+
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
+
+      const response = await ApiService.post('/dashboards/getAllVouchers', payload);
       if (response.status) {
         console.log(response.data, 'Response Data');
         setFilteredData(response.data);

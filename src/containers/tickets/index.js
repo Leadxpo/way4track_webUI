@@ -440,7 +440,7 @@ const Tickets = () => {
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal} // Pass function correctly
-        onDelete={() => {}}
+        onDelete={() => { }}
       />
     </div>
   );

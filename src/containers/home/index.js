@@ -359,10 +359,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-                ...item,
-                count: response.data.last30DaysTickets,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysTickets,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -386,10 +386,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-                ...item,
-                count: response.data.last30DaysProducts,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysProducts,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -413,10 +413,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-                ...item,
-                count: response.data.last30DaysPurchases,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysPurchases,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -439,10 +439,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-                ...item,
-                count: response.data.last30DaysExpenses,
-                growth: response.data.percentageChange,
-              }
+              ...item,
+              count: response.data.last30DaysExpenses,
+              growth: response.data.percentageChange,
+            }
             : item
         )
       );
@@ -452,15 +452,27 @@ const Home = () => {
     }
   };
   const fetchTicketsData = async () => {
+
+    const payload = {
+      ticketId: '',
+      clientName: '',
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem('role'),
+    };
+
+    // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+    if (
+      payload.role === 'Technician' || payload.role === 'Sales Man'
+    ) {
+      payload.staffId = localStorage.getItem('userId');
+    }
+
+
     try {
       const response = await ApiService.post(
         '/dashboards/getTicketDetailsAgainstSearch',
-        {
-          ticketId: '',
-          clientName: '',
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
+        payload
       );
 
       if (response.status) {
@@ -476,12 +488,23 @@ const Home = () => {
 
   const fetchProductsData = async () => {
     try {
-      const response = await ApiService.post('/products/getAllProductDetails', {
+
+      const payload = {
         ticketId: '',
         clientName: '',
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
+
+      const response = await ApiService.post('/products/getAllProductDetails', payload);
 
       if (response.status) {
         const filteredData = response.data.map((item) => ({
@@ -504,10 +527,20 @@ const Home = () => {
 
   const fetchExpensesData = async () => {
     try {
-      const response = await ApiService.post('/dashboards/getExpenseData', {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
+      const response = await ApiService.post('/dashboards/getExpenseData', payload);
 
       if (response.status) {
         setTotalExpenses(response.data);
@@ -522,10 +555,20 @@ const Home = () => {
 
   const fetchPurchaseData = async () => {
     try {
-      const response = await ApiService.post('/dashboards/getPurchaseData', {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
+      const response = await ApiService.post('/dashboards/getPurchaseData', payload);
 
       if (response.status) {
         console.log(response.data, 'purchase');

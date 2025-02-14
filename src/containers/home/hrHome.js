@@ -5,6 +5,7 @@ const HrHome = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+
   const [totals, setTotals] = useState({
     totalBranches: 0,
     totalTechnicians: 0,
@@ -19,189 +20,59 @@ const HrHome = () => {
     getCandidateStats();
   }, []);
 
+
+  const columns = [
+    { title: 'Hiring ID', dataIndex: 'hiringId', key: 'hiringId' },
+    { title: 'Candidate Name', dataIndex: 'candidateName', key: 'candidateName' },
+    { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: 'Address', dataIndex: 'address', key: 'address' },
+    { title: 'Status', dataIndex: 'status', key: 'status' },
+    { title: 'Company Code', dataIndex: 'companyCode', key: 'companyCode' },
+    { title: 'Unit Code', dataIndex: 'unitCode', key: 'unitCode' },
+    { title: 'Hiring Level', dataIndex: 'hiringLevel', key: 'hiringLevel' },
+    {
+      title: 'Qualifications',
+      dataIndex: 'qualifications',
+      key: 'qualifications',
+      render: (qualifications) => (
+        <ul>
+          {qualifications.map((q, index) => (
+            <li key={index}>
+              {q.qualificationName} ({q.yearOfPass}) - {q.marks}%
+            </li>
+          ))}
+        </ul>
+      )
+    },
+    {
+      title: 'Resume',
+      dataIndex: 'resumePath',
+      key: 'resumePath',
+      render: (resumePath) => resumePath ? (
+        <a href={resumePath} target="_blank" rel="noopener noreferrer">View Resume</a>
+      ) : 'N/A'
+    },
+    {
+      title: 'Date of Upload',
+      dataIndex: 'dateOfUpload',
+      key: 'dateOfUpload',
+      render: (date) => new Date(date).toLocaleDateString()
+    }
+  ];
+
+
   const fetchStaffDetails = async () => {
     try {
-      const response = await ApiService.post(
-        '/dashboards/getTotalStaffDetails',
-        {
-          compoanyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      const response = await ApiService.post('/dashboards/getTotalStaffDetails', payload);
+
       if (response.status) {
-        response.data = {
-          result: [
-            {
-              branchName: 'Central Office',
-              totalStaff: '2',
-              totalTechnicians: '0',
-              totalSales: '0',
-              totalNonTechnicians: '2',
-            },
-            {
-              branchName: 'Downtown Branch',
-              totalStaff: '2',
-              totalTechnicians: '0',
-              totalSales: '0',
-              totalNonTechnicians: '2',
-            },
-            {
-              branchName: null,
-              totalStaff: '10',
-              totalTechnicians: '0',
-              totalSales: '0',
-              totalNonTechnicians: '10',
-            },
-            {
-              branchName: 'vishakapatnam',
-              totalStaff: '3',
-              totalTechnicians: '0',
-              totalSales: '0',
-              totalNonTechnicians: '3',
-            },
-          ],
-          staff: [
-            {
-              staffId: 'SF-00001',
-              staffName: 'Ramesh',
-              staffDesignation: 'CEO',
-              branchName: 'Central Office',
-              branchManagerName: 'John Doe',
-              branchManagerPhoneNumber: '123454567890',
-            },
-            {
-              staffId: 'SF-00002',
-              staffName: 'Jane Smith',
-              staffDesignation: 'Warehouse Manager',
-              branchName: 'Downtown Branch',
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00005',
-              staffName: 'John Doe',
-              staffDesignation: 'Branch Manager',
-              branchName: 'Central Office',
-              branchManagerName: 'John Doe',
-              branchManagerPhoneNumber: '123454567890',
-            },
-            {
-              staffId: 'SF-00006',
-              staffName: 'Teja',
-              staffDesignation: 'CEO',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00007',
-              staffName: 'oi',
-              staffDesignation: 'HR',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00008',
-              staffName: 'ddxdd',
-              staffDesignation: 'Call Center',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00009',
-              staffName: 'sdf',
-              staffDesignation: 'CEO',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00010',
-              staffName: 'rameshTunagana',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00011',
-              staffName: 'rams',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00012',
-              staffName: 'rams',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00013',
-              staffName: 'rams',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00014',
-              staffName: 'rams',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00015',
-              staffName: 'rams',
-              staffDesignation: 'Accountant',
-              branchName: null,
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00016',
-              staffName: 'man',
-              staffDesignation: 'Accountant',
-              branchName: 'Downtown Branch',
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00017',
-              staffName: 'prabhas',
-              staffDesignation: 'Sub Dealer',
-              branchName: 'vishakapatnam',
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00018',
-              staffName: 'aruna',
-              staffDesignation: 'CEO',
-              branchName: 'vishakapatnam',
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-            {
-              staffId: 'SF-00019',
-              staffName: 'aruna kola',
-              staffDesignation: 'CEO',
-              branchName: 'vishakapatnam',
-              branchManagerName: null,
-              branchManagerPhoneNumber: null,
-            },
-          ],
-        };
         const branchData = response.data.result;
         const staffData = response.data.staff;
-
         // Process totals
         const totalBranches = branchData.reduce(
           (total, branch) => total + parseInt(branch.totalStaff || 0, 10),
@@ -261,14 +132,13 @@ const HrHome = () => {
 
   const getHiringSearchDetails = async () => {
     try {
-      const response = await ApiService.post('/hiring/getHiringSearchDetails', {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-
-      console.log(response);
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      const response = await ApiService.post('/hiring/getHiringSearchDetails', payload);
+      console.log("Full API Response:", response);
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -278,7 +148,7 @@ const HrHome = () => {
       alert('Failed to fetch client details.');
     }
   };
-
+  console.log(filteredData, "filteredDatafilteredData")
   const getCandidateStats = async () => {
     try {
       const response = await ApiService.post(
@@ -338,11 +208,10 @@ const HrHome = () => {
             <button
               key={index}
               onClick={() => setSelectedBranch(branch)}
-              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
-                selectedBranch?.name === branch.name
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
+              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${selectedBranch?.name === branch.name
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-300 text-gray-700'
+                }`}
             >
               {branch.name}
             </button>
@@ -393,12 +262,12 @@ const HrHome = () => {
       </div>
       <div className="p-6">
         <Table
-          columns={filteredData.length ? Object.keys(filteredData[0]) : []}
-          data={filteredData}
-          showDelete={false}
-          showEdit={false}
-          showDetails={false}
+          columns={columns}
+          dataSource={filteredData}
+          rowKey="key"
         />
+
+
       </div>
     </div>
   );

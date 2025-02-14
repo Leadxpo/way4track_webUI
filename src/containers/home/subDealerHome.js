@@ -9,10 +9,22 @@ const SubDealerHome = () => {
   useEffect(() => {
     const fetchPurchaseOrderData = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getPurchaseOrderDataTable', {
+
+        const payload = {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
-        });
+          role: localStorage.getItem('role'),
+        };
+
+        if (
+          payload.role === 'Technician' || payload.role === 'Sales Man'
+        ) {
+          payload.staffId = localStorage.getItem('userId');
+        }
+
+        const response = await ApiService.post('/dashboards/getPurchaseOrderDataTable',
+          payload
+        );
         if (response.status) {
           setDataSource(response.data || []);
         } else {
@@ -30,10 +42,20 @@ const SubDealerHome = () => {
   useEffect(() => {
     const fetchPaymentData = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getPaymentDataTable', {
+        const payload = {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
-        });
+          role: localStorage.getItem('role'),
+        };
+
+        if (
+          payload.role === 'Technician' || payload.role === 'Sales Man'
+        ) {
+          payload.staffId = localStorage.getItem('userId');
+        }
+
+
+        const response = await ApiService.post('/dashboards/getPaymentDataTable', payload);
         if (response.status) {
           setData(response.data || []);
         } else {
