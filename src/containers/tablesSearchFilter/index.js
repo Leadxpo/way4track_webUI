@@ -154,6 +154,27 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch vendor details.');
     }
   }, [searchID, searchName, voucherData?.branchName]);
+
+  const getReceiptDetailsAgainstSearch = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getReceiptData', {
+        voucherId: searchID,
+        clientName: searchName,
+        branchName: ticketData?.branchName,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.status) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch voucher details.');
+      }
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+      alert('Failed to fetch vendor details.');
+    }
+  }, [searchID, searchName, voucherData?.branchName]);
   useEffect(() => {
     switch (type) {
       case 'tickets':
@@ -167,6 +188,9 @@ const TableWithSearchFilter = ({
         break;
       case 'vouchers':
         getVoucherDetailsAgainstSearch();
+        break;
+      case 'receipts':
+        getReceiptDetailsAgainstSearch();
         break;
       default:
         return;
@@ -192,7 +216,7 @@ const TableWithSearchFilter = ({
         dataSource = filteredData;
         break;
       case 'receipts':
-        dataSource = receiptsData;
+        dataSource = filteredData;
         break;
       case 'Expenses':
         dataSource = totalExpenses;
@@ -256,6 +280,9 @@ const TableWithSearchFilter = ({
         break;
       case 'vouchers':
         getVoucherDetailsAgainstSearch();
+        break;
+      case 'receipts':
+        getReceiptDetailsAgainstSearch();
         break;
     }
   };
