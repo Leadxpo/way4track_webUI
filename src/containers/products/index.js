@@ -25,44 +25,6 @@ const Products = () => {
   });
   const [tableData, setTableData] = useState([]);
   const [columns, setColumns] = useState([]);
-
-
-
-  // const fetchData = async (branchName) => {
-  //   try {
-  //     const payload = {
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //       staffId: localStorage.getItem('userId'),
-  //     };
-  //     if (branchName && branchName !== 'All') {
-  //       payload.branch = branchName;
-  //     }
-
-  //     const res = await ApiService.post(
-  //       '/dashboards/getProductAssignmentSummary',
-  //       payload
-  //     );
-  //     if (res.status) {
-  //       const { groupedBranches, totalAssignedQty, totalInHandsQty, totalQty } =
-  //         res.data;
-
-  //       setBranches([
-  //         { branchName: 'All' },
-  //         ...groupedBranches.map((b) => ({ branchName: b.branchName })),
-  //       ]);
-  //       setProductCounts({
-  //         totalAssignedQty,
-  //         totalInHandsQty,
-  //         totalQty,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error('Failed to fetch data:', err);
-  //   }
-  // };
-
-
   const fetchData = async (branchName) => {
     try {
       const payload = {
@@ -120,16 +82,18 @@ const Products = () => {
         role: localStorage.getItem('role'),
       };
 
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
 
-      const response = await ApiService.post(
-        '/dashboards/getSearchDetailProductAssign', payload);
+      let response;
+      if (payload.staffId) {
+        response = await ApiService.post('/dashboards/getSearchDetailProductAssign', payload);
+      } else {
+        response = await ApiService.post('/products/getSearchDetailProduct', payload);
+      }
 
-      if (response.status) {
+      if (response?.status) {
         const filteredData = response.data.map((item) => ({
           productId: item.id,
           productName: item.productName || 'N/A',
@@ -140,18 +104,16 @@ const Products = () => {
         }));
 
         setTableData(filteredData);
-        setColumns(Object.keys(filteredData[0] || []));
+        setColumns(Object.keys(filteredData[0] || {})); // Corrected empty object
         setProducts(response.data || []);
       } else {
-        alert(
-          response.data.internalMessage || 'Failed to fetch staff details.'
-        );
+        alert(response?.data?.internalMessage || 'Failed to fetch product details.');
       }
     } catch (error) {
-      console.error('Error fetching staff details:', error);
-      alert('Failed to fetch staff details.');
+      console.error('Error fetching product details:', error);
+      alert('Failed to fetch product details.');
     }
-  }, [searchData]); // ✅ Fix applied here
+  }, [searchData, initialAuthState.companyCode, initialAuthState.unitCode]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
