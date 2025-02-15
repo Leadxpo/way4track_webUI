@@ -174,7 +174,7 @@ const AddEditRequestForm = () => {
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request By:</label>
-              <input
+              {/* <input
                 type="text"
                 name="requestType"
                 value={formData.requestFrom}
@@ -182,8 +182,8 @@ const AddEditRequestForm = () => {
                 placeholder="Enter Name"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 disabled
-              />
-              {/* <select
+              /> */}
+              <select
                 name="requestFrom"
                 value={formData.requestFrom}
                 onChange={handleInputChange}
@@ -197,7 +197,7 @@ const AddEditRequestForm = () => {
                     {staffMember.name}
                   </option>
                 ))}
-              </select> */}
+              </select>
             </div>
           </div>
 

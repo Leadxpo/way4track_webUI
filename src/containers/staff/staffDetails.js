@@ -50,6 +50,13 @@ const StaffDetails = () => {
     fetchStaffDetails();
   }, [employeeData.staffId]);
 
+  const DetailItem = ({ label, value }) => (
+    <div className="border-b pb-2">
+      <p className="text-sm font-semibold text-gray-600">{label}</p>
+      <p className="text-lg font-medium">{value || "N/A"}</p>
+    </div>
+  );
+
   // Fetch attendance details when a date is selected
   useEffect(() => {
     if (!selectedDate) return;
@@ -87,61 +94,30 @@ const StaffDetails = () => {
         ) : (
           <>
             {/* Photo Section */}
-            <div className="flex items-center space-x-2 mb-6">
-              <img
-                src={staffDetails.staffPhoto}
-                alt="Employee"
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            </div>
+            <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6">
+              {/* Profile Picture */}
+              <div className="flex flex-col items-center space-y-4 mb-6">
+                <img
+                  src={staffDetails.staffPhoto}
+                  alt="Employee"
+                  className="w-32 h-32 rounded-full object-cover shadow-md"
+                />
+                <h2 className="text-xl font-semibold">{staffDetails.name}</h2>
+              </div>
 
-            {/* Staff Details */}
-            <div className="space-y-4">
-              {/* Form field for Name */}
-              <div>
-                <p className="font-semibold mb-1">Name</p>
-                <p>{staffDetails.name}</p>
-              </div>
-              {/* Other fields follow the same pattern */}
-              {/* Number */}
-              <div>
-                <p className="font-semibold mb-1">Number</p>
-                <p>{staffDetails.phoneNumber}</p>
-              </div>
-              {/* Staff ID */}
-              <div>
-                <p className="font-semibold mb-1">Staff ID</p>
-                <p>{staffDetails.staffId}</p>
-              </div>
-              {/* Designation */}
-              <div>
-                <p className="font-semibold mb-1">Designation</p>
-                <p>{staffDetails.designation}</p>
-              </div>
-              {/* Branch */}
-              <div>
-                <p className="font-semibold mb-1">Branch</p>
-                <p>{staffDetails.branchName}</p>
-              </div>
-              {/* Date of Birth */}
-              <div>
-                <p className="font-semibold mb-1">Date of Birth</p>
-                <p>{staffDetails.dob}</p>
-              </div>
-              {/* Email */}
-              <div>
-                <p className="font-semibold mb-1">Email ID</p>
-                <p>{staffDetails.email}</p>
-              </div>
-              {/* Aadhar */}
-              <div>
-                <p className="font-semibold mb-1">Aadhar Number</p>
-                <p>{staffDetails.aadharNumber}</p>
-              </div>
-              {/* Address */}
-              <div>
-                <p className="font-semibold mb-1">Address</p>
-                <p>{staffDetails.address}</p>
+              {/* Staff Details */}
+              <div className="space-y-4 text-gray-700">
+                <DetailItem label="Staff ID" value={staffDetails.staffId} />
+                <DetailItem label="Designation" value={staffDetails.designation} />
+                <DetailItem label="Phone Number" value={staffDetails.phoneNumber} />
+                <DetailItem label="Branch" value={staffDetails.branchName} />
+                <DetailItem label="Date of Birth" value={staffDetails.dob} />
+                <DetailItem label="Email" value={staffDetails.email} />
+                <DetailItem label="Aadhar Number" value={staffDetails.aadharNumber} />
+                <DetailItem label="Address" value={staffDetails.address} />
+                <DetailItem label="Joining Date" value={staffDetails.joiningDate} />
+                <DetailItem label="Experience (Years)" value={staffDetails.beforeExperience} />
+                <DetailItem label="Basic Salary" value={`₹${staffDetails.basicSalary}`} />
               </div>
             </div>
 
@@ -196,8 +172,8 @@ const StaffDetails = () => {
                         >
                           {attendanceData[i]?.inTime.length > 0
                             ? new Date(
-                                attendanceData[i].inTime[0]
-                              ).toLocaleTimeString()
+                              attendanceData[i].inTime[0]
+                            ).toLocaleTimeString()
                             : 'No Data'}
                         </div>
                       ))}
@@ -215,8 +191,8 @@ const StaffDetails = () => {
                         >
                           {attendanceData[i]?.outTime.length > 0
                             ? new Date(
-                                attendanceData[i].outTime[0]
-                              ).toLocaleTimeString()
+                              attendanceData[i].outTime[0]
+                            ).toLocaleTimeString()
                             : 'No Data'}
                         </div>
                       ))}
@@ -264,6 +240,8 @@ const StaffDetails = () => {
       </div>
     </div>
   );
+
+
 };
 
 export default StaffDetails;

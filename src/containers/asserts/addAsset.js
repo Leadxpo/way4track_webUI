@@ -212,7 +212,7 @@ const AddAsset = () => {
                     Select a voucherId
                   </option>
                   {voucherList.map((branch) => (
-                    <option key={branch.voucherId} value={branch.voucherId}>
+                    <option key={branch.id} value={branch.id}>
                       {branch.voucherId}
                     </option>
                   ))}
