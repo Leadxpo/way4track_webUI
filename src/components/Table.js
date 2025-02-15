@@ -27,6 +27,7 @@ const getStatusStyle = (status) => {
     case 'Sent':
     case 'Overdue':
     case 'Pending':
+    case 'pending':
     case 'Processing':
       return {
         textColor: 'text-orange-600',
