@@ -602,10 +602,10 @@ const Home = () => {
   const getAnalysis = async () => {
     try {
       const date = new Date();
-
       const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
         date.getMonth() + 1
       ).padStart(2, '0')}/${date.getFullYear()}`;
+
       const response = await ApiService.post(
         '/dashboards/getMonthWiseBalance',
         {
@@ -614,13 +614,79 @@ const Home = () => {
           unitCode: initialAuthState?.unitCode,
         }
       );
-      if (response.status) {
+      // const response = {
+      //   status: true,
+      //   errorCode: 200,
+      //   internalMessage: 'Data retrieved successfully',
+      //   data: {
+      //     status: true,
+      //     errorCode: 200,
+      //     internalMessage: 'Data retrieved successfully',
+      //     data: [
+      //       {
+      //         branchName: 'Downtown Branch',
+      //         data: [
+      //           {
+      //             year: 2024,
+      //             month: 12,
+      //             monthName: 'December',
+      //             creditAmount: 15000,
+      //             debitAmount: 0,
+      //             balanceAmount: 15000,
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         branchName: 'Central Office',
+      //         data: [
+      //           {
+      //             year: 2024,
+      //             month: 12,
+      //             monthName: 'December',
+      //             creditAmount: 120000,
+      //             debitAmount: 0,
+      //             balanceAmount: 120000,
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // };
+
+      if (
+        response.status &&
+        response.data?.data &&
+        response.data?.data.length
+      ) {
+        const formattedData = response.data.data.map((branch, index) => ({
+          branch: branch.branchName,
+          background: getBackgroundColor(index),
+          data: branch.data.map((entry) => ({
+            month: entry.monthName,
+            profit: (entry.creditAmount / entry.balanceAmount) * 100,
+          })),
+        }));
+        console.log('branches charts---', formattedData);
+        setBranchesData(formattedData);
       } else {
-        alert(response.data.message || 'Failed to analysis details.');
+        alert(
+          response.data.internalMessage || 'Failed to fetch analysis details.'
+        );
       }
     } catch (e) {
-      console.error('error in fetching analysis details');
+      console.error('Error fetching analysis details:', e);
     }
+  };
+
+  // Function to get a background color based on index
+  const getBackgroundColor = (index) => {
+    const colors = [
+      'linear-gradient(180deg, #CE0000 0%, #D50000 50%, #C00000 75%, #B50000 87.5%, #A70000 93.75%, #8F0404 100%)',
+      'linear-gradient(180deg, #12A651 0%, #0C7338 50%, #0A5A2C 75%, #084D25 87.5%, #084622 93.75%, #074321 100%)',
+      'linear-gradient(180deg, #000000 0%, #272727 100%)',
+      'linear-gradient(180deg, #0033CB 0%, #002698 50%, #00207F 75%, #001C72 87.5%, #001B6C 100%)',
+    ];
+    return colors[index % colors.length]; // Cycle through colors
   };
 
   const getProductTypeCreditAndDebitPercentages = async () => {
