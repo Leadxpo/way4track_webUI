@@ -12,6 +12,8 @@ const AddEditBankDetails = () => {
   // Initialize form data with existing bank details if available
   const initialFormData = {
     accountHolderName: bankData.accountName || '',
+    name: bankData.name || '',
+    totalAmount: bankData.totalAmount || 0,
     accountType: bankData.accountType || '',
     accountNumber: bankData.accountNumber || '',
     branch: bankData.branchId || '',
@@ -32,11 +34,11 @@ const AddEditBankDetails = () => {
 
   const handleSave = async () => {
 
-    // const payload = {
-    //   ...formData,
-    // };
+    const payload = {
+      ...formData,
+    };
 
-    const payload = new FormData();
+    // const payload = new FormData();
 
     try {
       const endpoint = formData.id
@@ -108,6 +110,17 @@ const AddEditBankDetails = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+          <div>
+            <p className="font-semibold mb-1">Bank Name</p>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter Account Holder Name"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
           {/* Account Type */}
           <div>
             <p className="font-semibold mb-1">Account Type</p>
@@ -141,6 +154,17 @@ const AddEditBankDetails = () => {
               type="text"
               name="branch"
               value={formData.branch}
+              onChange={handleInputChange}
+              placeholder="Enter Branch"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <p className="font-semibold mb-1">Amount</p>
+            <input
+              type="number"
+              name="totalAmount"
+              value={formData.totalAmount}
               onChange={handleInputChange}
               placeholder="Enter Branch"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"

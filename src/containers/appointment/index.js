@@ -17,7 +17,13 @@ const Appointments = () => {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
       };
+      if (
+        payload.role === 'Technician' || payload.role === 'Sales Man'
+      ) {
+        payload.staffId = localStorage.getItem('userId');
+      }
 
       if (branchName !== 'All') {
         payload.branchName = branchName;

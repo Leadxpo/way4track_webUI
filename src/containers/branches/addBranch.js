@@ -35,16 +35,16 @@ const AddBranchForm = () => {
 
   // Fetch branch list
   const fetchBranchList = async () => {
-    if (!location.state?.branchDetails) return;
+    if (!branchData) return;
     try {
       const response = await ApiService.post('/branch/getBranchDetails', {
-        id: location.state.branchDetails.id,
+        id: branchData.id,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
       if (response.status && response.data.length > 0) {
         const matchedBranch = response.data.find(
-          (branch) => branch.id === location.state.branchDetails.id
+          (branch) => branch.id === branchData.id
         );
 
         if (matchedBranch) {
@@ -81,7 +81,7 @@ const AddBranchForm = () => {
   };
 
   useEffect(() => {
-    console.log(location.state.branchDetails);
+    console.log(branchData);
     fetchBranchList();
   }, []);
 

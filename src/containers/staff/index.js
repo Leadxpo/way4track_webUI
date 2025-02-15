@@ -66,12 +66,12 @@ const Staff = () => {
     await getStaffSearchDetails();
   };
   // Initial API calls
-  // useEffect(() => {
-  //   const perms = getPermissions('staff');
-  //   setPermissions(perms);
-  //   getStaffSearchDetails();
-  //   fetchBranches();
-  // }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
+  useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
+    getStaffSearchDetails();
+    fetchBranches();
+  }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
 
   useEffect(() => {
     fetchBranches();

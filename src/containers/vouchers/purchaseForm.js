@@ -152,42 +152,30 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     }
   };
 
-  // For purchase items
   const [rows, setRows] = useState([
-    { id: 1, productId: '', quantity: '', amount: 0 },
+    { id: 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
   ]);
 
-  // Add a new row
-  const addRow = () => {
-    setRows([
-      ...rows,
-      { id: rows.length + 1, productId: '', quantity: '', amount: 0 },
-    ]);
-  };
+  const handleProductItemChange = async (id, e) => {
+    const { value } = e.target;
+    const selectedProduct = products.find((product) => product.id === value);
 
-  // Remove the last row (ensure at least one row remains)
-  const removeRow = () => {
-    if (rows.length > 1) {
-      setRows(rows.slice(0, -1));
-    }
-  };
+    if (!selectedProduct) return;
 
-  // Handle input changes for Name, Quantity, and Amount
-  const handlePurchaseItemsInputChange = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return {
           ...row,
-          [field]: field === 'amount' ? parseFloat(value) || 0 : value,
+          productId: selectedProduct.id,
+          productName: selectedProduct.productName,
+          quantity: 1, // Default 1
+          totalCost: selectedProduct.totalCost || 0, // Get totalCost from backend
+          amount: selectedProduct.totalCost || 0, // Set amount as totalCost initially
         };
       }
       return row;
     });
     setRows(updatedRows);
-  };
-
-  const calculateTotalAmount = () => {
-    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
   };
 
   const getTotalQuantity = () => {
@@ -210,24 +198,43 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     });
   };
 
-  const handleProductItemChange = (id, e) => {
-    const { value } = e.target;
-    const selectedProduct = products.find(
-      (product) => product.productName === value
-    );
-
+  const handlePurchaseItemsInputChange = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
+        let updatedValue = field === "quantity" ? parseFloat(value) || 0 : parseFloat(value) || 0;
+        let newAmount = field === "quantity" ? updatedValue * (row.totalCost || 0) : row.amount;
+
         return {
           ...row,
-          productId: selectedProduct ? selectedProduct.id : '',
-          name: value,
+          [field]: updatedValue,
+          amount: newAmount, // Ensure amount updates based on quantity change
         };
       }
       return row;
     });
     setRows(updatedRows);
   };
+
+  // Calculate total amount
+  const calculateTotalAmount = () => {
+    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
+  };
+
+  // Add a new row
+  const addRow = () => {
+    setRows([
+      ...rows,
+      { id: rows.length + 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+    ]);
+  };
+
+  // Remove the last row (ensure at least one row remains)
+  const removeRow = () => {
+    if (rows.length > 1) {
+      setRows(rows.slice(0, -1));
+    }
+  };
+
 
   return (
     <div>
@@ -295,36 +302,31 @@ const PurchaseForm = ({ branches, bankOptions }) => {
               {rows.map((row) => (
                 <div key={row.id} className="flex items-center space-x-4">
                   <select
-                    name="name"
-                    value={row.name}
+                    name="productId"
+                    value={row.productId}
                     onChange={(e) => handleProductItemChange(row.id, e)}
                     className="w-full p-2 border rounded-md"
                   >
                     <option value="">Select Product</option>
                     {products.map((product) => (
-                      <option key={product.id} value={product.productName}>
+                      <option key={product.id} value={product.id}>
                         {product.productName}
                       </option>
                     ))}
                   </select>
                   <input
                     type="text"
-                    placeholder="Product ID"
-                    value={row.productId}
+                    placeholder="Product tName"
+                    value={row.productName}
                     readOnly
                     className="p-2 border rounded-md w-1/3"
                   />
+
                   <input
                     type="number"
                     placeholder="Quantity"
                     value={row.quantity}
-                    onChange={(e) =>
-                      handlePurchaseItemsInputChange(
-                        row.id,
-                        'quantity',
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => handlePurchaseItemsInputChange(row.id, "quantity", e.target.value)}
                     className="p-2 border rounded-md w-1/3"
                   />
                   <input
@@ -369,7 +371,6 @@ const PurchaseForm = ({ branches, bankOptions }) => {
             </div>
           </div>
         )}
-
         <h3 className="font-bold mb-2">Payment Mode</h3>
         <div className="flex space-x-2 mb-4">
           {PAYMENT_MODES.map((mode) => (

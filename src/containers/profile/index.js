@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const ProfileSettings = () => {
   const [profileData, setProfileData] = useState(null);
@@ -12,8 +12,8 @@ const ProfileSettings = () => {
           staffId: localStorage.getItem('userId'),
           password: localStorage.getItem('password'),
           designation: localStorage.getItem('role'),
-          companyCode: localStorage.getItem('companyCode'),
-          unitCode: localStorage.getItem('unitCode'),
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
         };
 
         const response = await ApiService.post('/login/ProfileDetails', payload);

@@ -1,173 +1,254 @@
-import React, { useState } from 'react';
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { FaEllipsisVertical } from 'react-icons/fa6';
+// import { FaList, FaTh, FaPlus, FaSearch } from 'react-icons/fa';
+// import DropdownCard from '../../components/DropdownCard';
+// import { useNavigate } from 'react-router';
+// import ApiService, { initialAuthState } from '../../services/ApiService';
+// import Table from '../../components/Table';
+// import { getPermissions } from '../../common/commonUtils';
 
-const InHandProductsForm = () => {
-  const [formData, setFormData] = useState({
-    to: '',
-    staffId: '',
-    date: '',
-    time: '10:00',
-    interval: '30 min',
-    period: 'AM',
-    type: '',
-    quantity: '',
-  });
+// const InHandProductsForm = () => {
+//   const [selectedBranch, setSelectedBranch] = useState('');
+//   const [isGridView, setIsGridView] = useState(true);
+//   const [products, setProducts] = useState([]);
+//   const [permissions, setPermissions] = useState({});
+//   const [searchData, setSearchData] = useState({
+//     productId: '',
+//     productName: '',
+//     location: '',
+//   });
+//   const [productCounts, setProductCounts] = useState({
+//     totalInHandsQty: 0
+//   });
+//   const [tableData, setTableData] = useState([]);
+//   const [columns, setColumns] = useState([]);
+//   const fetchData = async () => {
+//     try {
+//       const payload = {
+//         companyCode: initialAuthState.companyCode,
+//         unitCode: initialAuthState.unitCode,
+//         staffId: localStorage.getItem('userId'),
+//       };
+//       const res = await ApiService.post(
+//         '/dashboards/getProductAssignmentSummary',
+//         payload
+//       );
+//       if (res.status) {
+//         const { totalInHandsQty } =
+//           res.data;
+//         setProductCounts({
+//           totalInHandsQty,
+//         });
+//       }
+//     } catch (err) {
+//       console.error('Failed to fetch data:', err);
+//     }
+//   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+//   const getSearchDetailProduct = useCallback(async () => {
+//     try {
+//       const response = await ApiService.post(
+//         '/dashboards/getSearchDetailProductAssign',
+//         {
+//           ...searchData,
+//           companyCode: initialAuthState?.companyCode,
+//           unitCode: initialAuthState?.unitCode,
+//           staffId: localStorage.getItem('userId'),
+//         }
+//       );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form Data Submitted:', formData);
-  };
+//       if (response.status) {
+//         const filteredData = response.data.map((item) => ({
+//           productId: item.id,
+//           productName: item.productName || 'N/A',
+//           productDescription: item.productDescription || 'N/A',
+//           vendorName: item.vendorName || (item.vendorId?.name ?? 'N/A'),
+//           imeiNumber: item.imeiNumber || 'N/A',
+//           presentStock: item.quantity || 0, // Assuming stock is quantity
+//         }));
 
-  // const handleSubmit = async () => {
-  //   const payload = new FormData();
-  //   try {
-  //     const endpoint =
-  //       '/api/product-assign/handleProductDetails';
-  //     const response = await ApiService.post(endpoint, payload, {
-  //       headers: { 'Content-Type': 'multipart/form-data' },
-  //     });
+//         setTableData(filteredData);
+//         setColumns(Object.keys(filteredData[0] || []));
+//         setProducts(response.data || []);
+//       } else {
+//         alert(
+//           response.data.internalMessage || 'Failed to fetch staff details.'
+//         );
+//       }
+//     } catch (error) {
+//       console.error('Error fetching staff details:', error);
+//       alert('Failed to fetch staff details.');
+//     }
+//   }, [searchData]);
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setSearchData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+//   useEffect(() => {
+//     const perms = getPermissions('product');
+//     setPermissions(perms);
+//     fetchData(selectedBranch);
+//   }, [selectedBranch]);
+//   useEffect(() => {
+//     getSearchDetailProduct();
+//   }, [getSearchDetailProduct]);
 
-  //     if (response.data.status) {
-  //       navigate('/product_assign');
-  //     } else {
-  //       alert('Failed to save product details. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error saving product details:', error);
-  //     alert('Failed to save product details. Please try again.');
-  //   }
-  // };
+//   const handleSearch = async () => {
+//     getSearchDetailProduct();
+//   };
 
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-xl mx-auto p-6 rounded-lg space-y-6"
-    >
-      <h1 className="text-3xl font-bold mb-4">In Hand Products</h1>
+//   // Navigate to details page
+//   const handleMoreDetails = () => {
+//     navigate('/product-details');
+//   };
 
-      {/* To */}
-      <div className="flex flex-col">
-        <label className="font-semibold mb-2">To:</label>
-        <input
-          type="text"
-          name="to"
-          value={formData.to}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          placeholder="Enter recipient"
-        />
-      </div>
 
-      {/* Staff ID */}
-      <div className="flex flex-col">
-        <label className="font-semibold mb-2">Staff ID:</label>
-        <input
-          type="text"
-          name="staffId"
-          value={formData.staffId}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          placeholder="Enter Staff ID"
-        />
-      </div>
+//   const truncateString = (str) =>
+//     str.length <= 80 ? str : str.slice(0, 80) + '...';
+//   return (
+//     <div className="m-2">
+//       <div className="flex justify-between items-center py-4">
+//         {/* Left: Staff Details Heading */}
+//         <h2 className="text-2xl font-semibold text-gray-800">Products</h2>
 
-      {/* Date and Time */}
-      <div className="flex flex-col">
-        <label className="font-semibold mb-2">Date:</label>
-        <div className="flex items-center space-x-2">
-          <div className="relative flex-1">
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-          <select
-            name="time"
-            value={formData.time}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          >
-            <option>00:00</option>
-            <option>01:00</option>
-            <option>02:00</option>
-            <option>03:00</option>
-            <option>04:00</option>
-            <option>05:00</option>
-            <option>06:00</option>
-            <option>07:00</option>
-            <option>08:00</option>
-            <option>09:00</option>
-            <option>10:00</option>
-            <option>11:00</option>
-            <option>12:00</option>
-          </select>
-          <select
-            name="interval"
-            value={formData.interval}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          >
-            <option>30 min</option>
-            <option>1 hour</option>
-          </select>
-          <select
-            name="period"
-            value={formData.period}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          >
-            <option>AM</option>
-            <option>PM</option>
-          </select>
-        </div>
-      </div>
+//         {/* Right: Icons and Add Staff Button */}
+//         <div className="flex items-center space-x-4">
+//           {/* List View Icon */}
+//           <button
+//             className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
+//             onClick={() => setIsGridView(false)}
+//           >
+//             <FaList size={18} />
+//           </button>
 
-      {/* Type */}
-      <div className="flex flex-col">
-        <label className="font-semibold mb-2">Type:</label>
-        <input
-          type="text"
-          name="type"
-          value={formData.type}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          placeholder="Enter type"
-        />
-      </div>
+//           {/* Grid View Icon */}
+//           <button
+//             className={`p-2 cursor-pointer ${isGridView && 'border border-black'}`}
+//             onClick={() => setIsGridView(true)}
+//           >
+//             <FaTh size={18} />
+//           </button>
+//           {/* <button
+//             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+//             onClick={() => navigate('/add-product')}
+//             disabled={!permissions.add}
+//           >
+//             <span>Add Product</span>
+//           </button> */}
+//         </div>
+//       </div>
+//       <div className="flex justify-between mx-6">
 
-      {/* Quantity */}
-      <div className="flex flex-col">
-        <label className="font-semibold mb-2">Quantity:</label>
-        <input
-          type="number"
-          name="quantity"
-          value={formData.quantity}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          placeholder="Enter quantity"
-        />
-      </div>
+//         <DropdownCard
+//           bgColor="green"
+//           title="In Hand Products"
+//           count={productCounts.totalInHandsQty}
+//           branches={branches}
+//           selectedBranch={selectedBranch}
+//           setSelectedBranch={setSelectedBranch}
+//         />
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-      >
-        Submit
-      </button>
-    </form>
-  );
-};
+//       </div>
 
-export default InHandProductsForm;
+//       <div className="flex mb-4">
+//         <div className="flex-grow mr-2">
+//           <input
+//             type="text"
+//             name="productId"
+//             placeholder="Search with ID"
+//             value={searchData.productId}
+//             onChange={handleInputChange}
+//             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+//             style={{ paddingLeft: '8px' }}
+//           />
+//         </div>
+//         <div className="flex-grow mx-2">
+//           <input
+//             type="text"
+//             name="productName"
+//             placeholder="Search with Name"
+//             value={searchData.productName}
+//             onChange={handleInputChange}
+//             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+//             style={{ paddingLeft: '8px' }}
+//           />
+//         </div>
+//         <div className="flex-grow mx-2">
+//           <input
+//             type="text"
+//             name="location"
+//             placeholder="Search with location"
+//             value={searchData.location}
+//             onChange={handleInputChange}
+//             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+//             style={{ paddingLeft: '8px' }}
+//           />
+//         </div>
+//         <button
+//           onClick={handleSearch}
+//           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+//         >
+//           <FaSearch className="mr-2" /> Search
+//         </button>
+//       </div>
+
+//       {isGridView ? (
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
+//           {products.map((profile, index) => (
+//             <div
+//               key={index}
+//               className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-400"
+//             >
+//               {/* Static 3 dots */}
+//               <div className="absolute top-4 right-4 text-gray-400 cursor-pointer">
+//                 <FaEllipsisVertical />
+//               </div>
+
+//               {/* Profile Picture */}
+//               <img
+//                 className="rounded-full mx-auto h-24 w-24 object-cover"
+//                 src={`https://i.pravatar.cc/150?img=${index + 1}`} // Placeholder image source
+//                 alt="Profile"
+//               />
+
+//               {/* Name and Description */}
+//               <div className="text-center mt-4">
+//                 <h2 className="text-lg font-semibold">{profile.productName}</h2>
+//                 <p className="text-sm text-gray-500">
+//                   {truncateString(profile.productDescription || '')}
+//                 </p>
+//               </div>
+
+//               {/* Button */}
+//               <div className="mt-4 flex justify-center">
+//                 <button
+//                   className={`px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer  ${permissions.add ? '' : 'cursor-not-allowed opacity-50'}`}
+//                   onClick={handleMoreDetails}
+//                   disabled={!permissions.view}
+//                 >
+//                   View Details
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       ) : (
+//         <Table
+//           columns={columns}
+//           data={tableData}
+//           // onEdit={(profile) => console.log('Edit:', profile)}
+//           showEdit={false}
+//           showDelete={permissions.delete}
+//           showDetails={permissions.view}
+//           onDetails={handleMoreDetails}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default InHandProductsForm;
 

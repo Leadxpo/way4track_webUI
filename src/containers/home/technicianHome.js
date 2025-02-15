@@ -26,7 +26,14 @@ const TechnicianHome = () => {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        // role: localStorage.getItem('role'),
+        staffId: localStorage.getItem('userId'),
       };
+      // if (
+      //   payload.role === 'Technician' || payload.role === 'Sales Man'
+      // ) {
+      //   payload.staffId = localStorage.getItem('userId');
+      // }
 
       if (branchName !== 'All') {
         payload.branchName = branchName;
@@ -123,9 +130,9 @@ const TechnicianHome = () => {
         showDelete={false}
         showDetails={false}
         data={appointments}
-        onEdit={() => {}}
-        onDelete={() => {}}
-        onDetails={() => {}}
+        onEdit={() => { }}
+        onDelete={() => { }}
+        onDetails={() => { }}
       />
       <div className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-lg p-4 shadow-md mb-6">
         <ResponsiveContainer width="100%" height={300}>
@@ -197,8 +204,8 @@ const TechnicianHome = () => {
                   >
                     {attendanceData[i]?.inTime.length > 0
                       ? new Date(
-                          attendanceData[i].inTime[0]
-                        ).toLocaleTimeString()
+                        attendanceData[i].inTime[0]
+                      ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}
@@ -216,8 +223,8 @@ const TechnicianHome = () => {
                   >
                     {attendanceData[i]?.outTime.length > 0
                       ? new Date(
-                          attendanceData[i].outTime[0]
-                        ).toLocaleTimeString()
+                        attendanceData[i].outTime[0]
+                      ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}

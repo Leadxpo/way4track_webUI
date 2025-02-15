@@ -23,7 +23,7 @@ const WorkAllocation = () => {
     staffId: workAllocationData.assignedTo,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    voucherId: workAllocationData.voucherId || '',
+    voucherId: workAllocationData.voucherId || null,
     install: workAllocationData.install,
     // clientName: workAllocationData?.clientName,
     clientId: workAllocationData?.clientId || null,
