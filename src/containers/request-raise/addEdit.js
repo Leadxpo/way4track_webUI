@@ -47,12 +47,6 @@ const AddEditRequestForm = () => {
       }
     };
 
-    fetchStaffData();
-  }, []);
-
-
-
-  useEffect(() => {
     const fetchSubDealers = async () => {
       try {
         const response = await ApiService.post(
@@ -61,17 +55,14 @@ const AddEditRequestForm = () => {
         if (response.status) {
           setSubDealer(response.data);
         } else {
+          alert('Error in fetching sub dealers');
           console.error('Error fetching sub dealers');
         }
       } catch (e) {
+        alert('Error in fetching sub dealers');
         console.error('Error fetching sub dealers', e);
       }
     };
-
-    fetchSubDealers();
-  }, []);
-
-  useEffect(() => {
     const fetchBranches = async () => {
       try {
         const response = await ApiService.post(
@@ -88,6 +79,9 @@ const AddEditRequestForm = () => {
     };
 
     fetchBranches();
+
+    fetchSubDealers();
+    fetchStaffData();
   }, []);
 
   const handleInputChange = (e) => {
@@ -95,9 +89,8 @@ const AddEditRequestForm = () => {
     setFormData({ ...formData, [name]: value });
   };
   const handleSave = async () => {
-
     const payload = {
-      ...formData
+      ...formData,
     };
 
     try {
@@ -120,76 +113,77 @@ const AddEditRequestForm = () => {
       console.error('Error saving appointment details:', error);
       alert('Failed to save appointment details. Please try again.');
     }
-    // const handleSave = async () => {
-    //   try {
-    //     const payload = {
-    //       requestType: formData.requestType,
-    //       requestTo: Number(formData.requestTo),
-    //       requestFrom: Number(formData.requestFrom),
-    //       branch: Number(formData.branch),
-    //       description: formData.description,
-    //       status: formData.status,
-    //       subDealerId: formData.subDealerId || 1,
-    //       companyCode: initialAuthState.companyCode,
-    //       unitCode: initialAuthState.unitCode,
-    //     };
-    //     const response = await ApiService.post(
-    //       '/requests/handleRequestDetails',
-    //       payload
-    //     );
-    //     if (response.status) {
-    //       navigate('/requests');
-    //     } else {
-    //       alert('failed to raise request');
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     alert('failed to raise request');
-    //   }
-    // };
+  };
+  // const handleSave = async () => {
+  //   try {
+  //     const payload = {
+  //       requestType: formData.requestType,
+  //       requestTo: Number(formData.requestTo),
+  //       requestFrom: Number(formData.requestFrom),
+  //       branch: Number(formData.branch),
+  //       description: formData.description,
+  //       status: formData.status,
+  //       subDealerId: formData.subDealerId || 1,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+  //     const response = await ApiService.post(
+  //       '/requests/handleRequestDetails',
+  //       payload
+  //     );
+  //     if (response.status) {
+  //       navigate('/requests');
+  //     } else {
+  //       alert('failed to raise request');
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert('failed to raise request');
+  //   }
+  // };
 
-    const handleCancel = () => {
-      // Handle cancel action
-      navigate('/requests');
-    };
+  const handleCancel = () => {
+    // Handle cancel action
+    navigate('/requests');
+  };
 
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
-          {/* Header */}
-          <div className="flex items-center space-x-4 mb-8">
-            <h1 className="text-3xl font-bold">
-              {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
-            </h1>
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
+        {/* Header */}
+        <div className="flex items-center space-x-4 mb-8">
+          <h1 className="text-3xl font-bold">
+            {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
+          </h1>
+        </div>
+
+        {/* Form Fields */}
+        <div className="space-y-4">
+          {/* Form field for Name */}
+          <div>
+            <p className="font-semibold mb-1">Request Type</p>
+            <input
+              type="text"
+              name="requestType"
+              value={formData.requestType}
+              onChange={handleInputChange}
+              placeholder="Enter Name"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
           </div>
-
-          {/* Form Fields */}
-          <div className="space-y-4">
-            {/* Form field for Name */}
-            <div>
-              <p className="font-semibold mb-1">Request Type</p>
+          <div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-2">Request By:</label>
               <input
                 type="text"
                 name="requestType"
-                value={formData.requestType}
+                value={formData.requestFrom}
                 onChange={handleInputChange}
                 placeholder="Enter Name"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                disabled
               />
-            </div>
-            <div>
-              <div className="flex flex-col">
-                <label className="font-semibold mb-2">Request By:</label>
-                <input
-                  type="text"
-                  name="requestType"
-                  value={formData.requestFrom}
-                  onChange={handleInputChange}
-                  placeholder="Enter Name"
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  disabled
-                />
-                {/* <select
+              {/* <select
                 name="requestFrom"
                 value={formData.requestFrom}
                 onChange={handleInputChange}
@@ -204,141 +198,138 @@ const AddEditRequestForm = () => {
                   </option>
                 ))}
               </select> */}
-              </div>
             </div>
+          </div>
 
-            {/* Branch */}
-            {branch.length > 0 && (
-              <div className="space-y-4">
-                <div>
-                  <p className="font-semibold mb-1">Branch</p>
-                  <select
-                    name="branch"
-                    value={formData.branchName}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Select a Branch
-                    </option>
-                    {branch.map((br) => (
-                      <option key={br.id} value={br.id}>
-                        {br.branchName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-            <div>
-              <p className="font-semibold mb-1">Status</p>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select a status
-                </option>
-                <option value="accepted">accepted</option>
-                <option value="rejected">rejected</option>
-                <option value="expire">expire</option>
-                <option value="sent">sent</option>
-                <option value="declined">declined</option>
-                <option value="pending">pending</option>
-              </select>
-            </div>
-            <div>
-              <div className="flex flex-col">
-                <label className="font-semibold mb-2">Request To:</label>
+          {/* Branch */}
+          {branch.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
                 <select
-                  name="requestTo"
-                  value={formData.requestTo}
+                  name="branch"
+                  value={formData.branchName}
                   onChange={handleInputChange}
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
                   <option value="" disabled>
-                    Request To
+                    Select a Branch
                   </option>
-                  {staffData.map((staffMember) => (
-                    <option
-                      key={staffMember.id}
-                      value={staffMember.id}
-                    >
-                      {staffMember.name}
+                  {branch.map((br) => (
+                    <option key={br.id} value={br.id}>
+                      {br.branchName}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <div>
-              {subDealer.length > 0 && (
-                <div className="flex flex-col">
-                  <label className="font-semibold mb-2">
-                    Request To subDealer:
-                  </label>
-                  <select
-                    name="subDealerId"
-                    value={formData.subDealerId}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Request To subDealer
-                    </option>
-                    {subDealer.map((staffMember) => (
-                      <option key={staffMember.id} value={staffMember.id}>
-                        {staffMember.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-
-            {/* Address */}
-            <div>
-              <p className="font-semibold mb-1">Description</p>
-              <input
-                type="text"
-                name="description"
-                value={formData.description}
+          )}
+          <div>
+            <p className="font-semibold mb-1">Status</p>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="" disabled>
+                Select a status
+              </option>
+              <option value="accepted">accepted</option>
+              <option value="rejected">rejected</option>
+              <option value="expire">expire</option>
+              <option value="sent">sent</option>
+              <option value="declined">declined</option>
+              <option value="pending">pending</option>
+            </select>
+          </div>
+          <div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-2">Request To:</label>
+              <select
+                name="requestTo"
+                value={formData.requestTo}
                 onChange={handleInputChange}
-                placeholder="Enter Address"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              />
+              >
+                <option value="" disabled>
+                  Request To
+                </option>
+                {staffData.map((staffMember) => (
+                  <option key={staffMember.id} value={staffMember.id}>
+                    {staffMember.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div>
-            <p className="font-semibold mb-1">created Date</p>
+            {subDealer.length > 0 && (
+              <div className="flex flex-col">
+                <label className="font-semibold mb-2">
+                  Request To subDealer:
+                </label>
+                <select
+                  name="subDealerId"
+                  value={formData.subDealerId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Request To subDealer
+                  </option>
+                  {subDealer.map((staffMember) => (
+                    <option key={staffMember.id} value={staffMember.id}>
+                      {staffMember.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          {/* Address */}
+          <div>
+            <p className="font-semibold mb-1">Description</p>
             <input
-              type="date"
-              name="createdDate"
-              value={formData.createdDate}
+              type="text"
+              name="description"
+              value={formData.description}
               onChange={handleInputChange}
+              placeholder="Enter Address"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+        </div>
+        <div>
+          <p className="font-semibold mb-1">created Date</p>
+          <input
+            type="date"
+            name="createdDate"
+            value={formData.createdDate}
+            onChange={handleInputChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          />
+        </div>
 
-          {/* Buttons */}
-          <div className="flex justify-center space-x-4 mt-6">
-            <button
-              onClick={handleSave}
-              className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
-            >
-              Save
-            </button>
-            <button
-              onClick={handleCancel}
-              className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
-            >
-              Cancel
-            </button>
-          </div>
+        {/* Buttons */}
+        <div className="flex justify-center space-x-4 mt-6">
+          <button
+            onClick={handleSave}
+            className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleCancel}
+            className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
+          >
+            Cancel
+          </button>
         </div>
       </div>
-    );
-  };
-}
+    </div>
+  );
+};
+
 export default AddEditRequestForm;

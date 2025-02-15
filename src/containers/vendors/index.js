@@ -26,8 +26,8 @@ const Vendors = () => {
       type="vendors"
       showCreateBtn={permissions.add}
       showDelete={permissions.delete}
-      showEdit={permissions.edit}
-      showDetails={permissions.view}
+      showEdit={permissions.edit || true}
+      showDetails={permissions.view || true}
       onEdit={handleVendorEdit}
       onDelete={handleDelete}
       onDetails={handleDetails}

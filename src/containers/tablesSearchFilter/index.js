@@ -14,6 +14,7 @@ const TableWithSearchFilter = ({
   onCreateNew,
   onEdit,
   onDetails,
+  onDelete = null,
   showCreateBtn = true,
   showStatusFilter = false,
   showEdit = true,
@@ -253,6 +254,9 @@ const TableWithSearchFilter = ({
       case 'tickets':
         getTicketDetailsAgainstSearch();
         break;
+      case 'vouchers':
+        getVoucherDetailsAgainstSearch();
+        break;
     }
   };
 
@@ -272,18 +276,18 @@ const TableWithSearchFilter = ({
     }
   };
 
-  const onDelete = () => {
-    switch (type) {
-      case 'clients':
-        navigate('/delete-client');
-        break;
-      case 'hiring':
-        navigate('/delete-hiring');
-        break;
-      default:
-        break;
-    }
-  };
+  // const onDelete = () => {
+  //   switch (type) {
+  //     case 'clients':
+  //       navigate('/delete-client');
+  //       break;
+  //     case 'hiring':
+  //       navigate('/delete-hiring');
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   return (
     <div className="p-10">

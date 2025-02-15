@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
@@ -8,7 +8,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   const [selectedTab, setSelectedTab] = useState('Purchase');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
-
+  const [products, setProducts] = useState([]);
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
     role: ['Manager', 'Accountant', 'Staff'],
@@ -26,13 +26,13 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         name: 'transformBy',
         label: 'Transform By',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       {
         name: 'goingTo',
         label: 'Amount Going To',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
     ],
   };
@@ -105,6 +105,18 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     return paymentModeFields[mode].map((field) => field.name);
   };
 
+  const fetchProducts = async () => {
+    try {
+      const res = await ApiService.post('/products/getAllproductDetails');
+      setProducts(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch client details:', err);
+      setProducts([]);
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   const onSubmit = async (data) => {
     try {
       const relevantFields = getRelevantFields(selectedPaymentMode);
@@ -142,14 +154,14 @@ const PurchaseForm = ({ branches, bankOptions }) => {
 
   // For purchase items
   const [rows, setRows] = useState([
-    { id: 1, name: '', quantity: '', amount: 0 },
+    { id: 1, productId: '', quantity: '', amount: 0 },
   ]);
 
   // Add a new row
   const addRow = () => {
     setRows([
       ...rows,
-      { id: rows.length + 1, name: '', quantity: '', amount: 0 },
+      { id: rows.length + 1, productId: '', quantity: '', amount: 0 },
     ]);
   };
 
@@ -196,6 +208,25 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         return acc;
       }, {}),
     });
+  };
+
+  const handleProductItemChange = (id, e) => {
+    const { value } = e.target;
+    const selectedProduct = products.find(
+      (product) => product.productName === value
+    );
+
+    const updatedRows = rows.map((row) => {
+      if (row.id === id) {
+        return {
+          ...row,
+          productId: selectedProduct ? selectedProduct.id : '',
+          name: value,
+        };
+      }
+      return row;
+    });
+    setRows(updatedRows);
   };
 
   return (
@@ -263,17 +294,24 @@ const PurchaseForm = ({ branches, bankOptions }) => {
             <div className="space-y-4 border rounded-md p-4 bg-gray-50">
               {rows.map((row) => (
                 <div key={row.id} className="flex items-center space-x-4">
+                  <select
+                    name="name"
+                    value={row.name}
+                    onChange={(e) => handleProductItemChange(row.id, e)}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="">Select Product</option>
+                    {products.map((product) => (
+                      <option key={product.id} value={product.productName}>
+                        {product.productName}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
-                    placeholder="Name"
-                    value={row.name}
-                    onChange={(e) =>
-                      handlePurchaseItemsInputChange(
-                        row.id,
-                        'name',
-                        e.target.value
-                      )
-                    }
+                    placeholder="Product ID"
+                    value={row.productId}
+                    readOnly
                     className="p-2 border rounded-md w-1/3"
                   />
                   <input

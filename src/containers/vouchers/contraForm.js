@@ -21,18 +21,18 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
     Contra: [
       { name: 'name', label: 'Title' },
       { name: 'purpose', label: 'Purpose' },
-      {
-        name: 'amountTo',
-        label: 'Amount Going To',
-        type: 'dropdown',
-        options: bankOptions,
-      },
-      {
-        name: 'transformBy',
-        label: 'Transform By',
-        type: 'dropdown',
-        options: bankOptions,
-      },
+      // {
+      //   name: 'amountTo',
+      //   label: 'Amount Going To',
+      //   type: 'dropdown',
+      //   options: bankOptions,
+      // },
+      // {
+      //   name: 'transformBy',
+      //   label: 'Transform By',
+      //   type: 'dropdown',
+      //   options: bankOptions,
+      // },
       {
         name: 'bankFrom',
         label: 'Bank From',
