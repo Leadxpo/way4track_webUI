@@ -20,7 +20,7 @@ const AddEditVendor = () => {
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     photo: vendorData?.photo || null,
-    productType: vendorData?.productType
+    productType: vendorData?.productType,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -32,7 +32,6 @@ const AddEditVendor = () => {
   };
 
   const handleSave = async () => {
-
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
@@ -42,13 +41,19 @@ const AddEditVendor = () => {
       }
     });
     try {
-      const endpoint = formData.id ? '/vendor/handleVendorDetails' : '/vendor/handleVendorDetails';
+      const endpoint = formData.id
+        ? '/vendor/handleVendorDetails'
+        : '/vendor/handleVendorDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (response.data.status) {
-        alert(formData.id ? 'vendor updated successfully!' : 'vendor added successfully!');
+        alert(
+          formData.id
+            ? 'vendor updated successfully!'
+            : 'vendor added successfully!'
+        );
         navigate('/vendors');
       } else {
         alert('Failed to save employee details. Please try again.');
@@ -58,7 +63,6 @@ const AddEditVendor = () => {
       alert('Failed to save employee details. Please try again.');
     }
   };
-
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -74,6 +78,19 @@ const AddEditVendor = () => {
   const handleCancel = () => {
     navigate('/vendors');
   };
+  useEffect(() => {
+    const getVendorDetails = async () => {
+      try {
+        const response = await ApiService.post('/vendor/getVendorDetailsById');
+        setFormData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (location.state.vendorDetails) {
+      getVendorDetails();
+    }
+  }, [location.state.vendorDetails]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -81,7 +98,7 @@ const AddEditVendor = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {vendorData.id ? 'Edit Vendor' : 'Add Vendor'}
+            {formData.id ? 'Edit Vendor' : 'Add Vendor'}
           </h1>
         </div>
 

@@ -23,7 +23,7 @@ const StaffDetails = () => {
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
-          const staff = response.data?.[0];
+          const staff = response.data;
           setStaffDetails({
             name: staff.name,
             phoneNumber: staff.phoneNumber,

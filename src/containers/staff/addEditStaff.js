@@ -83,8 +83,8 @@ const AddEditEmployeeForm = () => {
         if (!response.status) {
           throw new Error('Staff not found');
         }
-        if (response.status && response.data.length > 0) {
-          const fetchedData = response.data[0]; // Extract the first staff object
+        if (response.status) {
+          const fetchedData = response.data; // Extract the first staff object
 
           // Map API response fields to formData structure
           const updatedFormData = {
