@@ -10,7 +10,6 @@ const VendorProfile = () => {
   const [vendorDetailsData, setVendorDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
 
-
   useEffect(() => {
     const fetchVendorDetails = async () => {
       try {
@@ -19,7 +18,7 @@ const VendorProfile = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        if (response.paymentStatus) {
+        if (response.status) {
           const vendor = response.data?.[0];
           setVendorDetails({
             ...vendor,
@@ -30,29 +29,30 @@ const VendorProfile = () => {
             aadharNumber: vendor.aadharNumber,
             address: vendor.address,
             vendorPhoto: vendor.vendorPhoto,
-            branch: vendor.branchName
+            branch: vendor.branchName,
           });
         } else {
-          setVendorDetails({})
+          setVendorDetails({});
         }
-
       } catch (error) {
         console.error('Error fetching branch details:', error);
         alert('Failed to fetch branch details.');
       }
     };
     fetchVendorDetails();
-
   }, [vendorDetailsFromState.vendorId]);
 
   useEffect(() => {
     const getProductsPhotos = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getProductsPhotos', {
-          vendorId: vendorDetailsFromState.vendorId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/dashboards/getProductsPhotos',
+          {
+            vendorId: vendorDetailsFromState.vendorId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           // Ensure vendor details data is an array
           setPhotoData(response.data || []);
@@ -67,15 +67,17 @@ const VendorProfile = () => {
     getProductsPhotos();
   }, [vendorDetailsFromState.vendorId]);
 
-
   useEffect(() => {
     const fetchVendorDetailsData = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getDetailVendorData', {
-          vendorId: vendorDetailsFromState.vendorId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/dashboards/getDetailVendorData',
+          {
+            vendorId: vendorDetailsFromState.vendorId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           // Ensure vendor details data is an array
           setVendorDetailsData(response.data || []);
@@ -106,9 +108,13 @@ const VendorProfile = () => {
           </p>
           <p className="text-gray-800">Phone number : {vendorDetails.phone}</p>
           <p className="text-gray-800">Email : {vendorDetails.email}</p>
-          <p className="text-gray-800">Alternate Phone number : {vendorDetails.alternatePhoneNumber}</p>
+          <p className="text-gray-800">
+            Alternate Phone number : {vendorDetails.alternatePhoneNumber}
+          </p>
           <p className="text-gray-800">Branch : {vendorDetails.branch}</p>
-          <p className="text-gray-800">Aadhar Number : {vendorDetails.aadharNumber}</p>
+          <p className="text-gray-800">
+            Aadhar Number : {vendorDetails.aadharNumber}
+          </p>
           <p className="text-gray-800">Address : {vendorDetails.address}</p>
         </div>
       </div>
@@ -125,7 +131,9 @@ const VendorProfile = () => {
               alt={product.productName}
               className="w-20 h-20 mx-auto rounded-full object-cover"
             />
-            <p className="mt-4 text-gray-800 font-medium">{product.productName}</p>
+            <p className="mt-4 text-gray-800 font-medium">
+              {product.productName}
+            </p>
           </div>
         ))}
       </div>
@@ -155,10 +163,10 @@ const VendorProfile = () => {
                 <td className="py-2 px-4 text-center">{pitcher.productType}</td>
                 <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
                 <td className="py-2 px-4 text-center">{pitcher.amount}</td>
+                <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
                 <td className="py-2 px-4 text-center">
-                  {pitcher.quantity}
+                  {pitcher.generationDate}
                 </td>
-                <td className="py-2 px-4 text-center">{pitcher.generationDate}</td>
                 <td
                   className={`py-2 px-4 text-center font-semibold ${pitcher.paymentStatus === 'Paid' ? 'text-green-500' : 'text-red-500'}`}
                 >

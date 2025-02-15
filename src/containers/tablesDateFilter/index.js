@@ -286,6 +286,9 @@ const TableWithDateFilter = ({
       case 'requsts':
         await getRequestsData();
         break;
+      case 'payments':
+        await getPaymentsData();
+        break;
       default:
         break;
     }

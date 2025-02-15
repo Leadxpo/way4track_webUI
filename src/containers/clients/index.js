@@ -14,8 +14,9 @@ const Clients = () => {
     navigate('/add-client', { state: { clientDetails: client } });
   };
 
-  const handleDelete = (vendor) => {
-    navigate('/delete-client');
+  const handleDelete = (client) => {
+    console.log('on delete', client);
+    navigate('/delete-client', { state: { clientDetails: client } });
   };
 
   const handleDetails = () => {

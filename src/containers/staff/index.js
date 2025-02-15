@@ -26,9 +26,9 @@ const Staff = () => {
       const response = await ApiService.post(
         '/dashboards/getStaffSearchDetails',
         {
-          staffId: employeeData?.staffId,
-          branchName: employeeData?.branchName,
-          staffName: employeeData?.staffName,
+          staffId: staffId,
+          branchName: selectedBranch,
+          staffName: staffName,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
@@ -46,11 +46,7 @@ const Staff = () => {
       console.error('Error fetching staff details:', error);
       alert('Failed to fetch staff details.');
     }
-  }, [
-    employeeData?.staffId,
-    employeeData?.branchName,
-    employeeData?.staffName,
-  ]);
+  }, [staffId, selectedBranch, staffName]);
 
   // Fetch Branch Names
   const fetchBranches = async () => {
@@ -70,13 +66,16 @@ const Staff = () => {
     await getStaffSearchDetails();
   };
   // Initial API calls
-  useEffect(() => {
-    const perms = getPermissions('staff');
-    setPermissions(perms);
-    getStaffSearchDetails();
-    fetchBranches();
-  }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
+  // useEffect(() => {
+  //   const perms = getPermissions('staff');
+  //   setPermissions(perms);
+  //   getStaffSearchDetails();
+  //   fetchBranches();
+  // }, [getStaffSearchDetails]); // Include getStaffSearchDetails in the dependency array
 
+  useEffect(() => {
+    fetchBranches();
+  }, []);
   // Handle branch selection
   const handleSelectChange = (e) => {
     setSelectedBranch(e.target.value);
@@ -210,9 +209,9 @@ const Staff = () => {
                 alt="Profile"
               />
               <div className="text-center mt-4">
-                <h2 className="text-lg font-semibold">{profile.name}</h2>
+                <h2 className="text-lg font-semibold">{profile.staffName}</h2>
                 <p className="text-gray-500">{profile.designation}</p>
-                <p className="text-gray-400">{profile.branch}</p>
+                <p className="text-gray-400">{profile.branch_name}</p>
               </div>
             </div>
           ))}
