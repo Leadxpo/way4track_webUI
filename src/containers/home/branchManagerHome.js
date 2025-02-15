@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
+
 // Color Mapping Function
 const getColorClasses = (color) => {
   switch (color) {
@@ -16,6 +18,7 @@ const getColorClasses = (color) => {
       return { border: 'border-gray-700', bg: 'bg-gray-700' };
   }
 };
+
 
 const tableData = [
   {
@@ -142,11 +145,160 @@ const mockBranches = [
 ];
 
 const BranchManagerHome = () => {
+  const [productDetailsByBranch, setProductDetailsByBranch] = useState(null);
+  const [creditAndDebitPercentages, setCreditAndDebitPercentages] = useState(null);
+  const [assertsCardData, setAssertsCardData] = useState(null);
+  const [requestBranchWiseData, setRequestBranchWiseData] = useState(null);
+  const [totalStaffDetails, setTotalStaffDetails] = useState(null);
+  const [staff_id, setStaff_id] = useState("");
+  const [branchName, setBranchName] = useState("");
+
+  const fetchProductDetailsByBranch = async (staff_branchName) => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getProductDetailsByBranch',
+        {
+          branchName: staff_branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setProductDetailsByBranch(response.data.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchCreditAndDebitPercentages = async (staff_branchName) => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getLast30DaysCreditAndDebitPercentages',
+        {
+          branchName: staff_branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setCreditAndDebitPercentages(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchAssertsCardData = async (staff_branchName) => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/assertsCardData ',
+        {
+          branchName: staff_branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setAssertsCardData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const fetchRequestBranchWise = async (staff_branchName) => {
+    try {
+      const response = await ApiService.post(
+        '/requests/getTodayRequestBranchWise ',
+        {
+          branchName: staff_branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setRequestBranchWiseData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const TotalStaffDetails = async (staff_branchName) => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getTotalStaffDetails ',
+        {
+          branchName: staff_branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
+
+      if (response.status) {
+        setTotalStaffDetails(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  useEffect(() => {
+    const branchdata = async () => {
+      const staffID = await localStorage.getItem("userId")
+      try {
+        const response = await ApiService.post(
+          '/staff/getStaffDetailsById ',
+          {
+            staffId: staffID,
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
+          }
+        );
+        console.log("StaffID : ", response);  
+        if (response.status) {
+          setStaff_id(response.data.staffId);
+          setBranchName(response.data.branchName);
+        } else {
+          alert(response.data.message || 'Failed to fetch ticket details.');
+        }
+      } catch (error) {
+        console.error('Error fetching tickets data:', error);
+        //alert('Failed to fetch tickets data.');
+      }
+      fetchCreditAndDebitPercentages(branchName);
+      fetchProductDetailsByBranch(branchName);
+      fetchAssertsCardData(branchName);
+      TotalStaffDetails(branchName);
+    }
+
+    branchdata()
+  }, [])
+
   return (
     <div className="p-6">
       {/* branch card Section */}
-      {mockBranches.map((branch) => (
-        <div className="flex justify-center mt-10 mb-6" key={branch.id}>
+        <div className="flex justify-center mt-10 mb-6">
           <div
             className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
             style={{ width: '80%' }}
@@ -160,64 +312,39 @@ const BranchManagerHome = () => {
                 />
               </div>
               <span className="text-2xl font-semibold text-gray-800 mt-4">
-                {branch.branchName}
+                {creditAndDebitPercentages[0].branchName}
               </span>
             </div>
 
             <div className="space-y-4">
               <div className="text-green-600 flex items-center text-xl font-bold">
                 <span>Credit Percentage:</span>
-                <span className="ml-2">{branch.creditPercentage}%</span>
+                <span className="ml-2">{creditAndDebitPercentages[0].creditPercentage}%</span>
               </div>
               <div className="bg-gray-200 rounded-full h-6">
                 <div
                   className="bg-green-600 h-6 rounded-full"
-                  style={{ width: `${branch.creditPercentage}%` }}
+                  style={{ width: `${creditAndDebitPercentages[0].creditPercentage}%` }}
                 ></div>
               </div>
 
               <div className="text-red-500 flex items-center text-xl font-bold">
                 <span>Debit Percentage:</span>
-                <span className="ml-2">{branch.debitPercentage}%</span>
+                <span className="ml-2">{creditAndDebitPercentages[0].debitPercentage}%</span>
               </div>
               <div className="bg-gray-200 rounded-full h-6">
                 <div
                   className="bg-red-600 h-6 rounded-full"
-                  style={{ width: `${branch.debitPercentage}%` }}
+                  style={{ width: `${creditAndDebitPercentages[0].debitPercentage}%` }}
                 ></div>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center space-x-4">
-              <button
-                className={`px-4 py-2 text-white rounded-md transition bg-green-600 hover:bg-blue-600`}
-                //onClick={() => handleEdit(branch)}
-                //disabled={!permissions.edit}
-              >
-                Edit
-              </button>
-
-              <button
-                className={`px-4 py-2 text-white rounded-md transition bg-red-600 hover:bg-blue-600`}
-                //onClick={() => handleDeleteClick(branch)}
-                //disabled={!permissions.delete}
-              >
-                Delete
-              </button>
-              <button
-                className={`px-4 py-2 text-white rounded-md transition bg-blue-600 hover:bg-blue-600`}
-                //onClick={() => navigate('/branch-details', { state: { branch } })}
-                //disabled={!permissions.view}
-              >
-                More Details
-              </button>
-            </div>
           </div>
         </div>
-      ))}
       {/* cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        {requestsData.map((location) => {
+        {requestBranchWiseData.map((location) => {
           const { border, bg } = getColorClasses(location.color);
           return (
             <div
@@ -246,7 +373,7 @@ const BranchManagerHome = () => {
         </option>
       </select> */}
       <div className="mt-6">
-        <Table data={tableData} columns={Object.keys(tableData[0])} />
+        <Table data={productDetailsByBranch[0].product} columns={Object.keys(tableData[0])} />
       </div>
     </div>
   );
