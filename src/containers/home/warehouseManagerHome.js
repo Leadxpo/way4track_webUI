@@ -23,7 +23,7 @@ const WarehouseManagerHome = () => {
   const [requestsData, setRequestsData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
-  const [columns, setColumns] = useState([]);
+  // const [columns, setColumns] = useState([]);
 
   const [userProfile, setUserProfile] = useState(null);
 
@@ -67,30 +67,38 @@ const WarehouseManagerHome = () => {
 
     fetchPurchaseOrderData();
   }, []);
-  // useEffect(() => {
-  //   const fetchProductDetails = async () => {
-  //     try {
-  //       const response = await ApiService.post('dashboards/getProductDetailsByBranch', {
-  //         companyCode: initialAuthState.companyCode,
-  //         unitCode: initialAuthState.unitCode,
-  //         branchName: selectedBranch,
-  //       });
-  //       if (response.status) {
-  //         // Access the nested 'data' array
-  //         setTableData(response.data.data || []);  // Change this line to access response.data.data
-  //         setColumns(generateColumns(response.data.data));  // Change this line to access response.data.data
-  //       } else {
-  //         setTableData([]);
-  //         setColumns([]);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching product details:', error);
-  //       alert('Failed to fetch product details.');
-  //     }
-  //   };
 
-  //   fetchProductDetails();
-  // }, [selectedBranch]);
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const payload = {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        };
+
+        const response = await ApiService.post('dashboards/getProductDetailsByBranch', payload);
+        console.log("API Response:", response);
+
+        if (response.status && response.data) {
+          setTableData(response.data);
+          if (response.data.length > 0) {
+            setSelectedBranch(response.data[0].branchName); // Auto-select first branch
+          }
+        } else {
+          setTableData([]);
+          alert('No data found');
+        }
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+        alert('Failed to fetch data. Please try again.');
+      }
+    };
+
+    fetchTickets();
+  }, []);
+
+  const selectedBranchData = tableData.find(ticket => ticket.branchName === selectedBranch);
+
 
 
   // Function to generate table columns dynamically based on the product data
@@ -156,7 +164,7 @@ const WarehouseManagerHome = () => {
       </div>
 
       {/* Branch Selection */}
-      {/* <select
+      <select
         className="h-12 block w-1/3 mt-6 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none"
         value={selectedBranch}
         onChange={(e) => setSelectedBranch(e.target.value)}
@@ -167,12 +175,35 @@ const WarehouseManagerHome = () => {
             {branch.branchName}
           </option>
         ))}
-      </select> */}
+      </select>
 
       {/* Table Section */}
       <div className="mt-6">
-        {/* <Table data={tableData} columns={columns} /> */}
+        {tableData.length > 0 && (
+          <div className="mt-4">
+            <label className="block text-gray-700">Select Branch:</label>
+            <select
+              className="border p-2 w-full md:w-64 rounded-md"
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+            >
+              {tableData.map((branch) => (
+                <option key={branch.branchName} value={branch.branchName}>
+                  {branch.branchName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Get the products of the selected branch */}
+        {selectedBranchData && selectedBranchData.products.length > 0 ? (
+          <Table columns={Object.keys(selectedBranchData.products[0] || {})} data={selectedBranchData.products} />
+        ) : (
+          <p className="text-gray-600 mt-4">No products available for this branch.</p>
+        )}
       </div>
+
     </div>
   );
 };

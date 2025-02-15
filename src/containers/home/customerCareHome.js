@@ -85,7 +85,7 @@
 //   return (
 //     <div className="p-6 space-y-6">
 //       {/* Header Section */}
-//       <div className="flex justify-between items-center">
+//      <div className="flex justify-between items-center">
 //         <div className="flex space-x-4">
 //           <select className="border rounded-md px-4 py-2">
 //             <option>All</option>
@@ -178,33 +178,34 @@
 // };
 
 // export default CustomerCareHome;
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 
+// const tableColumns = [
+//   { title: 'Client Name', dataIndex: 'clientName', key: 'clientName', render: (text) => text ?? 'N/A' },
+//   { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber', render: (text) => text ?? 'N/A' },
+//   { title: 'Client ID', dataIndex: 'clientId', key: 'clientId', render: (text) => text ?? 'N/A' },
+//   { title: 'Address', dataIndex: 'address', key: 'address', render: (text) => text ?? 'N/A' },
+//   { title: 'Voucher ID', dataIndex: 'voucherId', key: 'voucherId', render: (text) => text ?? 'N/A' },
+//   { title: 'Generation Date', dataIndex: 'generationDate', key: 'generationDate', render: (text) => text ? new Date(text).toLocaleDateString() : 'N/A' },
+//   { title: 'Purpose', dataIndex: 'purpose', key: 'purpose', render: (text) => text ?? 'N/A' },
+//   { title: 'Item Name', dataIndex: 'name', key: 'name', render: (text) => text ?? 'N/A' },
+//   { title: 'Quantity', dataIndex: 'quantity', key: 'quantity', render: (text) => text ?? 'N/A' },
+//   { title: 'Payment Status', dataIndex: 'paymentStatus', key: 'paymentStatus', render: (text) => text ?? 'N/A' },
+//   { title: 'Total Amount', dataIndex: 'totalAmount', key: 'totalAmount', render: (text) => text ?? 'N/A' }
+// ];
+
 const CustomerCareHome = () => {
-  const [isPurchaseSelected, setIsPurchaseSelected] = useState('');
+  const [isPurchaseSelected, setIsPurchaseSelected] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const [columns, setColumns] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState('');
   const navigate = useNavigate();
   const [customerDetails, setCustomerDetails] = useState(null);
-
-  const tableColumns = [
-    { title: 'Client Name', dataIndex: 'clientName', key: 'clientName' },
-    { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
-    { title: 'Client ID', dataIndex: 'clientId', key: 'clientId' },
-    { title: 'Address', dataIndex: 'address', key: 'address' },
-    { title: 'Voucher ID', dataIndex: 'voucherId', key: 'voucherId' },
-    { title: 'Generation Date', dataIndex: 'generationDate', key: 'generationDate', render: (text) => new Date(text).toLocaleDateString() },
-    { title: 'Purpose', dataIndex: 'purpose', key: 'purpose' },
-    { title: 'Item Name', dataIndex: 'name', key: 'name' },
-    { title: 'Quantity', dataIndex: 'quantity', key: 'quantity', render: (text) => text ?? 'N/A' },
-    { title: 'Payment Status', dataIndex: 'paymentStatus', key: 'paymentStatus' },
-    { title: 'Total Amount', dataIndex: 'totalAmount', key: 'totalAmount' }
-  ];
+  const [tickets, setTickets] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('');
 
   const handlePurchaseClick = async () => {
     if (!phoneNumber.trim()) {
@@ -222,16 +223,14 @@ const CustomerCareHome = () => {
       const response = await ApiService.post('/dashboards/getClientPurchaseOrderDataTable', payload);
       console.log("API Response:", response);
 
-      // const data = response?.data || [];
-
-      if (response.status) {
+      if (response.status && response.data?.length) {
+        const customer = response.data[0];
         setCustomerDetails({
-          clientName: response.data[0]?.clientName || 'N/A',
-          phoneNumber: response.data[0]?.phoneNumber || 'N/A',
-          address: response.data[0]?.address || 'N/A',
+          clientName: customer.clientName || 'N/A',
+          phoneNumber: customer.phoneNumber || 'N/A',
+          address: customer.address || 'N/A',
         });
-        setTableData([...response.data]);  // Ensure re-render
-        setColumns([...tableColumns]); // Ensure re-render
+        setTableData(response.data);
       } else {
         setCustomerDetails(null);
         setTableData([]);
@@ -244,9 +243,70 @@ const CustomerCareHome = () => {
   };
 
 
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const payload = {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        };
+
+        const response = await ApiService.post('/dashboards/totalTicketsBranchWise', payload);
+        console.log("API Response:", response);
+
+        if (response.status && response.data) {
+          setTickets(response.data.branchWiseTickets);
+          if (response.data.branchWiseTickets.length > 0) {
+            setSelectedBranch(response.data.branchWiseTickets[0].branchName); // Auto-select first branch
+          }
+        } else {
+          setTickets([]);
+          alert('No data found');
+        }
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+        alert('Failed to fetch data. Please try again.');
+      }
+    };
+
+    fetchTickets();
+  }, []);
+
+  // Get details of the selected branch
+  const selectedBranchData = tickets.find(ticket => ticket.branchName === selectedBranch);
+
 
   return (
     <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6">
+        {/* Branch Selection */}
+        {tickets.length > 0 && (
+          <div className="mt-4">
+            <label className="block text-gray-700">Select Branch:</label>
+            <select
+              className="border p-2 w-full md:w-64 rounded-md"
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+            >
+              {tickets.map((branch) => (
+                <option key={branch.branchName} value={branch.branchName}>
+                  {branch.branchName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Display Selected Branch Details */}
+        {selectedBranchData && (
+          <div className="border p-4 mt-4 rounded-md shadow">
+            <h2 className="text-lg font-semibold">{selectedBranchData.branchName}</h2>
+            <p><strong>Total Tickets:</strong> {selectedBranchData.totalTickets}</p>
+            <p><strong>Pending Tickets:</strong> {selectedBranchData.pendingTickets}</p>
+          </div>
+        )}
+      </div>
+      {/* Search Input */}
       <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:items-center">
         <input
           type="text"
@@ -263,22 +323,23 @@ const CustomerCareHome = () => {
         </button>
       </div>
 
+      {/* Customer Details */}
       <div className="border border-green-500 rounded-md p-6 flex flex-col md:flex-row justify-between items-center">
         <div className="space-y-4">
           {customerDetails ? (
-            <>
-              <p><strong>Name:</strong> {customerDetails.clientName || 'N/A'}</p>
-              <p><strong>Phone Number:</strong> {customerDetails.phoneNumber || 'N/A'}</p>
-              <p><strong>Address:</strong> {customerDetails.address || 'N/A'}</p>
-            </>
+            Object.entries(customerDetails).map(([key, value]) => (
+              <p key={key}><strong>{key.replace(/([A-Z])/g, ' $1')}:</strong> {value}</p>
+            ))
           ) : (
             <p className="text-gray-500">Enter a phone number and search to view customer details.</p>
           )}
+
+          {/* Buttons */}
           <div className="flex space-x-4">
             <button
-              className={`px-4 py-2 rounded-md ${isPurchaseSelected === 'purchase' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'}`}
+              className={`px-4 py-2 rounded-md ${isPurchaseSelected ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'}`}
               onClick={() => {
-                setIsPurchaseSelected('purchase');
+                setIsPurchaseSelected(true);
                 handlePurchaseClick();
               }}
             >
@@ -286,25 +347,26 @@ const CustomerCareHome = () => {
             </button>
 
             <button
-              className={`px-4 py-2 rounded-md ${isPurchaseSelected === 'appointment' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'}`}
-              onClick={() => setIsPurchaseSelected('appointment')}
+              className="px-4 py-2 rounded-md bg-green-100 text-green-700"
+              onClick={() => navigate('/add-appointment')}
             >
               Appointment
             </button>
           </div>
         </div>
-        <div>
-          <img
-            src="https://via.placeholder.com/150"
-            alt="Customer"
-            className="rounded-md border w-32 h-32 object-cover"
-          />
-        </div>
+
+        <img
+          src="https://via.placeholder.com/150"
+          alt="Customer"
+          className="rounded-md border w-32 h-32 object-cover"
+        />
       </div>
 
-      {<Table data={tableData} columns={columns} />}
+      {/* Table */}
+      {tableData.length > 0 && <Table columns={Object.keys(tableData[0] || {})} data={tableData} />}
     </div>
   );
 };
 
 export default CustomerCareHome;
+
