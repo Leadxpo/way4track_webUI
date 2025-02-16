@@ -129,14 +129,7 @@ const Login = ({ handleLoginFlag }) => {
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
 
-        if (!branchName) {
-          const branchResponse = await ApiService.get(`/branches/${userId}`);
-          if (branchResponse.status) {
-            branchName = branchResponse.data.branchName;
-          }
-        }
-
-        localStorage.setItem('branchName', branchName || 'Unknown Branch');
+        localStorage.setItem('branchName', branchName);
 
         await fetchUserPermissions(
           userId,
