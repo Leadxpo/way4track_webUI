@@ -56,6 +56,52 @@ const Login = ({ handleLoginFlag }) => {
   //     setLoading(false);
   //   }
   // };
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+  //   setLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       staffId: userId,
+  //       password: password,
+  //       designation: role,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+
+  //     const response = await ApiService.post('/login/LoginDetails', payload);
+
+  //     if (response && response.status) {
+  //       // Store login details and user profile info in localStorage
+  //       const userProfile = response.data.profile;  // Assuming API returns user profile info
+  //       localStorage.setItem('userId', userId);
+  //       localStorage.setItem('password', password);
+  //       localStorage.setItem('role', role);
+  //       localStorage.setItem('userProfile', JSON.stringify(userProfile)); 
+  //       localStorage.setItem('branchName', JSON.stringify(branchName)); // Store user profile
+  //       // Store user profile
+
+  //       await fetchUserPermissions(
+  //         userId,
+  //         initialAuthState.companyCode,
+  //         initialAuthState.unitCode
+  //       );
+
+  //       handleLoginFlag();
+  //     } else {
+  //       setError(response?.internalMessage || 'Invalid login credentials.');
+  //     }
+  //   } catch (err) {
+  //     setError(
+  //       err?.response?.data?.internalMessage ||
+  //       'Failed to login. Please check your credentials.'
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -73,12 +119,24 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
 
       if (response && response.status) {
-        // Store login details and user profile info in localStorage
-        const userProfile = response.data.profile;  // Assuming API returns user profile info
+        const userProfile = response.data;
+
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
-        localStorage.setItem('userProfile', JSON.stringify(userProfile)); // Store user profile
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+
+        // Fetch branch name separately if needed
+        let branchName = userProfile.branchName;
+
+        if (!branchName) {
+          const branchResponse = await ApiService.get(`/branches/${userId}`);
+          if (branchResponse.status) {
+            branchName = branchResponse.data.branchName;
+          }
+        }
+
+        localStorage.setItem('branchName', branchName || 'Unknown Branch');
 
         await fetchUserPermissions(
           userId,
@@ -99,6 +157,7 @@ const Login = ({ handleLoginFlag }) => {
       setLoading(false);
     }
   };
+
 
   const fetchUserPermissions = async (userId, companyCode, unitCode) => {
     try {

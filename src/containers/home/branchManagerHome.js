@@ -1,386 +1,368 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import { formatString } from '../../common/commonUtils';
 
-import { useNavigate } from 'react-router';
-// Color Mapping Function
-// const getColorClasses = (color) => {
-//   switch (color) {
-//     case 'blue':
-//       return { border: 'border-blue-700', bg: 'bg-blue-700' };
-//     case 'red':
-//       return { border: 'border-red-700', bg: 'bg-red-700' };
-//     case 'green':
-//       return { border: 'border-green-700', bg: 'bg-green-700' };
-//     case 'orange':
-//       return { border: 'border-orange-700', bg: 'bg-orange-700' };
-//     default:
-//       return { border: 'border-gray-700', bg: 'bg-gray-700' };
-//   }
-// };
-
-
-const tableData = [
-  {
-    id: 1,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 223,
-    value2: 346,
-    status: 'Available',
-  },
-  {
-    id: 2,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 345,
-    value2: 568,
-    status: 'Available',
-  },
-  {
-    id: 3,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 234,
-    value2: 234,
-    status: 'Out of stock',
-  },
-  {
-    id: 4,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 345,
-    value2: 345,
-    status: 'Out of stock',
-  },
-  {
-    id: 5,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 223,
-    value2: 346,
-    status: 'Available',
-  },
-  {
-    id: 6,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 345,
-    value2: 568,
-    status: 'Available',
-  },
-  {
-    id: 7,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 234,
-    value2: 234,
-    status: 'Out of stock',
-  },
-  {
-    id: 8,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 278,
-    value2: 400,
-    status: 'Available',
-  },
-  {
-    id: 9,
-    product: 'Bike GPS Tracker',
-    type: 'Tracker',
-    value1: 300,
-    value2: 320,
-    status: 'Out of stock',
-  },
-  {
-    id: 10,
-    product: 'Fuel Monitoring System',
-    type: 'System',
-    value1: 500,
-    value2: 600,
-    status: 'Available',
-  },
-];
-
-const requestsData = [
-  {
-    location: 'Products',
-    color: 'blue',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-  {
-    location: 'Staff',
-    color: 'red',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-  {
-    location: 'Asserts',
-    color: 'green',
-    requests: [
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'Fuel Monitoring System Request', count: 34 },
-      { name: 'Bike GPS Tracker Request', count: 10 },
-      { name: 'AIS 140 VLTD for transport & commercial vehicles', count: 45 },
-    ],
-  },
-];
-const mockBranches = [
-  {
-    id: 1,
-    branchName: 'Downtown Branch',
-    creditPercentage: 75,
-    debitPercentage: 40,
-  },
-];
-
+const getColorClasses = (color) => {
+  switch (color) {
+    case 'blue':
+      return { border: 'border-blue-700', bg: 'bg-blue-700' };
+    case 'red':
+      return { border: 'border-red-700', bg: 'bg-red-700' };
+    case 'green':
+      return { border: 'border-green-700', bg: 'bg-green-700' };
+    case 'orange':
+      return { border: 'border-orange-700', bg: 'bg-orange-700' };
+    default:
+      return { border: 'border-gray-700', bg: 'bg-gray-700' };
+  }
+};
 const BranchManagerHome = () => {
-  // const [productDetailsByBranch, setProductDetailsByBranch] = useState(null);
-  // const [creditAndDebitPercentages, setCreditAndDebitPercentages] = useState(null);
-  // const [assertsCardData, setAssertsCardData] = useState(null);
-  // const [requestBranchWiseData, setRequestBranchWiseData] = useState(null);
-  // const [totalStaffDetails, setTotalStaffDetails] = useState(null);
-  // const [staff_id, setStaff_id] = useState("");
-  // const [branchName, setBranchName] = useState("");
+  const [productDetailsByBranch, setProductDetailsByBranch] = useState([]);
+  const [creditAndDebitPercentages, setCreditAndDebitPercentages] = useState(null);
+  const [assertsCardData, setAssertsCardData] = useState(null);
+  const [requestBranchWiseData, setRequestBranchWiseData] = useState(null);
+  const [totalStaffDetails, setTotalStaffDetails] = useState(null);
 
-  // const fetchProductDetailsByBranch = async (staff_branchName) => {
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/dashboards/getProductDetailsByBranch',
-  //       {
-  //         branchName: staff_branchName,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
+  const fetchProductDetailsByBranch = async () => {
+    try {
 
-  //     if (response.status) {
-  //       setProductDetailsByBranch(response.data.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
 
-  // const fetchCreditAndDebitPercentages = async (staff_branchName) => {
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/dashboards/getLast30DaysCreditAndDebitPercentages',
-  //       {
-  //         branchName: staff_branchName,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
+      if (payload.role === 'Branch Manager') {
+        payload.branch = localStorage.getItem('branchName');
+      }
 
-  //     if (response.status) {
-  //       setCreditAndDebitPercentages(response.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post('/dashboards/getProductDetailsByBranch', payload);
+      }
+      if (response.status) {
+        setProductDetailsByBranch(response.data);
+      } else {
+        alert(response.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
 
-  // const fetchAssertsCardData = async (staff_branchName) => {
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/dashboards/assertsCardData ',
-  //       {
-  //         branchName: staff_branchName,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
+  const branchProductData = productDetailsByBranch[0]; // Assuming only one branch in response
+  const totalQuantity = branchProductData.products.reduce((sum, product) => sum + product.totalProducts, 0);
 
-  //     if (response.status) {
-  //       setAssertsCardData(response.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
 
-  // const fetchRequestBranchWise = async (staff_branchName) => {
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/requests/getTodayRequestBranchWise ',
-  //       {
-  //         branchName: staff_branchName,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
 
-  //     if (response.status) {
-  //       setRequestBranchWiseData(response.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
+  const fetchCreditAndDebitPercentages = async () => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
 
-  // const TotalStaffDetails = async (staff_branchName) => {
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/dashboards/getTotalStaffDetails ',
-  //       {
-  //         branchName: staff_branchName,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
+      if (payload.role === 'Branch Manager') {
+        payload.branchName = localStorage.getItem('branchName');
+      }
 
-  //     if (response.status) {
-  //       setTotalStaffDetails(response.data);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', payload);
+      }
+      //  else {
+      //   response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', payload);
+      // }
+      if (response.status) {
+        setCreditAndDebitPercentages(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
 
-  // useEffect(() => {
-  //   const branchdata = async () => {
-  //     const staffID = await localStorage.getItem("userId")
-  //     try {
-  //       const response = await ApiService.post(
-  //         '/staff/getStaffDetailsById ',
-  //         {
-  //           staffId: staffID,
-  //           companyCode: initialAuthState?.companyCode,
-  //           unitCode: initialAuthState?.unitCode,
-  //         }
-  //       );
-  //       console.log("StaffID : ", response);  
-  //       if (response.status) {
-  //         setStaff_id(response.data.staffId);
-  //         setBranchName(response.data.branchName);
-  //       } else {
-  //         alert(response.data.message || 'Failed to fetch ticket details.');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching tickets data:', error);
-  //       //alert('Failed to fetch tickets data.');
-  //     }
-  //     fetchCreditAndDebitPercentages(branchName);
-  //     fetchProductDetailsByBranch(branchName);
-  //     fetchAssertsCardData(branchName);
-  //     TotalStaffDetails(branchName);
-  //   }
+  const fetchAssertsCardData = async () => {
+    try {
 
-  //   branchdata()
-  // }, [])
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
 
-  // return (
-  //   <div className="p-6">
-  //     {/* branch card Section */}
-  //       <div className="flex justify-center mt-10 mb-6">
-  //         <div
-  //           className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
-  //           style={{ width: '80%' }}
-  //         >
-  //           <div className="flex justify-between items-center mb-4">
-  //             <div className="absolute -top-6 left-4">
-  //               <img
-  //                 src="/logo-square.png"
-  //                 alt="Branch Logo"
-  //                 className="w-14 h-14 rounded-md shadow-md bg-white"
-  //               />
-  //             </div>
-  //             <span className="text-2xl font-semibold text-gray-800 mt-4">
-  //               {creditAndDebitPercentages[0].branchName}
-  //             </span>
-  //           </div>
+      if (payload.role === 'Branch Manager') {
+        payload.branch = localStorage.getItem('branchName');
+      }
 
-  //           <div className="space-y-4">
-  //             <div className="text-green-600 flex items-center text-xl font-bold">
-  //               <span>Credit Percentage:</span>
-  //               <span className="ml-2">{creditAndDebitPercentages[0].creditPercentage}%</span>
-  //             </div>
-  //             <div className="bg-gray-200 rounded-full h-6">
-  //               <div
-  //                 className="bg-green-600 h-6 rounded-full"
-  //                 style={{ width: `${creditAndDebitPercentages[0].creditPercentage}%` }}
-  //               ></div>
-  //             </div>
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post('/dashboards/assertsCardData', payload);
+      }
 
-  //             <div className="text-red-500 flex items-center text-xl font-bold">
-  //               <span>Debit Percentage:</span>
-  //               <span className="ml-2">{creditAndDebitPercentages[0].debitPercentage}%</span>
-  //             </div>
-  //             <div className="bg-gray-200 rounded-full h-6">
-  //               <div
-  //                 className="bg-red-600 h-6 rounded-full"
-  //                 style={{ width: `${creditAndDebitPercentages[0].debitPercentage}%` }}
-  //               ></div>
-  //             </div>
-  //           </div>
+      if (response.status) {
+        setAssertsCardData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
 
-  //         </div>
-  //       </div>
-  //     {/* cards Section */}
-  //     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-  //       {/* {requestBranchWiseData.map((location) => {
-  //         const { border, bg } = getColorClasses(location.color);
-  //         return (
-  //           <div
-  //             key={location.location}
-  //             className={`border-2 ${border} rounded-lg shadow-md`}
-  //           >
-  //             <h3
-  //               className={`${bg} text-white font-semibold text-lg p-3 flex justify-between`}
-  //             >
-  //               <span>{location.location}</span>
-  //               <span>Total: 100</span>
-  //             </h3>
+  const fetchRequestBranchWise = async () => {
+    try {
 
-  //             {location.requests.map((req, index) => (
-  //               <p key={index} className="text-sm font-medium ml-4 mt-4">
-  //                 {req.name}: <span className="font-bold">{req.count}</span>
-  //               </p>
-  //             ))}
-  //           </div>
-  //         );
-  //       })} */}
-  //     </div>
-  //     {/* <select className="h-12 block w-1/3 mt-6 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none">
-  //       <option value="" disabled>
-  //         Select a Branch
-  //       </option>
-  //     </select> */}
-  //     <div className="mt-6">
-  //       <Table data={productDetailsByBranch[0].product} columns={Object.keys(tableData[0])} />
-  //     </div>
-  //   </div>
-  // );
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+
+      if (payload.role === 'Branch Manager') {
+        payload.branchName = localStorage.getItem('branchName');
+      }
+
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post('/requests/getTodayRequestBranchWise', payload);
+      }
+      if (response.status) {
+        setRequestBranchWiseData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+
+  const TotalStaffDetails = async (staff_branchName) => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+
+      if (payload.role === 'Branch Manager') {
+        payload.branchName = localStorage.getItem('branchName');
+      }
+
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post('/dashboards/getTotalStaffDetails', payload);
+      }
+
+      if (response.status) {
+        setTotalStaffDetails(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch ticket details.');
+      }
+    } catch (error) {
+      console.error('Error fetching tickets data:', error);
+      //alert('Failed to fetch tickets data.');
+    }
+  };
+  useEffect(() => {
+    fetchProductDetailsByBranch();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchCreditAndDebitPercentages();
+      await fetchProductDetailsByBranch();
+      await fetchAssertsCardData();
+      await fetchRequestBranchWise();
+      await TotalStaffDetails();
+    };
+
+    fetchData();
+  }, []);
+
+  const branchData = creditAndDebitPercentages?.[0] || {};
+
+  return (
+    <div className="p-6">
+      {/* branch card Section */}
+      <div className="flex justify-center mt-10 mb-6">
+        <div
+          className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
+          style={{ width: "80%" }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <div className="absolute -top-6 left-4">
+              <img
+                src="/logo-square.png"
+                alt="Branch Logo"
+                className="w-14 h-14 rounded-md shadow-md bg-white"
+              />
+            </div>
+            <span className="text-2xl font-semibold text-gray-800 mt-4">
+              {branchData.branchName || "N/A"}
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <div className="text-green-600 flex items-center text-xl font-bold">
+              <span>Credit Percentage:</span>
+              <span className="ml-2">
+                {branchData.creditPercentage !== undefined ? `${branchData.creditPercentage}%` : "N/A"}
+              </span>
+            </div>
+            <div className="bg-gray-200 rounded-full h-6">
+              <div
+                className="bg-green-600 h-6 rounded-full"
+                style={{ width: `${branchData.creditPercentage || 0}%` }}
+              ></div>
+            </div>
+
+            <div className="text-red-500 flex items-center text-xl font-bold">
+              <span>Debit Percentage:</span>
+              <span className="ml-2">
+                {branchData.debitPercentage !== undefined ? `${branchData.debitPercentage}%` : "N/A"}
+              </span>
+            </div>
+            <div className="bg-gray-200 rounded-full h-6">
+              <div
+                className="bg-red-600 h-6 rounded-full"
+                style={{ width: `${branchData.debitPercentage || 0}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      {/* cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        {requestBranchWiseData?.map((location) => {
+          // Ensure color is defined or provide a default
+          const { border, bg } = getColorClasses(location.color || "gray");
+
+          // Calculate total requests count dynamically
+          const totalRequests = location.requests.reduce((sum, req) => sum + req.count, 0);
+
+          return (
+            <div key={location.location} className={`border-2 ${border} rounded-lg shadow-md`}>
+              <h3 className={`${bg} text-white font-semibold text-lg p-3 flex justify-between`}>
+                <span>{location.location}</span>
+                <span>Total: {totalRequests}</span> {/* Dynamic total */}
+              </h3>
+
+              {location.requests.map((req, index) => (
+                <p key={index} className="text-sm font-medium ml-4 mt-4">
+                  {req.name}: <span className="font-bold">{req.count}</span>
+                </p>
+              ))}
+            </div>
+          );
+        }) || <p>No data available</p>}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        {/* Assets Summary Card */}
+        <div className="border-2 border-gray-500 rounded-lg shadow-md">
+          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
+            Assets Summary
+          </h3>
+          <div className="p-4 space-y-2">
+            <p className="text-sm font-medium">
+              Office Assets: <span className="font-bold text-blue-600">{assertsCardData?.officeAsserts || 0}</span>
+            </p>
+            <p className="text-sm font-medium">
+              Transport Assets: <span className="font-bold text-green-600">{assertsCardData?.transportAsserts || 0}</span>
+            </p>
+            <p className="text-sm font-medium">
+              Total Assets: <span className="font-bold text-purple-600">{assertsCardData?.totalAsserts || 0}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        {/* Staff Summary Card */}
+        <div className="border-2 border-gray-500 rounded-lg shadow-md p-4 mb-6">
+          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
+            Staff Summary
+          </h3>
+
+          <div className="p-4">
+            <p className="text-sm font-medium mb-2">
+              Total Staff: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalStaff || 0}</span>
+            </p>
+            <p className="text-sm font-medium mb-2">
+              Total Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalTechnicians || 0}</span>
+            </p>
+            <p className="text-sm font-medium mb-2">
+              Total Sales: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalSales || 0}</span>
+            </p>
+            <p className="text-sm font-medium">
+              Total Non-Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalNonTechnicians || 0}</span>
+            </p>
+          </div>
+        </div>
+        <Table
+          dataSource={totalStaffDetails?.data?.staff || []}
+          columns={[
+            {
+              title: "Staff ID",
+              dataIndex: "staffId",
+              key: "staffId",
+            },
+            {
+              title: "Staff Name",
+              dataIndex: "staffName",
+              key: "staffName",
+            },
+            {
+              title: "Designation",
+              dataIndex: "staffDesignation",
+              key: "staffDesignation",
+            },
+            {
+              title: "Branch Name",
+              dataIndex: "branchName",
+              key: "branchName",
+            },
+          ]}
+          pagination={{ pageSize: 5 }}
+          rowKey="staffId"
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        {/* Product Summary Card */}
+        <div className="border-2 border-gray-500 rounded-lg shadow-md">
+          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
+            {branchData.branchName} - Product Summary
+          </h3>
+          <div className="p-4 space-y-2">
+            <p className="text-sm font-medium">
+              Total Products: <span className="font-bold text-purple-600">{totalQuantity}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Products List Card */}
+        <div className="border-2 border-gray-400 rounded-lg shadow-md">
+          <h3 className="bg-gray-400 text-white font-semibold text-lg p-3">Product Details</h3>
+          <div className="p-4 space-y-2">
+            {branchData.products.map((product) => (
+              <p key={product.id} className="text-sm font-medium">
+                {product.name}: <span className="font-bold text-blue-600">{product.totalProducts}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>)
 
 }
-
 export default BranchManagerHome;
 
 
