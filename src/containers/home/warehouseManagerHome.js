@@ -164,7 +164,7 @@ const WarehouseManagerHome = () => {
       </div>
 
       {/* Branch Selection */}
-      <select
+      {/* <select
         className="h-12 block w-1/3 mt-6 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1 focus:outline-none"
         value={selectedBranch}
         onChange={(e) => setSelectedBranch(e.target.value)}
@@ -175,7 +175,7 @@ const WarehouseManagerHome = () => {
             {branch.branchName}
           </option>
         ))}
-      </select>
+      </select> */}
 
       {/* Table Section */}
       <div className="mt-6">

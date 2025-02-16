@@ -3,12 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const ReceiptForm = ({ branches, bankOptions }) => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -28,12 +28,12 @@ const ReceiptForm = ({ branches, bankOptions }) => {
           label: branch.branchName,
         })),
       },
-      {
-        name: 'role',
-        label: 'Role',
-        type: 'dropdown',
-        options: dropdownOptions.role,
-      },
+      // {
+      //   name: 'role',
+      //   label: 'Role',
+      //   type: 'dropdown',
+      //   options: dropdownOptions.role,
+      // },
       {
         name: 'receipt',
         label: 'Receipt To',
@@ -53,10 +53,10 @@ const ReceiptForm = ({ branches, bankOptions }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -75,8 +75,10 @@ const ReceiptForm = ({ branches, bankOptions }) => {
         label: 'IFSC',
       },
       {
-        name: 'accountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -84,10 +86,10 @@ const ReceiptForm = ({ branches, bankOptions }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -95,10 +97,10 @@ const ReceiptForm = ({ branches, bankOptions }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
-        options: dropdownOptions.bankFrom,
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -122,6 +124,17 @@ const ReceiptForm = ({ branches, bankOptions }) => {
       console.error('Error submitting data:', error);
       // Handle the error (e.g., show an error message)
     }
+  };
+  const handlePaymentModeChange = (mode) => {
+    const currentValues = getValues();
+    setSelectedPaymentMode(mode);
+    reset({
+      ...currentValues,
+      ...paymentModeFields[mode].reduce((acc, field) => {
+        acc[field.name] = '';
+        return acc;
+      }, {}),
+    });
   };
 
   return (
@@ -188,7 +201,7 @@ const ReceiptForm = ({ branches, bankOptions }) => {
           <button
             key={mode}
             className={`px-4 py-2 rounded ${selectedPaymentMode === mode ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => setSelectedPaymentMode(mode)}
+            onClick={() => handlePaymentModeChange(mode)}
             type="button"
           >
             {mode}
@@ -196,7 +209,6 @@ const ReceiptForm = ({ branches, bankOptions }) => {
         ))}
       </div>
 
-      {/* Dynamic Payment Mode Fields */}
       <div>
         {paymentModeFields[selectedPaymentMode]?.map((field) => (
           <div key={field.name} className="mb-4">
@@ -205,15 +217,17 @@ const ReceiptForm = ({ branches, bankOptions }) => {
               <Controller
                 name={field.name}
                 control={control}
-                defaultValue=""
+                defaultValue={
+                  field.options.length === 1 ? field.options[0].value : ''
+                }
                 render={({ field: controllerField }) => (
                   <select
                     {...controllerField}
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     {field.options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>

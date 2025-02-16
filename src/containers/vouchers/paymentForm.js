@@ -8,9 +8,9 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
   const [selectedTab, setSelectedTab] = useState('Payment');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
-    role: ['client', 'vendor'],
+    // role: ['client', 'vendor'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -26,12 +26,12 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
         type: 'dropdown',
         options: clients,
       },
-      {
-        name: 'role',
-        label: 'Role',
-        type: 'dropdown',
-        options: dropdownOptions.role,
-      },
+      // {
+      //   name: 'role',
+      //   label: 'Role',
+      //   type: 'dropdown',
+      //   options: dropdownOptions.role,
+      // },
       {
         name: 'branchId',
         label: 'Branch Name',
@@ -44,7 +44,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
       { name: 'purpose', label: 'Purpose' },
       { name: 'debitAmount', label: 'Debit Amount' },
       {
-        name: 'toAccount',
+        name: 'fromAccount',
         label: 'Payment To',
         type: 'dropdown',
         options: bankOptions,
@@ -60,7 +60,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -82,8 +82,10 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
         label: 'IFSC',
       },
       {
-        name: 'bankAccountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -91,7 +93,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -102,7 +104,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -142,7 +144,7 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
         clientId: parseInt(data.clientId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
       };
       const response = await ApiService.post('/voucher/saveVoucher', payload);

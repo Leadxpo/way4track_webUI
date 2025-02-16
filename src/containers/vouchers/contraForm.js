@@ -10,7 +10,7 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
   const navigate = useNavigate();
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -34,13 +34,13 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
       //   options: bankOptions,
       // },
       {
-        name: 'bankFrom',
+        name: 'fromAccount',
         label: 'Bank From',
         type: 'dropdown',
         options: bankOptions,
       },
       {
-        name: 'bankTo',
+        name: 'toAccount',
         label: 'Bank To',
         type: 'dropdown',
         options: bankOptions,
@@ -56,7 +56,7 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -78,8 +78,10 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
         label: 'IFSC',
       },
       {
-        name: 'bankAccountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -87,7 +89,7 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -98,7 +100,7 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -137,13 +139,13 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
       };
       console.log('Payload:', payload);
       const response = await ApiService.post('/voucher/saveVoucher', payload);
       navigate('/vouchers');
-      console.log('Response:', response);
+      // console.log('Response:', response);
     } catch (error) {
       console.error('Error submitting data:', error);
     }
@@ -234,6 +236,7 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
         ))}
       </div>
 
+
       <div>
         {paymentModeFields[selectedPaymentMode]?.map((field) => (
           <div key={field.name} className="mb-4">
@@ -274,6 +277,14 @@ const ContraForm = ({ branches, bankOptions, clients }) => {
           </div>
         ))}
       </div>
+
+
+      {/* Add Heading for Selected Payment Mode */}
+
+
+
+
+
 
       <button
         type="submit"

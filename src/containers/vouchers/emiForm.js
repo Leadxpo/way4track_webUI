@@ -10,9 +10,9 @@ const EmiForm = ({ branches, bankOptions }) => {
   const [selectedEmiTo, setSelectedEmiTo] = useState('');
   const [dynamicOptions, setDynamicOptions] = useState([]);
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -54,7 +54,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -76,8 +76,10 @@ const EmiForm = ({ branches, bankOptions }) => {
         label: 'IFSC',
       },
       {
-        name: 'bankAccountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -85,7 +87,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -96,7 +98,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -136,7 +138,7 @@ const EmiForm = ({ branches, bankOptions }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         //branchId: data.branchId ? parseInt(data.branchId, 10) : null,
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
       };
 

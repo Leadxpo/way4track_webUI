@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 
-const PurchaseForm = ({ branches, bankOptions }) => {
+const PurchaseForm = ({ branches, bankOptions, staff }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Purchase');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
@@ -11,7 +11,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   const [products, setProducts] = useState([]);
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -23,13 +23,13 @@ const PurchaseForm = ({ branches, bankOptions }) => {
       { name: 'name', label: 'Title' },
       { name: 'purpose', label: 'Purpose' },
       {
-        name: 'transformBy',
+        name: 'staffId',
         label: 'Transform By',
         type: 'dropdown',
-        options: bankOptions,
+        options: staff,
       },
       {
-        name: 'goingTo',
+        name: 'fromAccount',
         label: 'Amount Going To',
         type: 'dropdown',
         options: bankOptions,
@@ -45,7 +45,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -67,8 +67,10 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         label: 'IFSC',
       },
       {
-        name: 'accountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -76,7 +78,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -87,7 +89,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -138,7 +140,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
         amount: calculateTotalAmount(),
         quantity: getTotalQuantity(),
