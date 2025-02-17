@@ -36,6 +36,8 @@ const TableWithSearchFilter = ({
   const [branches, setBranches] = useState([]);
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
+  const workData = location.state?.workData || {};
+
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
   const voucherData = location.state?.voucherData || {};
@@ -172,6 +174,27 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch vendor details.');
     }
   }, [searchID, searchName, voucherData?.branchName]);
+
+  const getWorkDetailsAgainstSearch = useCallback(async () => {
+    try {
+      const response = await ApiService.post('/work-allocations/getWorkAllocation', {
+        clientName: searchName,
+        workAllocationNumber: workData?.workAllocationNumber,
+        serviceOrProduct: workData?.serviceOrProduct,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+      if (response.status) {
+        console.log(response.data, 'Response Data');
+        setFilteredData(response.data);
+      } else {
+        alert(response.data.message || 'Failed to fetch voucher details.');
+      }
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+      alert('Failed to fetch vendor details.');
+    }
+  }, [workData?.serviceOrProduct, searchName, workData?.workAllocationNumber]);
   useEffect(() => {
     switch (type) {
       case 'tickets':
@@ -188,6 +211,9 @@ const TableWithSearchFilter = ({
         break;
       case 'receipts':
         getReceiptDetailsAgainstSearch();
+        break;
+      case 'work-allocations':
+        getWorkDetailsAgainstSearch();
         break;
       default:
         return;
@@ -280,6 +306,9 @@ const TableWithSearchFilter = ({
         break;
       case 'receipts':
         getReceiptDetailsAgainstSearch();
+        break;
+      case 'work-allocations':
+        getWorkDetailsAgainstSearch();
         break;
     }
   };
