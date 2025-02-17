@@ -27,24 +27,27 @@ const WarehouseManagerHome = () => {
 
   const [userProfile, setUserProfile] = useState(null);
 
-  useEffect(() => {
-    const fetchUserProfile = () => {
-      const userProfileData = localStorage.getItem('userProfile');
-      if (userProfileData) {
-        try {
-          const parsedData = JSON.parse(userProfileData);
-          setUserProfile(parsedData);
-        } catch (error) {
-          console.error('Error parsing user profile data:', error);
-          setUserProfile(null); // Set to null or handle accordingly
-        }
-      } else {
-        setUserProfile(null); // Set to null if no data in localStorage
-      }
-    };
+  const fetchAppointmentDetails = async (branchName = 'All') => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        staffId: localStorage.getItem('userId'),
+      };
+      const res = await ApiService.post('/staff/getStaffDetailsById', payload);
 
-    fetchUserProfile();
+      if (res.status) {
+        setUserProfile(res.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err);
+      setUserProfile([]); // `setAppointments` should be removed if not declared.
+    }
+  };
+  useEffect(() => {
+    fetchAppointmentDetails();
   }, []);
+
 
   useEffect(() => {
     const fetchPurchaseOrderData = async () => {
@@ -127,9 +130,7 @@ const WarehouseManagerHome = () => {
       {userProfile && (
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
           <img
-            src={
-              userProfile.profilePicPath || 'https://via.placeholder.com/100'
-            }
+            src={userProfile.staffPhoto || 'https://via.placeholder.com/100'}
             alt="Profile"
             className="w-24 h-24 rounded-full"
           />
@@ -146,6 +147,7 @@ const WarehouseManagerHome = () => {
           </div>
         </div>
       )}
+
 
       {/* Requests Section */}
       <h2 className="text-2xl font-bold mt-8">Requests</h2>
