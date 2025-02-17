@@ -108,7 +108,7 @@ const AddEditVouchers = () => {
           value: account.id,
           label: account.name,
         }));
-        setStaffList(formattedOptions || []);
+        setStaff(formattedOptions || []);
       } catch (error) {
         console.error('Failed to fetch staff names:', error);
       }
