@@ -3,15 +3,23 @@ import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 
-const PurchaseForm = ({ branches, bankOptions, staffList }) => {
+const PurchaseForm = ({ branches, bankOptions, staff }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Purchase');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const productTypes = [
+    { value: 'service', label: 'Service' },
+    { value: 'product', label: 'Product' },
+    { value: 'sales', label: 'Sales' },
+    { value: 'expanses', label: 'Expanses' },
+    { value: 'salaries', label: 'Salaries' },
+  ];
+
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -23,13 +31,13 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
       { name: 'name', label: 'Title' },
       { name: 'purpose', label: 'Purpose' },
       {
-        name: 'transformBy',
+        name: 'staffId',
         label: 'Transform By',
         type: 'dropdown',
-        options: staffList,
+        options: staff,
       },
       {
-        name: 'goingTo',
+        name: 'fromAccount',
         label: 'Amount Going To',
         type: 'dropdown',
         options: bankOptions,
@@ -45,7 +53,7 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -67,8 +75,10 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
         label: 'IFSC',
       },
       {
-        name: 'accountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -76,7 +86,7 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -87,7 +97,7 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -138,7 +148,7 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
         amount: calculateTotalAmount(),
         quantity: getTotalQuantity(),
@@ -456,6 +466,29 @@ const PurchaseForm = ({ branches, bankOptions, staffList }) => {
               )}
             </div>
           ))}
+        </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2">
+            Select Product Type
+          </label>
+          <Controller
+            name="productType"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <select
+                {...field}
+                className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select product type</option>
+                {productTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         </div>
 
         <button

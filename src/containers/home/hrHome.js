@@ -34,20 +34,20 @@ const HrHome = () => {
     { title: 'Company Code', dataIndex: 'companyCode', key: 'companyCode' },
     { title: 'Unit Code', dataIndex: 'unitCode', key: 'unitCode' },
     { title: 'Hiring Level', dataIndex: 'hiringLevel', key: 'hiringLevel' },
-    {
-      title: 'Qualifications',
-      dataIndex: 'qualifications',
-      key: 'qualifications',
-      render: (qualifications) => (
-        <ul>
-          {qualifications.map((q, index) => (
-            <li key={index}>
-              {q.qualificationName} ({q.yearOfPass}) - {q.marks}%
-            </li>
-          ))}
-        </ul>
-      ),
-    },
+    // {
+    //   title: 'Qualifications',
+    //   dataIndex: 'qualifications',
+    //   key: 'qualifications',
+    //   render: (qualifications) => (
+    //     <ul>
+    //       {qualifications.map((q, index) => (
+    //         <li key={index}>
+    //           {q.qualificationName} ({q.yearOfPass}) - {q.marks}%
+    //         </li>
+    //       ))}
+    //     </ul>
+    //   )
+    // },
     {
       title: 'Resume',
       dataIndex: 'resumePath',
