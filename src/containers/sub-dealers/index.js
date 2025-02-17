@@ -15,8 +15,8 @@ const SubDealers = () => {
     navigate('/add-sub-dealer', { state: { subDealerDetails: subDealer } });
   };
 
-  const handleDelete = (vendor) => {
-    navigate('/delete-sub-dealer');
+  const handleDelete = (subDealer) => {
+    navigate('/delete-sub-dealer', { state: { subDealerDetails: subDealer } });
   };
 
   const handleDetails = () => {

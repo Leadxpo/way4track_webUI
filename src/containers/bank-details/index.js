@@ -50,7 +50,6 @@
 //     { title: 'Amount', dataIndex: 'ac_total_amount', key: 'ac_total_amount' },
 //   ];
 
-
 //   return (
 //     <div className="p-10">
 //       <p className="font-bold text-xl">Bank Details</p>
@@ -119,7 +118,6 @@
 
 // export default BankDetailsDashboard;
 
-
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import Table from '../../components/Table';
@@ -165,7 +163,11 @@ const BankDetailsDashboard = () => {
     { title: 'No', dataIndex: 'ac_id', key: 'ac_id' },
     { title: 'A/C Holder', dataIndex: 'ac_name', key: 'ac_name' },
     { title: 'A/C Type', dataIndex: 'ac_account_type', key: 'ac_account_type' },
-    { title: 'A/C Number', dataIndex: 'ac_account_number', key: 'ac_account_number' },
+    {
+      title: 'A/C Number',
+      dataIndex: 'ac_account_number',
+      key: 'ac_account_number',
+    },
     { title: 'IFSC Code', dataIndex: 'ac_ifsc_code', key: 'ac_ifsc_code' },
     { title: 'Amount', dataIndex: 'ac_total_amount', key: 'ac_total_amount' },
   ];
@@ -204,8 +206,8 @@ const BankDetailsDashboard = () => {
         </button>
       </div>
       <Table
-        columns={columns}
-        dataSource={bankData.map((item, index) => ({
+        columns={bankData?.length ? Object.keys(bankData[0]) : []}
+        data={bankData.map((item, index) => ({
           key: item.ac_id,
           ac_id: index + 1, // Replacing ID with index
           ac_name: item.ac_name,
@@ -214,9 +216,9 @@ const BankDetailsDashboard = () => {
           ac_ifsc_code: item.ac_ifsc_code,
           ac_total_amount: parseFloat(item.ac_total_amount),
         }))}
-        onEdit={() => { }}
+        onEdit={() => {}}
         onDetails={() => navigate('/bank-details')}
-        onDelete={() => { }}
+        onDelete={() => {}}
         showEdit={true}
         showDelete={true}
         showDetails={true}

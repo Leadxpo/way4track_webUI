@@ -56,7 +56,8 @@ const AddEditInvoice = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [sgst, setSgst] = useState(0);
   const [cgst, setCgst] = useState(0);
-
+  const [sgstPercentage, setSgstPercentage] = useState(9);
+  const [cgstPercentage, setCgstPercentage] = useState(9);
   // Calculate total, SGST, and CGST
   useEffect(() => {
     const calculatedTotal = formData.items.reduce(
@@ -64,11 +65,11 @@ const AddEditInvoice = () => {
       0
     );
     setTotalAmount(calculatedTotal);
-    const calculatedSgst = (calculatedTotal * 9) / 100;
-    const calculatedCgst = (calculatedTotal * 9) / 100;
+    const calculatedSgst = (calculatedTotal * sgstPercentage) / 100;
+    const calculatedCgst = (calculatedTotal * cgstPercentage) / 100;
     setSgst(calculatedSgst);
     setCgst(calculatedCgst);
-  }, [formData.items]);
+  }, [formData.items, sgstPercentage, cgstPercentage]);
 
   // Handle field changes
   const handleInputChange = (e) => {
@@ -119,8 +120,8 @@ const AddEditInvoice = () => {
       //   0
       // ),
       // hsnCode: formData.items[0].hsnCode,
-      cgstPercentage: 9, // For temporary use
-      scstPercentage: 9, // For temporary use
+      cgstPercentage: sgstPercentage, // For temporary use
+      scstPercentage: cgstPercentage, // For temporary use
       productDetails: formData.items.map((item) => ({
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,
@@ -338,7 +339,18 @@ const AddEditInvoice = () => {
 
               {/* SGST Tax */}
               <tr className="border-b">
-                <td className="text-right py-2">SGST Tax (9%)</td>
+                <td className="text-right py-2">
+                  SGST Tax{' '}
+                  <span>
+                    <input
+                      value={sgstPercentage}
+                      className="w-16 text-center outline:none border rounded-md p-1 mx-2"
+                      placeholder="9%"
+                      onChange={(e) => setSgstPercentage(e.target.value)}
+                    />
+                  </span>
+                  %
+                </td>
                 <td>
                   <input
                     type="text"
@@ -351,7 +363,18 @@ const AddEditInvoice = () => {
 
               {/* CGST Tax */}
               <tr className="border-b">
-                <td className="text-right py-2">CGST Tax (9%)</td>
+                <td className="text-right py-2">
+                  CGST Tax{' '}
+                  <span>
+                    <input
+                      value={cgstPercentage}
+                      className="w-16 text-center outline:none border rounded-md p-1 mx-2"
+                      placeholder="9%"
+                      onChange={(e) => setCgstPercentage(e.target.value)}
+                    />
+                  </span>
+                  %
+                </td>
                 <td>
                   <input
                     type="text"

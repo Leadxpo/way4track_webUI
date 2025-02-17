@@ -93,6 +93,7 @@ import BranchManagerHome from '../home/branchManagerHome';
 import Performance from '../performance';
 import HrHome from '../home/hrHome';
 import HrBranch from '../branches/hrBranch';
+import ReceiptDetails from '../receipts/receiptDetails';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -414,6 +415,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/hr-home" element={<HrHome />} />
           <Route path="/performance" element={<Performance />} />
           <Route path="/hr-branch" element={<HrBranch />} />
+          <Route path="/receipt-details" element={<ReceiptDetails />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

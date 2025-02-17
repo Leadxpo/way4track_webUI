@@ -73,6 +73,17 @@ const TechnicianHome = () => {
           year: currentYear,
         }
       );
+
+      const rawData = response.data || [];
+      const formattedData = rawData.map((item) => ({
+        name: new Date(item.year, item.month - 1).toLocaleString('default', {
+          month: 'short',
+        }),
+        totalAppointments: parseInt(item.totalAppointments, 10) || 0,
+        totalSuccessAppointments:
+          parseInt(item.totalSuccessAppointments, 10) || 0,
+      }));
+      setCardData(formattedData);
       setCardData(response.data);
     } catch (error) {
       console.log(error);
@@ -130,9 +141,9 @@ const TechnicianHome = () => {
         showDelete={false}
         showDetails={false}
         data={appointments}
-        onEdit={() => { }}
-        onDelete={() => { }}
-        onDetails={() => { }}
+        onEdit={() => {}}
+        onDelete={() => {}}
+        onDetails={() => {}}
       />
       <div className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-lg p-4 shadow-md mb-6">
         <ResponsiveContainer width="100%" height={300}>
@@ -148,10 +159,17 @@ const TechnicianHome = () => {
             <Tooltip />
             <Line
               type="monotone"
-              dataKey="balance"
-              stroke="#fff"
-              strokeWidth={4}
-              dot={{ fill: '#fff', r: 6 }}
+              dataKey="totalAppointments"
+              stroke="#82ca9d"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="totalSuccessAppointments"
+              stroke="#8884d8"
+              strokeWidth={2}
+              dot={{ r: 4 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -204,8 +222,8 @@ const TechnicianHome = () => {
                   >
                     {attendanceData[i]?.inTime.length > 0
                       ? new Date(
-                        attendanceData[i].inTime[0]
-                      ).toLocaleTimeString()
+                          attendanceData[i].inTime[0]
+                        ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}
@@ -223,8 +241,8 @@ const TechnicianHome = () => {
                   >
                     {attendanceData[i]?.outTime.length > 0
                       ? new Date(
-                        attendanceData[i].outTime[0]
-                      ).toLocaleTimeString()
+                          attendanceData[i].outTime[0]
+                        ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}

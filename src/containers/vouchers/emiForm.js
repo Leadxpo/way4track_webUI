@@ -10,9 +10,17 @@ const EmiForm = ({ branches, bankOptions }) => {
   const [selectedEmiTo, setSelectedEmiTo] = useState('');
   const [dynamicOptions, setDynamicOptions] = useState([]);
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const productTypes = [
+    { value: "service", label: "Service" },
+    { value: "product", label: "Product" },
+    { value: "sales", label: "Sales" },
+    { value: "expanses", label: "Expanses" },
+    { value: "salaries", label: "Salaries" },
+  ];
+
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -54,7 +62,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -76,8 +84,10 @@ const EmiForm = ({ branches, bankOptions }) => {
         label: 'IFSC',
       },
       {
-        name: 'bankAccountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -85,7 +95,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -96,7 +106,7 @@ const EmiForm = ({ branches, bankOptions }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -131,12 +141,12 @@ const EmiForm = ({ branches, bankOptions }) => {
 
       const payload = {
         ...filteredData,
-        voucherType: selectedTab.toLowerCase(),
+        voucherType: 'emi',
         paymentType: selectedPaymentMode.toLowerCase(),
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         //branchId: data.branchId ? parseInt(data.branchId, 10) : null,
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
       };
 
@@ -322,6 +332,7 @@ const EmiForm = ({ branches, bankOptions }) => {
           ))}
         </div>
 
+
         <div>
           {paymentModeFields[selectedPaymentMode]?.map((field) => (
             <div key={field.name} className="mb-4">
@@ -361,6 +372,27 @@ const EmiForm = ({ branches, bankOptions }) => {
               )}
             </div>
           ))}
+        </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2">Select Product Type</label>
+          <Controller
+            name="productType"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <select
+                {...field}
+                className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select product type</option>
+                {productTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         </div>
 
         <button

@@ -8,9 +8,17 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
   const [selectedTab, setSelectedTab] = useState('Journal');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
-  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card'];
+  const productTypes = [
+    { value: "service", label: "Service" },
+    { value: "product", label: "Product" },
+    { value: "sales", label: "Sales" },
+    { value: "expanses", label: "Expanses" },
+    { value: "salaries", label: "Salaries" },
+  ];
+
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -31,13 +39,13 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
       },
       { name: 'purpose', label: 'Purpose' },
       {
-        name: 'amountTo',
+        name: 'toAccount',
         label: 'Amount Giving To',
         type: 'dropdown',
         options: bankOptions,
       },
       {
-        name: 'requestFrom',
+        name: 'fromAccount',
         label: 'From Request To',
         type: 'dropdown',
         options: bankOptions,
@@ -54,7 +62,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -76,8 +84,10 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
         label: 'IFSC',
       },
       {
-        name: 'bankAccountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -85,7 +95,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -96,7 +106,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccountank',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -135,7 +145,7 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
       };
       console.log('Payload:', payload);
@@ -271,6 +281,27 @@ const JournalForm = ({ branches, bankOptions, clients }) => {
             )}
           </div>
         ))}
+      </div>
+      <div className="mb-4">
+        <label className="block font-semibold mb-2">Select Product Type</label>
+        <Controller
+          name="productType"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <select
+              {...field}
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select product type</option>
+              {productTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          )}
+        />
       </div>
 
       <button

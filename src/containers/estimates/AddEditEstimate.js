@@ -439,7 +439,7 @@ const AddEditEstimate = () => {
               Other Information / Terms & Conditions
             </label>
             <textarea
-              name="terms"
+              name="terms"getProductDetailsByBranch
               value={formData.terms}
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"

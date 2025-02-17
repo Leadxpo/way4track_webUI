@@ -3,15 +3,23 @@ import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 
-const PurchaseForm = ({ branches, bankOptions }) => {
+const PurchaseForm = ({ branches, bankOptions, staff }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Purchase');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const productTypes = [
+    { value: 'service', label: 'Service' },
+    { value: 'product', label: 'Product' },
+    { value: 'sales', label: 'Sales' },
+    { value: 'expanses', label: 'Expanses' },
+    { value: 'salaries', label: 'Salaries' },
+  ];
+
   const dropdownOptions = {
-    role: ['Manager', 'Accountant', 'Staff'],
+    // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
     amountGoingTo: ['Account A', 'Account B', 'Account C'],
     bankFrom: ['Bank A', 'Bank B', 'Bank C'],
@@ -23,13 +31,13 @@ const PurchaseForm = ({ branches, bankOptions }) => {
       { name: 'name', label: 'Title' },
       { name: 'purpose', label: 'Purpose' },
       {
-        name: 'transformBy',
+        name: 'staffId',
         label: 'Transform By',
         type: 'dropdown',
-        options: bankOptions,
+        options: staff,
       },
       {
-        name: 'goingTo',
+        name: 'fromAccount',
         label: 'Amount Going To',
         type: 'dropdown',
         options: bankOptions,
@@ -45,7 +53,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     UPI: [
       { name: 'upiId', label: 'UPI ID' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -67,8 +75,10 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         label: 'IFSC',
       },
       {
-        name: 'accountNumber',
-        label: 'Account Number',
+        name: 'fromAccount',
+        label: 'Bank',
+        type: 'dropdown',
+        options: bankOptions,
       },
       { name: 'amount', label: 'Amount' },
       { name: 'remainingAmount', label: 'Remaining Amount' },
@@ -76,7 +86,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     Cheque: [
       { name: 'chequeNumber', label: 'Check Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -87,7 +97,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
     Card: [
       { name: 'cardNumber', label: 'Card Number' },
       {
-        name: 'bank',
+        name: 'fromAccount',
         label: 'Bank',
         type: 'dropdown',
         options: bankOptions,
@@ -138,7 +148,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        role: data.role,
+        // role: data.role,
         toAccount: data.toAccount,
         amount: calculateTotalAmount(),
         quantity: getTotalQuantity(),
@@ -153,12 +163,22 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   };
 
   const [rows, setRows] = useState([
-    { id: 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+    {
+      id: 1,
+      productId: '',
+      productName: '',
+      quantity: '',
+      amount: 0,
+      totalCost: 0,
+    },
   ]);
 
   const handleProductItemChange = async (id, e) => {
     const { value } = e.target;
-    const selectedProduct = products.find((product) => product.id === value);
+    console.log(value);
+    const selectedProduct = products.find(
+      (product) => product.id === Number(value)
+    );
 
     if (!selectedProduct) return;
 
@@ -169,8 +189,8 @@ const PurchaseForm = ({ branches, bankOptions }) => {
           productId: selectedProduct.id,
           productName: selectedProduct.productName,
           quantity: 1, // Default 1
-          totalCost: selectedProduct.totalCost || 0, // Get totalCost from backend
-          amount: selectedProduct.totalCost || 0, // Set amount as totalCost initially
+          amount: selectedProduct.price || 0, // Get totalCost from backend
+          price: selectedProduct.price || 0, // Set amount as totalCost initially
         };
       }
       return row;
@@ -201,8 +221,12 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   const handlePurchaseItemsInputChange = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
-        let updatedValue = field === "quantity" ? parseFloat(value) || 0 : parseFloat(value) || 0;
-        let newAmount = field === "quantity" ? updatedValue * (row.totalCost || 0) : row.amount;
+        let updatedValue =
+          field === 'quantity'
+            ? parseFloat(value) || 0
+            : parseFloat(value) || 0;
+        let newAmount =
+          field === 'quantity' ? updatedValue * (row.price || 0) : row.amount;
 
         return {
           ...row,
@@ -217,14 +241,21 @@ const PurchaseForm = ({ branches, bankOptions }) => {
 
   // Calculate total amount
   const calculateTotalAmount = () => {
-    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
+    return rows.reduce((acc, row) => acc + parseFloat(row.amount || 0), 0);
   };
 
   // Add a new row
   const addRow = () => {
     setRows([
       ...rows,
-      { id: rows.length + 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+      {
+        id: rows.length + 1,
+        productId: '',
+        productName: '',
+        quantity: '',
+        amount: 0,
+        totalCost: 0,
+      },
     ]);
   };
 
@@ -234,7 +265,6 @@ const PurchaseForm = ({ branches, bankOptions }) => {
       setRows(rows.slice(0, -1));
     }
   };
-
 
   return (
     <div>
@@ -314,19 +344,31 @@ const PurchaseForm = ({ branches, bankOptions }) => {
                       </option>
                     ))}
                   </select>
-                  <input
-                    type="text"
-                    placeholder="Product tName"
-                    value={row.productName}
-                    readOnly
-                    className="p-2 border rounded-md w-1/3"
-                  />
 
                   <input
                     type="number"
                     placeholder="Quantity"
                     value={row.quantity}
-                    onChange={(e) => handlePurchaseItemsInputChange(row.id, "quantity", e.target.value)}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'quantity',
+                        e.target.value
+                      )
+                    }
+                    className="p-2 border rounded-md w-1/3"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Rate"
+                    value={row.price}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'amount',
+                        e.target.value
+                      )
+                    }
                     className="p-2 border rounded-md w-1/3"
                   />
                   <input
@@ -424,6 +466,29 @@ const PurchaseForm = ({ branches, bankOptions }) => {
               )}
             </div>
           ))}
+        </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2">
+            Select Product Type
+          </label>
+          <Controller
+            name="productType"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <select
+                {...field}
+                className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select product type</option>
+                {productTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         </div>
 
         <button

@@ -359,10 +359,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-              ...item,
-              count: response.data.last30DaysTickets,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysTickets,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -386,10 +386,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-              ...item,
-              count: response.data.last30DaysProducts,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysProducts,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -413,10 +413,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-              ...item,
-              count: response.data.last30DaysPurchases,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysPurchases,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -439,10 +439,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-              ...item,
-              count: response.data.last30DaysExpenses,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysExpenses,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -452,7 +452,6 @@ const Home = () => {
     }
   };
   const fetchTicketsData = async () => {
-
     const payload = {
       ticketId: '',
       clientName: '',
@@ -462,12 +461,9 @@ const Home = () => {
     };
 
     // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-    if (
-      payload.role === 'Technician' || payload.role === 'Sales Man'
-    ) {
+    if (payload.role === 'Technician' || payload.role === 'Sales Man') {
       payload.staffId = localStorage.getItem('userId');
     }
-
 
     try {
       const response = await ApiService.post(
@@ -488,7 +484,6 @@ const Home = () => {
 
   const fetchProductsData = async () => {
     try {
-
       const payload = {
         ticketId: '',
         clientName: '',
@@ -498,13 +493,14 @@ const Home = () => {
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
 
-      const response = await ApiService.post('/products/getAllProductDetails', payload);
+      const response = await ApiService.post(
+        '/products/getAllProductDetails',
+        payload
+      );
 
       if (response.status) {
         const filteredData = response.data.map((item) => ({
@@ -527,7 +523,6 @@ const Home = () => {
 
   const fetchExpensesData = async () => {
     try {
-
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
@@ -535,12 +530,13 @@ const Home = () => {
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
-      const response = await ApiService.post('/dashboards/getExpenseData', payload);
+      const response = await ApiService.post(
+        '/dashboards/getExpenseData',
+        payload
+      );
 
       if (response.status) {
         setTotalExpenses(response.data);
@@ -555,7 +551,6 @@ const Home = () => {
 
   const fetchPurchaseData = async () => {
     try {
-
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
@@ -563,12 +558,13 @@ const Home = () => {
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
-      const response = await ApiService.post('/dashboards/getPurchaseData', payload);
+      const response = await ApiService.post(
+        '/dashboards/getPurchaseData',
+        payload
+      );
 
       if (response.status) {
         console.log(response.data, 'purchase');
@@ -823,7 +819,7 @@ const Home = () => {
       </div>
 
       {/* second section */}
-      <div className="flex items-center justify-center space-x-10">
+      {/* <div className="flex items-center justify-center space-x-10">
         <div>
           {bracnhWiseSolidLiquidData.map((cash) => (
             <div className="grid grid-cols-4 gap-4 space-y-4">
@@ -870,7 +866,7 @@ const Home = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"

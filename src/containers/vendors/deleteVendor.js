@@ -36,11 +36,12 @@ const DeleteVendor = () => {
   };
 
   useEffect(() => {
-    if (!vendorDetails?.vendorId) {
+    console.log(location.state?.vendorDetails);
+    if (!location.state?.vendorDetails?.vendorId) {
       alert('No vendor selected to delete.');
       navigate(-1); // Navigate back if no vendor details are found
     }
-  }, [vendorDetails, navigate]);
+  }, [location.state?.vendorDetails, navigate]);
   return (
     <div className="min-h-screen flex items-start justify-center pt-10">
       <div className="bg-white shadow-lg pb-4 w-full max-w-md">
@@ -59,12 +60,16 @@ const DeleteVendor = () => {
 
         {/* Buttons */}
         <div className="mt-6 flex justify-center space-x-4">
-          <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            onClick={deleteVendorDetails}>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            onClick={deleteVendorDetails}
+          >
             Delete
           </button>
-          <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-            onClick={() => navigate(-1)}>
+          <button
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            onClick={() => navigate(-1)}
+          >
             Cancel
           </button>
         </div>
