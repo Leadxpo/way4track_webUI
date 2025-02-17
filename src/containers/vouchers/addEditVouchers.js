@@ -101,18 +101,18 @@ const AddEditVouchers = () => {
       }
     };
 
-    // const fetchStaffNames = async () => {
-    //   try {
-    //     const response = await ApiService.post('/staff/getStaffNamesDropDown');
-    //     const formattedOptions = response.data.map((account) => ({
-    //       value: account.id,
-    //       label: account.name,
-    //     }));
-    //     setStaffList(formattedOptions || []);
-    //   } catch (error) {
-    //     console.error('Failed to fetch staff names:', error);
-    //   }
-    // };
+    const fetchStaffNames = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        const formattedOptions = response.data.map((account) => ({
+          value: account.id,
+          label: account.name,
+        }));
+        setStaff(formattedOptions || []);
+      } catch (error) {
+        console.error('Failed to fetch staff names:', error);
+      }
+    };
 
     fetchBranches();
     fetchBankOptions();
