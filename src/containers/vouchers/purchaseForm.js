@@ -140,7 +140,6 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
           obj[key] = data[key];
           return obj;
         }, {});
-
       const payload = {
         ...filteredData,
         voucherType: selectedTab.toLowerCase(),
@@ -148,11 +147,30 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         branchId: parseInt(data.branchId, 10),
-        // role: data.role,
         toAccount: data.toAccount,
         amount: calculateTotalAmount(),
         quantity: getTotalQuantity(),
+        productDetails: rows.map(row => ({
+          productId: row.productId,
+          productName: row.productName,
+          quantity: row.quantity,
+          amount: row.amount,
+          price: row.price,
+        })),
       };
+
+      // const payload = {
+      //   ...filteredData,
+      //   voucherType: selectedTab.toLowerCase(),
+      //   paymentType: selectedPaymentMode.toLowerCase(),
+      //   companyCode: initialAuthState.companyCode,
+      //   unitCode: initialAuthState.unitCode,
+      //   branchId: parseInt(data.branchId, 10),
+      //   // role: data.role,
+      //   toAccount: data.toAccount,
+      //   amount: calculateTotalAmount(),
+      //   quantity: getTotalQuantity(),
+      // };
       console.log('Payload:', payload);
       const response = await ApiService.post('/voucher/saveVoucher', payload);
       navigate('/vouchers');

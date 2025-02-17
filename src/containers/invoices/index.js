@@ -12,9 +12,9 @@ const Invoices = () => {
   return (
     <TableWithDateFilter
       type="invoice"
-      onEdit={handleEdit}
-      onDelete={() => {}}
-      onDetails={handleDetails}
+      onEdit={() => { }}
+      onDelete={() => { }}
+      onDetails={() => { }}
       showStatusFilter={true}
       showDelete={false}
     />

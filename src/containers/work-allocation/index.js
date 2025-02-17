@@ -12,23 +12,58 @@ const WorkAllocation = () => {
   const workAllocationData = location.state?.workAllocationDetails || {};
 
   // Initialize form data with existing workAllocation details if available
+  // const initialFormData = {
+  //   id: workAllocationData.id || '',
+  //   // staffId: workAllocationData.name || '',
+  //   workAllocationId: workAllocationData.workAllocationId || '',
+  //   workAllocationNumber: workAllocationData.workAllocationNumber || '',
+  //   serviceOrProduct: workAllocationData.serviceOrProduct || '',
+  //   otherInformation: workAllocationData.otherInformation || '',
+  //   date: workAllocationData.date || '',
+  //   staffId: workAllocationData.assignedTo,
+  //   companyCode: initialAuthState.companyCode,
+  //   unitCode: initialAuthState.unitCode,
+  //   voucherId: workAllocationData.voucherId || null,
+  //   install: workAllocationData.install,
+  //   // clientName: workAllocationData?.clientName,
+  //   clientId: workAllocationData?.clientId || null,
+  //   productDetails: [
+  //     {
+  //       productId: '',
+  //       productName: '',
+  //       imeiNumber: '',
+  //       install: false
+  //     },
+  //   ],
+  //   // phoneNumber: workAllocationData?.phoneNumber,
+  // };
+
   const initialFormData = {
     id: workAllocationData.id || '',
-    // staffId: workAllocationData.name || '',
     workAllocationId: workAllocationData.workAllocationId || '',
     workAllocationNumber: workAllocationData.workAllocationNumber || '',
     serviceOrProduct: workAllocationData.serviceOrProduct || '',
     otherInformation: workAllocationData.otherInformation || '',
     date: workAllocationData.date || '',
-    staffId: workAllocationData.assignedTo,
+    staffId: workAllocationData.assignedTo || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     voucherId: workAllocationData.voucherId || null,
-    install: workAllocationData.install,
-    // clientName: workAllocationData?.clientName,
+    install: workAllocationData.install || false,
     clientId: workAllocationData?.clientId || null,
-    // phoneNumber: workAllocationData?.phoneNumber,
+    productDetails: [
+      {
+        productId: '',
+        productName: '',
+        imeiNumber: '',
+        install: false,
+      },
+    ],
   };
+
+
+  const [products, setProducts] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedWorkAllocation, setSelectedWorkAllocation] =
@@ -43,11 +78,108 @@ const WorkAllocation = () => {
     setPermissions(perms);
   }, []);
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+  const fetchProducts = async () => {
+    try {
+      const res = await ApiService.post('/products/getAllproductDetails');
+      setProducts(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch client details:', err);
+      setProducts([]);
+    }
+  };
+
+  // const handleItemChange = (index, e) => {
+  //   const { name, value } = e.target;
+  //   const updatedItems = [...selectedWorkAllocation.productDetails];
+  //   updatedItems[index][name] = value;
+  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
+  // };
+
+  // const handleProductItemChange = (index, e) => {
+  //   const { name, value } = e.target;
+  //   const selectedProduct = products.find((product) => {
+  //     console.log(product.productName, ' ===', e.target.value);
+  //     return product.productName === e.target.value;
+  //   });
+
+  //   console.log('rrr : ', selectedProduct);
+  //   const updatedItems = [...selectedWorkAllocation.productDetails];
+  //   updatedItems[index][name] = value;
+  //   updatedItems[index]['productId'] = selectedProduct.id;
+  //   updatedItems[index]['imeiNumber'] = selectedProduct.imeiNumber;
+  //   updatedItems[index]['install'] = selectedProduct.install;
+  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
+  // };
+
+  // const addNewItem = () => {
+  //   setSelectedWorkAllocation((prevData) => ({
+  //     ...prevData,
+  //     productDetails: [
+  //       ...prevData.productDetails,
+  //       { name: '', imeiNumber: '', install: true },
+  //     ],
+  //   }));
+  // };
+
+  // const removeItem = (index) => {
+  //   const updatedItems = selectedWorkAllocation.productDetails.filter((_, i) => i !== index);
+  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
+  // };
+
+  const handleItemChange = (index, e) => {
+    const { name, value, type, checked } = e.target;
+    const updatedItems = [...selectedWorkAllocation.productDetails];
+    updatedItems[index][name] = type === 'checkbox' ? checked : value;
+    setSelectedWorkAllocation((prevData) => ({
+      ...prevData,
+      productDetails: updatedItems,
+    }));
+  };
+
+  const handleProductItemChange = (index, e) => {
+    const { value } = e.target;
+    const selectedProduct = products.find((product) => product.productName === value);
+
+    const updatedItems = [...selectedWorkAllocation.productDetails];
+    updatedItems[index]['productName'] = value;
+    if (selectedProduct) {
+      updatedItems[index]['productId'] = selectedProduct.id;
+      updatedItems[index]['imeiNumber'] = selectedProduct.imeiNumber;
+      updatedItems[index]['install'] = selectedProduct.install;
+    }
+    setSelectedWorkAllocation((prevData) => ({
+      ...prevData,
+      productDetails: updatedItems,
+    }));
+  };
+
+  const addNewItem = () => {
+    setSelectedWorkAllocation((prevData) => ({
+      ...prevData,
+      productDetails: [
+        ...prevData.productDetails,
+        { productId: '', productName: '', imeiNumber: '', install: false },
+      ],
+    }));
+  };
+
+  const removeItem = (index) => {
+    const updatedItems = selectedWorkAllocation.productDetails.filter((_, i) => i !== index);
+    setSelectedWorkAllocation((prevData) => ({
+      ...prevData,
+      productDetails: updatedItems,
+    }));
+  };
+
   const handleOpenModalForAdd = () => {
-    setSelectedWorkAllocation(null);
+    setSelectedWorkAllocation(initialFormData); // Use initialFormData instead of null
     setIsEditMode(false);
     setIsModalOpen(true);
   };
+
   const handleDropdownChange = (e) => {
     const selectedClientId = e.target.value;
     const selectedClient = client.find(
@@ -205,153 +337,176 @@ const WorkAllocation = () => {
 
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
-                    voucher Name
+                    Voucher ID
                   </label>
                   {voucher.length > 0 && (
                     <select
                       name="voucherId"
-                      value={selectedWorkAllocation.voucherId || ''}
+                      value={selectedWorkAllocation?.voucherId || ''}
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
                       <option value="" disabled>
-                        Select voucher
+                        Select Voucher
                       </option>
-                      {voucher.map((clientItem) => (
-                        <option key={clientItem.id} value={clientItem.id}>
-                          {clientItem.voucherId}
+                      {voucher.map((voucherItem) => (
+                        <option key={voucherItem.id} value={voucherItem.id}>
+                          {voucherItem.voucherId}
                         </option>
                       ))}
                     </select>
                   )}
                 </div>
-                {/* <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Client Number
-                  </label>
-                  <select
-                    name="clientId"
-                    value={selectedWorkAllocation.clientId}
-                    onChange={handleDropdownChange}
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.clientId
-                        : ''
-                    }
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Select Client
-                    </option>
-                    {client.map((clientItem) => (
-                      <option key={clientItem.clientId} value={clientItem.clientId}>
-                        {clientItem.phoneNumber}
-                      </option>
-                    ))}
-                  </select>
-                </div> */}
+
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Date
                   </label>
                   <input
                     type="date"
+                    name="date"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.date
-                        : ''
-                    }
+                    value={selectedWorkAllocation?.date || ''}
                     onChange={handleInputChange}
                   />
                 </div>
+
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Service / Product
                   </label>
                   <input
                     type="text"
+                    name="serviceOrProduct"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.Amount
-                        : ''
-                    }
+                    value={selectedWorkAllocation?.serviceOrProduct || ''}
+                    onChange={handleInputChange}
                   />
                 </div>
-                {/* <div>
-                  <p className="font-semibold mb-1">Installation</p>
-                  <select
-                    name="install"
-                    value={selectedWorkAllocation.install}
-                    onChange={handleInputChange}
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation.install
-                    }
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="">Select install</option>
-                    <option value="assigned">assigned</option>
-                    <option value="installed">installed</option>
-                  </select>
-                </div> */}
-                {/* Assign To */}
+
                 {staff.length > 0 && (
                   <div className="flex flex-col">
                     <label className="font-semibold mb-2">Assign To:</label>
                     <select
                       name="staffId"
-                      value={selectedWorkAllocation?.staffId}
+                      value={selectedWorkAllocation?.staffId || ''}
                       onChange={handleInputChange}
-                      defaultValue={
-                        isEditMode && selectedWorkAllocation.staffId
-                      }
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
                       <option value="" disabled>
                         Allocated to
                       </option>
                       {staff.map((staffMember) => (
-                        <option
-                          key={staffMember.id}
-                          value={staffMember.staffId}
-                        >
+                        <option key={staffMember.id} value={staffMember.id}>
                           {staffMember.name}
                         </option>
                       ))}
                     </select>
                   </div>
                 )}
+
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Address
                   </label>
                   <input
                     type="text"
+                    name="address"
                     className="border p-2 rounded w-full focus:outline-none"
-                    defaultValue={
-                      isEditMode && selectedWorkAllocation
-                        ? selectedWorkAllocation.address
-                        : ''
-                    }
+                    value={selectedWorkAllocation?.address || ''}
                     onChange={handleInputChange}
                   />
                 </div>
               </div>
+
               <div>
                 <label className="block text-gray-700 font-semibold mb-1">
                   Other Information
                 </label>
                 <textarea
+                  name="otherInformation"
                   className="w-full border p-2 rounded mb-4 focus:outline-none"
-                  defaultValue={
-                    isEditMode && selectedWorkAllocation
-                      ? selectedWorkAllocation.otherInformation
-                      : ''
-                  }
+                  value={selectedWorkAllocation?.otherInformation || ''}
                   onChange={handleInputChange}
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">Items</label>
+                <div className="border border-gray-300 rounded-md">
+                  {/* Header Row */}
+                  <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
+                    <span className="col-span-1 font-semibold">#</span>
+                    <span className="col-span-3 font-semibold">Name</span>
+                    <span className="col-span-3 font-semibold">IMEI Number</span>
+                    <span className="col-span-3 font-semibold">Install</span>
+                    <span className="col-span-2 font-semibold"></span>
+                  </div>
+
+                  {/* Items Rows */}
+                  {selectedWorkAllocation.productDetails.map((item, index) => (
+                    <div key={index} className="grid grid-cols-12 gap-2 items-center p-2 border-t">
+                      <span className="col-span-1">{index + 1}</span>
+
+                      {/* Product Name Dropdown */}
+                      <select
+                        name="productName"
+                        value={item.productName}
+                        onChange={(e) => handleProductItemChange(index, e)}
+                        className="col-span-3 p-2 border rounded-md"
+                      >
+                        <option value="">Select Product</option>
+                        {products.map((product) => (
+                          <option key={product.id} value={product.productName}>
+                            {product.productName}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* IMEI Number Input */}
+                      <input
+                        type="text"
+                        name="imeiNumber"
+                        value={item.imeiNumber}
+                        onChange={(e) => handleItemChange(index, e)}
+                        placeholder="IMEI Number"
+                        className="col-span-3 p-2 border rounded-md"
+                        disabled
+                      />
+
+                      {/* Install Checkbox */}
+                      <input
+                        type="checkbox"
+                        name="install"
+                        checked={item.install}
+                        onChange={(e) => handleItemChange(index, e)}
+                        className="col-span-3 p-2 border rounded-md"
+                      />
+
+                      {/* Remove Item Button */}
+                      <button
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="bg-gray-100 rounded-md w-fit p-2"
+                      >
+                        -
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Add New Item Button */}
+                  <div className="flex justify-end p-2">
+                    <button
+                      type="button"
+                      onClick={addNewItem}
+                      className="text-blue-500 text-sm font-semibold mt-2 ml-2"
+                    >
+                      + Add Item
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block"
@@ -362,6 +517,7 @@ const WorkAllocation = () => {
           </div>
         </div>
       )}
+
 
       {isMoreDetailsModalOpen && selectedWorkAllocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -407,15 +563,15 @@ const WorkAllocation = () => {
                 {selectedWorkAllocation.otherInformation}
               </p>
             </div>
-            <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
+            {/* <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
               Download PDF
-            </button>
+            </button> */}
           </div>
         </div>
       )}
 
       <TableWithSearchFilter
-        type="vouchers"
+        type="work-allocations"
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal}
         showCreateBtn={false}
