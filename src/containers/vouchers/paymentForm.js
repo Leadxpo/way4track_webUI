@@ -17,6 +17,14 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
     bankTo: ['Bank X', 'Bank Y', 'Bank Z'],
     branches: ['001', '002'],
   };
+  const productTypes = [
+    { value: "service", label: "Service" },
+    { value: "product", label: "Product" },
+    { value: "sales", label: "Sales" },
+    { value: "expanses", label: "Expanses" },
+    { value: "salaries", label: "Salaries" },
+  ];
+
   const formFieldsByTab = {
     Payment: [
       { name: 'name', label: 'Title' },
@@ -278,6 +286,28 @@ const PaymentForm = ({ branches, bankOptions, clients }) => {
             )}
           </div>
         ))}
+      </div>
+
+      <div className="mb-4">
+        <label className="block font-semibold mb-2">Select Product Type</label>
+        <Controller
+          name="productType"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <select
+              {...field}
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select product type</option>
+              {productTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          )}
+        />
       </div>
 
       <button

@@ -7,6 +7,14 @@ const ReceiptForm = ({ branches, bankOptions }) => {
   const [selectedTab, setSelectedTab] = useState('Receipt');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
+  const productTypes = [
+    { value: "service", label: "Service" },
+    { value: "product", label: "Product" },
+    { value: "sales", label: "Sales" },
+    { value: "expanses", label: "Expanses" },
+    { value: "salaries", label: "Salaries" },
+  ];
+
   const dropdownOptions = {
     // role: ['Manager', 'Accountant', 'Staff'],
     receiptTo: ['Client', 'Vendor'],
@@ -249,6 +257,30 @@ const ReceiptForm = ({ branches, bankOptions }) => {
           </div>
         ))}
       </div>
+      {/* <h3 className="font-bold mb-2">Product Type</h3> */}
+      {/* Product Type Section */}
+      <div className="mb-4">
+        <label className="block font-semibold mb-2">Select Product Type</label>
+        <Controller
+          name="productType"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <select
+              {...field}
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select product type</option>
+              {productTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          )}
+        />
+      </div>
+
 
       <button
         type="submit"
