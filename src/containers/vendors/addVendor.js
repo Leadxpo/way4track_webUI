@@ -48,7 +48,7 @@ const AddEditVendor = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'vendor updated successfully!'
@@ -87,10 +87,10 @@ const AddEditVendor = () => {
         console.error(error);
       }
     };
-    if (location.state.vendorDetails) {
+    if (location.state?.vendorDetails) {
       getVendorDetails();
     }
-  }, [location.state.vendorDetails]);
+  }, [location.state?.vendorDetails]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">

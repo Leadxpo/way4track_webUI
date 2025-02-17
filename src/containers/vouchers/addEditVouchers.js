@@ -17,7 +17,7 @@ const AddEditVouchers = () => {
   const [branches, setBranches] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [clients, setCleints] = useState([]);
-  const [staff, setStaff] = useState([])
+  const [staff, setStaff] = useState([]);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -49,12 +49,11 @@ const AddEditVouchers = () => {
       }
     };
 
-
     const fetchBankOptions = async () => {
       try {
         const requestData = {
           companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode
+          unitCode: initialAuthState.unitCode,
         };
         const response = await ApiService.post(
           '/account/getAccountsDropDown',
@@ -69,7 +68,10 @@ const AddEditVouchers = () => {
         //   value: account.id,
         //   label: account.accountName,
         // }));
-        console.log("+++++++====================================", formattedOptions)
+        console.log(
+          '+++++++====================================',
+          formattedOptions
+        );
         setBankOptions(formattedOptions);
       } catch (error) {
         console.error('Error fetching bank options:', error);
@@ -99,11 +101,23 @@ const AddEditVouchers = () => {
       }
     };
 
+    const fetchStaffNames = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        const formattedOptions = response.data.map((account) => ({
+          value: account.id,
+          label: account.name,
+        }));
+        setStaffList(formattedOptions || []);
+      } catch (error) {
+        console.error('Failed to fetch staff names:', error);
+      }
+    };
+
     fetchBranches();
     fetchBankOptions();
     fetchClients();
     fetchStaff();
-
   }, []);
 
   const getFormComponent = (selectedTab) => {
@@ -124,17 +138,40 @@ const AddEditVouchers = () => {
             bankOptions={bankOptions}
             clients={clients}
             staff={staff}
-
           />
         );
       case 'Journal':
-        return <JournalForm branches={branches} staff={staff} bankOptions={bankOptions} />;
+        return (
+          <JournalForm
+            branches={branches}
+            staff={staff}
+            bankOptions={bankOptions}
+          />
+        );
       case 'Contra':
-        return <ContraForm branches={branches} staff={staff} bankOptions={bankOptions} />;
+        return (
+          <ContraForm
+            branches={branches}
+            staff={staff}
+            bankOptions={bankOptions}
+          />
+        );
       case 'Purchase':
-        return <PurchaseForm branches={branches} staff={staff} bankOptions={bankOptions} />;
+        return (
+          <PurchaseForm
+            branches={branches}
+            staff={staff}
+            bankOptions={bankOptions}
+          />
+        );
       case 'EMI':
-        return <EmiForm branches={branches} staff={staff} bankOptions={bankOptions} />;
+        return (
+          <EmiForm
+            branches={branches}
+            staff={staff}
+            bankOptions={bankOptions}
+          />
+        );
       // case 'Invoice':
       //   return <InvoiceForm branches={branches} />;
     }

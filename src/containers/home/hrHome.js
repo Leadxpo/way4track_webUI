@@ -20,10 +20,13 @@ const HrHome = () => {
     getCandidateStats();
   }, []);
 
-
   const columns = [
     { title: 'Hiring ID', dataIndex: 'hiringId', key: 'hiringId' },
-    { title: 'Candidate Name', dataIndex: 'candidateName', key: 'candidateName' },
+    {
+      title: 'Candidate Name',
+      dataIndex: 'candidateName',
+      key: 'candidateName',
+    },
     { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
     { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Address', dataIndex: 'address', key: 'address' },
@@ -49,18 +52,22 @@ const HrHome = () => {
       title: 'Resume',
       dataIndex: 'resumePath',
       key: 'resumePath',
-      render: (resumePath) => resumePath ? (
-        <a href={resumePath} target="_blank" rel="noopener noreferrer">View Resume</a>
-      ) : 'N/A'
+      render: (resumePath) =>
+        resumePath ? (
+          <a href={resumePath} target="_blank" rel="noopener noreferrer">
+            View Resume
+          </a>
+        ) : (
+          'N/A'
+        ),
     },
     {
       title: 'Date of Upload',
       dataIndex: 'dateOfUpload',
       key: 'dateOfUpload',
-      render: (date) => new Date(date).toLocaleDateString()
-    }
+      render: (date) => new Date(date).toLocaleDateString(),
+    },
   ];
-
 
   const fetchStaffDetails = async () => {
     try {
@@ -68,7 +75,10 @@ const HrHome = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-      const response = await ApiService.post('/dashboards/getTotalStaffDetails', payload);
+      const response = await ApiService.post(
+        '/dashboards/getTotalStaffDetails',
+        payload
+      );
 
       if (response.status) {
         const branchData = response.data.result;
@@ -136,10 +146,17 @@ const HrHome = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-      const response = await ApiService.post('/hiring/getHiringSearchDetails', payload);
-      console.log("Full API Response:", response);
+      const response = await ApiService.post(
+        '/hiring/getHiringSearchDetails',
+        payload
+      );
+
+      console.log('Full API Response:', response);
       if (response.status) {
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const filteredData = response.data.map(
+          ({ qualifications, resumePath, ...rest }) => rest
+        );
+        setFilteredData(filteredData); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -148,7 +165,7 @@ const HrHome = () => {
       alert('Failed to fetch client details.');
     }
   };
-  console.log(filteredData, "filteredDatafilteredData")
+
   const getCandidateStats = async () => {
     try {
       const response = await ApiService.post(
@@ -208,10 +225,11 @@ const HrHome = () => {
             <button
               key={index}
               onClick={() => setSelectedBranch(branch)}
-              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${selectedBranch?.name === branch.name
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-300 text-gray-700'
-                }`}
+              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
+                selectedBranch?.name === branch.name
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-300 text-gray-700'
+              }`}
             >
               {branch.name}
             </button>
@@ -262,12 +280,10 @@ const HrHome = () => {
       </div>
       <div className="p-6">
         <Table
-          columns={columns}
-          dataSource={filteredData}
+          columns={filteredData?.length ? Object.keys(filteredData[0]) : []}
+          data={filteredData}
           rowKey="key"
         />
-
-
       </div>
     </div>
   );

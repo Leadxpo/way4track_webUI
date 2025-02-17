@@ -22,20 +22,16 @@ const BranchManagerHome = () => {
   // const [assertsCardData, setAssertsCardData] = useState([]);
   // const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   // const [totalStaffDetails, setTotalStaffDetails] = useState([]);
-
   // const fetchProductDetailsByBranch = async () => {
   //   try {
-
   //     const payload = {
   //       companyCode: initialAuthState.companyCode,
   //       unitCode: initialAuthState.unitCode,
   //       role: localStorage.getItem('role'),
   //     };
-
   //     if (payload.role === 'Branch Manager') {
   //       payload.branch = localStorage.getItem('branchName');
   //     }
-
   //     let response;
   //     if (payload.branchName) {
   //       response = await ApiService.post('/dashboards/getProductDetailsByBranch', payload);
@@ -50,16 +46,11 @@ const BranchManagerHome = () => {
   //     //alert('Failed to fetch tickets data.');
   //   }
   // };
-
   // const branchProductData = productDetailsByBranch[0]; // Assuming only one branch in response
   // const totalQuantity = branchProductData?.products?.reduce(
   //   (sum, product) => sum + product.totalProducts,
   //   0
   // ) || 0;
-
-
-
-
   // const fetchCreditAndDebitPercentages = async () => {
   //   try {
   //     const payload = {
@@ -67,11 +58,9 @@ const BranchManagerHome = () => {
   //       unitCode: initialAuthState.unitCode,
   //       role: localStorage.getItem('role'),
   //     };
-
   //     if (payload.role === 'Branch Manager') {
   //       payload.branchName = localStorage.getItem('branchName');
   //     }
-
   //     let response;
   //     if (payload.branchName) {
   //       response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', payload);
@@ -89,25 +78,20 @@ const BranchManagerHome = () => {
   //     //alert('Failed to fetch tickets data.');
   //   }
   // };
-
   // const fetchAssertsCardData = async () => {
   //   try {
-
   //     const payload = {
   //       companyCode: initialAuthState.companyCode,
   //       unitCode: initialAuthState.unitCode,
   //       role: localStorage.getItem('role'),
   //     };
-
   //     if (payload.role === 'Branch Manager') {
   //       payload.branch = localStorage.getItem('branchName');
   //     }
-
   //     let response;
   //     if (payload.branchName) {
   //       response = await ApiService.post('/dashboards/assertsCardData', payload);
   //     }
-
   //     if (response.status) {
   //       setAssertsCardData(response.data || []);
   //     } else {
@@ -118,7 +102,6 @@ const BranchManagerHome = () => {
   //     //alert('Failed to fetch tickets data.');
   //   }
   // };
-
   // const fetchRequestBranchWise = async () => {
   //   try {
   //     const payload = {
@@ -126,16 +109,13 @@ const BranchManagerHome = () => {
   //       unitCode: initialAuthState.unitCode,
   //       role: localStorage.getItem('role'),
   //     };
-
   //     if (payload.role === 'Branch Manager') {
   //       payload.branchName = localStorage.getItem('branchName');
   //     }
-
   //     let response;
   //     if (payload.branchName) {
   //       response = await ApiService.post('/requests/getTodayRequestBranchWise', payload);
   //     }
-
   //     // Ensure response.data is always an array
   //     if (response?.status && Array.isArray(response.data)) {
   //       setRequestBranchWiseData(response.data);
@@ -147,9 +127,6 @@ const BranchManagerHome = () => {
   //     setRequestBranchWiseData([]); // Handle errors gracefully
   //   }
   // };
-
-
-
   // const TotalStaffDetails = async (staff_branchName) => {
   //   try {
   //     const payload = {
@@ -157,16 +134,13 @@ const BranchManagerHome = () => {
   //       unitCode: initialAuthState.unitCode,
   //       role: localStorage.getItem('role'),
   //     };
-
   //     if (payload.role === 'Branch Manager') {
   //       payload.branchName = localStorage.getItem('branchName');
   //     }
-
   //     let response;
   //     if (payload.branchName) {
   //       response = await ApiService.post('/dashboards/getTotalStaffDetails', payload);
   //     }
-
   //     if (response.status) {
   //       setTotalStaffDetails(response.data || []);
   //     } else {
@@ -180,7 +154,6 @@ const BranchManagerHome = () => {
   // useEffect(() => {
   //   fetchProductDetailsByBranch();
   // }, []);
-
   // const fetchData = async () => {
   //   await Promise.all([
   //     fetchCreditAndDebitPercentages(),
@@ -193,10 +166,7 @@ const BranchManagerHome = () => {
   // useEffect(() => {
   //   fetchData();
   // }, []);
-
-
   // const branchData = creditAndDebitPercentages?.[0] || {};
-
   // return (
   //   <div className="p-6">
   //     {/* branch card Section */}
@@ -217,7 +187,6 @@ const BranchManagerHome = () => {
   //             {branchData.branchName || "N/A"}
   //           </span>
   //         </div>
-
   //         <div className="space-y-4">
   //           <div className="text-green-600 flex items-center text-xl font-bold">
   //             <span>Credit Percentage:</span>
@@ -231,7 +200,6 @@ const BranchManagerHome = () => {
   //               style={{ width: `${branchData.creditPercentage || 0}%` }}
   //             ></div>
   //           </div>
-
   //           <div className="text-red-500 flex items-center text-xl font-bold">
   //             <span>Debit Percentage:</span>
   //             <span className="ml-2">
@@ -246,7 +214,6 @@ const BranchManagerHome = () => {
   //           </div>
   //         </div>
   //       </div>
-
   //     </div>
   //     {/* cards Section */}
   //     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -254,17 +221,14 @@ const BranchManagerHome = () => {
   //         requestBranchWiseData.map((location) => {
   //           // Ensure color is defined or provide a default
   //           const { border, bg } = getColorClasses(location.color || "gray");
-
   //           // Calculate total requests count dynamically
   //           const totalRequests = location.requests.reduce((sum, req) => sum + req.count, 0);
-
   //           return (
   //             <div key={location.location} className={`border-2 ${border} rounded-lg shadow-md`}>
   //               <h3 className={`${bg} text-white font-semibold text-lg p-3 flex justify-between`}>
   //                 <span>{location.location}</span>
   //                 <span>Total: {totalRequests}</span> {/* Dynamic total */}
   //               </h3>
-
   //               {location.requests.map((req, index) => (
   //                 <p key={index} className="text-sm font-medium ml-4 mt-4">
   //                   {req.name}: <span className="font-bold">{req.count}</span>
@@ -277,8 +241,6 @@ const BranchManagerHome = () => {
   //         <p>No data available</p>
   //       )}
   //     </div>
-
-
   //     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
   //       {/* Assets Summary Card */}
   //       <div className="border-2 border-gray-500 rounded-lg shadow-md">
@@ -298,14 +260,12 @@ const BranchManagerHome = () => {
   //         </div>
   //       </div>
   //     </div>
-
   //     <div className="mt-6">
   //       {/* Staff Summary Card */}
   //       <div className="border-2 border-gray-500 rounded-lg shadow-md p-4 mb-6">
   //         <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
   //           Staff Summary
   //         </h3>
-
   //         <div className="p-4">
   //           <p className="text-sm font-medium mb-2">
   //             Total Staff: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalStaff || 0}</span>
@@ -361,7 +321,6 @@ const BranchManagerHome = () => {
   //           </p>
   //         </div>
   //       </div>
-
   //       {/* Products List Card */}
   //       <div className="border-2 border-gray-400 rounded-lg shadow-md">
   //         <h3 className="bg-gray-400 text-white font-semibold text-lg p-3">Product Details</h3>
@@ -375,8 +334,5 @@ const BranchManagerHome = () => {
   //       </div>
   //     </div>
   //   </div>)
-
-}
+};
 export default BranchManagerHome;
-
-

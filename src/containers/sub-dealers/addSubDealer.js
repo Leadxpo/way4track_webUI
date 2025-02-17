@@ -13,10 +13,10 @@ const AddEditSubDealer = () => {
   const initialFormData = {
     name: subDealerData.name || '',
     subDealerPhoneNumber: subDealerData.subDealerPhoneNumber || '',
-    alternateNumber: subDealerData.alternateNumber || '',
+    alternatePhoneNumber: subDealerData.alternateNumber || '',
     gstNumber: subDealerData.gstNumber || '',
     password: subDealerData.password || '',
-    startDate: subDealerData.startDate || '',
+    startingDate: subDealerData.startDate || '',
     emailId: subDealerData.emailId || '',
     aadharNumber: subDealerData.aadharNumber || '',
     address: subDealerData.address || '',
@@ -35,15 +35,22 @@ const AddEditSubDealer = () => {
   };
 
   useEffect(() => {
-    if (subDealerData?.id || subDealerData?.subDealerId) {
+    if (
+      location.state?.subDealerDetails ||
+      location.state?.subDealerDetails?.subDealerId
+    ) {
       const fetchClientDetails = async () => {
         try {
-          const response = await ApiService.post('/subdealer/getSubDealerDetails', {
-            subDealerId: subDealerData.subDealerId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          });
+          const response = await ApiService.post(
+            '/subdealer/getSubDealerDetails',
+            {
+              subDealerId: subDealerData.subDealerId,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
           const subDealer = response.data?.[0];
+          console.log(subDealer);
           setFormData((prev) => ({
             ...prev,
             ...subDealer,
@@ -56,10 +63,9 @@ const AddEditSubDealer = () => {
       };
       fetchClientDetails();
     }
-  }, [subDealerData]);
+  }, [location.state?.subDealerDetails]);
 
   const handleSave = async () => {
-
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
@@ -68,15 +74,21 @@ const AddEditSubDealer = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, formData, "+++++++++++++++++++++++++")
+    console.log(payload, formData, '+++++++++++++++++++++++++');
     try {
-      const endpoint = formData.id ? '/subdealer/handleSubDealerDetails' : '/subdealer/handleSubDealerDetails';
+      const endpoint = formData.id
+        ? '/subdealer/handleSubDealerDetails'
+        : '/subdealer/handleSubDealerDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
-        alert(formData.id ? 'vendor updated successfully!' : 'vendor added successfully!');
+      if (response.status) {
+        alert(
+          formData.id
+            ? 'vendor updated successfully!'
+            : 'vendor added successfully!'
+        );
         navigate('/sub_dealers');
       } else {
         alert('Failed to save employee details. Please try again.');
@@ -86,7 +98,6 @@ const AddEditSubDealer = () => {
       alert('Failed to save employee details. Please try again.');
     }
   };
-
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -108,7 +119,7 @@ const AddEditSubDealer = () => {
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {subDealerData.subDealerName ? 'Edit Sub Dealer' : 'Add Sub Dealer'}
+            {subDealerData.name ? 'Edit Sub Dealer' : 'Add Sub Dealer'}
           </h1>
         </div>
 
@@ -153,7 +164,7 @@ const AddEditSubDealer = () => {
             },
             {
               label: 'Alternate Mobile Number',
-              name: 'alternateNumber',
+              name: 'alternatePhoneNumber',
               type: 'text',
               placeholder: 'Enter Alternate Mobile Number',
             },
@@ -165,7 +176,7 @@ const AddEditSubDealer = () => {
             },
             {
               label: 'Starting Date',
-              name: 'startDate',
+              name: 'startingDate',
               type: 'date',
               placeholder: '',
             },

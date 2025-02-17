@@ -14,7 +14,7 @@ const AddEditRequestForm = () => {
 
   // Initialize form data, using employeeData if available
   const initialFormData = {
-    id: requestData.id || null,
+    id: requestData.requestId || null,
     requestType: requestData.requestType || '',
     // requestBy: requestData.requestBy || '',
     requestFrom: Number(requestData.requestFrom) || null,
@@ -26,7 +26,7 @@ const AddEditRequestForm = () => {
     createdDate: requestData.createdDate || '',
     status: requestData.status || '',
     subDealerId: Number(requestData.subDealerId) || null,
-    requestId: requestData.requestId || '',
+    requestId: requestData.requestNumber || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   };

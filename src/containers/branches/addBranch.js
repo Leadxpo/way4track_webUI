@@ -116,7 +116,7 @@ const AddBranchForm = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'Branch updated successfully!'

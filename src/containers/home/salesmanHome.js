@@ -21,7 +21,7 @@ const SalesmanHome = () => {
   const [totalSuccessAppointments, setTotalSuccessAppointments] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [chartData, setCardData] = useState([]);
-  const [appointments, setAppointments] = useState([])
+  const [appointments, setAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
@@ -35,11 +35,14 @@ const SalesmanHome = () => {
         payload.branchName = branchName;
       }
 
-      const res = await ApiService.post('/dashboards/getAllAppointmentDetails', payload);
+      const res = await ApiService.post(
+        '/dashboards/getAllAppointmentDetails',
+        payload
+      );
 
       if (res.status) {
         const appointmentsList = res.data.appointments || [];
-        setAppointments(appointmentsList)
+        setAppointments(appointmentsList);
       } else {
         setAppointments([]);
       }
@@ -61,20 +64,35 @@ const SalesmanHome = () => {
           year: currentYear,
         }
       );
-      setCardData(response.data);
       const data = response.data;
 
       // Using reduce to calculate totals
       const totals = data.reduce(
         (acc, monthData) => {
-          acc.totalAppointments += parseInt(monthData.totalAppointments, 10) || 0;
-          acc.totalSuccessAppointments += parseInt(monthData.totalSuccessAppointments, 10) || 0;
+          acc.totalAppointments +=
+            parseInt(monthData.totalAppointments, 10) || 0;
+          acc.totalSuccessAppointments +=
+            parseInt(monthData.totalSuccessAppointments, 10) || 0;
           acc.totalSalesAmount += parseFloat(monthData.totalSalesAmount) || 0;
           return acc;
         },
-        { totalAppointments: 0, totalSuccessAppointments: 0, totalSalesAmount: 0 }
+        {
+          totalAppointments: 0,
+          totalSuccessAppointments: 0,
+          totalSalesAmount: 0,
+        }
       );
-
+      const rawData = response.data || [];
+      const formattedData = rawData.map((item) => ({
+        name: new Date(item.year, item.month - 1).toLocaleString('default', {
+          month: 'short',
+        }),
+        totalAppointments: parseInt(item.totalAppointments, 10) || 0,
+        totalSuccessAppointments:
+          parseInt(item.totalSuccessAppointments, 10) || 0,
+        totalSalesAmount: parseFloat(item.totalSalesAmount) || 0,
+      }));
+      setCardData(formattedData);
       setTotalAppointments(totals.totalAppointments);
       setTotalSuccessAppointments(totals.totalSuccessAppointments);
       setTotalSalesAmount(totals.totalSalesAmount);
@@ -115,8 +133,12 @@ const SalesmanHome = () => {
   return (
     <div>
       <div>
-        <p className="my-4 font-bold">Total Appointments: {totalAppointments}</p>
-        <p className="my-4 font-bold">Success Appointments: {totalSuccessAppointments}</p>
+        <p className="my-4 font-bold">
+          Total Appointments: {totalAppointments}
+        </p>
+        <p className="my-4 font-bold">
+          Success Appointments: {totalSuccessAppointments}
+        </p>
         <p className="my-4 font-bold">Total Sales Amount: {totalSalesAmount}</p>
       </div>
       <Table
@@ -137,9 +159,9 @@ const SalesmanHome = () => {
         showDelete={false}
         showDetails={false}
         data={appointments}
-        onEdit={() => { }}
-        onDelete={() => { }}
-        onDetails={() => { }}
+        onEdit={() => {}}
+        onDelete={() => {}}
+        onDetails={() => {}}
       />
       <div className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-lg p-4 shadow-md mb-6">
         <ResponsiveContainer width="100%" height={300}>
@@ -155,10 +177,24 @@ const SalesmanHome = () => {
             <Tooltip />
             <Line
               type="monotone"
-              dataKey="balance"
-              stroke="#fff"
-              strokeWidth={4}
-              dot={{ fill: '#fff', r: 6 }}
+              dataKey="totalAppointments"
+              stroke="#82ca9d"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="totalSuccessAppointments"
+              stroke="#8884d8"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="totalSalesAmount"
+              stroke="#ff7300"
+              strokeWidth={2}
+              dot={{ r: 4 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -211,8 +247,8 @@ const SalesmanHome = () => {
                   >
                     {attendanceData[i]?.inTime.length > 0
                       ? new Date(
-                        attendanceData[i].inTime[0]
-                      ).toLocaleTimeString()
+                          attendanceData[i].inTime[0]
+                        ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}
@@ -230,8 +266,8 @@ const SalesmanHome = () => {
                   >
                     {attendanceData[i]?.outTime.length > 0
                       ? new Date(
-                        attendanceData[i].outTime[0]
-                      ).toLocaleTimeString()
+                          attendanceData[i].outTime[0]
+                        ).toLocaleTimeString()
                       : 'No Data'}
                   </div>
                 ))}

@@ -15,7 +15,7 @@ const Vendors = () => {
   };
 
   const handleDelete = (vendor) => {
-    navigate('/delete-vendor');
+    navigate('/delete-vendor', { state: { vendorDetails: vendor } });
   };
 
   const handleDetails = () => {

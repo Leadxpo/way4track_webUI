@@ -4,7 +4,6 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 
 const DeleteSubDealer = () => {
-
   const location = useLocation();
   const navigate = useNavigate();
   const subDealerDetails = location.state?.subDealerDetails || null;
@@ -17,12 +16,15 @@ const DeleteSubDealer = () => {
 
     try {
       const payload = {
-        subDealerId: subDealerDetails.subDealerId,
+        subDealerId: location.state?.subDealerDetails,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
 
-      const res = await ApiService.post('/subdealer/deleteSubDealerDetails', payload);
+      const res = await ApiService.post(
+        '/subdealer/deleteSubDealerDetails',
+        payload
+      );
 
       if (res.status) {
         alert('SubDealer deleted successfully.');
@@ -37,11 +39,11 @@ const DeleteSubDealer = () => {
   };
 
   useEffect(() => {
-    if (!subDealerDetails?.subDealerId) {
+    if (!location.state?.subDealerDetails) {
       alert('No subDealer selected to delete.');
       navigate(-1); // Navigate back if no subDealer details are found
     }
-  }, [subDealerDetails, navigate]);
+  }, [location.state?.subDealerDetails, navigate]);
 
   return (
     <div className="min-h-screen flex items-start justify-center pt-10">
@@ -60,12 +62,16 @@ const DeleteSubDealer = () => {
 
         {/* Buttons */}
         <div className="mt-6 flex justify-center space-x-4">
-          <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            onClick={deleteSubDealerDetails}>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            onClick={deleteSubDealerDetails}
+          >
             Delete
           </button>
-          <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-            onClick={() => navigate(-1)}>
+          <button
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            onClick={() => navigate(-1)}
+          >
             Cancel
           </button>
         </div>

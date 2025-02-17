@@ -36,13 +36,12 @@ const WarehouseManagerHome = () => {
           setUserProfile(parsedData);
         } catch (error) {
           console.error('Error parsing user profile data:', error);
-          setUserProfile(null);  // Set to null or handle accordingly
+          setUserProfile(null); // Set to null or handle accordingly
         }
       } else {
-        setUserProfile(null);  // Set to null if no data in localStorage
+        setUserProfile(null); // Set to null if no data in localStorage
       }
     };
-
 
     fetchUserProfile();
   }, []);
@@ -50,10 +49,13 @@ const WarehouseManagerHome = () => {
   useEffect(() => {
     const fetchPurchaseOrderData = async () => {
       try {
-        const response = await ApiService.post('/requests/getTodayRequestBranchWise', {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/requests/getTodayRequestBranchWise',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           setRequestsData(response.data || []);
         } else {
@@ -76,8 +78,11 @@ const WarehouseManagerHome = () => {
           unitCode: initialAuthState.unitCode,
         };
 
-        const response = await ApiService.post('dashboards/getProductDetailsByBranch', payload);
-        console.log("API Response:", response);
+        const response = await ApiService.post(
+          'dashboards/getProductDetailsByBranch',
+          payload
+        );
+        console.log('API Response:', response);
 
         if (response.status && response.data) {
           setTableData(response.data);
@@ -97,17 +102,17 @@ const WarehouseManagerHome = () => {
     fetchTickets();
   }, []);
 
-  const selectedBranchData = tableData.find(ticket => ticket.branchName === selectedBranch);
-
-
+  const selectedBranchData = tableData.find(
+    (ticket) => ticket.branchName === selectedBranch
+  );
 
   // Function to generate table columns dynamically based on the product data
   const generateColumns = (data) => {
     if (data.length === 0) return [];
 
-    const sampleProduct = data[0].products[0];  // Using the first product to define columns
+    const sampleProduct = data[0].products[0]; // Using the first product to define columns
     const productColumns = Object.keys(sampleProduct).map((key) => ({
-      title: formatString(key),  // Using formatString to make the key human-readable
+      title: formatString(key), // Using formatString to make the key human-readable
       dataIndex: key,
       key,
     }));
@@ -122,7 +127,9 @@ const WarehouseManagerHome = () => {
       {userProfile && (
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
           <img
-            src={userProfile.profilePicPath || "https://via.placeholder.com/100"}
+            src={
+              userProfile.profilePicPath || 'https://via.placeholder.com/100'
+            }
             alt="Profile"
             className="w-24 h-24 rounded-full"
           />
@@ -198,16 +205,18 @@ const WarehouseManagerHome = () => {
 
         {/* Get the products of the selected branch */}
         {selectedBranchData && selectedBranchData.products.length > 0 ? (
-          <Table columns={Object.keys(selectedBranchData.products[0] || {})} data={selectedBranchData.products} />
+          <Table
+            columns={Object.keys(selectedBranchData.products[0] || {})}
+            data={selectedBranchData.products}
+          />
         ) : (
-          <p className="text-gray-600 mt-4">No products available for this branch.</p>
+          <p className="text-gray-600 mt-4">
+            No products available for this branch.
+          </p>
         )}
       </div>
-
     </div>
   );
 };
 
 export default WarehouseManagerHome;
-
-

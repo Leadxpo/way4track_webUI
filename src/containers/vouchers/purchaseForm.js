@@ -11,11 +11,11 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
   const [products, setProducts] = useState([]);
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const productTypes = [
-    { value: "service", label: "Service" },
-    { value: "product", label: "Product" },
-    { value: "sales", label: "Sales" },
-    { value: "expanses", label: "Expanses" },
-    { value: "salaries", label: "Salaries" },
+    { value: 'service', label: 'Service' },
+    { value: 'product', label: 'Product' },
+    { value: 'sales', label: 'Sales' },
+    { value: 'expanses', label: 'Expanses' },
+    { value: 'salaries', label: 'Salaries' },
   ];
 
   const dropdownOptions = {
@@ -163,12 +163,22 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
   };
 
   const [rows, setRows] = useState([
-    { id: 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+    {
+      id: 1,
+      productId: '',
+      productName: '',
+      quantity: '',
+      amount: 0,
+      totalCost: 0,
+    },
   ]);
 
   const handleProductItemChange = async (id, e) => {
     const { value } = e.target;
-    const selectedProduct = products.find((product) => product.id === value);
+    console.log(value);
+    const selectedProduct = products.find(
+      (product) => product.id === Number(value)
+    );
 
     if (!selectedProduct) return;
 
@@ -179,8 +189,8 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
           productId: selectedProduct.id,
           productName: selectedProduct.productName,
           quantity: 1, // Default 1
-          totalCost: selectedProduct.totalCost || 0, // Get totalCost from backend
-          amount: selectedProduct.totalCost || 0, // Set amount as totalCost initially
+          amount: selectedProduct.price || 0, // Get totalCost from backend
+          price: selectedProduct.price || 0, // Set amount as totalCost initially
         };
       }
       return row;
@@ -211,8 +221,12 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
   const handlePurchaseItemsInputChange = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
-        let updatedValue = field === "quantity" ? parseFloat(value) || 0 : parseFloat(value) || 0;
-        let newAmount = field === "quantity" ? updatedValue * (row.totalCost || 0) : row.amount;
+        let updatedValue =
+          field === 'quantity'
+            ? parseFloat(value) || 0
+            : parseFloat(value) || 0;
+        let newAmount =
+          field === 'quantity' ? updatedValue * (row.price || 0) : row.amount;
 
         return {
           ...row,
@@ -227,14 +241,21 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
 
   // Calculate total amount
   const calculateTotalAmount = () => {
-    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
+    return rows.reduce((acc, row) => acc + parseFloat(row.amount || 0), 0);
   };
 
   // Add a new row
   const addRow = () => {
     setRows([
       ...rows,
-      { id: rows.length + 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+      {
+        id: rows.length + 1,
+        productId: '',
+        productName: '',
+        quantity: '',
+        amount: 0,
+        totalCost: 0,
+      },
     ]);
   };
 
@@ -244,7 +265,6 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
       setRows(rows.slice(0, -1));
     }
   };
-
 
   return (
     <div>
@@ -324,19 +344,31 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
                       </option>
                     ))}
                   </select>
-                  <input
-                    type="text"
-                    placeholder="Product tName"
-                    value={row.productName}
-                    readOnly
-                    className="p-2 border rounded-md w-1/3"
-                  />
 
                   <input
                     type="number"
                     placeholder="Quantity"
                     value={row.quantity}
-                    onChange={(e) => handlePurchaseItemsInputChange(row.id, "quantity", e.target.value)}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'quantity',
+                        e.target.value
+                      )
+                    }
+                    className="p-2 border rounded-md w-1/3"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Rate"
+                    value={row.price}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'amount',
+                        e.target.value
+                      )
+                    }
                     className="p-2 border rounded-md w-1/3"
                   />
                   <input
@@ -436,7 +468,9 @@ const PurchaseForm = ({ branches, bankOptions, staff }) => {
           ))}
         </div>
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Select Product Type</label>
+          <label className="block font-semibold mb-2">
+            Select Product Type
+          </label>
           <Controller
             name="productType"
             control={control}
