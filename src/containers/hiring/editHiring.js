@@ -184,8 +184,9 @@ const EditHiring = () => {
   const [levels, setLevels] = useState([]);
   const [expandedLevels, setExpandedLevels] = useState([]);
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const hiringToEdit = state?.hiringDetails;
+  const location = useLocation();
+  const hiringToEdit = location.state?.hiringDetails;
+
 
   useEffect(() => {
     const fetchClientDetailsData = async () => {
@@ -202,6 +203,7 @@ const EditHiring = () => {
         });
 
         console.log('API Response:', response);
+        console.log(response, ":::::::::::::::::::::::::")
 
         if (response.status) {
           setCandidate(response.data || {});
@@ -218,7 +220,7 @@ const EditHiring = () => {
     };
 
     fetchClientDetailsData();
-  }, [hiringToEdit?.id]);
+  }, [hiringToEdit.id]);
 
   const handleInputChange = (levelIndex, field, value) => {
     setLevels((prevLevels) => {
@@ -270,9 +272,8 @@ const EditHiring = () => {
                 levels.map((level, index) => (
                   <div key={index} className="bg-white rounded-md shadow mb-4">
                     <div
-                      className={`flex items-center justify-between p-4 cursor-pointer ${
-                        expandedLevels[index] ? 'bg-green-600 text-white' : 'bg-gray-200'
-                      }`}
+                      className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index] ? 'bg-green-600 text-white' : 'bg-gray-200'
+                        }`}
                       onClick={() => toggleLevel(index)}
                     >
                       <h3 className="font-semibold">Level {index + 1}</h3>

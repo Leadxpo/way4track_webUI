@@ -16,6 +16,7 @@ const EstimateDetails = () => {
     products: [],
     terms: '',
   });
+  const [estimate, setEstimate] = useState([])
 
   const getEstimateIDData = useCallback(async () => {
     try {
@@ -78,6 +79,36 @@ const EstimateDetails = () => {
     navigate('/add-invoice', {
       state: { invoiceDetails: { estimateData }, isConvert: true },
     });
+  };
+  const getEstimatesForReport = async () => {
+    try {
+      const response = await ApiService.post(
+        '/dashboards/getEstimatesForReport',
+        {
+          estimateId: estimateData?.estimateDetails?.number,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      const pdfUrl = response.data.estimate_estimatePdfUrl;
+
+      if (pdfUrl) {
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'Estimate_Report.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('No PDF available for this estimate.');
+      }
+
+      setEstimate(response.data);
+    } catch (e) {
+      console.error('Error fetching estimate:', e);
+      alert('Failed to fetch estimate data. Please try again.');
+    }
   };
   return (
     <div>
@@ -192,7 +223,8 @@ const EstimateDetails = () => {
           <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Save
           </button> */}
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            onClick={getEstimatesForReport}>
             Download PDF
           </button>
         </div>

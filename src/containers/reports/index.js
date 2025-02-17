@@ -289,7 +289,7 @@ const Reports = () => {
         <p className="text-xl">Sales</p>
         <FaDownload
           className="text-xl text-red-500"
-          onClick={() => handleDownload('Amount')}
+          onClick={() => handleDownload('Sales')}
         />
       </div>
 
