@@ -17,7 +17,7 @@ const AddEditVouchers = () => {
   const [branches, setBranches] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
   const [clients, setCleints] = useState([]);
-
+  const [staffList, setStaffList] = useState([]);
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -79,9 +79,23 @@ const AddEditVouchers = () => {
       }
     };
 
+    const fetchStaffNames = async () => {
+      try {
+        const response = await ApiService.post('/staff/getStaffNamesDropDown');
+        const formattedOptions = response.data.map((account) => ({
+          value: account.id,
+          label: account.name,
+        }));
+        setStaffList(formattedOptions || []);
+      } catch (error) {
+        console.error('Failed to fetch staff names:', error);
+      }
+    };
+
     fetchBranches();
     fetchBankOptions();
     fetchClients();
+    fetchStaffNames();
   }, []);
 
   const getFormComponent = (selectedTab) => {
@@ -107,7 +121,13 @@ const AddEditVouchers = () => {
       case 'Contra':
         return <ContraForm branches={branches} bankOptions={bankOptions} />;
       case 'Purchase':
-        return <PurchaseForm branches={branches} bankOptions={bankOptions} />;
+        return (
+          <PurchaseForm
+            branches={branches}
+            bankOptions={bankOptions}
+            staffList={staffList}
+          />
+        );
       case 'EMI':
         return <EmiForm branches={branches} bankOptions={bankOptions} />;
       // case 'Invoice':

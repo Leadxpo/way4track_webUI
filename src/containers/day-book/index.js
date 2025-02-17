@@ -18,16 +18,12 @@ const DayBook = () => {
   useEffect(() => {
     const getDayBookDataForReport = async () => {
       try {
-        const response = await ApiService.post(
-          '/dashboards/getDayBookDataForReport',
-          {
-            fromDate: dayBook?.generationDate,
-            toDate: dayBook?.generationDate,
-            branchName: dayBook?.branchName,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
+        const response = await ApiService.post('/dashboards/getDayBookData', {
+          date: selectedDate,
+          branchName: dayBook?.branchName,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
 
         if (response.status) {
           setFilteredData(response.data);
@@ -41,7 +37,7 @@ const DayBook = () => {
     };
 
     getDayBookDataForReport();
-  }, [dayBook?.generationDate, dayBook?.branchName]);
+  }, [selectedDate]);
 
   const handleRowClick = (index) => {
     setSelectedRow(index);

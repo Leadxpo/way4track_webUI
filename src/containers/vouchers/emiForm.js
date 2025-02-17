@@ -131,7 +131,7 @@ const EmiForm = ({ branches, bankOptions }) => {
 
       const payload = {
         ...filteredData,
-        voucherType: selectedTab.toLowerCase(),
+        voucherType: 'emi',
         paymentType: selectedPaymentMode.toLowerCase(),
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,

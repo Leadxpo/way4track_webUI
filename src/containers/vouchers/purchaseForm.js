@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 
-const PurchaseForm = ({ branches, bankOptions }) => {
+const PurchaseForm = ({ branches, bankOptions, staffList }) => {
   const { control, handleSubmit, setValue, getValues, reset } = useForm();
   const [selectedTab, setSelectedTab] = useState('Purchase');
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
@@ -26,7 +26,7 @@ const PurchaseForm = ({ branches, bankOptions }) => {
         name: 'transformBy',
         label: 'Transform By',
         type: 'dropdown',
-        options: bankOptions,
+        options: staffList,
       },
       {
         name: 'goingTo',
@@ -153,12 +153,22 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   };
 
   const [rows, setRows] = useState([
-    { id: 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+    {
+      id: 1,
+      productId: '',
+      productName: '',
+      quantity: '',
+      amount: 0,
+      totalCost: 0,
+    },
   ]);
 
   const handleProductItemChange = async (id, e) => {
     const { value } = e.target;
-    const selectedProduct = products.find((product) => product.id === value);
+    console.log(value);
+    const selectedProduct = products.find(
+      (product) => product.id === Number(value)
+    );
 
     if (!selectedProduct) return;
 
@@ -169,8 +179,8 @@ const PurchaseForm = ({ branches, bankOptions }) => {
           productId: selectedProduct.id,
           productName: selectedProduct.productName,
           quantity: 1, // Default 1
-          totalCost: selectedProduct.totalCost || 0, // Get totalCost from backend
-          amount: selectedProduct.totalCost || 0, // Set amount as totalCost initially
+          amount: selectedProduct.price || 0, // Get totalCost from backend
+          price: selectedProduct.price || 0, // Set amount as totalCost initially
         };
       }
       return row;
@@ -201,8 +211,12 @@ const PurchaseForm = ({ branches, bankOptions }) => {
   const handlePurchaseItemsInputChange = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
-        let updatedValue = field === "quantity" ? parseFloat(value) || 0 : parseFloat(value) || 0;
-        let newAmount = field === "quantity" ? updatedValue * (row.totalCost || 0) : row.amount;
+        let updatedValue =
+          field === 'quantity'
+            ? parseFloat(value) || 0
+            : parseFloat(value) || 0;
+        let newAmount =
+          field === 'quantity' ? updatedValue * (row.price || 0) : row.amount;
 
         return {
           ...row,
@@ -217,14 +231,21 @@ const PurchaseForm = ({ branches, bankOptions }) => {
 
   // Calculate total amount
   const calculateTotalAmount = () => {
-    return rows.reduce((acc, row) => acc + (row.amount || 0), 0);
+    return rows.reduce((acc, row) => acc + parseFloat(row.amount || 0), 0);
   };
 
   // Add a new row
   const addRow = () => {
     setRows([
       ...rows,
-      { id: rows.length + 1, productId: "", productName: "", quantity: "", amount: 0, totalCost: 0 },
+      {
+        id: rows.length + 1,
+        productId: '',
+        productName: '',
+        quantity: '',
+        amount: 0,
+        totalCost: 0,
+      },
     ]);
   };
 
@@ -234,7 +255,6 @@ const PurchaseForm = ({ branches, bankOptions }) => {
       setRows(rows.slice(0, -1));
     }
   };
-
 
   return (
     <div>
@@ -314,19 +334,31 @@ const PurchaseForm = ({ branches, bankOptions }) => {
                       </option>
                     ))}
                   </select>
-                  <input
-                    type="text"
-                    placeholder="Product tName"
-                    value={row.productName}
-                    readOnly
-                    className="p-2 border rounded-md w-1/3"
-                  />
 
                   <input
                     type="number"
                     placeholder="Quantity"
                     value={row.quantity}
-                    onChange={(e) => handlePurchaseItemsInputChange(row.id, "quantity", e.target.value)}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'quantity',
+                        e.target.value
+                      )
+                    }
+                    className="p-2 border rounded-md w-1/3"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Rate"
+                    value={row.price}
+                    onChange={(e) =>
+                      handlePurchaseItemsInputChange(
+                        row.id,
+                        'amount',
+                        e.target.value
+                      )
+                    }
                     className="p-2 border rounded-md w-1/3"
                   />
                   <input

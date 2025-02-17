@@ -76,7 +76,10 @@ const TableWithSearchFilter = ({
       console.log(response);
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const filteredData = response.data.map(
+          ({ qualifications, ...rest }) => rest
+        );
+        setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -88,7 +91,6 @@ const TableWithSearchFilter = ({
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
-
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
@@ -99,17 +101,13 @@ const TableWithSearchFilter = ({
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
 
-
-
       const response = await ApiService.post(
-        '/dashboards/getTicketDetailsAgainstSearch', payload
-
+        '/dashboards/getTicketDetailsAgainstSearch',
+        payload
       );
       if (response.status) {
         console.log(response.data, 'Response Data');
@@ -125,8 +123,6 @@ const TableWithSearchFilter = ({
 
   const getVoucherDetailsAgainstSearch = useCallback(async () => {
     try {
-
-
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
@@ -136,13 +132,14 @@ const TableWithSearchFilter = ({
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
 
-      const response = await ApiService.post('/dashboards/getAllVouchers', payload);
+      const response = await ApiService.post(
+        '/dashboards/getAllVouchers',
+        payload
+      );
       if (response.status) {
         console.log(response.data, 'Response Data');
         setFilteredData(response.data);

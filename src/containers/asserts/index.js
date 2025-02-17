@@ -110,8 +110,8 @@ const Asserts = () => {
       const response = await ApiService.post(
         '/dashboards/getAssertDataByDate',
         {
-          fromDate: assetDetailsFromState?.purchaseDate,
-          toDate: assetDetailsFromState?.purchaseDate,
+          fromDate: dateFrom,
+          toDate: dateTo,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }

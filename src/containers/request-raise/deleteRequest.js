@@ -8,9 +8,10 @@ const DeleteRequest = () => {
   const requestNumber = location.state?.requestDetails?.id;
 
   const handleDelete = async () => {
+    console.log(location.state?.requestDetails?.requestId);
     try {
       const response = await ApiService.post('/requests/deleteRequestDetails', {
-        id: requestNumber,
+        id: location.state?.requestDetails?.id,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });

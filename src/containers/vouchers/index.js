@@ -56,7 +56,7 @@ const Vouchers = () => {
         <button
           className={`h-12 px-8 text-white font-bold rounded-md hover:cursor-pointer  ${!permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleOpenModalForAdd}
-          // disabled={!!permissions.add}
+          disabled={!permissions.add}
         >
           Create Voucher
         </button>
@@ -98,9 +98,9 @@ const Vouchers = () => {
               })}
             </div>
 
-            <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
+            {/* <button className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-blue-500 mx-auto block mt-4">
               Download PDF
-            </button>
+            </button> */}
           </div>
         </div>
       )}

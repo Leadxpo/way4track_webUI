@@ -136,7 +136,10 @@ const TableWithDateFilter = ({
       };
 
       // Add staffId if role is Technician or Sales Man
-      if (requestBody.role === 'Technician' || requestBody.role === 'Sales Man') {
+      if (
+        requestBody.role === 'Technician' ||
+        requestBody.role === 'Sales Man'
+      ) {
         requestBody.staffId = localStorage.getItem('userId');
       }
 
@@ -145,14 +148,19 @@ const TableWithDateFilter = ({
         requestBody.branchName = requestData.branchName;
       }
 
-      const response = await ApiService.post('/requests/getRequestsBySearch', requestBody);
+      const response = await ApiService.post(
+        '/requests/getRequestsBySearch',
+        requestBody
+      );
 
       // Check if response contains data and update state
-      if (response?.data?.length) {
-        console.log(response.data, 'Response Data');
-        setFilteredData(response.data); // Ensure you're setting the correct data
+      if (response?.length) {
+        setFilteredData(response); // Ensure you're setting the correct data
       } else {
-        console.warn('Request failed:', response?.data?.message || 'No data found');
+        console.warn(
+          'Request failed:',
+          response?.data?.message || 'No data found'
+        );
       }
     } catch (error) {
       console.error('Error fetching request details:', error);
@@ -163,7 +171,6 @@ const TableWithDateFilter = ({
     initialAuthState?.companyCode,
     initialAuthState?.unitCode,
   ]);
-
 
   const getPaymentsData = useCallback(async () => {
     try {
@@ -295,6 +302,9 @@ const TableWithDateFilter = ({
         break;
       case 'payments':
         await getPaymentsData();
+        break;
+      case 'invoice':
+        await getInvoiceData();
         break;
       default:
         break;

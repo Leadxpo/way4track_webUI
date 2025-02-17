@@ -97,8 +97,10 @@ const Tickets = () => {
     setSelectedStaffId(staffId);
 
     // Find the selected staff and set their number
-    const selectedStaff = staffList.find((staff) => staff.id === staffId);
-    setSelectedStaffNumber(selectedStaff?.staffNumber || '');
+    const selectedStaff = staffList.find(
+      (staff) => staff.id === Number(staffId)
+    );
+    setSelectedStaffNumber(selectedStaff?.staffId || '');
   };
 
   const handleBranchChange = (e) => {
@@ -150,6 +152,7 @@ const Tickets = () => {
 
   const handleOpenMoreDetailsModal = async (ticket) => {
     await fetchTicketDetails(); // Ensure data is fetched before opening modal
+    console.log(ticket);
     setSelectedTicket(ticket);
     setIsMoreDetailsModalOpen(true);
   };
@@ -431,6 +434,43 @@ const Tickets = () => {
         </div>
       )}
 
+      {isMoreDetailsModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-md shadow-lg relative w-2/4 border border-gray-300">
+            <button
+              onClick={handleCloseMoreDetailsModal}
+              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6 flex items-center justify-center"
+            >
+              X
+            </button>
+            <h2 className="text-xl font-bold border-b pb-2 mb-4">
+              Ticket Details
+            </h2>
+            <div className="space-y-3">
+              {' '}
+              {/* Adds gap between each line */}
+              <p>
+                <strong>Ticket Number:</strong> {ticketDetails.ticketNumber}
+              </p>
+              <p>
+                <strong>Staff Name:</strong> {ticketDetails.staffName}
+              </p>
+              <p>
+                <strong>Addressing Department:</strong>{' '}
+                {ticketDetails.addressingDepartment}
+              </p>
+              <p>
+                <strong>Branch Name:</strong> {ticketDetails.branchName}
+              </p>
+              <p>
+                <strong>Date:</strong>{' '}
+                {new Date(ticketDetails.date).toLocaleString()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <TableWithSearchFilter
         type="tickets"
         showCreateBtn={permissions.add}
@@ -440,7 +480,7 @@ const Tickets = () => {
         onCreateNew={handleOpenModalForAdd}
         onEdit={handleOpenModalForEdit}
         onDetails={handleOpenMoreDetailsModal} // Pass function correctly
-        onDelete={() => { }}
+        onDelete={() => {}}
       />
     </div>
   );
