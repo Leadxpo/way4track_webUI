@@ -34,8 +34,6 @@ const WorkAllocation = () => {
     ],
   };
 
-
-
   const [products, setProducts] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,10 +102,11 @@ const WorkAllocation = () => {
     }
   }, [workAllocationData.id]);
 
-
   const handleProductItemChange = (index, e) => {
     const { value } = e.target;
-    const selectedProduct = products.find((product) => product.productName === value);
+    const selectedProduct = products.find(
+      (product) => product.productName === value
+    );
 
     const updatedItems = [...selectedWorkAllocation.productDetails];
     updatedItems[index]['productName'] = value;
@@ -133,7 +132,9 @@ const WorkAllocation = () => {
   };
 
   const removeItem = (index) => {
-    const updatedItems = selectedWorkAllocation.productDetails?.filter((_, i) => i !== index);
+    const updatedItems = selectedWorkAllocation.productDetails?.filter(
+      (_, i) => i !== index
+    );
     setSelectedWorkAllocation((prevData) => ({
       ...prevData,
       productDetails: updatedItems,
@@ -169,10 +170,11 @@ const WorkAllocation = () => {
     setSelectedWorkAllocation(initialFormData);
     setIsEditMode(true);
     setIsModalOpen(true);
-
   };
   const handleEdit = (work) => {
-    navigate('/edit-work-allocation', { state: { workAllocationDetails: { work } } });
+    navigate('/edit-work-allocation', {
+      state: { workAllocationDetails: { work } },
+    });
   };
   // Fetch client data
   useEffect(() => {
@@ -305,8 +307,6 @@ const WorkAllocation = () => {
                   )}
                 </div>
 
-
-
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Voucher ID
@@ -330,8 +330,6 @@ const WorkAllocation = () => {
                   )}
                 </div>
                 <div></div>
-
-
 
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -382,14 +380,14 @@ const WorkAllocation = () => {
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     workAllocation Number
-                  </label><input
+                  </label>
+                  <input
                     type="text"
                     name="workAllocationNumber"
                     value={selectedWorkAllocation.workAllocationNumber || ''}
                     onChange={handleInputChange}
-                  /></div>
-
-
+                  />
+                </div>
 
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -418,20 +416,27 @@ const WorkAllocation = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Items</label>
+                <label className="block text-sm font-semibold mb-1">
+                  Items
+                </label>
                 <div className="border border-gray-300 rounded-md">
                   {/* Header Row */}
                   <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
                     <span className="col-span-1 font-semibold">#</span>
                     <span className="col-span-3 font-semibold">Name</span>
-                    <span className="col-span-3 font-semibold">IMEI Number</span>
+                    <span className="col-span-3 font-semibold">
+                      IMEI Number
+                    </span>
                     <span className="col-span-3 font-semibold">Install</span>
                     <span className="col-span-2 font-semibold"></span>
                   </div>
 
                   {/* Items Rows */}
                   {selectedWorkAllocation.productDetails?.map((item, index) => (
-                    <div key={index} className="grid grid-cols-12 gap-2 items-center p-2 border-t">
+                    <div
+                      key={index}
+                      className="grid grid-cols-12 gap-2 items-center p-2 border-t"
+                    >
                       <span className="col-span-1">{index + 1}</span>
 
                       {/* Product Name Dropdown */}
@@ -503,7 +508,6 @@ const WorkAllocation = () => {
           </div>
         </div>
       )}
-
 
       {isMoreDetailsModalOpen && selectedWorkAllocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

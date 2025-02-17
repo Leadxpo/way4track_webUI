@@ -185,19 +185,19 @@ const EditHiring = () => {
   const [expandedLevels, setExpandedLevels] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const hiringToEdit = location.state?.hiringDetails || {}
+  const hiringToEdit = location.state?.hiringDetails || {};
 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        const response = await ApiService.post('/hiring/getHiringDetails', {
+        const response = await ApiService.post('/hiring/getHiringDetailsById', {
           id: hiringToEdit.hiringId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
 
         if (response.status) {
-          const hiring = response.data?.[0];
+          const hiring = response.data;
           setCandidate({
             ...hiring,
             candidateName: hiring?.candidateName || '',
@@ -211,8 +211,9 @@ const EditHiring = () => {
             hiringLevel: hiring?.hiringLevel || '',
           });
 
+          console.log(hiring.levelWiseData);
           // Ensure levels is set correctly
-          setLevels(hiring?.levelWiseData || []);
+          setLevels(response.data?.levelWiseData || []);
         } else {
           setCandidate({});
           setLevels([]);
@@ -224,7 +225,61 @@ const EditHiring = () => {
     };
 
     fetchClientDetails();
-  }, [hiringToEdit.hiringId]);
+  }, [location.state?.hiringDetails]);
+  const handleSubmit = async () => {
+    const payload = new FormData();
+    payload.append('id', location.state.hiringDetails.hiringId);
+    payload.append('hiringLevel', hiringToEdit.hiringLevel);
+    payload.append('candidateName', hiringToEdit.candidateName);
+    payload.append('phoneNumber', hiringToEdit.phoneNumber);
+    payload.append('email', hiringToEdit.email);
+    payload.append('address', hiringToEdit.address);
+    payload.append('dateOfUpload', hiringToEdit.dateOfUpload);
+    payload.append('status', hiringToEdit.status);
+    payload.append('companyCode', hiringToEdit.companyCode);
+    payload.append('unitCode', hiringToEdit.unitCode);
+
+    // Append qualifications
+    // hiringToEdit.qualifications.forEach((q, index) => {
+    //   payload.append(`qualifications[${index}][qualificationName]`, q.name);
+    //   payload.append(`qualifications[${index}][marks]`, q.marks);
+    //   payload.append(`qualifications[${index}][yearOfPass]`, q.year);
+    // });
+
+    // Append Level Wise Data
+    levels.forEach((level, index) => {
+      payload.append(
+        `levelWiseData[${index}][dateOfConductor]`,
+        level.dateOfConductor
+      );
+      payload.append(`levelWiseData[${index}][conductorBy]`, level.conductorBy);
+      payload.append(
+        `levelWiseData[${index}][conductorPlace]`,
+        level.conductorPlace
+      );
+      payload.append(`levelWiseData[${index}][result]`, level.result);
+      payload.append(`levelWiseData[${index}][review]`, level.review);
+    });
+
+    // Append resume file
+
+    try {
+      const endpoint = `/hiring/saveHiringDetailsWithResume`;
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status) {
+        alert('Hiring details saved successfully!');
+        navigate('/hiring');
+      } else {
+        alert('Failed to save hiring details. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving hiring details:', error);
+      alert('Failed to save hiring details. Please try again.');
+    }
+  };
   // useEffect(() => {
   //   const fetchClientDetailsData = async () => {
   //     console.log(location.state.hiringDetails, "?????????????")
@@ -263,7 +318,10 @@ const EditHiring = () => {
   const handleInputChange = (levelIndex, field, value) => {
     setLevels((prevLevels) => {
       const updatedLevels = [...prevLevels];
-      updatedLevels[levelIndex] = { ...updatedLevels[levelIndex], [field]: value };
+      updatedLevels[levelIndex] = {
+        ...updatedLevels[levelIndex],
+        [field]: value,
+      };
       return updatedLevels;
     });
   };
@@ -294,7 +352,9 @@ const EditHiring = () => {
                 className="w-24 h-24 rounded-full object-cover"
               />
               <div>
-                <h2 className="text-xl font-semibold">{candidate.candidateName}</h2>
+                <h2 className="text-xl font-semibold">
+                  {candidate.candidateName}
+                </h2>
                 <p>Email: {candidate.email}</p>
                 <p>Phone Number: {candidate.phoneNumber}</p>
                 <p>Level: {candidate.hiringLevel}</p>
@@ -309,8 +369,11 @@ const EditHiring = () => {
               {levels.map((level, index) => (
                 <div key={index} className="bg-white rounded-md shadow mb-4">
                   <div
-                    className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index] ? 'bg-green-600 text-white' : 'bg-gray-200'
-                      }`}
+                    className={`flex items-center justify-between p-4 cursor-pointer ${
+                      expandedLevels[index]
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-200'
+                    }`}
                     onClick={() => toggleLevel(index)}
                   >
                     <h3 className="font-semibold">Level {index + 1}</h3>
@@ -324,14 +387,38 @@ const EditHiring = () => {
                           type="date"
                           className="w-full border px-4 py-2 rounded-md"
                           value={level.dateOfConductor || ''}
-                          onChange={(e) => handleInputChange(index, 'dateOfConductor', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              'dateOfConductor',
+                              e.target.value
+                            )
+                          }
                         />
                       </label>
                       <label>
                         <span>Conductor By:</span>
-                        <select
+                        <input
+                          type="text"
+                          className="w-full border px-4 py-2 rounded-md"
                           value={level.conductorBy || ''}
-                          onChange={(e) => handleInputChange(index, 'conductorBy', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              'conductorBy',
+                              e.target.value
+                            )
+                          }
+                        />
+                        {/* <select
+                          value={level.conductorBy || ''}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              'conductorBy',
+                              e.target.value
+                            )
+                          }
                           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                         >
                           <option value="">Select designation</option>
@@ -343,8 +430,10 @@ const EditHiring = () => {
                           <option value="Technician">Technician</option>
                           <option value="SalesMan">Sales Man</option>
                           <option value="CallCenter">Call Center</option>
-                          <option value="Warehouse Manager">Warehouse Manager</option>
-                        </select>
+                          <option value="Warehouse Manager">
+                            Warehouse Manager
+                          </option>
+                        </select> */}
                       </label>
                       <label>
                         <span>Conductor Place:</span>
@@ -352,7 +441,13 @@ const EditHiring = () => {
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
                           value={level.conductorPlace || ''}
-                          onChange={(e) => handleInputChange(index, 'conductorPlace', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              'conductorPlace',
+                              e.target.value
+                            )
+                          }
                         />
                       </label>
                       <label>
@@ -361,7 +456,9 @@ const EditHiring = () => {
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
                           value={level.result || ''}
-                          onChange={(e) => handleInputChange(index, 'result', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(index, 'result', e.target.value)
+                          }
                         />
                       </label>
                       <label>
@@ -370,23 +467,27 @@ const EditHiring = () => {
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
                           value={level.review || ''}
-                          onChange={(e) => handleInputChange(index, 'review', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(index, 'review', e.target.value)
+                          }
                         />
                       </label>
                     </div>
                   )}
                 </div>
               ))}
-             
             </div>
+            <button
+              onClick={handleSubmit}
+              className="bg-green-700 w-20 text-white p-2 rounded-md"
+            >
+              Save
+            </button>
           </>
         )}
       </div>
     </div>
   );
-
 };
 
 export default EditHiring;
-
-
