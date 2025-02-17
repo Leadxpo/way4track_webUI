@@ -182,7 +182,7 @@ const AddHiring = () => {
               className="w-full p-2 border rounded-md"
             />
           </label>
-          <label className="block">
+          {/* <label className="block">
             <span className="block text-gray-700">Candidate Name:</span>
             <input
               type="text"
@@ -191,7 +191,7 @@ const AddHiring = () => {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md"
             />
-          </label>
+          </label> */}
           <label className="block">
             <span className="block text-gray-700">Phone Number:</span>
             <input

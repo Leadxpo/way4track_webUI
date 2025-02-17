@@ -24,7 +24,7 @@ const Vendors = () => {
   return (
     <TableWithDateFilter
       type="vendors"
-      showCreateBtn={permissions.add}
+      showCreateBtn={true}
       showDelete={permissions.delete}
       showEdit={permissions.edit || true}
       showDetails={permissions.view || true}

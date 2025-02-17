@@ -25,10 +25,10 @@ const Clients = () => {
   return (
     <TableWithSearchFilter
       type="clients"
-      showCreateBtn={permissions.add}
+      showCreateBtn={true}
       showDelete={permissions.delete}
       showEdit={permissions.edit}
-      showDetails={permissions.view}
+      showDetails={true}
       onEdit={handleVendorEdit}
       onDelete={handleDelete}
       onDetails={handleDetails}

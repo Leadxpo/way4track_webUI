@@ -25,7 +25,7 @@ const SubDealers = () => {
   return (
     <TableWithDateFilter
       type="sub_dealers"
-      showCreateBtn={permissions.add}
+      showCreateBtn={true}
       showDelete={permissions.delete}
       showEdit={permissions.edit}
       showDetails={permissions.view}
