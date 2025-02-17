@@ -24,6 +24,7 @@ import AddSubDealer from '../sub-dealers/addSubDealer';
 import Notifications from '../notifications';
 import Vouchers from '../vouchers';
 import WorkAllocation from '../work-allocation';
+import EditWorkAllocation from '../work-allocation/editWorkAllocation'
 import Tickets from '../tickets';
 import AddProductForm from '../products/addProduct';
 import BranchDetails from '../branches/moreDetails';
@@ -355,6 +356,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/vouchers" element={<Vouchers />} />
           <Route path="/add-voucher" element={<AddEditVouchers />} />
           <Route path="/work_allocation" element={<WorkAllocation />} />
+          <Route path="/edit-work-allocation" element={<EditWorkAllocation />} />
+
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/hiring" element={<Hiring />} />

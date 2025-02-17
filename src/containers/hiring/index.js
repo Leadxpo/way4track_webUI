@@ -27,7 +27,7 @@ const Hiring = () => {
       type="hiring"
       showCreateBtn={true}
       showDelete={true}
-      showEdit={true}
+      showEdit={permissions.edit}
       showDetails={true}
       onEdit={handleHiringEdit}
       onDelete={handleDelete}

@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 const EstimateDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const estimateID = location.state.estimateDetails.estimate.id;
+  const estimateID = location.state.estimateDetails.estimate.estimateNumber;
   const [estimateData, setEstimateData] = useState({
     company: {},
     estimateDetails: {},
@@ -21,7 +21,7 @@ const EstimateDetails = () => {
   const getEstimateIDData = useCallback(async () => {
     try {
       const response = await ApiService.post('/estimate/getEstimateDetails', {
-        id: estimateID,
+        estimateId: estimateID,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });

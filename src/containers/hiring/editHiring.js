@@ -185,42 +185,80 @@ const EditHiring = () => {
   const [expandedLevels, setExpandedLevels] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const hiringToEdit = location.state?.hiringDetails;
-
+  const hiringToEdit = location.state?.hiringDetails || {}
 
   useEffect(() => {
-    const fetchClientDetailsData = async () => {
-      if (!hiringToEdit?.id) {
-        console.warn('No hiringToEdit ID provided.');
-        return;
-      }
-
+    const fetchClientDetails = async () => {
       try {
-        const response = await ApiService.post('/hiring/saveHiringDetailsWithResume', {
-          id: hiringToEdit.id,
+        const response = await ApiService.post('/hiring/getHiringDetails', {
+          id: hiringToEdit.hiringId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
 
-        console.log('API Response:', response);
-        console.log(response, ":::::::::::::::::::::::::")
-
         if (response.status) {
-          setCandidate(response.data || {});
-          setLevels(response.data?.levelWiseData || []);
-          setExpandedLevels(new Array(response.data?.levelWiseData?.length || 0).fill(false));
+          const hiring = response.data?.[0];
+          setCandidate({
+            ...hiring,
+            candidateName: hiring?.candidateName || '',
+            phoneNumber: hiring?.phoneNumber || '',
+            email: hiring?.email || '',
+            qualifications: hiring?.qualifications || '',
+            address: hiring?.address || '',
+            status: hiring?.status || '',
+            dateOfUpload: hiring?.dateOfUpload || '',
+            resumePath: hiring?.resumePath || '',
+            hiringLevel: hiring?.hiringLevel || '',
+          });
+
+          // Ensure levels is set correctly
+          setLevels(hiring?.levelWiseData || []);
         } else {
           setCandidate({});
           setLevels([]);
         }
       } catch (error) {
-        console.error('Error fetching client details data:', error);
-        alert('Failed to fetch candidate details.');
+        console.error('Error fetching hiring details:', error);
+        alert('Failed to fetch hiring details.');
       }
     };
 
-    fetchClientDetailsData();
-  }, [hiringToEdit.id]);
+    fetchClientDetails();
+  }, [hiringToEdit.hiringId]);
+  // useEffect(() => {
+  //   const fetchClientDetailsData = async () => {
+  //     console.log(location.state.hiringDetails, "?????????????")
+  //     if (!hiringToEdit?.hiringId) {
+  //       console.warn('No hiringToEdit ID provided.');
+  //       return;
+  //     }
+
+  //     try {
+  //       const response = await ApiService.post('/hiring/saveHiringDetailsWithResume', {
+  //         id: hiringToEdit.hiringId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       });
+
+  //       console.log('API Response:', response);
+  //       console.log(response, ":::::::::::::::::::::::::")
+
+  //       if (response.status) {
+  //         setCandidate(response.data || {});
+  //         setLevels(response.data?.levelWiseData || []);
+  //         setExpandedLevels(new Array(response.data?.levelWiseData?.length || 0).fill(false));
+  //       } else {
+  //         setCandidate({});
+  //         setLevels([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching client details data:', error);
+  //       alert('Failed to fetch candidate details.');
+  //     }
+  //   };
+
+  //   fetchClientDetailsData();
+  // }, [hiringToEdit.hiringId]);
 
   const handleInputChange = (levelIndex, field, value) => {
     setLevels((prevLevels) => {
@@ -268,87 +306,85 @@ const EditHiring = () => {
 
             <div>
               <h2 className="text-xl font-bold mb-4">Levels</h2>
-              {levels.length > 0 ? (
-                levels.map((level, index) => (
-                  <div key={index} className="bg-white rounded-md shadow mb-4">
-                    <div
-                      className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index] ? 'bg-green-600 text-white' : 'bg-gray-200'
-                        }`}
-                      onClick={() => toggleLevel(index)}
-                    >
-                      <h3 className="font-semibold">Level {index + 1}</h3>
-                      <span>{expandedLevels[index] ? '⬆' : '⬇'}</span>
-                    </div>
-                    {expandedLevels[index] && (
-                      <div className="p-4 grid grid-cols-2 gap-4">
-                        <label>
-                          <span>Date of Conductor:</span>
-                          <input
-                            type="date"
-                            className="w-full border px-4 py-2 rounded-md"
-                            value={level.dateOfConductor || ''}
-                            onChange={(e) => handleInputChange(index, 'dateOfConductor', e.target.value)}
-                          />
-                        </label>
-                        <label>
-                          <span>Conductor By:</span>
-                          <select
-                            value={level.conductorBy || ''}
-                            onChange={(e) => handleInputChange(index, 'conductorBy', e.target.value)}
-                            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                          >
-                            <option value="">Select designation</option>
-                            <option value="CEO">CEO</option>
-                            <option value="HR">HR</option>
-                            <option value="Accountant">Accountant</option>
-                            <option value="BranchManager">Branch Manager</option>
-                            <option value="SubDealer">Sub Dealer</option>
-                            <option value="Technician">Technician</option>
-                            <option value="SalesMan">Sales Man</option>
-                            <option value="CallCenter">Call Center</option>
-                            <option value="Warehouse Manager">Warehouse Manager</option>
-                          </select>
-                        </label>
-                        <label>
-                          <span>Conductor Place:</span>
-                          <input
-                            type="text"
-                            className="w-full border px-4 py-2 rounded-md"
-                            value={level.conductorPlace || ''}
-                            onChange={(e) => handleInputChange(index, 'conductorPlace', e.target.value)}
-                          />
-                        </label>
-                        <label>
-                          <span>Result:</span>
-                          <input
-                            type="text"
-                            className="w-full border px-4 py-2 rounded-md"
-                            value={level.result || ''}
-                            onChange={(e) => handleInputChange(index, 'result', e.target.value)}
-                          />
-                        </label>
-                        <label>
-                          <span>Review:</span>
-                          <input
-                            type="text"
-                            className="w-full border px-4 py-2 rounded-md"
-                            value={level.review || ''}
-                            onChange={(e) => handleInputChange(index, 'review', e.target.value)}
-                          />
-                        </label>
-                      </div>
-                    )}
+              {levels.map((level, index) => (
+                <div key={index} className="bg-white rounded-md shadow mb-4">
+                  <div
+                    className={`flex items-center justify-between p-4 cursor-pointer ${expandedLevels[index] ? 'bg-green-600 text-white' : 'bg-gray-200'
+                      }`}
+                    onClick={() => toggleLevel(index)}
+                  >
+                    <h3 className="font-semibold">Level {index + 1}</h3>
+                    <span>{expandedLevels[index] ? '⬆' : '⬇'}</span>
                   </div>
-                ))
-              ) : (
-                <p>No levels found.</p>
-              )}
+                  {expandedLevels[index] && (
+                    <div className="p-4 grid grid-cols-2 gap-4">
+                      <label>
+                        <span>Date of Conductor:</span>
+                        <input
+                          type="date"
+                          className="w-full border px-4 py-2 rounded-md"
+                          value={level.dateOfConductor || ''}
+                          onChange={(e) => handleInputChange(index, 'dateOfConductor', e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        <span>Conductor By:</span>
+                        <select
+                          value={level.conductorBy || ''}
+                          onChange={(e) => handleInputChange(index, 'conductorBy', e.target.value)}
+                          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                        >
+                          <option value="">Select designation</option>
+                          <option value="CEO">CEO</option>
+                          <option value="HR">HR</option>
+                          <option value="Accountant">Accountant</option>
+                          <option value="BranchManager">Branch Manager</option>
+                          <option value="SubDealer">Sub Dealer</option>
+                          <option value="Technician">Technician</option>
+                          <option value="SalesMan">Sales Man</option>
+                          <option value="CallCenter">Call Center</option>
+                          <option value="Warehouse Manager">Warehouse Manager</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Conductor Place:</span>
+                        <input
+                          type="text"
+                          className="w-full border px-4 py-2 rounded-md"
+                          value={level.conductorPlace || ''}
+                          onChange={(e) => handleInputChange(index, 'conductorPlace', e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        <span>Result:</span>
+                        <input
+                          type="text"
+                          className="w-full border px-4 py-2 rounded-md"
+                          value={level.result || ''}
+                          onChange={(e) => handleInputChange(index, 'result', e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        <span>Review:</span>
+                        <input
+                          type="text"
+                          className="w-full border px-4 py-2 rounded-md"
+                          value={level.review || ''}
+                          onChange={(e) => handleInputChange(index, 'review', e.target.value)}
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              ))}
+             
             </div>
           </>
         )}
       </div>
     </div>
   );
+
 };
 
 export default EditHiring;

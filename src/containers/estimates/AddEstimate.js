@@ -5,7 +5,7 @@ import { MyPDF } from '../../common/commonUtils';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const AddEstimate = () => {
   const navigate = useNavigate();
@@ -159,8 +159,8 @@ const AddEstimate = () => {
         (total, item) => total + parseFloat(item.amount || 0),
         0
       ),
-      companyCode: 'COMPANY_CODE', // Replace with actual company code
-      unitCode: 'UNIT_CODE', // Replace with actual unit code
+      companyCode: initialAuthState.companyCode, // Replace with actual company code
+      unitCode: initialAuthState.unitCode, // Replace with actual unit code
       estimateId: formData.estimateId || undefined,
       invoiceId: formData.invoiceId || undefined, // Optional based on the DTO
       GSTORTDS: formData.GSTORTDS || undefined, // Optional based on the DTO

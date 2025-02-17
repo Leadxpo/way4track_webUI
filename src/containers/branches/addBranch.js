@@ -168,7 +168,7 @@ const AddBranchForm = () => {
               />
             </div>
           </div>
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">Designation</p>
             <select
               name="designation"
@@ -187,7 +187,7 @@ const AddBranchForm = () => {
               <option value="CallCenter">Call Center</option>
               <option value="Warehouse Manager">Warehouse Manager</option>
             </select>
-          </div>
+          </div> */}
           {/* Address */}
           <div>
             <label className="block font-bold mb-1">Branch Address</label>

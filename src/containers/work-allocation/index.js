@@ -11,47 +11,20 @@ const WorkAllocation = () => {
   // Check if there's workAllocation data passed through location.state
   const workAllocationData = location.state?.workAllocationDetails || {};
 
-  // Initialize form data with existing workAllocation details if available
-  // const initialFormData = {
-  //   id: workAllocationData.id || '',
-  //   // staffId: workAllocationData.name || '',
-  //   workAllocationId: workAllocationData.workAllocationId || '',
-  //   workAllocationNumber: workAllocationData.workAllocationNumber || '',
-  //   serviceOrProduct: workAllocationData.serviceOrProduct || '',
-  //   otherInformation: workAllocationData.otherInformation || '',
-  //   date: workAllocationData.date || '',
-  //   staffId: workAllocationData.assignedTo,
-  //   companyCode: initialAuthState.companyCode,
-  //   unitCode: initialAuthState.unitCode,
-  //   voucherId: workAllocationData.voucherId || null,
-  //   install: workAllocationData.install,
-  //   // clientName: workAllocationData?.clientName,
-  //   clientId: workAllocationData?.clientId || null,
-  //   productDetails: [
-  //     {
-  //       productId: '',
-  //       productName: '',
-  //       imeiNumber: '',
-  //       install: false
-  //     },
-  //   ],
-  //   // phoneNumber: workAllocationData?.phoneNumber,
-  // };
-
   const initialFormData = {
-    id: workAllocationData.id || '',
-    workAllocationId: workAllocationData.workAllocationId || '',
-    workAllocationNumber: workAllocationData.workAllocationNumber || '',
-    serviceOrProduct: workAllocationData.serviceOrProduct || '',
-    otherInformation: workAllocationData.otherInformation || '',
-    date: workAllocationData.date || '',
-    staffId: workAllocationData.assignedTo || '',
+    id: workAllocationData?.id || '',
+    workAllocationId: workAllocationData?.workAllocationId || '',
+    workAllocationNumber: workAllocationData?.workAllocationNumber || '',
+    serviceOrProduct: workAllocationData?.serviceOrProduct || '',
+    otherInformation: workAllocationData?.otherInformation || '',
+    date: workAllocationData?.date || '',
+    staffId: workAllocationData?.assignedTo || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    voucherId: workAllocationData.voucherId || null,
-    install: workAllocationData.install || false,
+    voucherId: workAllocationData?.voucherId || null,
+    install: workAllocationData?.install || false,
     clientId: workAllocationData?.clientId || null,
-    productDetails: [
+    productDetails: workAllocationData?.productDetails || [
       {
         productId: '',
         productName: '',
@@ -60,6 +33,7 @@ const WorkAllocation = () => {
       },
     ],
   };
+
 
 
   const [products, setProducts] = useState([]);
@@ -91,44 +65,6 @@ const WorkAllocation = () => {
     }
   };
 
-  // const handleItemChange = (index, e) => {
-  //   const { name, value } = e.target;
-  //   const updatedItems = [...selectedWorkAllocation.productDetails];
-  //   updatedItems[index][name] = value;
-  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
-  // };
-
-  // const handleProductItemChange = (index, e) => {
-  //   const { name, value } = e.target;
-  //   const selectedProduct = products.find((product) => {
-  //     console.log(product.productName, ' ===', e.target.value);
-  //     return product.productName === e.target.value;
-  //   });
-
-  //   console.log('rrr : ', selectedProduct);
-  //   const updatedItems = [...selectedWorkAllocation.productDetails];
-  //   updatedItems[index][name] = value;
-  //   updatedItems[index]['productId'] = selectedProduct.id;
-  //   updatedItems[index]['imeiNumber'] = selectedProduct.imeiNumber;
-  //   updatedItems[index]['install'] = selectedProduct.install;
-  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
-  // };
-
-  // const addNewItem = () => {
-  //   setSelectedWorkAllocation((prevData) => ({
-  //     ...prevData,
-  //     productDetails: [
-  //       ...prevData.productDetails,
-  //       { name: '', imeiNumber: '', install: true },
-  //     ],
-  //   }));
-  // };
-
-  // const removeItem = (index) => {
-  //   const updatedItems = selectedWorkAllocation.productDetails.filter((_, i) => i !== index);
-  //   setSelectedWorkAllocation((prevData) => ({ ...prevData, productDetails: updatedItems }));
-  // };
-
   const handleItemChange = (index, e) => {
     const { name, value, type, checked } = e.target;
     const updatedItems = [...selectedWorkAllocation.productDetails];
@@ -138,6 +74,36 @@ const WorkAllocation = () => {
       productDetails: updatedItems,
     }));
   };
+
+  useEffect(() => {
+    if (workAllocationData.id) {
+      const fetchClientDetails = async () => {
+        try {
+          const response = await ApiService.post(
+            '/work-allocations/getWorkAllocationDetails',
+            {
+              id: workAllocationData.id,
+              companyCode: initialAuthState.companyCode,
+              unitCode: initialAuthState.unitCode,
+            }
+          );
+          if (response.data?.length > 0) {
+            const subDealer = response.data[0];
+            setSelectedWorkAllocation({
+              ...initialFormData,
+              ...subDealer,
+              productDetails: subDealer?.productDetails || [],
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching work allocation details:', error);
+          alert('Failed to fetch work allocation details.');
+        }
+      };
+      fetchClientDetails();
+    }
+  }, [workAllocationData.id]);
+
 
   const handleProductItemChange = (index, e) => {
     const { value } = e.target;
@@ -167,7 +133,7 @@ const WorkAllocation = () => {
   };
 
   const removeItem = (index) => {
-    const updatedItems = selectedWorkAllocation.productDetails.filter((_, i) => i !== index);
+    const updatedItems = selectedWorkAllocation.productDetails?.filter((_, i) => i !== index);
     setSelectedWorkAllocation((prevData) => ({
       ...prevData,
       productDetails: updatedItems,
@@ -199,10 +165,14 @@ const WorkAllocation = () => {
     const { name, value } = e.target;
     setSelectedWorkAllocation({ ...selectedWorkAllocation, [name]: value });
   };
-  const handleOpenModalForEdit = (voucher) => {
-    setSelectedWorkAllocation(voucher);
+  const handleOpenModalForEdit = (initialFormData) => {
+    setSelectedWorkAllocation(initialFormData);
     setIsEditMode(true);
     setIsModalOpen(true);
+
+  };
+  const handleEdit = (work) => {
+    navigate('/edit-work-allocation', { state: { workAllocationDetails: { work } } });
   };
   // Fetch client data
   useEffect(() => {
@@ -335,6 +305,8 @@ const WorkAllocation = () => {
                   )}
                 </div>
 
+
+
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Voucher ID
@@ -357,6 +329,9 @@ const WorkAllocation = () => {
                     </select>
                   )}
                 </div>
+                <div></div>
+
+
 
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -404,6 +379,17 @@ const WorkAllocation = () => {
                     </select>
                   </div>
                 )}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    workAllocation Number
+                  </label><input
+                    type="text"
+                    name="workAllocationNumber"
+                    value={selectedWorkAllocation.workAllocationNumber || ''}
+                    onChange={handleInputChange}
+                  /></div>
+
+
 
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -444,7 +430,7 @@ const WorkAllocation = () => {
                   </div>
 
                   {/* Items Rows */}
-                  {selectedWorkAllocation.productDetails.map((item, index) => (
+                  {selectedWorkAllocation.productDetails?.map((item, index) => (
                     <div key={index} className="grid grid-cols-12 gap-2 items-center p-2 border-t">
                       <span className="col-span-1">{index + 1}</span>
 
@@ -572,7 +558,7 @@ const WorkAllocation = () => {
 
       <TableWithSearchFilter
         type="work-allocations"
-        onEdit={handleOpenModalForEdit}
+        onEdit={handleEdit}
         onDetails={handleOpenMoreDetailsModal}
         showCreateBtn={false}
         showDelete={permissions.delete}

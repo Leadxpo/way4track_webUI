@@ -26,7 +26,7 @@ const BranchDetails = () => {
     const fetchBranchDetails = async () => {
       try {
         const response = await ApiService.post("/branch/getBranchDetailsById", {
-          id: branchDetailsFromState.id,
+          id: branchDetailsFromState.branchId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -41,7 +41,7 @@ const BranchDetails = () => {
       }
     };
     fetchBranchDetails();
-  }, [branchDetailsFromState.id]);
+  }, [branchDetailsFromState.branchId]);
 
   return (
     <div className="space-y-10 px-8 py-4">

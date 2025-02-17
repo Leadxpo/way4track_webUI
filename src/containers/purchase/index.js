@@ -48,8 +48,9 @@ const Purchase = ({ onEdit, onDetails }) => {
         <Table
           columns={columns}
           data={tableData}
-          showDelete={false}
+          showCreateBtn={false}
           showEdit={false}
+          showDelete={false}
           showDetails={false}
         />
       </div>

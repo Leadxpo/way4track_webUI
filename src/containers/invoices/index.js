@@ -15,8 +15,10 @@ const Invoices = () => {
       onEdit={() => { }}
       onDelete={() => { }}
       onDetails={() => { }}
-      showStatusFilter={true}
+      showCreateBtn={false}
+      showEdit={false}
       showDelete={false}
+      showDetails={false}
     />
   );
 };
