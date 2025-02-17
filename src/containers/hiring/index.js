@@ -25,7 +25,7 @@ const Hiring = () => {
   return (
     <TableWithSearchFilter
       type="hiring"
-      showCreateBtn={permissions.add}
+      showCreateBtn={true}
       showDelete={permissions.delete}
       showEdit={permissions.edit}
       showDetails={permissions.view}
