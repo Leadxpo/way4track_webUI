@@ -357,7 +357,7 @@ const InvoiceForm = () => {
             />
           </div>
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
         <label className="block font-semibold mb-2">Select Product Type</label>
         <Controller
           name="productType"
@@ -377,7 +377,7 @@ const InvoiceForm = () => {
             </select>
           )}
         />
-      </div>
+      </div> */}
 
         {/* Actions */}
         <div className="flex justify-end gap-4 mt-6">
