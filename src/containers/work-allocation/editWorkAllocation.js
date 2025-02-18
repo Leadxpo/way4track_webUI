@@ -10,9 +10,11 @@ const EditWorkAllocation = () => {
 
   // Check if there's workAllocation data passed through location.state
   const workAllocationData = location.state?.workAllocationDetails;
+  console.log(workAllocationData, ">>>>>>>>>>>>")
+  console.log(workAllocationData.work.id, "+====}}}}}}}}}")
 
   const initialFormData = {
-    id: workAllocationData?.id || '',
+    id: workAllocationData.work.id || '',
     workAllocationNumber: workAllocationData?.workAllocationNumber || '',
     otherInformation: workAllocationData?.otherInformation || '',
     date: workAllocationData?.date || '',
@@ -62,15 +64,6 @@ const EditWorkAllocation = () => {
     }
   };
 
-  const handleItemChange = (index, e) => {
-    const { name, value, type, checked } = e.target;
-    const updatedItems = [...selectedWorkAllocation.productDetails];
-    updatedItems[index][name] = type === 'checkbox' ? checked : value;
-    setSelectedWorkAllocation((prevData) => ({
-      ...prevData,
-      productDetails: updatedItems,
-    }));
-  };
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -78,20 +71,22 @@ const EditWorkAllocation = () => {
         const response = await ApiService.post(
           '/work-allocations/getWorkAllocationDetails',
           {
-            id: workAllocationData.id,
+            id: workAllocationData.work.id,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
         );
+        console.log(workAllocationData.id, "+====}}}}}}}}}")
 
         if (response.data?.length > 0) {
-          const workAllocation = response.data[0];
+          const workAllocation = response.data;
 
           setSelectedWorkAllocation({
             ...initialFormData,
             ...workAllocation, // Merge fetched data
             productDetails: workAllocation.products || [], // Ensure product details are mapped correctly
           });
+
         }
       } catch (error) {
         console.error('Error fetching work allocation details:', error);
@@ -99,7 +94,7 @@ const EditWorkAllocation = () => {
       }
     };
     fetchClientDetails();
-  }, [workAllocationData?.id]);
+  }, [workAllocationData.work.id]);
 
   const handleProductItemChange = (index, e) => {
     const { value } = e.target;
@@ -110,9 +105,9 @@ const EditWorkAllocation = () => {
     const updatedItems = [...selectedWorkAllocation.productDetails];
     updatedItems[index]['productName'] = value;
     if (selectedProduct) {
-      updatedItems[index]['productId'] = selectedProduct.id;
-      updatedItems[index]['imeiNumber'] = selectedProduct.imeiNumber;
-      updatedItems[index]['install'] = selectedProduct.install;
+      // updatedItems[index]['productId'] = selectedProduct.id;
+      // updatedItems[index]['imeiNumber'] = selectedProduct.imeiNumber;
+      // updatedItems[index]['install'] = selectedProduct.install;
     }
     setSelectedWorkAllocation((prevData) => ({
       ...prevData,
@@ -125,7 +120,7 @@ const EditWorkAllocation = () => {
       ...prevData,
       productDetails: [
         ...prevData.productDetails,
-        { productId: '', productName: '', imeiNumber: '', install: false },
+        { productName: '' },
       ],
     }));
   };
@@ -202,7 +197,7 @@ const EditWorkAllocation = () => {
     const payload = { ...selectedWorkAllocation };
     console.log(payload, '+++++++++++++++++++++++');
     try {
-      const endpoint = selectedWorkAllocation.id
+      const endpoint = selectedWorkAllocation.workAllocationNumber
         ? '/work-allocations/handleWorkAllocationDetails'
         : '/work-allocations/handleWorkAllocationDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -231,9 +226,7 @@ const EditWorkAllocation = () => {
           <form className="bg-white p-4" onSubmit={handleSave}>
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Client Name
-                </label>
+                <label className="block text-gray-700 font-semibold mb-1">Client Name</label>
                 {client.length > 0 && (
                   <select
                     name="clientId"
@@ -251,56 +244,6 @@ const EditWorkAllocation = () => {
                     ))}
                   </select>
                 )}
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Voucher ID
-                </label>
-                {voucher.length > 0 && (
-                  <select
-                    name="voucherId"
-                    value={selectedWorkAllocation?.voucherId || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Select Voucher
-                    </option>
-                    {voucher.map((voucherItem) => (
-                      <option key={voucherItem.id} value={voucherItem.id}>
-                        {voucherItem.voucherId}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div></div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  className="border p-2 rounded w-full focus:outline-none"
-                  value={selectedWorkAllocation?.date || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Service / Product
-                </label>
-                <input
-                  type="text"
-                  name="serviceOrProduct"
-                  className="border p-2 rounded w-full focus:outline-none"
-                  value={selectedWorkAllocation?.serviceOrProduct || ''}
-                  onChange={handleInputChange}
-                />
               </div>
 
               {staff.length > 0 && (
@@ -323,123 +266,82 @@ const EditWorkAllocation = () => {
                   </select>
                 </div>
               )}
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  workAllocation Number
-                </label>
-                <input
-                  type="text"
-                  name="workAllocationNumber"
-                  value={selectedWorkAllocation.workAllocationNumber || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
 
               <div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    Other Information
+                  </label>
+                  <textarea
+                    name="otherInformation"
+                    className="w-full border p-2 rounded mb-4 focus:outline-none"
+                    value={selectedWorkAllocation?.otherInformation || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    Product Name
+                  </label>
+                  <textarea
+                    name="productName"
+                    className="w-full border p-2 rounded mb-4 focus:outline-none"
+                    value={selectedWorkAllocation?.productName || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    className="w-full border p-2 rounded mb-4 focus:outline-none"
+                    value={selectedWorkAllocation?.description || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
                 <label className="block text-gray-700 font-semibold mb-1">
-                  Address
+                  Date
                 </label>
                 <input
-                  type="text"
-                  name="address"
+                  type="date"
+                  name="date"
                   className="border p-2 rounded w-full focus:outline-none"
-                  value={selectedWorkAllocation?.address || ''}
+                  value={selectedWorkAllocation?.date || ''}
                   onChange={handleInputChange}
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-semibold mb-1">
-                Other Information
-              </label>
-              <textarea
-                name="otherInformation"
-                className="w-full border p-2 rounded mb-4 focus:outline-none"
-                value={selectedWorkAllocation?.otherInformation || ''}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-1">Items</label>
-              <div className="border border-gray-300 rounded-md">
-                {/* Header Row */}
-                <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
-                  <span className="col-span-1 font-semibold">#</span>
-                  <span className="col-span-3 font-semibold">Name</span>
-                  <span className="col-span-3 font-semibold">IMEI Number</span>
-                  <span className="col-span-3 font-semibold">Install</span>
-                  <span className="col-span-2 font-semibold"></span>
-                </div>
-
-                {/* Items Rows */}
-                {selectedWorkAllocation.productDetails?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-12 gap-2 items-center p-2 border-t"
+              <div>
+                <label className="block text-gray-700 font-semibold mb-1">Voucher ID</label>
+                {voucher.length > 0 && (
+                  <select
+                    name="voucherId"
+                    value={selectedWorkAllocation?.voucherId || ''}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                   >
-                    <span className="col-span-1">{index + 1}</span>
-
-                    {/* Product Name Dropdown */}
-                    <select
-                      name="productName"
-                      value={item.productName}
-                      onChange={(e) => handleProductItemChange(index, e)}
-                      className="col-span-3 p-2 border rounded-md"
-                    >
-                      <option value="">Select Product</option>
-                      {products.map((product) => (
-                        <option key={product.id} value={product.productName}>
-                          {product.productName}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* IMEI Number Input */}
-                    <input
-                      type="text"
-                      name="imeiNumber"
-                      value={item.imeiNumber}
-                      onChange={(e) => handleItemChange(index, e)}
-                      placeholder="IMEI Number"
-                      className="col-span-3 p-2 border rounded-md"
-                      disabled
-                    />
-
-                    {/* Install Checkbox */}
-                    <input
-                      type="checkbox"
-                      name="install"
-                      checked={item.install}
-                      onChange={(e) => handleItemChange(index, e)}
-                      className="col-span-3 p-2 border rounded-md"
-                    />
-
-                    {/* Remove Item Button */}
-                    <button
-                      type="button"
-                      onClick={() => removeItem(index)}
-                      className="bg-gray-100 rounded-md w-fit p-2"
-                    >
-                      -
-                    </button>
-                  </div>
-                ))}
-
-                {/* Add New Item Button */}
-                <div className="flex justify-end p-2">
-                  <button
-                    type="button"
-                    onClick={addNewItem}
-                    className="text-blue-500 text-sm font-semibold mt-2 ml-2"
-                  >
-                    + Add Item
-                  </button>
-                </div>
+                    <option value="" disabled>
+                      Select Voucher
+                    </option>
+                    {voucher.map((voucherItem) => (
+                      <option key={voucherItem.id} value={voucherItem.id}>
+                        {voucherItem.voucherId}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-1">Service or Product</label>
+                <input
+                  name="serviceOrProduct"
+                  value={selectedWorkAllocation?.serviceOrProduct || ''}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
               </div>
             </div>
-
             <button
               className="bg-green-700 w-fit mt-2 text-white p-2 rounded-md"
               onClick={handleEditClick}
