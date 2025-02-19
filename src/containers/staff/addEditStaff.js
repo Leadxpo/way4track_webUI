@@ -9,6 +9,7 @@ const AddEditEmployeeForm = () => {
 
   // Check if data is available from the location state
   const employeeData = location.state?.staffDetails || {};
+  console.log(employeeData, ".........")
   // const [staffList, setStaffList] = useState([]);
 
   // Initialize form data with defaults

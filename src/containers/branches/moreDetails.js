@@ -20,13 +20,15 @@ const BranchDetails = () => {
 
   const location = useLocation();
   const branchDetailsFromState = location.state?.branchDetails || {};
+  console.log(location.state?.branchDetails)
+  console.log(branchDetailsFromState, "---")
 
 
   useEffect(() => {
     const fetchBranchDetails = async () => {
       try {
         const response = await ApiService.post("/branch/getBranchDetailsById", {
-          id: branchDetailsFromState.branchId,
+          id: branchDetailsFromState.id,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -41,7 +43,7 @@ const BranchDetails = () => {
       }
     };
     fetchBranchDetails();
-  }, [branchDetailsFromState.branchId]);
+  }, [branchDetailsFromState.id]);
 
   return (
     <div className="space-y-10 px-8 py-4">

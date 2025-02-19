@@ -5,7 +5,10 @@ import { initialAuthState } from '../../services/ApiService';
 const ClientProfile = () => {
   const location = useLocation();
   const clientDetailsFromState = location.state?.clientDetails || {};
-  const [clientDetails, setClientDetails] = useState({});
+  console.log(location.state?.clientDetails, ":::::::")
+
+  console.log(clientDetailsFromState, ":::::::")
+  const [clientDetails, setClientDetails] = useState([]);
   const [clientDetailsData, setClientDetailsData] = useState([]);
 
   useEffect(() => {
@@ -16,36 +19,33 @@ const ClientProfile = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        if (response.status) {
-          // Ensure client details data is an array
-          setClientDetailsData(response.data || []);
-        } else {
-          setClientDetailsData([]);
-        }
+        console.log('Client Details Data:', response.data);
+        setClientDetailsData(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching client details data:', error);
-        alert('Failed to fetch client details data.');
+        setClientDetailsData([]); // Fallback to an empty array
       }
     };
     fetchClientDetailsData();
   }, [clientDetailsFromState.clientId]);
 
+
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        const response = await ApiService.post('/client/getClientDetails', {
+        const response = await ApiService.post('/client/getClientDetailsById', {
           clientId: clientDetailsFromState.clientId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
-          const client = response.data?.[0];
+          const client = response.data;
           setClientDetails({
             ...client,
             name: client.name,
-            phone: client.phoneNumber,
+            phoneNumber: client.phoneNumber,
             email: client.email,
-            branch: client.branchName,
+            branch: client.branch.branchName,
             dob: client.dob,
             address: client.address,
             clientPhoto: client.clientPhoto
@@ -66,7 +66,7 @@ const ClientProfile = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
-      <p className="font-bold text-xl">Client ID</p>
+      <p className="font-bold text-xl">Client ID : {clientDetails.clientId}</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
           src={clientDetails.clientPhoto}
@@ -77,7 +77,7 @@ const ClientProfile = () => {
           <p className="text-gray-800 font-bold text-xl">
             Client Name : {clientDetails.name}
           </p>
-          <p className="text-gray-800">Phone number : {clientDetails.phone}</p>
+          <p className="text-gray-800">Phone number : {clientDetails.phoneNumber}</p>
           <p className="text-gray-800">Email : {clientDetails.email}</p>
           <p className="text-gray-800">Client Branch : {clientDetails.branch}</p>
           <p className="text-gray-800">Date of Birth : {clientDetails.dob}</p>
@@ -100,16 +100,23 @@ const ClientProfile = () => {
             </tr>
           </thead>
           <tbody>
-            {clientDetailsData.map((pitcher, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
-                <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
-                <td className="py-2 px-4 text-center">{pitcher.productType}</td>
-                <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
-                <td className="py-2 px-4 text-center">{pitcher.amount}</td>
-                <td className="py-2 px-4 text-center">{pitcher.paymentStatus}</td>
+            {Array.isArray(clientDetailsData) && clientDetailsData.length > 0 ? (
+              clientDetailsData.map((pitcher, index) => (
+                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.productType}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.amount}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.paymentStatus}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center py-4">No data available</td>
               </tr>
-            ))}
+            )}
+
           </tbody>
 
         </table>

@@ -6,6 +6,7 @@ import { initialAuthState } from '../../services/ApiService';
 const VendorProfile = () => {
   const location = useLocation();
   const vendorDetailsFromState = location.state?.vendorDetails || {};
+  console.log(vendorDetailsFromState, "+============")
   const [vendorDetails, setVendorDetails] = useState({});
   const [vendorDetailsData, setVendorDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
@@ -13,15 +14,15 @@ const VendorProfile = () => {
   useEffect(() => {
     const fetchVendorDetails = async () => {
       try {
-        const response = await ApiService.post('/vendor/getVendorDetails', {
+        const response = await ApiService.post('/vendor/getVendorDetailsById', {
           vendorId: vendorDetailsFromState.vendorId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        if (response.status) {
-          const vendor = response.data?.[0];
+
+        if (response.status && response.data) {
+          const vendor = response.data; // No need for [0], since it's an object
           setVendorDetails({
-            ...vendor,
             name: vendor.name,
             phone: vendor.vendorPhoneNumber,
             email: vendor.emailId,
@@ -35,12 +36,13 @@ const VendorProfile = () => {
           setVendorDetails({});
         }
       } catch (error) {
-        console.error('Error fetching branch details:', error);
-        alert('Failed to fetch branch details.');
+        console.error('Error fetching vendor details:', error);
+        alert('Failed to fetch vendor details.');
       }
     };
     fetchVendorDetails();
   }, [vendorDetailsFromState.vendorId]);
+
 
   useEffect(() => {
     const getProductsPhotos = async () => {

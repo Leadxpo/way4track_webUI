@@ -10,16 +10,16 @@ const Vendors = () => {
     const perms = getPermissions('vendor');
     setPermissions(perms);
   }, []);
-  const handleVendorEdit = (vendor) => {
-    navigate('/add-vendor', { state: { vendorDetails: vendor } });
+  const handleVendorEdit = (vendorDetails) => {
+    navigate('/add-vendor', { state: { vendorDetails } });
   };
 
-  const handleDelete = (vendor) => {
-    navigate('/delete-vendor', { state: { vendorDetails: vendor } });
+  const handleDelete = (vendorDetails) => {
+    navigate('/delete-vendor', { state: { vendorDetails } });
   };
 
-  const handleDetails = () => {
-    navigate('/vendor-profile');
+  const handleDetails = (vendorDetails) => {
+    navigate('/vendor-profile', { state: { vendorDetails } });
   };
   return (
     <TableWithDateFilter

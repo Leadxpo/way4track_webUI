@@ -19,8 +19,8 @@ const Clients = () => {
     navigate('/delete-client', { state: { clientDetails: client } });
   };
 
-  const handleDetails = () => {
-    navigate('/client-details');
+  const handleDetails = (clientDetails) => {
+    navigate('/client-details', { state: { clientDetails } });
   };
   return (
     <TableWithSearchFilter

@@ -23,7 +23,8 @@ const Asserts = () => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const location = useLocation();
-  const assetDetailsFromState = location.state?.assetDetails || {};
+  const assetDetailsFromState = location.state?.assetsData || {};
+  console.log(assetDetailsFromState, ">>>>>>>>>>")
   // Fetch data for branches and asset counts
   const fetchData = async (branchName) => {
     try {
@@ -58,6 +59,7 @@ const Asserts = () => {
       console.error('Failed to fetch data:', err);
     }
   };
+
 
   useEffect(() => {
     const perms = getPermissions('assets');
@@ -104,6 +106,13 @@ const Asserts = () => {
   useEffect(() => {
     getAssertDataByDate();
   }, []);
+
+
+  const handleMoreDetails = (assetDetails) => {
+    console.log(assetDetails, "Navigating with this asset data");
+    navigate('/asset-details', { state: { assetDetails } });
+  };
+
 
   const getAssertDataByDate = useCallback(async () => {
     try {
@@ -249,11 +258,12 @@ const Asserts = () => {
               <div className="absolute bottom-4 right-4">
                 <button
                   className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
-                  onClick={() => navigate('/asset-details')}
+                  onClick={() => handleMoreDetails(profile)}
                   disabled={!permissions.view}
                 >
                   More Details
                 </button>
+
               </div>
             </div>
           ))}
@@ -298,7 +308,7 @@ const Asserts = () => {
               filteredData.length > 0 ? Object.keys(filteredData[0]) : []
             }
             data={filteredData}
-            onDetails={() => {}}
+            onDetails={() => { }}
             showEdit={permissions.edit}
             showDelete={permissions.delete}
             showDetails={permissions.view}

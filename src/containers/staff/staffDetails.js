@@ -8,6 +8,7 @@ import { initialAuthState } from '../../services/ApiService';
 const StaffDetails = () => {
   const location = useLocation();
   const employeeData = location.state?.staffDetails || {};
+  console.log(location.state.staffDetails)
   const [staffDetails, setStaffDetails] = useState({});
   const [attendanceData, setAttendanceData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);

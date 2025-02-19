@@ -7,7 +7,8 @@ const AddAsset = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const assetData = location.state?.assetsData || {};
+  const assetData = location.state?.assetDetails || {};
+  console.log(assetData, ">>>")
   const [voucherList, setVoucherList] = useState([]);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState(assetData?.photo || '');

@@ -6,6 +6,7 @@ const AddEditClient = () => {
   const location = useLocation();
 
   const clientData = location.state?.clientDetails || {};
+  console.log(clientData, "?????????")
   const initialFormData = {
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
@@ -25,10 +26,10 @@ const AddEditClient = () => {
   const [image, setImage] = useState(clientData?.file || '');
 
 
-console.log(formData,"+++++++++++++++++==")
+  console.log(formData, "+++++++++++++++++==")
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value,"++++++++++++++++++")
+    console.log(name, value, "++++++++++++++++++")
     setFormData({ ...formData, [name]: value });
   };
 
@@ -73,7 +74,7 @@ console.log(formData,"+++++++++++++++++==")
         payload.append(key, value);
       }
     });
-    console.log(payload,"___________")
+    console.log(payload, "___________")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -102,7 +103,7 @@ console.log(formData,"+++++++++++++++++==")
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {clientData.name ? 'Edit Client' : 'Add Client'}
+            {clientData.id ? 'Edit Client' : 'Add Client'}
           </h1>
         </div>
         {/* Photo Section */}

@@ -7,6 +7,7 @@ const AssetDetails = () => {
   const [data, setData] = useState([]);
   const location = useLocation();
   const assetDetailsFromState = location.state?.assetDetails || {};
+  console.log(location.state?.assetDetails, "{{{{{{{+++++++++")
 
   useEffect(() => {
     const getAssertDetails = async () => {

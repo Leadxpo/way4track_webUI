@@ -196,20 +196,21 @@ const WorkAllocation = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative">
+          <div className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl">
             <button
               onClick={handleCloseModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
+              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6 flex items-center justify-center"
             >
               X
             </button>
-            <h2 className="text-xl font-bold text-center mb-4">
+            <h2 className="text-xl font-bold text-center mb-6">
               {isEditMode ? 'Edit Work Allocation' : 'Create Work Allocation'}
             </h2>
             <form onSubmit={handleSave}>
-              <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                {/* Client Name */}
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Client Name</label>
+                  <label className="block text-gray-700 font-semibold mb-2">Client Name</label>
                   {client.length > 0 && (
                     <select
                       name="clientId"
@@ -217,10 +218,8 @@ const WorkAllocation = () => {
                       onChange={handleDropdownChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>
-                        Select Client
-                      </option>
-                      {client.map((clientItem) => (
+                      <option value="" disabled>Select Client</option>
+                      {client.map(clientItem => (
                         <option key={clientItem.id} value={clientItem.id}>
                           {clientItem.name}
                         </option>
@@ -229,19 +228,18 @@ const WorkAllocation = () => {
                   )}
                 </div>
 
+                {/* Assign To */}
                 {staff.length > 0 && (
-                  <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Assign To:</label>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">Assign To</label>
                     <select
                       name="staffId"
                       value={selectedWorkAllocation?.staffId || ''}
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>
-                        Allocated to
-                      </option>
-                      {staff.map((staffMember) => (
+                      <option value="" disabled>Allocated to</option>
+                      {staff.map(staffMember => (
                         <option key={staffMember.id} value={staffMember.id}>
                           {staffMember.name}
                         </option>
@@ -250,73 +248,41 @@ const WorkAllocation = () => {
                   </div>
                 )}
 
-                <div>
+                {/* Voucher ID */}
+                {voucher.length > 0 && (
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-1">
-                      Other Information
-                    </label>
-                    <textarea
-                      name="otherInformation"
-                      className="w-full border p-2 rounded mb-4 focus:outline-none"
-                      value={selectedWorkAllocation?.otherInformation || ''}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-1">
-                      Product Name
-                    </label>
-                    <textarea
-                      name="productName"
-                      className="w-full border p-2 rounded mb-4 focus:outline-none"
-                      value={selectedWorkAllocation?.productName || ''}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      className="w-full border p-2 rounded mb-4 focus:outline-none"
-                      value={selectedWorkAllocation?.description || ''}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    className="border p-2 rounded w-full focus:outline-none"
-                    value={selectedWorkAllocation?.date || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Voucher ID</label>
-                  {voucher.length > 0 && (
+                    <label className="block text-gray-700 font-semibold mb-2">Voucher ID</label>
                     <select
                       name="voucherId"
                       value={selectedWorkAllocation?.voucherId || ''}
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                     >
-                      <option value="" disabled>
-                        Select Voucher
-                      </option>
-                      {voucher.map((voucherItem) => (
+                      <option value="" disabled>Select Voucher</option>
+                      {voucher.map(voucherItem => (
                         <option key={voucherItem.id} value={voucherItem.id}>
                           {voucherItem.voucherId}
                         </option>
                       ))}
                     </select>
-                  )}
-                </div>
+                  </div>
+                )}
+
+                {/* Date */}
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Service or Product</label>
+                  <label className="block text-gray-700 font-semibold mb-2">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    value={selectedWorkAllocation?.date || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                {/* Service or Product */}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Service or Product</label>
                   <input
                     name="serviceOrProduct"
                     value={selectedWorkAllocation?.serviceOrProduct || ''}
@@ -324,9 +290,43 @@ const WorkAllocation = () => {
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                   />
                 </div>
-              </div>
 
-              {/* Add other form fields as needed */}
+                {/* Other Information */}
+                <div className="col-span-2">
+                  <label className="block text-gray-700 font-semibold mb-2">Other Information</label>
+                  <textarea
+                    name="otherInformation"
+                    className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
+                    value={selectedWorkAllocation?.otherInformation || ''}
+                    onChange={handleInputChange}
+                    rows="2"
+                  />
+                </div>
+
+                {/* Product Name */}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Product Name</label>
+                  <textarea
+                    name="productName"
+                    className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
+                    value={selectedWorkAllocation?.productName || ''}
+                    onChange={handleInputChange}
+                    rows="2"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="col-span-2">
+                  <label className="block text-gray-700 font-semibold mb-2">Description</label>
+                  <textarea
+                    name="description"
+                    className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
+                    value={selectedWorkAllocation?.description || ''}
+                    onChange={handleInputChange}
+                    rows="3"
+                  />
+                </div>
+              </div>
 
               <button
                 type="submit"
@@ -338,6 +338,7 @@ const WorkAllocation = () => {
           </div>
         </div>
       )}
+
 
       {isMoreDetailsModalOpen && selectedWorkAllocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
