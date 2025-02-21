@@ -11,6 +11,7 @@ const AddEditBankDetails = () => {
 
   // Initialize form data with existing bank details if available
   const initialFormData = {
+    id: bankData?.id || null,
     accountHolderName: bankData.accountName || '',
     name: bankData.name || '',
     totalAmount: bankData.totalAmount || 0,

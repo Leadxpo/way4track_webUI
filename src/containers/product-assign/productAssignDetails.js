@@ -5,18 +5,18 @@ import { useLocation } from 'react-router-dom';
 const ProductAssignDetails = () => {
   const location = useLocation();
   const productAssign = location.state?.productAssignDetails || {};
+  console.log(location.state?.productAssignDetails, "::::::::::::::::")
   const [productAssignData, setProductAssignData] = useState({});
 
   useEffect(() => {
     const productAssignDetails = async () => {
       try {
         const response = await ApiService.post('/product-assign/getProductAssign', {
-          id: productAssign.id,
+          id: productAssign.productId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
-          console.log(response.data, "fhbgbjh")
           setProductAssignData(response.data || {});
         } else {
           setProductAssignData({});
@@ -28,7 +28,7 @@ const ProductAssignDetails = () => {
     };
 
     productAssignDetails();
-  }, [productAssign.id]);
+  }, [productAssign.productId]);
 
   return (
     <div className="p-6 space-y-8">

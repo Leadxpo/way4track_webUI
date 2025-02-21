@@ -13,7 +13,7 @@ const EditEstimate = () => {
   const estimateDetails = location.state?.estimateDetails;
   const estimateID = estimateDetails.estimate.id;
   const [formData, setFormData] = useState({
-    id: '',
+    id: null,
     client: '',
     clientNumber: '',
     email: '',

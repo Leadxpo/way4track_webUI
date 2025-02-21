@@ -11,16 +11,16 @@ const SubDealers = () => {
     const perms = getPermissions('subdealer');
     setPermissions(perms);
   }, []);
-  const handleVendorEdit = (subDealer) => {
-    navigate('/add-sub-dealer', { state: { subDealerDetails: subDealer } });
+  const handleVendorEdit = (subDealerDetails) => {
+    navigate('/add-sub-dealer', { state: { subDealerDetails } });
   };
 
-  const handleDelete = (subDealer) => {
-    navigate('/delete-sub-dealer', { state: { subDealerDetails: subDealer } });
+  const handleDelete = (subDealerDetails) => {
+    navigate('/delete-sub-dealer', { state: { subDealerDetails } });
   };
 
-  const handleDetails = () => {
-    navigate('/sub-dealer-profile');
+  const handleDetails = (subDealerDetails) => {
+    navigate('/sub-dealer-profile', { state: { subDealerDetails } });
   };
   return (
     <TableWithDateFilter

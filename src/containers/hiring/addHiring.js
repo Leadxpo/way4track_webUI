@@ -21,6 +21,7 @@ const AddHiring = () => {
   ]);
 
   const [formData, setFormData] = useState({
+    id: null,
     candidateName: '',
     phoneNumber: '',
     email: '',

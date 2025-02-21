@@ -16,6 +16,7 @@ const AddEditEstimate = () => {
   isEditMode && console.log('edit : ', location.state?.estimateDetails);
   // Initial state for form
   const initialFormState = {
+    id: null,
     client: null,
     clientNumber: '',
     email: '',
@@ -153,7 +154,7 @@ const AddEditEstimate = () => {
   const handleSave = async () => {
     console.log(formData.items);
     const estimateDto = {
-      id: formData.id || '',
+      id: formData.id || null,
       clientId: formData.id,
       buildingAddress: formData.billingAddress,
       estimateDate: formData.estimateDate,
@@ -439,7 +440,7 @@ const AddEditEstimate = () => {
               Other Information / Terms & Conditions
             </label>
             <textarea
-              name="terms"getProductDetailsByBranch
+              name="terms" getProductDetailsByBranch
               value={formData.terms}
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"

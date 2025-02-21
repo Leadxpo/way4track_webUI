@@ -751,9 +751,12 @@ const Home = () => {
 
   const getProductTypeCreditAndDebitPercentages = async () => {
     try {
+      const date = new Date();
+      const formattedYear = date.getFullYear();
       const response = await ApiService.post(
         '/dashboards/getProductTypeCreditAndDebitPercentages',
         {
+          date: formattedYear,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
@@ -840,7 +843,7 @@ const Home = () => {
       </div>
 
       {/* second section */}
-      {/* <div className="flex items-center justify-center space-x-10">
+      <div className="flex items-center justify-center space-x-10">
         <div>
           {bracnhWiseSolidLiquidData.map((cash) => (
             <div className="grid grid-cols-4 gap-4 space-y-4">
@@ -887,7 +890,7 @@ const Home = () => {
             </div>
           ))}
         </div>
-      </div> */}
+      </div>
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"

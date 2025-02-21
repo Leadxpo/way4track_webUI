@@ -10,6 +10,7 @@ const AddBranchForm = () => {
 
   // Define initial states
   const [formData, setFormData] = useState({
+    id: branchData?.id || null,
     branchName: branchData?.branchName || '',
     branchNumber: branchData?.branchNumber || '',
     branchAddress: branchData?.branchAddress || '',

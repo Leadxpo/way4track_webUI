@@ -8,6 +8,7 @@ const AddEditClient = () => {
   const clientData = location.state?.clientDetails || {};
   console.log(clientData, "?????????")
   const initialFormData = {
+    id: clientData?.id || null,
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
     clientId: clientData.clientId || '',

@@ -7,7 +7,7 @@ const DeleteProductAsign = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const product = location.state?.productAssign || null;
+  const product = location.state?.productAssignDetails || null;
 
   // Function to handle client deletion
   const deleteProductAssign = async () => {
@@ -18,7 +18,7 @@ const DeleteProductAsign = () => {
 
     try {
       const payload = {
-        id: product.id,
+        id: product.productId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };

@@ -10,10 +10,11 @@ const AddEditProductAssign = () => {
   const location = useLocation();
 
   // Check if there's product data passed through location.state
-  const productAssign = location.state?.productDetails || {};
-
+  const productAssign = location.state?.productAssignDetails || {};
+  console.log(location.state?.productAssignDetails, ")))))))))))")
   // Initialize form data with existing product details if available
   const initialFormData = {
+    id: productAssign?.productId || null,
     staffId: productAssign.staffId || '',
     assignTo: productAssign.assignTo || '',
     name: productAssign.name || '',

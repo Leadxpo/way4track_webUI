@@ -15,7 +15,7 @@ const VendorProfile = () => {
     const fetchVendorDetails = async () => {
       try {
         const response = await ApiService.post('/vendor/getVendorDetailsById', {
-          vendorId: vendorDetailsFromState.vendorId,
+          vendorId: vendorDetailsFromState?.vendorId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -41,7 +41,7 @@ const VendorProfile = () => {
       }
     };
     fetchVendorDetails();
-  }, [vendorDetailsFromState.vendorId]);
+  }, [vendorDetailsFromState?.vendorId]);
 
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const VendorProfile = () => {
         const response = await ApiService.post(
           '/dashboards/getProductsPhotos',
           {
-            vendorId: vendorDetailsFromState.vendorId,
+            vendorId: vendorDetailsFromState?.vendorId,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
@@ -67,7 +67,7 @@ const VendorProfile = () => {
       }
     };
     getProductsPhotos();
-  }, [vendorDetailsFromState.vendorId]);
+  }, [vendorDetailsFromState?.vendorId]);
 
   useEffect(() => {
     const fetchVendorDetailsData = async () => {
@@ -75,14 +75,16 @@ const VendorProfile = () => {
         const response = await ApiService.post(
           '/dashboards/getDetailVendorData',
           {
-            vendorId: vendorDetailsFromState.vendorId,
+            vendorId: vendorDetailsFromState?.vendorId,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
         );
         if (response.status) {
+          setVendorDetailsData(Array.isArray(response.data) ? response.data : []);
+
           // Ensure vendor details data is an array
-          setVendorDetailsData(response.data || []);
+          // setVendorDetailsData(response.data || []);
         } else {
           setVendorDetailsData([]);
         }
@@ -92,12 +94,12 @@ const VendorProfile = () => {
       }
     };
     fetchVendorDetailsData();
-  }, [vendorDetailsFromState.vendorId]);
+  }, [vendorDetailsFromState?.vendorId]);
 
   return (
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
-      <p className="font-bold text-xl">Vendor ID</p>
+      <p className="font-bold text-xl">Vendor ID: {vendorDetailsData[0]?.vendorId || 'N/A'}</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
           src={vendorDetails.vendorPhoto}
@@ -161,9 +163,10 @@ const VendorProfile = () => {
                 key={index}
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
-                <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
-                <td className="py-2 px-4 text-center">{pitcher.productType}</td>
-                <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
+                <td className="py-2 px-4 text-center">{pitcher.voucherId || 'N/A'}</td>
+                <td className="py-2 px-4 text-center">{pitcher.amount !== null ? pitcher.amount : 'N/A'}</td>
+                <td className="py-2 px-4 text-center">{pitcher.paymentStatus || 'N/A'}</td>
+
                 <td className="py-2 px-4 text-center">{pitcher.amount}</td>
                 <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
                 <td className="py-2 px-4 text-center">

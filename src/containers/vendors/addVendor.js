@@ -10,6 +10,7 @@ const AddEditVendor = () => {
   const vendorData = location.state?.vendorDetails || {};
 
   const initialFormData = {
+    id: vendorData?.id || null,
     name: vendorData.name || '',
     vendorPhoneNumber: vendorData.vendorPhoneNumber || '',
     alternatePhoneNumber: vendorData.alternatePhoneNumber || '',

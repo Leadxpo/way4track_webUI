@@ -10,13 +10,13 @@ const Clients = () => {
     const perms = getPermissions('client');
     setPermissions(perms);
   }, []);
-  const handleVendorEdit = (client) => {
-    navigate('/add-client', { state: { clientDetails: client } });
+  const handleVendorEdit = (clientDetails) => {
+    navigate('/add-client', { state: { clientDetails } });
   };
 
-  const handleDelete = (client) => {
-    console.log('on delete', client);
-    navigate('/delete-client', { state: { clientDetails: client } });
+  const handleDelete = (clientDetails) => {
+
+    navigate('/delete-client', { state: { clientDetails } });
   };
 
   const handleDetails = (clientDetails) => {

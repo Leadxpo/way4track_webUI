@@ -9,17 +9,19 @@ const ProductAssign = () => {
   const handleCreateNew = () => {
     navigate('/add-product-assign');
   };
-  const onEdit = (product) => {
+  const onEdit = (productAssignDetails) => {
     navigate('/add-product-assign', {
-      state: { productAssignDetails: product },
+      state: { productAssignDetails },
     });
   };
-  const onDelete = () => {
-    navigate('/delete-product-assign');
+  const onDelete = (productAssignDetails) => {
+    navigate('/delete-product-assign', {
+      state: { productAssignDetails },
+    });
   };
-  const onDetails = (appt) => {
+  const onDetails = (productAssignDetails) => {
     navigate('/product-assign-details', {
-      state: { productAssignDetails: appt },
+      state: { productAssignDetails },
     });
   };
   const [selectedBranch, setSelectedBranch] = useState('All');
@@ -79,7 +81,7 @@ const ProductAssign = () => {
         <button
           className={`h-12 px-4 text-white font-bold rounded-md hover:cursor-pointer ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleCreateNew}
-          disabled={!permissions.add}
+          // disabled={!permissions.add}
         >
           Create New
         </button>
@@ -110,9 +112,9 @@ const ProductAssign = () => {
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
-          showDelete={permissions.delete}
-          showEdit={permissions.edit}
-          showDetails={permissions.view}
+          showDelete={true}
+          showEdit={true}
+          showDetails={true}
         />
       </div>
     </div>

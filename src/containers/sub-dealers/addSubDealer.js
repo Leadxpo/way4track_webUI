@@ -9,8 +9,9 @@ const AddEditSubDealer = () => {
   const location = useLocation();
 
   const subDealerData = location.state?.subDealerDetails || {};
-
+  console.log(subDealerData, "<<<<<<<")
   const initialFormData = {
+    id: subDealerData?.id || null,
     name: subDealerData.name || '',
     subDealerPhoneNumber: subDealerData.subDealerPhoneNumber || '',
     alternatePhoneNumber: subDealerData.alternateNumber || '',

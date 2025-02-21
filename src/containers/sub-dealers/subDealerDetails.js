@@ -6,7 +6,8 @@ import { initialAuthState } from '../../services/ApiService';
 const SubDealerDetails = () => {
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  const [subDealerDetails, setSubDealerDetails] = useState({});
+  console.log(subDealerDetailsFromState, "?????????????", location.state?.subDealerDetails)
+  const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
 
@@ -15,7 +16,7 @@ const SubDealerDetails = () => {
     const fetchSubDealerDetails = async () => {
       try {
         const response = await ApiService.post('/subdealer/getSubDealerDetails', {
-          subDealerId: subDealerDetailsFromState.subDealerId,
+          subDealerId: subDealerDetailsFromState.SubDealerId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -43,14 +44,14 @@ const SubDealerDetails = () => {
     };
     fetchSubDealerDetails();
 
-  }, [subDealerDetailsFromState.subDealerId]);
+  }, [subDealerDetailsFromState.SubDealerId]);
 
 
   useEffect(() => {
     const fetchSubDealerDetailsData = async () => {
       try {
         const response = await ApiService.post('/dashboards/getDetailSubDealerData', {
-          subDealerId: subDealerDetailsFromState.subDealerId,
+          subDealerId: subDealerDetailsFromState.SubDealerId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -66,14 +67,14 @@ const SubDealerDetails = () => {
       }
     };
     fetchSubDealerDetailsData();
-  }, [subDealerDetailsFromState.subDealerId]);
+  }, [subDealerDetailsFromState.SubDealerId]);
 
 
   useEffect(() => {
     const getProductsPhotos = async () => {
       try {
         const response = await ApiService.post('/dashboards/getProductsPhotos', {
-          subDealerId: subDealerDetailsFromState.subDealerId,
+          subDealerId: subDealerDetailsFromState.SubDealerId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -89,7 +90,7 @@ const SubDealerDetails = () => {
       }
     };
     getProductsPhotos();
-  }, [subDealerDetailsFromState.subDealerId]);
+  }, [subDealerDetailsFromState.SubDealerId]);
 
   return (
     <div className="p-6 space-y-8">
