@@ -66,7 +66,7 @@
 // };
 
 // export default ProfitsGraph;
-import React from "react";
+import React from 'react';
 import {
   LineChart,
   Line,
@@ -75,16 +75,19 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Tooltip,
-} from "recharts";
+} from 'recharts';
 
 const ProfitsGraph = ({ branchData }) => {
+  console.log(branchData);
   // Calculate average profit safely
   const averageProfit = () => {
-    if (!branchData?.data?.length) return "0.00"; // Handle empty data safely
+    if (!branchData?.data?.length) return '0.00'; // Handle empty data safely
 
     return (
-      branchData.data.reduce((acc, item) => acc + Number(item.profitorLoss), 0) /
-      branchData.data.length
+      branchData.data.reduce(
+        (acc, item) => acc + Number(item.profitorLoss),
+        0
+      ) / branchData.data.length
     ).toFixed(2);
   };
 
@@ -101,23 +104,23 @@ const ProfitsGraph = ({ branchData }) => {
               <CartesianGrid strokeDasharray="3 3" stroke="white" />
               <XAxis
                 dataKey="month"
-                tick={{ fill: "white", fontSize: 12 }}
-                axisLine={{ stroke: "white" }}
+                tick={{ fill: 'white', fontSize: 12 }}
+                axisLine={{ stroke: 'white' }}
                 tickLine={false}
                 angle={-45} // Rotates month labels
                 dy={10} // Adjusts label position
               />
               <YAxis
-                tick={{ fill: "white", fontSize: 12 }}
-                axisLine={{ stroke: "white" }}
+                tick={{ fill: 'white', fontSize: 12 }}
+                axisLine={{ stroke: 'white' }}
                 tickFormatter={(value) => `${value}%`} // Adds % to Y-axis values
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
-                  color: "white",
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  color: 'white',
                 }}
-                formatter={(value) => [`${value}%`, "Profit/Loss"]} // Shows profit/loss % in tooltip
+                formatter={(value) => [`${value}%`, 'Profit/Loss']} // Shows profit/loss % in tooltip
               />
               <Line
                 type="monotone"
