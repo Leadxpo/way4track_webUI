@@ -30,18 +30,17 @@ const RequestDetails = () => {
           const response = await ApiService.post(
             '/requests/getRequestDetails',
             {
-              id: location.state?.requestDetails.requestNumber,
+              id: location.state?.requestDetails.requestId,
               companyCode: initialAuthState.companyCode,
               unitCode: initialAuthState.unitCode,
             }
           );
-          console.log(response);
+          setFormData(requestData);
         } catch (error) {
           console.error(error);
         }
       };
       getRequestDetails();
-      setFormData(requestData);
     }
   }, [requestData]);
 

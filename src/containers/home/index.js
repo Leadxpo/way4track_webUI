@@ -359,10 +359,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-              ...item,
-              count: response.data.last30DaysTickets,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysTickets,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -386,10 +386,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-              ...item,
-              count: response.data.last30DaysProducts,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysProducts,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -413,10 +413,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-              ...item,
-              count: response.data.last30DaysPurchases,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysPurchases,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -439,10 +439,10 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-              ...item,
-              count: response.data.last30DaysExpenses,
-              growth: response.data.percentageChange,
-            }
+                ...item,
+                count: response.data.last30DaysExpenses,
+                growth: response.data.percentageChange,
+              }
             : item
         )
       );
@@ -642,61 +642,79 @@ const Home = () => {
       const date = new Date();
       const formattedYear = date.getFullYear(); // Extract the year
 
-      const response = await ApiService.post('/dashboards/getMonthWiseBalance', {
-        date: formattedYear,  // Send only the year
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/dashboards/getMonthWiseBalance',
+        {
+          date: formattedYear, // Send only the year
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
       if (response.status && response.data?.data?.length) {
         const allMonths = [
-          "January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December',
         ];
 
         const formattedData = response.data.data.map((branch, index) => {
           // Create a lookup for existing months in the branch data
-          const existingMonths = new Set(branch.data.map(entry => entry.month));
+          const existingMonths = new Set(
+            branch.data.map((entry) => entry.month)
+          );
 
           // Ensure all 12 months are present
           const completeData = allMonths.map((monthName, i) => {
-            const existingEntry = branch.data.find(entry => entry.month === i + 1);
+            const existingEntry = branch.data.find(
+              (entry) => entry.month === i + 1
+            );
 
             if (existingEntry) {
               const { creditAmount, debitAmount } = existingEntry;
               const total = Math.abs(creditAmount) + Math.abs(debitAmount);
-              const percentage = total !== 0 ? ((creditAmount - debitAmount) / total) * 100 : 0;
+              const percentage =
+                total !== 0 ? ((creditAmount - debitAmount) / total) * 100 : 0;
 
               return {
                 month: existingEntry.monthName,
-                profitorLoss: percentage.toFixed(2) // Shows positive for profit, negative for loss
+                profitorLoss: percentage.toFixed(2), // Shows positive for profit, negative for loss
               };
             }
 
             return {
               month: monthName,
-              profitorLoss: "0.00"  // Set to 0% for missing months
+              profitorLoss: '0.00', // Set to 0% for missing months
             };
           });
 
           return {
             branch: branch.branchName,
             background: getBackgroundColor(index),
-            data: completeData
+            data: completeData,
           };
         });
 
         console.log('branches charts---', formattedData);
         setBranchesData(formattedData);
       } else {
-        alert(response.data.internalMessage || 'Failed to fetch analysis details.');
+        alert(
+          response.data.internalMessage || 'Failed to fetch analysis details.'
+        );
       }
     } catch (e) {
       console.error('Error fetching analysis details:', e);
     }
   };
-
-
 
   // const getAnalysis = async () => {
   //   try {
@@ -843,7 +861,7 @@ const Home = () => {
       </div>
 
       {/* second section */}
-      <div className="flex items-center justify-center space-x-10">
+      {/* <div className="flex items-center justify-center space-x-10">
         <div>
           {bracnhWiseSolidLiquidData.map((cash) => (
             <div className="grid grid-cols-4 gap-4 space-y-4">
@@ -890,7 +908,7 @@ const Home = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"
