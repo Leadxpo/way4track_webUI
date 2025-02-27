@@ -56,7 +56,7 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
         //     },
         //   ],
         // };
-        const fetchedData = response.data.data;
+        const fetchedData = response.data;
         // Format data for the chart
         const formattedChartData = fetchedData.data.map((item) => ({
           name: item.monthName,
