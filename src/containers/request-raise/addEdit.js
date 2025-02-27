@@ -98,8 +98,8 @@ const AddEditRequestForm = () => {
         ? '/requests/handleRequestDetails'
         : '/requests/handleRequestDetails';
       const response = await ApiService.post(endpoint, payload);
-
-      if (response.data.status) {
+      console.log(response);
+      if (response) {
         alert(
           formData.id
             ? 'requests updated successfully!'

@@ -6,20 +6,26 @@ import { initialAuthState } from '../../services/ApiService';
 const SubDealerDetails = () => {
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  console.log(subDealerDetailsFromState, "?????????????", location.state?.subDealerDetails)
+  console.log(
+    subDealerDetailsFromState,
+    '?????????????',
+    location.state?.subDealerDetails
+  );
   const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
 
-
   useEffect(() => {
     const fetchSubDealerDetails = async () => {
       try {
-        const response = await ApiService.post('/subdealer/getSubDealerDetails', {
-          subDealerId: subDealerDetailsFromState.SubDealerId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerDetails',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           const subDealer = response.data?.[0];
           setSubDealerDetails({
@@ -31,53 +37,56 @@ const SubDealerDetails = () => {
             aadharNumber: subDealer.aadharNumber,
             address: subDealer.address,
             subDealerPhoto: subDealer.subDealerPhoto,
-            branch: subDealer.branchName
+            branch: subDealer.branchName,
           });
         } else {
-          setSubDealerDetails({})
+          setSubDealerDetails({});
         }
-
       } catch (error) {
         console.error('Error fetching branch details:', error);
         alert('Failed to fetch branch details.');
       }
     };
     fetchSubDealerDetails();
-
   }, [subDealerDetailsFromState.SubDealerId]);
-
 
   useEffect(() => {
     const fetchSubDealerDetailsData = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getDetailSubDealerData', {
-          subDealerId: subDealerDetailsFromState.SubDealerId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/dashboards/getDetailSubDealerData',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        console.log(response.data);
         if (response.status) {
           // Ensure subDealer details data is an array
-          setSubDealerDetailsData(response.data || []);
+          setSubDealerDetailsData([...response.data] || []);
         } else {
           setSubDealerDetailsData([]);
         }
       } catch (error) {
         console.error('Error fetching subDealer details data:', error);
-        alert('Failed to fetch subDealer details data.');
+        //alert('Failed to fetch subDealer details data.');
       }
     };
     fetchSubDealerDetailsData();
   }, [subDealerDetailsFromState.SubDealerId]);
 
-
   useEffect(() => {
     const getProductsPhotos = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getProductsPhotos', {
-          subDealerId: subDealerDetailsFromState.SubDealerId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
+        const response = await ApiService.post(
+          '/dashboards/getProductsPhotos',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
           // Ensure vendor details data is an array
           setPhotoData(response.data || []);
@@ -106,10 +115,16 @@ const SubDealerDetails = () => {
           <p className="text-gray-800 font-bold text-xl">
             SubDealer Name : {subDealerDetails.name}
           </p>
-          <p className="text-gray-800">Phone number : {subDealerDetails.phone}</p>
+          <p className="text-gray-800">
+            Phone number : {subDealerDetails.phone}
+          </p>
           <p className="text-gray-800">Email : {subDealerDetails.email}</p>
-          <p className="text-gray-800">SubDealer Branch : {subDealerDetails.branch}</p>
-          <p className="text-gray-800">Date of Birth : {subDealerDetails.dob}</p>
+          <p className="text-gray-800">
+            SubDealer Branch : {subDealerDetails.branch}
+          </p>
+          <p className="text-gray-800">
+            Date of Birth : {subDealerDetails.dob}
+          </p>
           <p className="text-gray-800">Address : {subDealerDetails.address}</p>
         </div>
       </div>
@@ -126,7 +141,9 @@ const SubDealerDetails = () => {
               alt={product.productName}
               className="w-20 h-20 mx-auto rounded-full object-cover"
             />
-            <p className="mt-4 text-gray-800 font-medium">{product.productName}</p>
+            <p className="mt-4 text-gray-800 font-medium">
+              {product.productName}
+            </p>
           </div>
         ))}
       </div>
@@ -156,10 +173,10 @@ const SubDealerDetails = () => {
                 <td className="py-2 px-4 text-center">{pitcher.productType}</td>
                 <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
                 <td className="py-2 px-4 text-center">{pitcher.amount}</td>
+                <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
                 <td className="py-2 px-4 text-center">
-                  {pitcher.quantity}
+                  {pitcher.generationDate}
                 </td>
-                <td className="py-2 px-4 text-center">{pitcher.generationDate}</td>
                 <td
                   className={`py-2 px-4 text-center font-semibold ${pitcher.paymentStatus === 'Paid' ? 'text-green-500' : 'text-red-500'}`}
                 >
@@ -205,14 +222,14 @@ const SubDealerDetails = () => {
       </div>
 
       {/* Save and Cancel Buttons */}
-      <div className="flex justify-center space-x-4">
+      {/* <div className="flex justify-center space-x-4">
         <button className="px-8 py-2 bg-red-500 text-white rounded-md font-bold hover:bg-red-600">
           Save
         </button>
         <button className="px-8 py-2 bg-gray-300 text-gray-700 rounded-md font-bold hover:bg-gray-400">
           Cancel
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
