@@ -650,8 +650,8 @@ const Home = () => {
           unitCode: initialAuthState?.unitCode,
         }
       );
-
-      if (response.status && response.data?.data?.length) {
+      console.log('//////////////////////', response);
+      if (response.status) {
         const allMonths = [
           'January',
           'February',
@@ -667,7 +667,7 @@ const Home = () => {
           'December',
         ];
 
-        const formattedData = response.data.data.map((branch, index) => {
+        const formattedData = response.data.map((branch, index) => {
           // Create a lookup for existing months in the branch data
           const existingMonths = new Set(
             branch.data.map((entry) => entry.month)
@@ -925,9 +925,9 @@ const Home = () => {
       </div>
 
       {/* third section - profits graphs */}
-      <div className="flex space-x-4 mt-10">
+      <div className="flex space-x-4 mt-10 overflow-x-auto">
         {branchesData.map((branchData, index) => (
-          <ProfitsGraph branchData={branchData} index={index} />
+          <ProfitsGraph key={index} branchData={branchData} index={index} />
         ))}
       </div>
 
