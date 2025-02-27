@@ -35,7 +35,8 @@ const RequestDetails = () => {
               unitCode: initialAuthState.unitCode,
             }
           );
-          setFormData(requestData);
+          console.log(response);
+          setFormData(response.data);
         } catch (error) {
           console.error(error);
         }

@@ -17,7 +17,7 @@ const Ledger = () => {
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [client, setClient] = useState([]);
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
@@ -30,9 +30,18 @@ const Ledger = () => {
       console.error('Error fetching branches:', error);
     }
   };
+  const fetchClients = async () => {
+    try {
+      const res = await ApiService.post('/client/getClientNamesDropDown');
+      setClient(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch client details:', err);
+      setClient([]);
+    }
+  };
 
   useEffect(() => {
-    fetchBranches();
+    fetchClients();
   }, []);
 
   const handleInputChange = (e) => {
@@ -48,8 +57,12 @@ const Ledger = () => {
     setError(null);
 
     try {
+      const payload = {
+        clientId: Number(searchData.client),
+        clientName: searchData.clientName,
+      };
       const response = await ApiService.post('/dashboards/getLedgerDataTable', {
-        ...searchData,
+        ...payload,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
@@ -119,21 +132,21 @@ const Ledger = () => {
             style={{ paddingLeft: '8px' }}
           />
         </div>
-        {branches.length > 0 && (
+        {client.length > 0 && (
           <div className="space-y-4">
             <div>
               <select
-                name="branch"
-                value={searchData.branch}
+                name="client"
+                value={searchData.client}
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Select a Branch
+                  Select a Client
                 </option>
-                {branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.branchName}
+                {client.map((cl) => (
+                  <option key={cl.id} value={cl.id}>
+                    {cl.clientId}
                   </option>
                 ))}
               </select>

@@ -94,6 +94,7 @@ const Tickets = () => {
 
   const handleStaffChange = (e) => {
     const staffId = e.target.value;
+    console.log('+++++++++', e);
     setSelectedStaffId(staffId);
 
     // Find the selected staff and set their number
@@ -122,10 +123,10 @@ const Tickets = () => {
     setDate(''); // Reset date for Add
   };
 
-  const fetchTicketDetails = async () => {
+  const fetchTicketDetails = async (ticket) => {
     try {
       const response = await ApiService.post('/tickets/getTicketDetailsById', {
-        id: ticketData.id,
+        id: ticket.ticketId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
@@ -143,6 +144,25 @@ const Tickets = () => {
           staffNumber: staff?.staffNumber || '',
           staffId: staff?.staffId || '',
         });
+        setSelectedTicket({
+          staffName: staff?.staffName || '',
+          addressingDepartment: staff?.addressingDepartment || '',
+          ticketNumber: staff?.ticketNumber || '',
+          branchId: staff?.branchId || '',
+          date: staff?.date || '',
+          problem: staff?.problem || '',
+          branchName: staff?.branchName || '',
+          staffNumber: staff?.staffNumber || '',
+          staffId: staff?.staffId || '',
+          description: staff?.description || '',
+        });
+        setSelectedStaffId(staff?.staffId || '');
+        const tempId = staff?.staffId || '';
+        const selectedStaff = staffList.find(
+          (staff) => staff.id === Number(tempId)
+        );
+        setSelectedStaffNumber(selectedStaff?.staffId || '');
+        setSelectedBranch(ticket?.branch || null);
       }
     } catch (error) {
       console.error('Error fetching staff details:', error);
@@ -151,18 +171,19 @@ const Tickets = () => {
   };
 
   const handleOpenMoreDetailsModal = async (ticket) => {
-    await fetchTicketDetails(); // Ensure data is fetched before opening modal
+    await fetchTicketDetails(ticket); // Ensure data is fetched before opening modal
     console.log(ticket);
     setSelectedTicket(ticket);
     setIsMoreDetailsModalOpen(true);
   };
-  const handleOpenModalForEdit = (ticket) => {
-    setSelectedTicket(ticket);
+  const handleOpenModalForEdit = async (ticket) => {
+    await fetchTicketDetails(ticket);
+    //setSelectedTicket(ticket);
     setIsEditMode(true);
     setIsModalOpen(true);
-    setSelectedStaffId(ticket?.staffId || '');
-    setSelectedStaffNumber(ticket?.staffNumber || '');
-    setSelectedBranch(ticket?.branch || null);
+    // setSelectedStaffId(ticket?.staffId || '');
+    // setSelectedStaffNumber(ticket?.staffNumber || '');
+    // setSelectedBranch(ticket?.branch || null);
   };
 
   const handleCloseModal = () => {
