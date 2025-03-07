@@ -99,6 +99,8 @@ import Designation from '../designation';
 import Letters from '../letters';
 import Attendance from '../attendance';
 import AttendanceUpload from '../attendance/bulkUpload';
+import AttendanceDetails from '../attendance/attendanceDetails';
+import EditAttendance from '../attendance/editAttendance';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -430,6 +432,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />
+          <Route path="/attendance-details" element={<AttendanceDetails />} />
+          <Route path="/attendance-edi" element={<EditAttendance />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

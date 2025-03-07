@@ -3,6 +3,12 @@ import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
 const Attendance = () => {
   const navigate = useNavigate();
+  const handleEdit = (att) => {
+    navigate('/attendance-edit', { state: { attendanceDetails: att } });
+  };
+  const handleDetails = (att) => {
+    navigate('/attendance-details', { state: { attendanceDetails: att } });
+  };
   return (
     <div>
       <div className="mb-6">
@@ -43,7 +49,12 @@ const Attendance = () => {
           </button>
         </div>
       </div>
-      <Table data={[]} columns={[]} />
+      <Table
+        data={[]}
+        columns={[]}
+        onEdit={handleEdit}
+        onDetails={handleDetails}
+      />
     </div>
   );
 };

@@ -1,18 +1,45 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { FaDownload, FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import { useState } from 'react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import TerminationLetterPDF from '../../components/TerminationLetterPdf';
+
 const Letters = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLetter, setSelectedLetter] = useState('');
+  const [download, setDownload] = useState(false);
+  const downloadLinkRef = useRef(null);
+
+  useEffect(() => {
+    if (download && downloadLinkRef.current) {
+      downloadLinkRef.current.click();
+      setDownload(false); // Reset download state after triggering the download
+    }
+  }, [download]);
+
   const handleDownload = (name) => {
     setSelectedLetter(name);
     setIsModalOpen(true);
+    if (name === 'Termination Letter') {
+      setDownload(true);
+    }
   };
+
+  const employeeData = {
+    name: 'John Doe',
+    id: '12345',
+    location: 'New York',
+    designation: 'Software Engineer',
+    department: 'IT',
+    date: 'March 7, 2025',
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedLetter('');
   };
+
   const getOfferLetterElement = () => {
     return (
       <div className="">
@@ -52,6 +79,7 @@ const Letters = () => {
       </div>
     );
   };
+
   const getTerminationLetterElement = () => {
     return (
       <div className="">
@@ -84,14 +112,18 @@ const Letters = () => {
             ))}
           </div>
 
-          {/* Offer Letter Button */}
-          <button className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition">
+          {/* Termination Letter Button */}
+          <button
+            onClick={() => handleDownload('Termination Letter')}
+            className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
+          >
             Termination Letter
           </button>
         </div>
       </div>
     );
   };
+
   const getExperienceLetterElement = () => {
     return (
       <div className="">
@@ -124,7 +156,7 @@ const Letters = () => {
             ))}
           </div>
 
-          {/* Offer Letter Button */}
+          {/* Experience Letter Button */}
           <button className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition">
             Experience Letter
           </button>
@@ -132,6 +164,7 @@ const Letters = () => {
       </div>
     );
   };
+
   const getPayrollLetterElement = () => {
     return (
       <div className="">
@@ -157,7 +190,7 @@ const Letters = () => {
             ))}
           </div>
 
-          {/* Offer Letter Button */}
+          {/* Pay Roll Letter Button */}
           <button className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition">
             Pay Roll Letter
           </button>
@@ -165,6 +198,7 @@ const Letters = () => {
       </div>
     );
   };
+
   const getRelievingLetterElement = () => {
     return (
       <div className="">
@@ -192,7 +226,7 @@ const Letters = () => {
             )}
           </div>
 
-          {/* Offer Letter Button */}
+          {/* Relieving Letter Button */}
           <button className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition">
             Relieving Letter
           </button>
@@ -200,6 +234,7 @@ const Letters = () => {
       </div>
     );
   };
+
   const getResignationLetterElement = () => {
     return (
       <div className="">
@@ -231,7 +266,7 @@ const Letters = () => {
             ))}
           </div>
 
-          {/* Offer Letter Button */}
+          {/* Resignation Letter Button */}
           <button className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition">
             Resignation Letter
           </button>
@@ -239,6 +274,7 @@ const Letters = () => {
       </div>
     );
   };
+
   const getModalElement = () => {
     switch (selectedLetter) {
       case 'Offer Letter':
@@ -253,8 +289,11 @@ const Letters = () => {
         return getRelievingLetterElement();
       case 'Resignation Letter':
         return getResignationLetterElement();
+      default:
+        return null;
     }
   };
+
   return (
     <div>
       {isModalOpen && (
@@ -313,6 +352,16 @@ const Letters = () => {
           onClick={() => handleDownload('Resignation Letter')}
         />
       </div>
+      {download && (
+        <PDFDownloadLink
+          document={<TerminationLetterPDF employee={employeeData} />}
+          fileName="Termination_Letter.pdf"
+          className="hidden"
+          ref={downloadLinkRef}
+        >
+          {({ loading }) => (loading ? 'Generating...' : 'Click to Download')}
+        </PDFDownloadLink>
+      )}
     </div>
   );
 };

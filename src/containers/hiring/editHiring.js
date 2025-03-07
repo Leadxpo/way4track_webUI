@@ -334,6 +334,24 @@ const EditHiring = () => {
     });
   };
 
+  const addLevel = () => {
+    setLevels([
+      ...levels,
+      {
+        result: '',
+        review: '',
+        conductorBy: '',
+        conductorPlace: '',
+        dateOfConductor: '',
+      },
+    ]);
+  };
+
+  const removeLevel = () => {
+    const tempLevels = levels;
+    tempLevels.pop();
+    setLevels([...tempLevels]);
+  };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8 space-y-6">
@@ -476,6 +494,20 @@ const EditHiring = () => {
                   )}
                 </div>
               ))}
+              <div>
+                <button
+                  className="bg-yellow-500 w-30 text-white p-2 rounded-md mr-4"
+                  onClick={addLevel}
+                >
+                  Add Level
+                </button>
+                <button
+                  className="bg-red-500 w-30 text-white p-2 rounded-md"
+                  onClick={removeLevel}
+                >
+                  Remove Level
+                </button>
+              </div>
             </div>
             <button
               onClick={handleSubmit}
