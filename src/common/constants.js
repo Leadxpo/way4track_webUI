@@ -363,16 +363,27 @@ export const menuOptions = {
       route: '/hr-branch',
     },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
+    // { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    // {
+    //   name: 'Work Allocation',
+    //   icon: <img src="./work_allocation.png" />,
+    //   route: '/work_allocation',
+    // },
     {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
+      name: 'Designation',
+      icon: <img src="./designation.png" />,
+      route: '/designations',
     },
-    { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    { name: 'Letters', icon: <img src="./letters.png" />, route: '/letters' },
     {
-      name: 'Work Allocation',
-      icon: <img src="./work_allocation.png" />,
-      route: '/work_allocation',
+      name: 'Attendance',
+      icon: <img src="./attendance.png" />,
+      route: '/attendance',
     },
     {
       name: 'Payroll',
@@ -380,12 +391,12 @@ export const menuOptions = {
       route: '/payroll',
     },
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
-    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
-    {
-      name: 'Appointments',
-      icon: <img src="./appointments.png" />,
-      route: '/appointments',
-    },
+    // { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
+    // {
+    //   name: 'Appointments',
+    //   icon: <img src="./appointments.png" />,
+    //   route: '/appointments',
+    // },
   ],
 };
 
