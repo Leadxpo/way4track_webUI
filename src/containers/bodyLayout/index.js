@@ -24,7 +24,7 @@ import AddSubDealer from '../sub-dealers/addSubDealer';
 import Notifications from '../notifications';
 import Vouchers from '../vouchers';
 import WorkAllocation from '../work-allocation';
-import EditWorkAllocation from '../work-allocation/editWorkAllocation'
+import EditWorkAllocation from '../work-allocation/editWorkAllocation';
 import Tickets from '../tickets';
 import AddProductForm from '../products/addProduct';
 import BranchDetails from '../branches/moreDetails';
@@ -95,6 +95,12 @@ import Performance from '../performance';
 import HrHome from '../home/hrHome';
 import HrBranch from '../branches/hrBranch';
 import ReceiptDetails from '../receipts/receiptDetails';
+import Designation from '../designation';
+import Letters from '../letters';
+import Attendance from '../attendance';
+import AttendanceUpload from '../attendance/bulkUpload';
+import AttendanceDetails from '../attendance/attendanceDetails';
+import EditAttendance from '../attendance/editAttendance';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -356,7 +362,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/vouchers" element={<Vouchers />} />
           <Route path="/add-voucher" element={<AddEditVouchers />} />
           <Route path="/work_allocation" element={<WorkAllocation />} />
-          <Route path="/edit-work-allocation" element={<EditWorkAllocation />} />
+          <Route
+            path="/edit-work-allocation"
+            element={<EditWorkAllocation />}
+          />
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -419,6 +428,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/performance" element={<Performance />} />
           <Route path="/hr-branch" element={<HrBranch />} />
           <Route path="/receipt-details" element={<ReceiptDetails />} />
+          <Route path="/designations" element={<Designation />} />
+          <Route path="/letters" element={<Letters />} />
+          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/attendance-upload" element={<AttendanceUpload />} />
+          <Route path="/attendance-details" element={<AttendanceDetails />} />
+          <Route path="/attendance-edi" element={<EditAttendance />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>

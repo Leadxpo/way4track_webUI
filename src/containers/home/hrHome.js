@@ -13,11 +13,17 @@ const HrHome = () => {
     totalSales: 0,
   });
 
+  const [staffCards, setStaffCards] = useState({
+    totalStaff: 0,
+    employees: 0,
+  });
+
   const [candidateStats, setCandidateStats] = useState({});
   useEffect(() => {
     fetchStaffDetails();
     getHiringSearchDetails();
     getCandidateStats();
+    fetchStaffCardDetails();
   }, []);
 
   const columns = [
@@ -68,6 +74,28 @@ const HrHome = () => {
       render: (date) => new Date(date).toLocaleDateString(),
     },
   ];
+
+  const fetchStaffCardDetails = async () => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      const response = await ApiService.post(
+        '/dashboards/getStaffCardDetails',
+        payload
+      );
+
+      if (response.status) {
+        setStaffCards({
+          totalStaff: response.data.totalStaff,
+          employees: response.data.totalTechnicians,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+    }
+  };
 
   const fetchStaffDetails = async () => {
     try {
@@ -184,37 +212,21 @@ const HrHome = () => {
 
   return (
     <div>
-      <div className="flex justify-between mx-6">
-        <div className="bg-red-300 rounded-2xl shadow-lg p-6 w-80 mr-4">
+      <div className="flex mx-6">
+        <div className="bg-red-300 rounded-2xl shadow-lg w-[50%] p-6 mr-4">
           <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
-            Total Branches
+            Total Staff
           </p>
           <div className="text-6xl font-bold mt-4 text-white">
-            {totals.totalBranches}
+            {staffCards.totalStaff}
           </div>
         </div>
-        <div className="bg-green-300 rounded-2xl shadow-lg p-6 w-80 mr-4">
+        <div className="bg-green-300 rounded-2xl shadow-lg p-6 w-[50%] mr-4">
           <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
-            Technicians
+            Total Employees
           </p>
           <div className="text-6xl font-bold mt-4 text-white">
-            {totals.totalTechnicians}
-          </div>
-        </div>
-        <div className="bg-purple-300 rounded-2xl shadow-lg p-6 w-80 mr-4">
-          <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
-            Non Technicians
-          </p>
-          <div className="text-6xl font-bold mt-4 text-white">
-            {totals.totalNonTechnicians}
-          </div>
-        </div>
-        <div className="bg-blue-300 rounded-2xl shadow-lg p-6 w-80 mr-4">
-          <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
-            Sales
-          </p>
-          <div className="text-6xl font-bold mt-4 text-white">
-            {totals.totalSales}
+            {staffCards.employees}
           </div>
         </div>
       </div>
