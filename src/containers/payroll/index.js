@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { formatString } from '../../common/commonUtils';
+
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -10,70 +12,104 @@ const Payroll = () => {
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]
+  );
 
-  // Fetch payroll data
-  const fetchPayrollData = async (branchName = 'All') => {
+  const fetchPayrollData = async (branchName = "All") => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        date: selectedDate,
       };
 
-      if (branchName !== 'All') {
-        payload.branch = branchName; // Ensure correct key is sent
+      if (branchName !== "All") {
+        payload.branch = branchName;
       }
 
-
-      const res = await ApiService.post('/dashboards/payRoll', payload);
+      const res = await ApiService.post("/dashboards/payRoll", payload);
       if (res.status) {
-        setPayrollData(res.data);
 
-        if (branchName === 'All') {
-          // const branchOptions = [
-          //   { branchName: 'All' },
-          //   ...res.data.map((branch) => ({
-          //     branchName: branch.branch, // Ensure branch list uses the correct key
-          //   })),
-          // ];
-          const uniqueBranches = Array.from(new Set(res.data.map((b) => b.branch))).map((branch) => ({
+        console.log("Formatted Payroll Data:", res.data);
+
+        setPayrollData(res.data);
+        if (branchName === "All") {
+          const uniqueBranches = Array.from(
+            new Set(res.data.map((b) => b.branch).filter(Boolean)) // Filter out null values
+          ).map((branch) => ({
             branchName: branch,
           }));
-          setBranches([{ branchName: 'All' }, ...uniqueBranches]);
-          // setBranches(branchOptions);
+          setBranches([{ branchName: "All" }, ...uniqueBranches]);
         }
+
+        // if (branchName === "All") {
+        //   const uniqueBranches = Array.from(
+        //     new Set(res.data.map((b) => b.branch))
+        //   ).map((branch) => ({
+        //     branchName: branch,
+        //   }));
+        //   setBranches([{ branchName: "All" }, ...uniqueBranches]);
+        // }
       } else {
         setPayrollData([]);
-        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
+        if (branchName === "All") setBranches([{ branchName: "All" }]);
       }
     } catch (err) {
-      console.error('Failed to fetch payroll data:', err);
+      console.error("Failed to fetch payroll data:", err);
       setPayrollData([]);
     }
   };
 
+  useEffect(() => {
+    fetchPayrollData(selectedBranch);
+  }, [selectedBranch, selectedDate]);
+
+  // const columns = [
+  //   { title: "Staff ID", dataIndex: "staffId", key: "staffId" },
+  //   { title: "Staff Name", dataIndex: "staffName", key: "staffName" },
+  //   { title: "Branch", dataIndex: "branch", key: "branch", render: (val) => val ?? "N/A" },
+  //   { title: "Designation", dataIndex: "designation", key: "designation" },
+  //   { title: "Year", dataIndex: "year", key: "year", render: (val) => val ?? "N/A" },
+  //   { title: "Month", dataIndex: "month", key: "month", render: (val) => val ?? "N/A" },
+  //   { title: "Month Days", dataIndex: "monthDays", key: "monthDays" },
+  //   { title: "Present Days", dataIndex: "presentDays", key: "presentDays" },
+  //   { title: "Leave Days", dataIndex: "leaveDays", key: "leaveDays" },
+  //   { title: "Actual Salary", dataIndex: "actualSalary", key: "actualSalary" },
+  //   { title: "Total Early Minutes", dataIndex: "totalEarlyMinutes", key: "totalEarlyMinutes" },
+  //   { title: "Total Late Minutes", dataIndex: "totalLateMinutes", key: "totalLateMinutes" },
+  //   { title: "Late Days", dataIndex: "lateDays", key: "lateDays" },
+  //   { title: "Per Day Salary", dataIndex: "perDaySalary", key: "perDaySalary", render: (val) => val ?? "N/A" },
+  //   { title: "Per Hour Salary", dataIndex: "perHourSalary", key: "perHourSalary", render: (val) => val ?? "N/A" },
+  //   { title: "Total OT Hours", dataIndex: "totalOTHours", key: "totalOTHours" },
+  //   { title: "OT Amount", dataIndex: "OTAmount", key: "OTAmount", render: (val) => val ?? "N/A" },
+  //   { title: "Late Deductions", dataIndex: "lateDeductions", key: "lateDeductions", render: (val) => val ?? "N/A" },
+  //   { title: "Gross Salary", dataIndex: "grossSalary", key: "grossSalary", render: (val) => val ?? "N/A" },
+  //   { title: "ESIC Employee", dataIndex: "ESIC_Employee", key: "ESIC_Employee", render: (val) => val ?? "N/A" },
+  //   { title: "ESIC Employer", dataIndex: "ESIC_Employer", key: "ESIC_Employer", render: (val) => val ?? "N/A" },
+  //   { title: "PF Employee", dataIndex: "PF_Employee", key: "PF_Employee" },
+  //   { title: "PF Employer 1", dataIndex: "PF_Employer1", key: "PF_Employer1" },
+  //   { title: "PF Employer 2", dataIndex: "PF_Employer2", key: "PF_Employer2" },
+  //   { title: "Extra Half Salary", dataIndex: "extraHalfSalary", key: "extraHalfSalary", render: (val) => val ?? "N/A" },
+  //   { title: "Days Out Late (6+ hrs)", dataIndex: "daysOutLate6HoursOrMore", key: "daysOutLate6HoursOrMore" },
+  //   { title: "Net Salary", dataIndex: "netSalary", key: "netSalary", render: (val) => val ?? "N/A" },
+  //   { title: "Salary Status", dataIndex: "salaryStatus", key: "salaryStatus" },
+  // ];
 
   // Fetch data on initial render
   useEffect(() => {
     fetchPayrollData();
   }, []);
-
+  // Columns for the table
+  const columns = payrollData.length
+    ? Object.keys(payrollData[0]).map((key, index) => ({
+      title: typeof key === "string" ? formatString(key) : key,  // Ensure key is a string
+      dataIndex: key, // Use key instead of index for proper column mapping
+    }))
+    : [];
   useEffect(() => {
     fetchPayrollData(activeTab);
   }, [activeTab]);
 
-
-  // Fetch data when selected branch changes
-  useEffect(() => {
-    fetchPayrollData(selectedBranch);
-  }, [selectedBranch]);
-
-  // Columns for the table
-  const columns = payrollData.length
-    ? Object.keys(payrollData[0]).map((key, index) => ({
-      title: key,
-      dataIndex: index,
-    }))
-    : [];
 
   // Handle tab click
   const handleTabClick = (branch) => {
@@ -81,8 +117,6 @@ const Payroll = () => {
     setSelectedBranch(branch);
     fetchPayrollData(branch);  // Immediately fetch new data when a tab is clicked
   };
-
-
 
   // Handle row edit
   const handleChangePayroll = (row) => {
@@ -95,7 +129,9 @@ const Payroll = () => {
     setIsPopupOpen(false);
     setSelectedRow(null);
   };
-
+  const handleDownloadClick = () => {
+    fetchPayrollData(selectedBranch, selectedDate);
+  };
   return (
     <div>
       {/* Tabs */}
@@ -113,17 +149,23 @@ const Payroll = () => {
           </button>
         ))}
       </div>
+      <div className="flex items-center space-x-4 mb-4">
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          onClick={handleDownloadClick}
+        >
+          Search
+        </button>
+      </div>
 
       {/* Table */}
-      <Table
-        columns={payrollData.length > 0 ? Object.keys(payrollData[0]) : []}
-        data={payrollData.filter(
-          (row) => activeTab === 'All' || row.branch === activeTab
-        )}
-        onEdit={handleChangePayroll}
-        onDetails={() => { }}
-        showDelete={false}
-      />
+
 
       {/* Popup Modal */}
       {isPopupOpen && selectedRow && (
@@ -189,6 +231,16 @@ const Payroll = () => {
           </div>
         </div>
       )}
+      <Table
+        columns={columns}
+        data={payrollData.filter(
+          (row) => activeTab === 'All' || row.branch === activeTab
+        )}
+        onEdit={handleChangePayroll}
+        onDetails={() => { }}
+        showDelete={false}
+      />
+
 
     </div>
   );

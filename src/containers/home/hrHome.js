@@ -82,7 +82,7 @@ const HrHome = () => {
         unitCode: initialAuthState.unitCode,
       };
       const response = await ApiService.post(
-        '/dashboards/getStaffCardDetails',
+        '/dashboards/getStaffCardsDetails',
         payload
       );
 
@@ -237,11 +237,10 @@ const HrHome = () => {
             <button
               key={index}
               onClick={() => setSelectedBranch(branch)}
-              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
-                selectedBranch?.name === branch.name
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
+              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${selectedBranch?.name === branch.name
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-300 text-gray-700'
+                }`}
             >
               {branch.name}
             </button>
