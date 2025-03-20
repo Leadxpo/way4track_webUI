@@ -11,7 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
     "exceljs": "^4.4.0",
-    "jspdf": "^2.5.2",
+    "jspdf": "^3.0.1",
     "jspdf-autotable": "^3.8.4",
     "leaflet": "^1.9.4",
     "mapbox-gl": "^3.8.0",

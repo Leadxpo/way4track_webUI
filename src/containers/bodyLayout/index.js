@@ -282,8 +282,8 @@ const BodyLayout = ({ children }) => {
           )}
 
           <div className="flex items-center">
-            <span className="text-sm font-medium mr-2">Enable Location</span>
-            <label className="relative inline-flex items-center cursor-pointer">
+            {/* <span className="text-sm font-medium mr-2">Enable Location</span> */}
+            {/* <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 className="sr-only peer"
@@ -297,7 +297,7 @@ const BodyLayout = ({ children }) => {
                           after:bg-white after:border-gray-300 after:border after:rounded-full 
                           after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
               ></div>
-            </label>
+            </label> */}
           </div>
           {/* Icons */}
           <div className="flex space-x-4">
