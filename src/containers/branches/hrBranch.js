@@ -139,7 +139,7 @@ console.log(filteredBranches,"{{{{{{{{{{{{{{")
           value={searchEmployee}
           onChange={(e) => setSearchEmployee(e.target.value)}
         />
-        
+        Branch
         <div className="relative w-1/3">
           <select
             className="w-full p-3 border rounded-lg bg-gray-100 text-gray-600"
