@@ -286,18 +286,24 @@ const BranchList = () => {
   // };
 
   const downloadExcel = (data, filename) => {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       alert("No data available to download.");
       return;
     }
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, filename);
-    XLSX.writeFile(workbook, { filename }.xlsx);
+    
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, filename);
+  
+      // Corrected the filename syntax
+      XLSX.writeFile(workbook, `${filename}.xlsx`);
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
   };
-
-
-
+  
 
   const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
 
