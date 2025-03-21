@@ -145,7 +145,7 @@ const BranchList = () => {
           onChange={(e) => setSelectedBranchStaff(e.target.value)}
         />
 
-        <button onClick={() => downloadExcel(filteredStaff, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
+        <button onClick={() => downloadExcel(filteredBranches, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
           <FaFileDownload className="mr-2" /> Download Excel
         </button>
       </div>
