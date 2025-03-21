@@ -213,7 +213,7 @@ const HrHome = () => {
   return (
     <div>
       <div className="flex mx-6">
-        <div className="bg-red-300 rounded-2xl shadow-lg w-[50%] p-6 mr-4">
+        <div className="bg-red-300 rounded-2xl shadow-lg w-[100%] p-6 mr-4">
           <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
             Total Staff
           </p>
@@ -221,30 +221,34 @@ const HrHome = () => {
             {staffCards.totalStaff}
           </div>
         </div>
-        <div className="bg-green-300 rounded-2xl shadow-lg p-6 w-[50%] mr-4">
+        {/* <div className="bg-green-300 rounded-2xl shadow-lg p-6 w-[50%] mr-4">
           <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
             Total Employees
           </p>
           <div className="text-6xl font-bold mt-4 text-white">
             {staffCards.employees}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="p-6 space-y-6">
         <div className="flex space-x-4">
-          {branches.map((branch, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedBranch(branch)}
-              className={`px-4 py-2 rounded-lg shadow-md font-semibold ${selectedBranch?.name === branch.name
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-300 text-gray-700'
-                }`}
-            >
-              {branch.name}
-            </button>
-          ))}
+        {branches
+  .filter(branch => branch.name !== 'Unknown') // Remove branches with 'Unknown' name
+  .map((branch, index) => (
+    <button
+      key={index}
+      onClick={() => setSelectedBranch(branch)}
+      className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
+        selectedBranch?.name === branch.name
+          ? 'bg-green-600 text-white'
+          : 'bg-gray-300 text-gray-700'
+      }`}
+    >
+      {branch.name}
+    </button>
+  ))}
+
         </div>
 
         {selectedBranch && (

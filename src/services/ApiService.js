@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const initialAuthState = {
   userId: 4,
-  userName: 'admin',
+  userName: 'admin', 
   companyCode: 'WAY4TRACK',
   unitCode: 'WAY4',
 };
@@ -12,8 +12,13 @@ export const initialAuthState = {
 const ApiService = (() => {
   const axiosInstance = axios.create({
     baseURL:
+<<<<<<< HEAD
       process.env.REACT_APP_API_BASE_URL || 'https://sharontelematics.org/api/', // Replace with your API base URL
     // process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api/', // Replace with your API base URL
+=======
+      // process.env.REACT_APP_API_BASE_URL || 'https://sharontelematics.org/api/', // Replace with your API base URL
+    process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api/', // Replace with your API base URL
+>>>>>>> b5e79ab16acd5d59f65977ad176a018a02ace3ad
     timeout: 10000, // Request timeout in milliseconds
   });
 

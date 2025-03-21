@@ -96,6 +96,9 @@ import HrHome from '../home/hrHome';
 import HrBranch from '../branches/hrBranch';
 import ReceiptDetails from '../receipts/receiptDetails';
 import Designation from '../designation';
+import AddDesignation from '../designation/add-designation';
+import DesignationDetails from '../designation/more-details';
+
 import Letters from '../letters';
 import Attendance from '../attendance';
 import AttendanceUpload from '../attendance/bulkUpload';
@@ -282,8 +285,8 @@ const BodyLayout = ({ children }) => {
           )}
 
           <div className="flex items-center">
-            <span className="text-sm font-medium mr-2">Enable Location</span>
-            <label className="relative inline-flex items-center cursor-pointer">
+            {/* <span className="text-sm font-medium mr-2">Enable Location</span> */}
+            {/* <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 className="sr-only peer"
@@ -297,7 +300,7 @@ const BodyLayout = ({ children }) => {
                           after:bg-white after:border-gray-300 after:border after:rounded-full 
                           after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
               ></div>
-            </label>
+            </label> */}
           </div>
           {/* Icons */}
           <div className="flex space-x-4">
@@ -429,6 +432,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/hr-branch" element={<HrBranch />} />
           <Route path="/receipt-details" element={<ReceiptDetails />} />
           <Route path="/designations" element={<Designation />} />
+          <Route path="/designation-details" element={<DesignationDetails />} />
+
+          <Route path="/add-designation" element={<AddDesignation />} />
+
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />
