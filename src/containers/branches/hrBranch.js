@@ -1,393 +1,431 @@
-// import React, { useEffect, useState } from 'react';
-// import ApiService, { initialAuthState } from '../../services/ApiService';
-// import Table from '../../components/Table';
-// import { formatString } from '../../common/commonUtils';
-
-
-// const BranchList = () => {
-//   const [openBranch, setOpenBranch] = useState(null);
-//   const [filteredEmployees, setFilteredEmployees] = useState({});
-//   const [branchesData, setBranchesData] = useState([])
-
-//   const toggleBranch = (branchName) => {
-//     setOpenBranch(openBranch === branchName ? null : branchName);
-//   };
-
-
-
-//   useEffect(() => {
-//     const fetchStaffData = async () => {
-//       try {
-//         const response = await ApiService.post('/dashboards/getBranchStaffDetails', {
-//           companyCode: initialAuthState.companyCode,
-//           unitCode: initialAuthState.unitCode,
-//         });
-//         if (response.status) {
-//           setBranchesData(response.data || []);
-//         } else {
-//           setBranchesData([]);
-//         }
-//       } catch (error) {
-//         console.error('Error fetching purchase order data:', error);
-//         alert('Failed to fetch purchase order data.');
-//       }
-//     };
-
-//     fetchStaffData();
-//   }, []);
-
-//   const filterEmployees = (branchName, role) => {
-//     const branch = branchesData.find((b) => b.name === branchName);
-//     if (branch) {
-//       setFilteredEmployees((prev) => ({
-//         ...prev,
-//         [branchName]: branch.employees.filter((emp) => emp.role === role),
-//       }));
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-5xl mx-auto p-4">
-
-//       <h3 className="text-2xl font-semibold my-4">Branches</h3>
-//       {branchesData.map((branch) => (
-//         <div key={branch.name} className="mb-4 border rounded-lg shadow-md">
-//           <button
-//             onClick={() => toggleBranch(branch.name)}
-//             className="w-full bg-green-600 text-white py-3 px-5 flex justify-between items-center text-lg font-semibold rounded-t-lg"
-//           >
-//             {branch.name}
-//             <span>{openBranch === branch.name ? '▲' : '▼'}</span>
-//           </button>
-
-//           {openBranch === branch.name && (
-//             <div className="bg-gray-100 p-4">
-//               <p>
-//                 <strong>Phone:</strong> {branch.phone}
-//               </p>
-//               <p>
-//                 <strong>Email:</strong> {branch.email}
-//               </p>
-//               <p>
-//                 <strong>Salary:</strong> ₹{branch.salary.toLocaleString()}
-//               </p>
-
-//               {/* Filters */}
-//               <div className="flex gap-2 mt-3">
-//                 <button
-//                   onClick={() => filterEmployees(branch.name, 'Technical')}
-//                   className="px-3 py-1 bg-blue-500 text-white rounded-md"
-//                 >
-//                   Technical
-//                 </button>
-//                 <button
-//                   onClick={() => filterEmployees(branch.name, 'Non Technical')}
-//                   className="px-3 py-1 bg-gray-500 text-white rounded-md"
-//                 >
-//                   Non Technical
-//                 </button>
-//                 <button
-//                   onClick={() => filterEmployees(branch.name, 'Sales Man')}
-//                   className="px-3 py-1 bg-red-500 text-white rounded-md"
-//                 >
-//                   Sales Man
-//                 </button>
-//               </div>
-
-//               {/* Scrollable Employee Table */}
-//               <div className="overflow-x-auto">
-//                 <div className="max-h-[300px] overflow-y-auto border rounded-lg">
-//                   <table className="w-full min-w-[600px] border-collapse">
-//                     <thead className="sticky top-0 bg-green-500 text-white">
-//                       <tr>
-//                         <th className="border px-4 py-2">No</th>
-//                         <th className="border px-4 py-2">Name</th>
-//                         <th className="border px-4 py-2">Phone</th>
-//                         <th className="border px-4 py-2">Email</th>
-//                         <th className="border px-4 py-2">Salary</th>
-//                         <th className="border px-4 py-2">View</th>
-//                       </tr>
-//                     </thead>
-//                     <tbody>
-//                       {(filteredEmployees[branch.name] || branch.employees).map(
-//                         (emp, index) => (
-//                           <tr key={index} className="text-center bg-white">
-//                             <td className="border px-4 py-2">{index + 1}</td>
-//                             <td className="border px-4 py-2">{emp.name}</td>
-//                             <td className="border px-4 py-2">{emp.phone}</td>
-//                             <td className="border px-4 py-2">{emp.email}</td>
-//                             <td className="border px-4 py-2">
-//                               ₹{emp.salary.toLocaleString()}
-//                             </td>
-//                             <td className="border px-4 py-2">
-//                               <button className="text-blue-500 hover:underline">
-//                                 👁
-//                               </button>
-//                             </td>
-//                           </tr>
-//                         )
-//                       )}
-//                     </tbody>
-//                   </table>
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default BranchList;
 import React, { useEffect, useState } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import Table from '../../components/Table';
-import { formatString } from '../../common/commonUtils';
-const getColorClasses = (color) => {
-  switch (color) {
-    case 'blue':
-      return { border: 'border-blue-700', bg: 'bg-blue-700' };
-    case 'red':
-      return { border: 'border-red-700', bg: 'bg-red-700' };
-    case 'green':
-      return { border: 'border-green-700', bg: 'bg-green-700' };
-    case 'orange':
-      return { border: 'border-orange-700', bg: 'bg-orange-700' };
-    default:
-      return { border: 'border-gray-700', bg: 'bg-gray-700' };
-  }
-};
+import { FaSearch, FaFileDownload } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import ConvertPDF from '../../components/convertPDF';
+// import jsPDF from "jspdf";
+// import "jspdf-autotable";
+
 const BranchList = () => {
-  const [openBranch, setOpenBranch] = useState(null);
-  const [filteredEmployees, setFilteredEmployees] = useState({});
   const [branchesData, setBranchesData] = useState([]);
-  const [employees, setEmployees] = useState([])
-  useEffect(() => {
-    const fetchPurchaseOrderData = async () => {
-      try {
-        const response = await ApiService.post('/dashboards/getStaff', {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
-        if (response.status) {
-          setEmployees(response.data || []);
-        } else {
-          setEmployees([]);
-        }
-      } catch (error) {
-        console.error('Error fetching purchase order data:', error);
-        alert('Failed to fetch purchase order data.');
-      }
-    };
-
-    fetchPurchaseOrderData();
-  }, []);
+  const [employees, setEmployees] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedStaff, setSelectedStaff] = useState("");
+  const [staffDetails, setStaffDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedBranchStaff, setSelectedBranchStaff] = useState("");
+  const [selectedEmployee, setSelectedEmployee] = useState("");
 
 
-  const toggleBranch = (branchName) => {
-    setOpenBranch(openBranch === branchName ? null : branchName);
-  };
+
 
   useEffect(() => {
-    const fetchStaffData = async () => {
+    const fetchBranchStaff = async () => {
       try {
         const response = await ApiService.post('/dashboards/getBranchStaffDetails', {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        console.log(response); // Log the full response
+
         if (response.status && Array.isArray(response.data.data)) {
           setBranchesData(response.data.data);
+          console.log(response.data.data, "Branch Data");
         } else {
           setBranchesData([]);
         }
       } catch (error) {
-        console.error('Error fetching purchase order data:', error);
-        alert('Failed to fetch purchase order data.');
+        console.error('Error fetching branch staff:', error);
+        alert('Failed to fetch branch staff data.');
       }
     };
 
-    fetchStaffData();
+    fetchBranchStaff();
   }, []);
 
-  const filterEmployees = (branchName, role) => {
-    const branch = branchesData.find((b) => b.branchName === branchName);
-    if (branch) {
-      let staffKey = '';
 
-      // Map button label to response data key
-      switch (role) {
-        case 'Technician':
-          staffKey = 'technicalStaff';
-          break;
-        case 'Non Technical':
-          staffKey = 'nonTechnicalStaff';
-          break;
-        case 'Sales Man':
-          staffKey = 'salesStaff';
-          break;
-        default:
-          staffKey = 'nonTechnicalStaff'; // Fallback to non-technical
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getStaff', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+
+        if (response.status && Array.isArray(response.data)) {
+          setEmployees(response.data);
+        } else {
+          setEmployees([]);
+        }
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+        alert('Failed to fetch employee data.');
       }
+    };
 
-      setFilteredEmployees((prev) => ({
-        ...prev,
-        [branchName]: branch[staffKey] || [],
-      }));
+    fetchEmployees();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchStaffDetails = async () => {
+      if (!selectedStaff) return;
+
+      setIsLoading(true);
+      try {
+        const response = await ApiService.post("/staff/getStaffDetailsById", {
+          staffId: selectedStaff,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
+
+        if (response.status) {
+          setStaffDetails(response.data.data);
+          console.log("==============", response.data.data)
+        }
+      } catch (error) {
+        console.error("Error fetching staff details:", error);
+        alert("Failed to fetch staff details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStaffDetails();
+  }, [selectedStaff]);
+
+
+  // const downloadStaffPDF = async (staff) => {
+  //   if (!staff) {
+  //     alert("No staff details available.");
+  //     return;
+  //   }
+
+  //   const doc = new jsPDF();
+  //   doc.text("Staff Details Report", 20, 10);
+
+  //   const tableData = [
+  //     ["Staff ID", staff.staffId],
+  //     ["Name", staff.name],
+  //     ["Phone Number", staff.phoneNumber],
+  //     ["Email", staff.email],
+  //     ["Address", staff.address],
+  //     ["Date of Birth", staff.dob],
+  //     ["Aadhar Number", staff.aadharNumber],
+  //     ["PAN Card Number", staff.panCardNumber],
+  //     ["Bank Name", staff.bankName],
+  //     ["Branch Name", staff.branchName],
+  //     ["Account Number", staff.accountNumber],
+  //     ["Account Type", staff.accountType],
+  //     ["IFSC Code", staff.ifscCode],
+  //     ["Joining Date", staff.joiningDate],
+  //     ["Previous Company", staff.previousCompany],
+  //     ["Previous Designation", staff.previousDesignation],
+  //     ["Previous Salary", staff.previousSalary],
+  //     ["Total Experience", staff.totalExperience],
+  //     ["Before Experience", staff.beforeExperience],
+  //     ["Basic Salary", staff.monthlySalary],
+  //     ["Salary Date", staff.salaryDate],
+  //     ["Designation", staff.designation],
+  //     ["Department", staff.department ?? "N/A"],
+  //     ["Gender", staff.gender],
+  //     ["Blood Group", staff.bloodGroup],
+  //     ["Driving Licence", staff.drivingLicence],
+  //     ["Driving Licence Number", staff.drivingLicenceNumber],
+  //     ["Bike Allocation", staff.bikeAllocation],
+  //     ["Bike Number", staff.bikeNumber],
+  //     ["ESIC Number", staff.esicNumber],
+  //     ["UAN Number", staff.uanNumber],
+  //     ["Insurance Number", staff.insuranceNumber],
+  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
+  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
+  //     ["Latitude", staff.latitude],
+  //     ["Longitude", staff.longitude],
+  //     ["Location", staff.location],
+  //     ["Mobile Allocation", staff.mobileAllocation],
+  //     ["Mobile Brand", staff.mobileBrand],
+  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
+  //     ["Alternate Phone", staff.alternateNumber],
+  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
+  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
+  //     ["Termination Date", staff.terminationDate ?? "N/A"],
+  //     ["Status", staff.status ?? "N/A"],
+  //   ];
+
+  //   let startY = 20;
+
+  //   if (staff.staffPhoto) {
+  //     try {
+  //       const response = await fetch(staff.staffPhoto);
+  //       const blob = await response.blob();
+  //       const reader = new FileReader();
+
+  //       reader.readAsDataURL(blob);
+  //       reader.onloadend = () => {
+  //         const base64Image = reader.result;
+  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
+
+  //         // Adjust start position for the table after adding image
+  //         doc.autoTable({
+  //           head: [["Field", "Value"]],
+  //           body: tableData,
+  //           startY: 60,
+  //         });
+
+  //         doc.save(`Staff_${staff.staffId}.pdf`);
+  //       };
+  //       return;
+  //     } catch (error) {
+  //       console.error("Error loading image:", error);
+  //     }
+  //   }
+
+  //   // If no image, generate table normally
+  //   doc.autoTable({
+  //     head: [["Field", "Value"]],
+  //     body: tableData,
+  //     startY,
+  //   });
+
+  //   doc.save(`Staff_${staff.staffId}.pdf`);
+  // };
+
+
+  // const downloadStaffPDF1 = async (staff) => {
+  //   if (!staff) {
+  //     alert("No staff details available.");
+  //     return;
+  //   }
+
+  //   const doc = new jsPDF();
+  //   doc.text("Staff Details Report", 20, 10);
+
+  //   const tableData = [
+  //     ["Staff ID", staff.staffId],
+  //     ["Name", staff.name],
+  //     ["Phone Number", staff.phoneNumber],
+  //     ["Email", staff.email],
+  //     ["Address", staff.address],
+  //     ["Date of Birth", staff.dob],
+  //     ["Aadhar Number", staff.aadharNumber],
+  //     ["PAN Card Number", staff.panCardNumber],
+  //     ["Bank Name", staff.bankName],
+  //     ["Branch Name", staff.branchName],
+  //     ["Account Number", staff.accountNumber],
+  //     ["Account Type", staff.accountType],
+  //     ["IFSC Code", staff.ifscCode],
+  //     ["Joining Date", staff.joiningDate],
+  //     ["Previous Company", staff.previousCompany],
+  //     ["Previous Designation", staff.previousDesignation],
+  //     ["Previous Salary", staff.previousSalary],
+  //     ["Total Experience", staff.totalExperience],
+  //     ["Before Experience", staff.beforeExperience],
+  //     ["Basic Salary", staff.monthlySalary],
+  //     ["Salary Date", staff.salaryDate],
+  //     ["Designation", staff.designation],
+  //     ["Department", staff.department ?? "N/A"],
+  //     ["Gender", staff.gender],
+  //     ["Blood Group", staff.bloodGroup],
+  //     ["Driving Licence", staff.drivingLicence],
+  //     ["Driving Licence Number", staff.drivingLicenceNumber],
+  //     ["Bike Allocation", staff.bikeAllocation],
+  //     ["Bike Number", staff.bikeNumber],
+  //     ["ESIC Number", staff.esicNumber],
+  //     ["UAN Number", staff.uanNumber],
+  //     ["Insurance Number", staff.insuranceNumber],
+  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
+  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
+  //     ["Latitude", staff.latitude],
+  //     ["Longitude", staff.longitude],
+  //     ["Location", staff.location],
+  //     ["Mobile Allocation", staff.mobileAllocation],
+  //     ["Mobile Brand", staff.mobileBrand],
+  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
+  //     ["Alternate Phone", staff.alternateNumber],
+  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
+  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
+  //     ["Termination Date", staff.terminationDate ?? "N/A"],
+  //     ["Status", staff.status ?? "N/A"],
+  //   ];
+
+  //   let startY = 20;
+
+  //   if (staff.staffPhoto) {
+  //     try {
+  //       const response = await fetch(staff.staffPhoto);
+  //       const blob = await response.blob();
+  //       const reader = new FileReader();
+
+  //       reader.readAsDataURL(blob);
+  //       reader.onloadend = () => {
+  //         const base64Image = reader.result;
+  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
+
+  //         // Adjust start position for the table after adding image
+  //         doc.autoTable({
+  //           head: [["Field", "Value"]],
+  //           body: tableData,
+  //           startY: 60,
+  //         });
+
+  //         doc.save(`Staff_${staff.staffId}.pdf`);
+  //       };
+  //       return;
+  //     } catch (error) {
+  //       console.error("Error loading image:", error);
+  //     }
+  //   }
+
+  //   // If no image, generate table normally
+  //   doc.autoTable({
+  //     head: [["Field", "Value"]],
+  //     body: tableData,
+  //     startY,
+  //   });
+
+  //   doc.save(`Staff_${staff.staffId}.pdf`);
+  // };
+
+  const downloadExcel = (data, filename) => {
+    if (data.length === 0) {
+      alert("No data available to download.");
+      return;
     }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, filename);
+    XLSX.writeFile(workbook, { filename }.xlsx);
   };
 
 
+
+
+  const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
+
+  const filteredStaff = filteredBranches.flatMap(branch =>
+    [...(branch.nonTechnicalStaff || []), ...(branch.technicalStaff || []), ...(branch.salesStaff || [])]
+  ).filter(emp =>
+    (!selectedBranchStaff || emp.staffId.toString().includes(selectedBranchStaff))
+  );
+
+
+  const filteredEmployees = employees.filter(emp =>
+    !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
+  );
+
   return (
     <div className="max-w-5xl mx-auto p-4">
-      <div>
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4 mb-6">
-          {employees.map((staff) => {
-            return (
-              <div
-                key={staff.id}
-                className="border-2 border-gray-300 rounded-lg shadow-md p-4"
-              >
-                <h3 className="text-lg font-semibold text-gray-800">{staff.staffName}</h3>
-                <p className="text-sm text-gray-600">
-                  <strong>Designation:</strong> {staff.designation}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Phone:</strong> {staff.phoneNumber}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Email:</strong> {staff.email}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Salary:</strong> ₹{staff.salary}
-                </p>
-              </div>
-            );
-          })}
-        </div> */}
+      <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
+      <div className="flex justify-between gap-4 mb-4">
+        <select className="p-3 border rounded-lg w-1/3" value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
+          <option value="">All Branches</option>
+          {branchesData.map(branch => (
+            <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
+          ))}
+        </select>
+        <input
+          type="text"
+          placeholder="Search by Staff ID"
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedBranchStaff}
+          onChange={(e) => setSelectedBranchStaff(e.target.value)}
+        />
 
-        <div className="overflow-x-auto mt-4 mb-6">
-          <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
-            <thead>
-              <tr className="bg-gray-200 text-gray-700">
-                <th className="px-4 py-2 border">Staff Name</th>
-                <th className="px-4 py-2 border">Designation</th>
-                <th className="px-4 py-2 border">Phone</th>
-                <th className="px-4 py-2 border">Email</th>
-                <th className="px-4 py-2 border">Salary</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.map((staff) => (
-                <tr key={staff.id} className="text-gray-800 text-center border-b">
-                  <td className="px-4 py-2 border">{staff.staffName}</td>
-                  <td className="px-4 py-2 border">{staff.designation}</td>
-                  <td className="px-4 py-2 border">{staff.phoneNumber}</td>
-                  <td className="px-4 py-2 border">{staff.email}</td>
-                  <td className="px-4 py-2 border">₹{staff.salary}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <button onClick={() => downloadExcel(filteredStaff, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
+          <FaFileDownload className="mr-2" /> Download Excel
+        </button>
       </div>
-      <h3 className="text-2xl font-semibold my-4">Branches</h3>
-      {Array.isArray(branchesData) && branchesData.map((branch) => (
-        <div key={branch.branchName} className="mb-4 border rounded-lg shadow-md">
-          <button
-            onClick={() => toggleBranch(branch.branchName)}
-            className="w-full bg-green-600 text-white py-3 px-5 flex justify-between items-center text-lg font-semibold rounded-t-lg"
-          >
-            {branch.branchName}
-            <span>{openBranch === branch.branchName ? '▲' : '▼'}</span>
-          </button>
+      <div className="overflow-x-auto shadow-lg rounded-lg">
+        <table className="min-w-full border border-gray-300">
+          <thead className="bg-gray-200 text-gray-700">
+            <tr>
+              {["NO.", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
+                <th key={index} className="p-3 text-left">{head}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStaff.map((emp, index) => (
+              <tr key={emp.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                <td className="p-3">{emp.staffId}</td>
+                <td className="p-3">{emp.name}</td>
+                <td className="p-3">{emp.designation}</td>
+                <td className="p-3">{emp.branchName}</td>
+                <td className="p-3">{emp.phoneNumber}</td>
+                <td className="p-3">{emp.joiningDate}</td>
+                <td className="p-3">{emp.monthlySalary}</td>
+                <td className="px-4 py-2 border">
+                  <FaFileDownload
+                    className="text-blue-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents event bubbling if inside a list
+                      document.getElementById(`download-pdf-${emp.staffId}`).click();
+                    }}
+                  />
+                  <ConvertPDF staff={emp} />
+                </td>
 
-          {openBranch === branch.branchName && (
-            <div className="bg-gray-100 p-4">
-              {/* Display branch manager details if available */}
-              {branch.branchManagerName && (
-                <div className="mb-4">
-                  <h4 className="font-semibold">Branch Manager</h4>
-                  <p>
-                    <strong>Name:</strong> {branch.branchManagerName}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {branch.branchManagerPhoneNumber}
-                  </p>
-                  <p>
-                    <strong>Salary:</strong> ₹{branch.branchManagerSalary}
-                  </p>
-                </div>
-              )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-              {/* Filters */}
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={() => filterEmployees(branch.branchName, 'Technician')}
-                  className="px-3 py-1 bg-blue-500 text-white rounded-md"
-                >
-                  Technical
-                </button>
-                <button
-                  onClick={() => filterEmployees(branch.branchName, 'Non Technical')}
-                  className="px-3 py-1 bg-gray-500 text-white rounded-md"
-                >
-                  Non Technical
-                </button>
-                <button
-                  onClick={() => filterEmployees(branch.branchName, 'Sales Man')}
-                  className="px-3 py-1 bg-red-500 text-white rounded-md"
-                >
-                  Sales Man
-                </button>
-              </div>
+      <h3 className="text-2xl font-semibold my-4">Employees</h3>
+      <div className="flex justify-between gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search by Staff ID"
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedStaff}
+          onChange={(e) => setSelectedStaff(e.target.value)}
+        />
 
-              {/* Scrollable Employee Table */}
-              <div className="overflow-x-auto">
-                <div className="max-h-[300px] overflow-y-auto border rounded-lg">
-                  <table className="w-full min-w-[600px] border-collapse">
-                    <thead className="sticky top-0 bg-green-500 text-white">
-                      <tr>
-                        <th className="border px-4 py-2">No</th>
-                        <th className="border px-4 py-2">Name</th>
-                        <th className="border px-4 py-2">Phone</th>
-                        <th className="border px-4 py-2">Email</th>
-                        <th className="border px-4 py-2">Salary</th>
-                        <th className="border px-4 py-2">View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {/* Render filtered employees or fallback to nonTechnicalStaff */}
-                      {(filteredEmployees[branch.branchName] || branch.nonTechnicalStaff).map(
-                        (emp, index) => (
-                          <tr key={emp.staffId} className="text-center bg-white">
-                            <td className="border px-4 py-2">{index + 1}</td>
-                            <td className="border px-4 py-2">{emp.staffName}</td>
-                            <td className="border px-4 py-2">{emp.phoneNumber}</td>
-                            <td className="border px-4 py-2">{emp.email}</td>
-                            <td className="border px-4 py-2">
-                              ₹{emp.basicSalary}
-                            </td>
-                            <td className="border px-4 py-2">
-                              <button className="text-blue-500 hover:underline">
-                                👁
-                              </button>
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      ))}
+        <button onClick={() => downloadExcel(filteredEmployees, "Filtered_Employees")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
+          <FaFileDownload className="mr-2" /> Download Excel
+        </button>
+      </div>
+      <div className="overflow-x-auto mt-4 mb-6">
+        <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+          <thead>
+            <tr className="bg-gray-200 text-gray-700">
+              <th className="px-4 py-2 border">Staff ID</th>
+              <th className="px-4 py-2 border">Staff Name</th>
+              <th className="px-4 py-2 border">Designation</th>
+              <th className="px-4 py-2 border">Phone</th>
+              <th className="px-4 py-2 border">Email</th>
+              <th className="px-4 py-2 border">Salary</th>
+              <th className="px-4 py-2 border">Pdf</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEmployees.map((staff) => (
+              <tr key={staff.staffId} className="text-gray-800 text-center border-b">
+                <td className="px-4 py-2 border">{staff.staffId}</td>
+                <td className="px-4 py-2 border">{staff.staffName}</td>
+                <td className="px-4 py-2 border">{staff.designation}</td>
+                <td className="px-4 py-2 border">{staff.phoneNumber}</td>
+                <td className="px-4 py-2 border">{staff.email}</td>
+                <td className="px-4 py-2 border">₹{staff.salary}</td>
+                <td className="px-4 py-2 border">
+                  <FaFileDownload
+                    className="text-blue-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents event bubbling if inside a list
+                      document.getElementById(`download-pdf-${staff.staffId}`).click();
+                    }}
+                  />
+                  <ConvertPDF  staff={staff} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
+
 };
 
-export default BranchList;
 
+export default BranchList;
