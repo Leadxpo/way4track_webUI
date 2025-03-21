@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { FaSearch, FaFileDownload } from "react-icons/fa";
 import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import ConvertPDF from '../../components/convertPDF';
+// import jsPDF from "jspdf";
+// import "jspdf-autotable";
 
 const BranchList = () => {
   const [branchesData, setBranchesData] = useState([]);
@@ -79,7 +80,7 @@ const BranchList = () => {
 
         if (response.status) {
           setStaffDetails(response.data.data);
-          console.log("==============",response.data.data)
+          console.log("==============", response.data.data)
         }
       } catch (error) {
         console.error("Error fetching staff details:", error);
@@ -93,196 +94,196 @@ const BranchList = () => {
   }, [selectedStaff]);
 
 
-  const downloadStaffPDF = async (staff) => {
-    if (!staff) {
-      alert("No staff details available.");
-      return;
-    }
-  
-    const doc = new jsPDF();
-    doc.text("Staff Details Report", 20, 10);
-  
-    const tableData = [
-      ["Staff ID", staff.staffId],
-      ["Name", staff.name],
-      ["Phone Number", staff.phoneNumber],
-      ["Email", staff.email],
-      ["Address", staff.address],
-      ["Date of Birth", staff.dob],
-      ["Aadhar Number", staff.aadharNumber],
-      ["PAN Card Number", staff.panCardNumber],
-      ["Bank Name", staff.bankName],
-      ["Branch Name", staff.branchName],
-      ["Account Number", staff.accountNumber],
-      ["Account Type", staff.accountType],
-      ["IFSC Code", staff.ifscCode],
-      ["Joining Date", staff.joiningDate],
-      ["Previous Company", staff.previousCompany],
-      ["Previous Designation", staff.previousDesignation],
-      ["Previous Salary", staff.previousSalary],
-      ["Total Experience", staff.totalExperience],
-      ["Before Experience", staff.beforeExperience],
-      ["Basic Salary", staff.monthlySalary],
-      ["Salary Date", staff.salaryDate],
-      ["Designation", staff.designation],
-      ["Department", staff.department ?? "N/A"],
-      ["Gender", staff.gender],
-      ["Blood Group", staff.bloodGroup],
-      ["Driving Licence", staff.drivingLicence],
-      ["Driving Licence Number", staff.drivingLicenceNumber],
-      ["Bike Allocation", staff.bikeAllocation],
-      ["Bike Number", staff.bikeNumber],
-      ["ESIC Number", staff.esicNumber],
-      ["UAN Number", staff.uanNumber],
-      ["Insurance Number", staff.insuranceNumber],
-      ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
-      ["Insurance Expiry Date", staff.insuranceExpiryDate],
-      ["Latitude", staff.latitude],
-      ["Longitude", staff.longitude],
-      ["Location", staff.location],
-      ["Mobile Allocation", staff.mobileAllocation],
-      ["Mobile Brand", staff.mobileBrand],
-      ["IMEI Number", staff.imeiNumber ?? "N/A"],
-      ["Alternate Phone", staff.alternateNumber],
-      ["Resignation Date", staff.resignationDate ?? "N/A"],
-      ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
-      ["Termination Date", staff.terminationDate ?? "N/A"],
-      ["Status", staff.status ?? "N/A"],
-    ];
-  
-    let startY = 20;
-  
-    if (staff.staffPhoto) {
-      try {
-        const response = await fetch(staff.staffPhoto);
-        const blob = await response.blob();
-        const reader = new FileReader();
-  
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64Image = reader.result;
-          doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
-  
-          // Adjust start position for the table after adding image
-          doc.autoTable({
-            head: [["Field", "Value"]],
-            body: tableData,
-            startY: 60,
-          });
-  
-          doc.save(`Staff_${staff.staffId}.pdf`);
-        };
-        return;
-      } catch (error) {
-        console.error("Error loading image:", error);
-      }
-    }
-  
-    // If no image, generate table normally
-    doc.autoTable({
-      head: [["Field", "Value"]],
-      body: tableData,
-      startY,
-    });
-  
-    doc.save(`Staff_${staff.staffId}.pdf`);
-  };
-  
+  // const downloadStaffPDF = async (staff) => {
+  //   if (!staff) {
+  //     alert("No staff details available.");
+  //     return;
+  //   }
 
-  const downloadStaffPDF1 = async (staff) => {
-    if (!staff) {
-      alert("No staff details available.");
-      return;
-    }
-  
-    const doc = new jsPDF();
-    doc.text("Staff Details Report", 20, 10);
-  
-    const tableData = [
-      ["Staff ID", staff.staffId],
-      ["Name", staff.name],
-      ["Phone Number", staff.phoneNumber],
-      ["Email", staff.email],
-      ["Address", staff.address],
-      ["Date of Birth", staff.dob],
-      ["Aadhar Number", staff.aadharNumber],
-      ["PAN Card Number", staff.panCardNumber],
-      ["Bank Name", staff.bankName],
-      ["Branch Name", staff.branchName],
-      ["Account Number", staff.accountNumber],
-      ["Account Type", staff.accountType],
-      ["IFSC Code", staff.ifscCode],
-      ["Joining Date", staff.joiningDate],
-      ["Previous Company", staff.previousCompany],
-      ["Previous Designation", staff.previousDesignation],
-      ["Previous Salary", staff.previousSalary],
-      ["Total Experience", staff.totalExperience],
-      ["Before Experience", staff.beforeExperience],
-      ["Basic Salary", staff.monthlySalary],
-      ["Salary Date", staff.salaryDate],
-      ["Designation", staff.designation],
-      ["Department", staff.department ?? "N/A"],
-      ["Gender", staff.gender],
-      ["Blood Group", staff.bloodGroup],
-      ["Driving Licence", staff.drivingLicence],
-      ["Driving Licence Number", staff.drivingLicenceNumber],
-      ["Bike Allocation", staff.bikeAllocation],
-      ["Bike Number", staff.bikeNumber],
-      ["ESIC Number", staff.esicNumber],
-      ["UAN Number", staff.uanNumber],
-      ["Insurance Number", staff.insuranceNumber],
-      ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
-      ["Insurance Expiry Date", staff.insuranceExpiryDate],
-      ["Latitude", staff.latitude],
-      ["Longitude", staff.longitude],
-      ["Location", staff.location],
-      ["Mobile Allocation", staff.mobileAllocation],
-      ["Mobile Brand", staff.mobileBrand],
-      ["IMEI Number", staff.imeiNumber ?? "N/A"],
-      ["Alternate Phone", staff.alternateNumber],
-      ["Resignation Date", staff.resignationDate ?? "N/A"],
-      ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
-      ["Termination Date", staff.terminationDate ?? "N/A"],
-      ["Status", staff.status ?? "N/A"],
-    ];
-  
-    let startY = 20;
-  
-    if (staff.staffPhoto) {
-      try {
-        const response = await fetch(staff.staffPhoto);
-        const blob = await response.blob();
-        const reader = new FileReader();
-  
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64Image = reader.result;
-          doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
-  
-          // Adjust start position for the table after adding image
-          doc.autoTable({
-            head: [["Field", "Value"]],
-            body: tableData,
-            startY: 60,
-          });
-  
-          doc.save(`Staff_${staff.staffId}.pdf`);
-        };
-        return;
-      } catch (error) {
-        console.error("Error loading image:", error);
-      }
-    }
-  
-    // If no image, generate table normally
-    doc.autoTable({
-      head: [["Field", "Value"]],
-      body: tableData,
-      startY,
-    });
-  
-    doc.save(`Staff_${staff.staffId}.pdf`);
-  };
+  //   const doc = new jsPDF();
+  //   doc.text("Staff Details Report", 20, 10);
+
+  //   const tableData = [
+  //     ["Staff ID", staff.staffId],
+  //     ["Name", staff.name],
+  //     ["Phone Number", staff.phoneNumber],
+  //     ["Email", staff.email],
+  //     ["Address", staff.address],
+  //     ["Date of Birth", staff.dob],
+  //     ["Aadhar Number", staff.aadharNumber],
+  //     ["PAN Card Number", staff.panCardNumber],
+  //     ["Bank Name", staff.bankName],
+  //     ["Branch Name", staff.branchName],
+  //     ["Account Number", staff.accountNumber],
+  //     ["Account Type", staff.accountType],
+  //     ["IFSC Code", staff.ifscCode],
+  //     ["Joining Date", staff.joiningDate],
+  //     ["Previous Company", staff.previousCompany],
+  //     ["Previous Designation", staff.previousDesignation],
+  //     ["Previous Salary", staff.previousSalary],
+  //     ["Total Experience", staff.totalExperience],
+  //     ["Before Experience", staff.beforeExperience],
+  //     ["Basic Salary", staff.monthlySalary],
+  //     ["Salary Date", staff.salaryDate],
+  //     ["Designation", staff.designation],
+  //     ["Department", staff.department ?? "N/A"],
+  //     ["Gender", staff.gender],
+  //     ["Blood Group", staff.bloodGroup],
+  //     ["Driving Licence", staff.drivingLicence],
+  //     ["Driving Licence Number", staff.drivingLicenceNumber],
+  //     ["Bike Allocation", staff.bikeAllocation],
+  //     ["Bike Number", staff.bikeNumber],
+  //     ["ESIC Number", staff.esicNumber],
+  //     ["UAN Number", staff.uanNumber],
+  //     ["Insurance Number", staff.insuranceNumber],
+  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
+  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
+  //     ["Latitude", staff.latitude],
+  //     ["Longitude", staff.longitude],
+  //     ["Location", staff.location],
+  //     ["Mobile Allocation", staff.mobileAllocation],
+  //     ["Mobile Brand", staff.mobileBrand],
+  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
+  //     ["Alternate Phone", staff.alternateNumber],
+  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
+  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
+  //     ["Termination Date", staff.terminationDate ?? "N/A"],
+  //     ["Status", staff.status ?? "N/A"],
+  //   ];
+
+  //   let startY = 20;
+
+  //   if (staff.staffPhoto) {
+  //     try {
+  //       const response = await fetch(staff.staffPhoto);
+  //       const blob = await response.blob();
+  //       const reader = new FileReader();
+
+  //       reader.readAsDataURL(blob);
+  //       reader.onloadend = () => {
+  //         const base64Image = reader.result;
+  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
+
+  //         // Adjust start position for the table after adding image
+  //         doc.autoTable({
+  //           head: [["Field", "Value"]],
+  //           body: tableData,
+  //           startY: 60,
+  //         });
+
+  //         doc.save(`Staff_${staff.staffId}.pdf`);
+  //       };
+  //       return;
+  //     } catch (error) {
+  //       console.error("Error loading image:", error);
+  //     }
+  //   }
+
+  //   // If no image, generate table normally
+  //   doc.autoTable({
+  //     head: [["Field", "Value"]],
+  //     body: tableData,
+  //     startY,
+  //   });
+
+  //   doc.save(`Staff_${staff.staffId}.pdf`);
+  // };
+
+
+  // const downloadStaffPDF1 = async (staff) => {
+  //   if (!staff) {
+  //     alert("No staff details available.");
+  //     return;
+  //   }
+
+  //   const doc = new jsPDF();
+  //   doc.text("Staff Details Report", 20, 10);
+
+  //   const tableData = [
+  //     ["Staff ID", staff.staffId],
+  //     ["Name", staff.name],
+  //     ["Phone Number", staff.phoneNumber],
+  //     ["Email", staff.email],
+  //     ["Address", staff.address],
+  //     ["Date of Birth", staff.dob],
+  //     ["Aadhar Number", staff.aadharNumber],
+  //     ["PAN Card Number", staff.panCardNumber],
+  //     ["Bank Name", staff.bankName],
+  //     ["Branch Name", staff.branchName],
+  //     ["Account Number", staff.accountNumber],
+  //     ["Account Type", staff.accountType],
+  //     ["IFSC Code", staff.ifscCode],
+  //     ["Joining Date", staff.joiningDate],
+  //     ["Previous Company", staff.previousCompany],
+  //     ["Previous Designation", staff.previousDesignation],
+  //     ["Previous Salary", staff.previousSalary],
+  //     ["Total Experience", staff.totalExperience],
+  //     ["Before Experience", staff.beforeExperience],
+  //     ["Basic Salary", staff.monthlySalary],
+  //     ["Salary Date", staff.salaryDate],
+  //     ["Designation", staff.designation],
+  //     ["Department", staff.department ?? "N/A"],
+  //     ["Gender", staff.gender],
+  //     ["Blood Group", staff.bloodGroup],
+  //     ["Driving Licence", staff.drivingLicence],
+  //     ["Driving Licence Number", staff.drivingLicenceNumber],
+  //     ["Bike Allocation", staff.bikeAllocation],
+  //     ["Bike Number", staff.bikeNumber],
+  //     ["ESIC Number", staff.esicNumber],
+  //     ["UAN Number", staff.uanNumber],
+  //     ["Insurance Number", staff.insuranceNumber],
+  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
+  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
+  //     ["Latitude", staff.latitude],
+  //     ["Longitude", staff.longitude],
+  //     ["Location", staff.location],
+  //     ["Mobile Allocation", staff.mobileAllocation],
+  //     ["Mobile Brand", staff.mobileBrand],
+  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
+  //     ["Alternate Phone", staff.alternateNumber],
+  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
+  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
+  //     ["Termination Date", staff.terminationDate ?? "N/A"],
+  //     ["Status", staff.status ?? "N/A"],
+  //   ];
+
+  //   let startY = 20;
+
+  //   if (staff.staffPhoto) {
+  //     try {
+  //       const response = await fetch(staff.staffPhoto);
+  //       const blob = await response.blob();
+  //       const reader = new FileReader();
+
+  //       reader.readAsDataURL(blob);
+  //       reader.onloadend = () => {
+  //         const base64Image = reader.result;
+  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
+
+  //         // Adjust start position for the table after adding image
+  //         doc.autoTable({
+  //           head: [["Field", "Value"]],
+  //           body: tableData,
+  //           startY: 60,
+  //         });
+
+  //         doc.save(`Staff_${staff.staffId}.pdf`);
+  //       };
+  //       return;
+  //     } catch (error) {
+  //       console.error("Error loading image:", error);
+  //     }
+  //   }
+
+  //   // If no image, generate table normally
+  //   doc.autoTable({
+  //     head: [["Field", "Value"]],
+  //     body: tableData,
+  //     startY,
+  //   });
+
+  //   doc.save(`Staff_${staff.staffId}.pdf`);
+  // };
 
   const downloadExcel = (data, filename) => {
     if (data.length === 0) {
@@ -292,22 +293,22 @@ const BranchList = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, filename);
-    XLSX.writeFile(workbook, {filename}.xlsx);
+    XLSX.writeFile(workbook, { filename }.xlsx);
   };
 
 
-  
+
 
   const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
 
-  const filteredStaff = filteredBranches.flatMap(branch => 
+  const filteredStaff = filteredBranches.flatMap(branch =>
     [...(branch.nonTechnicalStaff || []), ...(branch.technicalStaff || []), ...(branch.salesStaff || [])]
-  ).filter(emp => 
+  ).filter(emp =>
     (!selectedBranchStaff || emp.staffId.toString().includes(selectedBranchStaff))
   );
-  
 
-  const filteredEmployees = employees.filter(emp => 
+
+  const filteredEmployees = employees.filter(emp =>
     !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
   );
 
@@ -321,13 +322,13 @@ const BranchList = () => {
             <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
           ))}
         </select>
-        <input 
-  type="text"
-  placeholder="Search by Staff ID"
-  className="p-3 border rounded-lg w-1/3"
-  value={selectedBranchStaff}
-  onChange={(e) => setSelectedBranchStaff(e.target.value)}
-/>
+        <input
+          type="text"
+          placeholder="Search by Staff ID"
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedBranchStaff}
+          onChange={(e) => setSelectedBranchStaff(e.target.value)}
+        />
 
         <button onClick={() => downloadExcel(filteredStaff, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
           <FaFileDownload className="mr-2" /> Download Excel
@@ -337,7 +338,7 @@ const BranchList = () => {
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              {["NO.", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary","Pdf"].map((head, index) => (
+              {["NO.", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
                 <th key={index} className="p-3 text-left">{head}</th>
               ))}
             </tr>
@@ -353,11 +354,15 @@ const BranchList = () => {
                 <td className="p-3">{emp.joiningDate}</td>
                 <td className="p-3">{emp.monthlySalary}</td>
                 <td className="px-4 py-2 border">
-  <FaFileDownload 
-    className="text-blue-500 cursor-pointer"
-    onClick={() => downloadStaffPDF(emp)} 
-  />
-</td>
+                  <FaFileDownload
+                    className="text-blue-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents event bubbling if inside a list
+                      document.getElementById(`download-pdf-${emp.staffId}`).click();
+                    }}
+                  />
+                  <ConvertPDF staff={emp} />
+                </td>
 
               </tr>
             ))}
@@ -367,13 +372,13 @@ const BranchList = () => {
 
       <h3 className="text-2xl font-semibold my-4">Employees</h3>
       <div className="flex justify-between gap-4 mb-4">
-      <input 
-  type="text"
-  placeholder="Search by Staff ID"
-  className="p-3 border rounded-lg w-1/3"
-  value={selectedStaff} 
-  onChange={(e) => setSelectedStaff(e.target.value)} 
-/>
+        <input
+          type="text"
+          placeholder="Search by Staff ID"
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedStaff}
+          onChange={(e) => setSelectedStaff(e.target.value)}
+        />
 
         <button onClick={() => downloadExcel(filteredEmployees, "Filtered_Employees")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
           <FaFileDownload className="mr-2" /> Download Excel
@@ -403,11 +408,15 @@ const BranchList = () => {
                 <td className="px-4 py-2 border">{staff.email}</td>
                 <td className="px-4 py-2 border">₹{staff.salary}</td>
                 <td className="px-4 py-2 border">
-  <FaFileDownload 
-    className="text-blue-500 cursor-pointer"
-    onClick={() => downloadStaffPDF1(staff)} 
-  />
-</td>
+                  <FaFileDownload
+                    className="text-blue-500 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents event bubbling if inside a list
+                      document.getElementById(`download-pdf-${staff.staffId}`).click();
+                    }}
+                  />
+                  <ConvertPDF  staff={staff} />
+                </td>
               </tr>
             ))}
           </tbody>
