@@ -166,25 +166,26 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { FaDownload } from 'react-icons/fa';
 
 const HiringDetails = () => {
   const location = useLocation();
-  const HiringDetail = location.state?.HiringDetails || {};
+  const HiringDetail = location.state?.hiring || {};
   const [candidate, setCandidate] = useState({});
   const [levels, setLevels] = useState([]);
   const [expandedLevels, setExpandedLevels] = useState([true, false, false, false]);
-
+ 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        const response = await ApiService.post('/hiring/getHiringDetails', {
-          id: HiringDetail.id,
+        const response = await ApiService.post('/hiring/getHiringDetailsById', {
+          id:HiringDetail.hiringId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-
-        if (response.status) {
-          const hiring = response.data?.[0];
+        if (response.data) {
+          // const hiring = response.data?.[0];
+          const hiring = response.data;
           setCandidate({
             ...hiring,
             candidateName: hiring?.candidateName || '',
@@ -226,18 +227,38 @@ const HiringDetails = () => {
 
         {/* Header */}
         <div className="flex items-center space-x-6 bg-white p-4 rounded-md shadow">
-          <img
+          {/* <img
             src="https://via.placeholder.com/150"
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover"
-          />
+          /> */}
           <div>
-            <h2 className="text-xl font-semibold">{candidate.candidateName}</h2>
+            <h2 className="text-xl font-semibold">Name: {candidate.candidateName}</h2>
             <p>Email: {candidate.email}</p>
             <p>Phone Number: {candidate.phoneNumber}</p>
             <p>Level: {candidate.hiringLevel}</p>
             <p>Address: {candidate.address}</p>
+            <p className="flex items-center">
+  Resume download:
+  <a 
+    href={candidate.resumePath} 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="flex items-center ml-2"  // Adds margin-left for spacing
+  >
+    <FaDownload size={20} color="green" />
+  </a>
+</p>
+
           </div>
+          {candidate.status==="qualified" && (
+          <button
+            className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+            onClick={()=>navigate("/staff")}
+          >
+           Add to Staff
+          </button>
+        )}
         </div>
 
         {/* Levels */}

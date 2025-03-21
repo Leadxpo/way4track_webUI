@@ -6,20 +6,20 @@ import { initialAuthState } from '../../services/ApiService';
 
 const DeleteHiring = ({ setHirings }) => {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const hiringToDelete = state?.hiringDetails;
-
+  const  location = useLocation();
+  const hiringToDelete = location.state?.hiring || {};
+  
   const handleConfirmDelete = async () => {
     if (!hiringToDelete) return;
 
     try {
       await ApiService.post('/hiring/deleteHiringDetails', {
-        id: hiringToDelete.id,
+        id: hiringToDelete.hiringId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
 
-      setHirings((prev) => prev.filter((hiring) => hiring.id !== hiringToDelete.id));
+      // setHirings((prev) => prev.filter((hiring) => hiring.id !== hiringToDelete.id));
       alert('Hiring deleted successfully');
       navigate('/hiring'); // Redirect back to the hiring list after deletion
     } catch (error) {
