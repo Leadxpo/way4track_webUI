@@ -35,20 +35,18 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
     return (
         <form onSubmit={handleSubmit(onSave)} className="p-4 bg-white shadow rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Controller
-                    name="staffPhoto"
-                    control={control}
-                    render={({ field }) => (
-                        <input {...field} placeholder="Staff Photo URL" className="w-full p-2 border rounded-md" />
-                    )}
-                />
+                
                 {["year", "month", "monthDays", "presentDays", "leaveDays", "actualSalary", "totalEarlyMinutes", "totalLateMinutes", "lateDays", "perDaySalary", "perHourSalary", "totalOTHours", "OTAmount", "lateDeductions", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee", "PF_Employer1", "PF_Employer2", "extraHalfSalary", "daysOutLate6HoursOrMore", "netSalary", "carryForwardLeaves", "professionalTax", "incentives", "foodAllowance", "leaveEncashment", "plBikeNeedToPay", "plBikeAmount"].map((field) => (
                     <Controller
                         key={field}
                         name={field}
                         control={control}
                         render={({ field }) => (
-                            <input {...field} placeholder={field.name.replace(/([A-Z])/g, " $1")} type="number" className="w-full p-2 border rounded-md" />
+                            <div>
+                                <p>{field.name}</p>
+                                <input {...field} placeholder={field.name.replace(/([A-Z])/g, " $1")} type="number" className="w-full p-2 border rounded-md" />
+                            </div>
+
                         )}
                     />
                 ))}

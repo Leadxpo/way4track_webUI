@@ -74,8 +74,8 @@ const Letters = () => {
     },
     text: {
       fontSize: 10,
-      lineHeight: 1.2,letterSpacing:1,
-      textAlign: "justify",marginVertical:5
+      lineHeight: 1.2, letterSpacing: 1,
+      textAlign: "justify", marginVertical: 5
     },
     profileContainer: {
       display: "flex",
@@ -96,7 +96,15 @@ const Letters = () => {
     signatureBlock: {
       marginTop: 10,
     },
-    normalText:{letterSpacing:2,lineHeight:10}
+    normalText: { letterSpacing: 2, lineHeight: 10 },
+    title: { fontSize: 16, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },
+  payslipSection: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  column: { width: '50%' },
+  paysliptext: { marginBottom: 5 },
+  table: { width: '100%', borderWidth: 1, marginTop: 10 },
+  row: { flexDirection: 'row', borderBottomWidth: 1, padding: 5 },
+  cell: { width: '50%', textAlign: 'left' },
+  footer: { marginTop: 20, textAlign: 'center', fontSize: 10, fontStyle: 'italic' }
   });
 
   const OfferLetter = ({ employee }) => {
@@ -109,11 +117,11 @@ const Letters = () => {
             <Image style={styles.profileImage} src="way4tracklogo.png" />
           </View>
           <Text style={styles.header}>OFFER LETTER</Text>
-          <Text style={{alignItems:"flex-end"}}>{todayData}</Text>
+          <Text style={{ alignItems: "flex-end" }}>{todayData}</Text>
 
           <View style={styles.section}>
             <Text style={styles.label}>{employee?.name}</Text>
-            <Text style={styles.text}>{employee?.address}</Text>
+            <Text style={styles.paysliptext}>{employee?.address}</Text>
           </View>
 
           <Text style={styles.text}>Dear {employee?.name},</Text>
@@ -163,35 +171,35 @@ const Letters = () => {
             <Text style={styles.text}>• Track and report on your sales performance, including leads generated, conversions, and revenue.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Relationship Building:</Text>
+            <Text style={styles.label}>Relationship Building:</Text>
             <Text style={styles.text}>• Build and maintain strong, long-lasting customer relationships to drive repeat business.</Text>
             <Text style={styles.text}>• Follow up with existing customers to ensure satisfaction and promote additional products or services.</Text>
             <Text style={styles.text}>•  Attend industry events, trade shows, and networking opportunities to develop new sales leads.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Sales Administration:</Text>
+            <Text style={styles.label}>Sales Administration:</Text>
             <Text style={styles.text}>•  Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
             <Text style={styles.text}>•  Prepare and submit regular sales reports to your manager.</Text>
             <Text style={styles.text}>• Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Sales Administration:</Text>
+            <Text style={styles.label}>Sales Administration:</Text>
             <Text style={styles.text}>•  Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
             <Text style={styles.text}>•  Prepare and submit regular sales reports to your manager.</Text>
             <Text style={styles.text}>• Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Market Research:</Text>
+            <Text style={styles.label}>Market Research:</Text>
             <Text style={styles.text}>• Stay informed about market trends, competitors, and industry developments. </Text>
             <Text style={styles.text}>• Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Team Collaboration:</Text>
+            <Text style={styles.label}>Team Collaboration:</Text>
             <Text style={styles.text}>• Participate in sales meetings, training sessions, and team-building activities. </Text>
             <Text style={styles.text}>• Share best practices and strategies with colleagues to help the team achieve its collective goals.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Employment Terms:</Text>
+            <Text style={styles.label}>Employment Terms:</Text>
             <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check. </Text>
             <Text style={styles.text}>•  As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
             <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company "</Text>
@@ -236,7 +244,7 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-        <View style={styles.profileContainer}>
+          <View style={styles.profileContainer}>
             <Image style={styles.profileImage} src="way4tracklogo.png" />
           </View>
           <Text style={styles.header}>Termination Letter Template</Text>
@@ -413,53 +421,79 @@ const Letters = () => {
     </Document>
   );
 
-  const PayrollLetterPDF = ({ employee }) => (
+  const PayrollLetterPDF = ({ employee }) => {
+    console.log("employee : ",employee);
+    return(
     <Document>
       <Page style={styles.page}>
-        <Text style={styles.title}>Payslip for the Month of December 2024</Text>
+        <Text style={styles.title}>LEADXPO IT SOLUTIONS PVT LTD</Text>
+        <Text style={{ textAlign: 'center', marginBottom: 10 }}>
+          47-11-24, Flat no 501, Fifth Floor, Chillapalli Complex, Dwaraka Nagar, Visakhapatnam, Andhra Pradesh 530016
+        </Text>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10 }}>
+          Payslip for the period of {employee.month} {employee.year}
+        </Text>
 
-        <View style={styles.section}>
+        {/* Employee Details */}
+        <View style={styles.payslipSection}>
           <View style={styles.column}>
-            <Text style={styles.label}>Payable Days in Pay Period:</Text> <Text style={styles.text}>{employee.payableDays}</Text>
-            <Text style={styles.label}>LOP Days:</Text> <Text style={styles.text}>{employee.lopDays}</Text>
-            <Text style={styles.label}>Bank Name:</Text> <Text style={styles.text}>{employee.bankName}</Text>
-            <Text style={styles.label}>Account Number:</Text> <Text style={styles.text}>{employee.accountNumber}</Text>
-            <Text style={styles.label}>PAN:</Text> <Text style={styles.text}>{employee.pan}</Text>
-            <Text style={styles.label}>UAN:</Text> <Text style={styles.text}>{employee.uan}</Text>
+            <Text style={styles.label}>Employee ID:</Text> <Text style={styles.paysliptext}>{employee.id}</Text>
+            <Text style={styles.label}>Department:</Text> <Text style={styles.paysliptext}>{employee.department}</Text>
+            <Text style={styles.label}>Days Worked:</Text> <Text style={styles.paysliptext}>{employee.daysWorked}</Text>
+            <Text style={styles.label}>Bank Name, Branch:</Text> <Text style={styles.paysliptext}>{employee.bankName}</Text>
+            <Text style={styles.label}>Overtime:</Text> <Text style={styles.paysliptext}>{employee.overtime} hrs</Text>
           </View>
-
           <View style={styles.column}>
-            <Text style={styles.label}>Name:</Text> <Text style={styles.text}>{employee.name}</Text>
-            <Text style={styles.label}>Employee ID:</Text> <Text style={styles.text}>{employee.id}</Text>
-            <Text style={styles.label}>Designation:</Text> <Text style={styles.text}>{employee.designation}</Text>
-            <Text style={styles.label}>Department:</Text> <Text style={styles.text}>{employee.department}</Text>
-            <Text style={styles.label}>Location:</Text> <Text style={styles.text}>{employee.location}</Text>
-            <Text style={styles.label}>Date of Joining:</Text> <Text style={styles.text}>{employee.dateOfJoining}</Text>
+            <Text style={styles.label}>Name:</Text> <Text style={styles.paysliptext}>{employee.name}</Text>
+            <Text style={styles.label}>Designation:</Text> <Text style={styles.paysliptext}>{employee.designation}</Text>
+            <Text style={styles.label}>Days Absent:</Text> <Text style={styles.paysliptext}>{employee.daysAbsent}</Text>
+            <Text style={styles.label}>Bank Acct/Cheque Number:</Text> <Text style={styles.paysliptext}>{employee.accountNumber}</Text>
+            <Text style={styles.label}>Bank IFSC Code:</Text> <Text style={styles.paysliptext}>{employee.ifscCode}</Text>
           </View>
         </View>
 
-        <View style={styles.section}>
-          <View style={styles.column}>
-            <Text style={styles.label}>Deductions:</Text>
-            <Text style={styles.text}>ESI: {employee.esi}</Text>
-            <Text style={styles.text}>Provident Fund: {employee.pf}</Text>
-            <Text style={styles.text}>Professional Tax: {employee.professionalTax}</Text>
-            <Text style={styles.label}>Total Deductions:</Text> <Text style={styles.text}>{employee.totalDeductions}</Text>
+        {/* Earnings & Deductions Table */}
+        <View style={styles.table}>
+          <View style={styles.row}>
+            <Text style={styles.cell}>Earnings</Text>
+            <Text style={styles.cell}>Amount</Text>
+            <Text style={styles.cell}>Deductions</Text>
+            <Text style={styles.cell}>Amount</Text>
           </View>
+          <View style={styles.row}>
+            <Text style={styles.cell}>Basic Pay</Text>
+            <Text style={styles.cell}>{employee.basicPay}</Text>
+            <Text style={styles.cell}>Advance Payment</Text>
+            <Text style={styles.cell}>{employee.advancePayment}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Earnings (Rounded)</Text>
+            <Text style={[styles.cell, { fontWeight: 'bold' }]}>{employee.totalEarnings}</Text>
+            <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Deductions (Rounded)</Text>
+            <Text style={[styles.cell, { fontWeight: 'bold' }]}>{employee.totalDeductions}</Text>
+          </View>
+        </View>
 
-          <View style={styles.column}>
-            <Text style={styles.label}>Earnings:</Text>
-            <Text style={styles.text}>Actual Salary: {employee.actualSalary}</Text>
-            <Text style={styles.text}>Other Allowances: {employee.otherAllowances}</Text>
-            <Text style={styles.label}>Total Earnings:</Text> <Text style={styles.text}>{employee.totalEarnings}</Text>
-            <Text style={styles.label}>Net Salary:</Text> <Text style={styles.text}>{employee.netSalary}</Text>
+        {/* Net Pay */}
+        <Text style={{ fontWeight: 'bold', marginTop: 10, fontSize: 14 }}>
+          Net Pay (Rounded): {employee.netPay}
+        </Text>
+
+        {/* Signature */}
+        <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={{ textDecoration: 'underline' }}>{employee.name}</Text>
+            <Text>Employee's Signature</Text>
+          </View>
+          <View>
+            <Text style={{ textDecoration: 'underline' }}>{employee.name}</Text>
+            <Text>Employee's Signature</Text>
           </View>
         </View>
 
         <Text style={styles.footer}>This is a system-generated payslip and does not require a signature.</Text>
       </Page>
-    </Document>
-  );
+    </Document>)};
 
 
   return (
