@@ -3,7 +3,7 @@ import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
-
+import { useLocation, useNavigate } from 'react-router';
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -14,7 +14,8 @@ const Payroll = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]
   );
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const fetchPayrollData = async (branchName = "All") => {
     try {
       const payload = {
@@ -41,15 +42,6 @@ const Payroll = () => {
           }));
           setBranches([{ branchName: "All" }, ...uniqueBranches]);
         }
-
-        // if (branchName === "All") {
-        //   const uniqueBranches = Array.from(
-        //     new Set(res.data.map((b) => b.branch))
-        //   ).map((branch) => ({
-        //     branchName: branch,
-        //   }));
-        //   setBranches([{ branchName: "All" }, ...uniqueBranches]);
-        // }
       } else {
         setPayrollData([]);
         if (branchName === "All") setBranches([{ branchName: "All" }]);
@@ -79,7 +71,26 @@ const Payroll = () => {
     fetchPayrollData(activeTab);
   }, [activeTab]);
 
-
+  const payrollItem = {
+    staffId: "EMP123",
+    staffName: "John Doe",
+    designation: "Software Engineer",
+    staffPhoto: "https://via.placeholder.com/100",
+    branch: "Mumbai",
+    salaryStatus: "Paid",
+    monthDays: 30,
+    presentDays: 28,
+    leaveDays: 2,
+    actualSalary: 50000,
+    perDaySalary: 1666.67,
+    perHourSalary: 185.19,
+    totalOTHours: 10,
+    OTAmount: 1851.85,
+    lateDeductions: 500,
+    grossSalary: 52000,
+    netSalary: 50500,
+  };
+  
   // Handle tab click
   const handleTabClick = (branch) => {
     setActiveTab(branch);
@@ -103,6 +114,7 @@ const Payroll = () => {
   };
   return (
     <div>
+      {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
       {/* Tabs */}
       <div className="flex space-x-4 mb-4 border-b">
         {branches.map((branch) => (
@@ -142,6 +154,7 @@ const Payroll = () => {
               {payrollData.length > 0 && Object.keys(payrollData[0] || {}).map(key => (
                 <th key={key} className="px-4 py-2 border">{key.replace(/([A-Z])/g, ' $1').trim()}</th>
               ))}
+              <th  className="px-4 py-2 border">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -151,6 +164,7 @@ const Payroll = () => {
                   {Object.values(row).map((value, colIndex) => (
                     <td key={colIndex} className="px-4 py-2 border">{value ?? 'N/A'}</td>
                   ))}
+                  <td><p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
                 </tr>
               ))
             ) : (
@@ -163,18 +177,6 @@ const Payroll = () => {
           </tbody>
         </table>
       </div>
-
-      {/* <Table
-        columns={columns}
-        data={payrollData.filter(
-          (row) => activeTab === 'All' || row.branch === activeTab
-        )}
-        onEdit={handleChangePayroll}
-        onDetails={() => { }}
-        showDelete={false}
-      /> */}
-
-
     </div>
   );
 };
