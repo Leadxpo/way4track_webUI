@@ -15,6 +15,8 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
+import IndiaMap from '../../common/indiaMap';
+
 const Home = () => {
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
@@ -114,68 +116,7 @@ const Home = () => {
       ],
     },
   ]);
-  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
-  // const branch_details = [
-  //   {
-  //     branch_name: 'Vishakapatnam',
-  //     service_sales: 500,
-  //     product_sales: 1200,
-  //     total_sales: 1700,
-  //   },
-  //   {
-  //     branch_name: 'Hyderabad',
-  //     service_sales: 600,
-  //     product_sales: 1400,
-  //     total_sales: 2000,
-  //   },
-  //   {
-  //     branch_name: 'Vijayawada',
-  //     service_sales: 500,
-  //     product_sales: 500,
-  //     total_sales: 1000,
-  //   },
-  //   {
-  //     branch_name: 'Kakinada',
-  //     service_sales: 500,
-  //     product_sales: 1100,
-  //     total_sales: 1600,
-  //   },
-  // ];
-
-  const CardData = [
-    {
-      id: 1,
-      icon: <img src="./products_box.png" />,
-      title: 'Total Products',
-      count: 120,
-      growth: '+55%',
-      bgColor: '#151515',
-    },
-    {
-      id: 2,
-      icon: <img src="./ticket.png" />,
-      title: 'Total Tickets',
-      count: 75,
-      growth: '+40%',
-      bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
-    },
-    {
-      id: 3,
-      icon: <img src="./expenses.png" />,
-      title: 'Expenses',
-      count: 5000,
-      growth: '+20%',
-      bgColor: '#CF0101',
-    },
-    {
-      id: 4,
-      icon: <img src="./sale.png" />,
-      title: 'Total Purchases',
-      count: 80,
-      growth: '+30%',
-      bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
-    },
-  ];
+  
 
   const columns = [
     'Ticket Number',
@@ -818,9 +759,9 @@ const Home = () => {
         </div>
 
         <div className="flex mt-8">
-          <div className="w-3/5">
-            {branch_details.map((branch) => (
-              <div className="grid grid-cols-4 gap-4 space-y-4">
+          <div className="w-full">
+            {branches.map((branch) => (
+              <div className="grid grid-cols-6  space-y-4">
                 <div className="flex items-center space-x-2">
                   <img
                     src="logo-name-square.png"
@@ -835,17 +776,33 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="text-left">
-                  <p className="text-gray-500">Service Sales</p>
+                  <p className="text-gray-500">Rectifications</p>
                   <p className="text-gray-800 font-bold">
                     {branch.serviceSales}
                   </p>
                 </div>
                 <div className="text-left">
-                  <p className="text-gray-500">Product Sales</p>
+                  <p className="text-gray-500">Renewals</p>
                   <p className="text-gray-800 font-bold">
                     {branch.productSales}
                   </p>
                 </div>
+
+                <div className="text-left">
+                  <p className="text-gray-500">Replacement</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.productSales}
+                  </p>
+                </div>
+
+                <div className="text-left">
+                  <p className="text-gray-500">Products Sales</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.productSales}
+                  </p>
+                </div>
+
+
                 <div className="text-left">
                   <p className="text-gray-500">Total Sales</p>
                   <p className="text-gray-800 font-bold">{branch.totalSales}</p>
@@ -854,8 +811,8 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="w-2/5 relative flex justify-center items-center">
-            <img src="./map.png" />
+          <div className="w-2/12 relative flex justify-center items-center">
+          <img src="https://www.google.com/maps/vt/data=Pxte0E_oK3nuwOhkfOtz3CynGpZLKSyIPSTQo3gPAganLydvfC72ltwSUN2CyjraPVd3bpG0HNs4MRDEo2qA0SXDaTOEFDXVNL2t_KEu4GY9hKbWJW7G3SFfT_3_vExLYsu32CXFAxR9AD8V0O1ibupEPN9WobX4EdFJ2F2pmCUfg1lwkbwNF4Mn119iJz-x0Kwr6xyj6XBUKgRIq63mmfZZQb5JDNKG7APJTdtT_0XJxGDHiNisV1oZENJHrA2ys17nx_ktH_dpo6ZP3NKN0r0OMJ-x-CA" alt="India Map" />
           </div>
         </div>
       </div>
