@@ -40,9 +40,9 @@ const TableWithSearchFilter = ({
   const workData = location.state?.workData || {};
   const [qualifiedCount, setQualifiedCount] = useState(0);
 useEffect(() => {
-  const countQualified = filteredData.filter(item => item.status === 'qualified').length;
+  const countQualified = filteredData.filter(item => item.status === 'Qualified').length;
   setQualifiedCount(countQualified);
-}, [filteredData]);
+}, []);
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
   if(hiringData){
@@ -73,26 +73,6 @@ useEffect(() => {
     }
   }, [searchID, searchName, clientData?.branchName]);
 
-  if(searchID){
-    console.log("dgdfvfbvbv 1",searchID)
-  }
-  
-  if(hiringData?.candidateName){
-    console.log("dgdfvfbvbv 2",hiringData?.candidateName)
-  }
-  
-  if(hiringData?.status){
-    console.log("dgdfvfbvbv 3",hiringData?.status)
-  }
-  if(initialAuthState?.companyCode){
-    console.log("dgdfvfbvbv 4",initialAuthState?.companyCode)
-  }
-
-
-  if(initialAuthState?.unitCode){
-    console.log("dgdfvfbvbv 5",initialAuthState?.unitCode)
-  }
-  
 
   const getHiringSearchDetails = useCallback(async () => {
     try {
@@ -106,6 +86,7 @@ useEffect(() => {
       
       // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
       if (response.status) {
+        
         console.log(response.data, 'Response Data'); // Log data to verify it
         const filteredData = response.data.map(
           ({ qualifications, ...rest }) => rest
@@ -315,6 +296,11 @@ useEffect(() => {
     setStatus(e.target.value);
   };
 
+  const handleQualified = () => {
+    setStatus("Qualified");
+    // handleSearch();
+  };
+
   if(status){
     console.log("statusssqqqqqqqqqqqqqqqqq",status);
   }
@@ -386,18 +372,18 @@ useEffect(() => {
       {/* Create New Button Row */}
 
       <div className="flex justify-end mb-4">
-        {type==="hiring" && (
+      
      <button
      className="h-10 px-4 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 hover:cursor-pointer relative"
-     onClick={()=>handleStatus("qualified")}
+     onClick={handleQualified}
    >
      Add Staff
-     {/* Round filled badge */}
+     
      <span className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
        {qualifiedCount}
      </span>
    </button>
-        )}
+        
       </div>
       <div className="flex justify-end mb-4">
         {showCreateBtn && (
@@ -476,7 +462,7 @@ useEffect(() => {
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
           >
             <option value="">All Statuses</option>
-            {['pending', 'rejected', 'qualified', 'APPLIED', 'INTERVIEWED'].map((statusOption) => (
+            {['pending', 'Rejected', 'Qualified', 'APPLIED', 'INTERVIEWED'].map((statusOption) => (
               <option key={statusOption} value={statusOption}>
                 {statusOption}
               </option>
