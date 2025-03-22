@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ApiService from "../../services/ApiService";
+import { useLocation, useNavigate } from "react-router";
 
-const EmployerDetails = ({ setEmployerDetails }) => {
+const EditEmployerDetails = () => {
+   const location = useLocation();
+    const navigate = useNavigate();
   const [data, setData] = useState({
     branch: "",
     joiningDate: "",
@@ -22,8 +25,15 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     description: "",
   });
 
+
+  useEffect(() => {
+      if (location.state?.data) {
+        setData(location.state.data);
+      }
+    }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
+
 
   // Fetch Branches
   const fetchBranches = async () => {
@@ -63,21 +73,13 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     getDesignations();
   }, [getDesignations]);
 
-  // Debounced state update to prevent infinite loops
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setEmployerDetails(data);
-    }, 300); // 300ms debounce
-
-    return () => clearTimeout(timeout);
-  }, [data, setEmployerDetails]);
 
   const inputFields = useMemo(
     () => [
-      { label: "Staff ID", name: "staffId", type: "text" },
+      // { label: "Staff ID", name: "staffId", type: "text" },
       { label: "Joining Date", name: "joiningDate", type: "date" },
       { label: "Department", name: "department", type: "text" },
-      { label: "Monthly Salary", name: "monthlySalary", type: "number" },
+      { label: "Monthly Salary", name: "monthlySalary", type: "text" },
       { label: "Office Email", name: "officeEmail", type: "email" },
       { label: "Office Phone Number", name: "officePhoneNumber", type: "text" },
       { label: "Termination Date", name: "terminationDate", type: "date" },
@@ -95,6 +97,28 @@ const EmployerDetails = ({ setEmployerDetails }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
+    console.log("data",data);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const endpoint = "/staff/handleStaffDetails"; 
+      const response = await ApiService.post(endpoint,data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      if (response.data.status) {
+        alert("Employer details updated successfully!");
+        return response.data;
+      } else {
+        alert("Failed to update employer details.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error updating employer details:", error);
+      alert("An error occurred while updating employer details.");
+      return null;
+    }
   };
 
   return (
@@ -102,7 +126,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       <h3 className="text-xl font-semibold mb-4">Employer Details</h3>
 
       {/* Branch Dropdown */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block font-medium mb-1">Branch</label>
         <select
           name="branch"
@@ -117,10 +141,10 @@ const EmployerDetails = ({ setEmployerDetails }) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Designation Dropdown */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block font-medium mb-1">Designation</label>
         <select
           name="designation"
@@ -135,7 +159,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Dynamic Input Fields */}
       {inputFields.map(({ label, name, type }) => (
@@ -180,8 +204,14 @@ const EmployerDetails = ({ setEmployerDetails }) => {
           <option value="No">No</option>
         </select>
       </div>
+      <button
+        onClick={handleSubmit}
+        className="mt-6 w-full bg-blue-600 text-white p-4 rounded-lg text-lg font-semibold hover:bg-blue-700"
+      >
+        Save Changes
+      </button>
     </div>
   );
 };
 
-export default EmployerDetails;
+export default EditEmployerDetails;
