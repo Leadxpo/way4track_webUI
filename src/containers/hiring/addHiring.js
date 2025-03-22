@@ -144,8 +144,7 @@ const AddHiring = () => {
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      if (response.data.status) {
+      if (response.data) {
         alert('Hiring details saved successfully!');
         navigate('/hiring');
       } else {
@@ -166,7 +165,7 @@ const AddHiring = () => {
         <div className="space-y-4">
           <label className="block">
             <span className="block text-gray-700">Candidate Name:</span>
-            <input
+            <input required
               type="text"
               name="candidateName"
               value={formData.candidateName}
@@ -178,6 +177,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Phone Number:</span>
             <input
+            required
               type="text"
               name="phoneNumber"
               value={formData.phoneNumber}
@@ -188,6 +188,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Email:</span>
             <input
+            required
               type="email"
               name="email"
               value={formData.email}
@@ -198,6 +199,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Address:</span>
             <textarea
+            required
               name="address"
               value={formData.address}
               onChange={handleInputChange}

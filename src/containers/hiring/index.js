@@ -12,15 +12,15 @@ const Hiring = () => {
     setPermissions(perms);
   }, []);
   const handleHiringEdit = (hiring) => {
-    navigate('/edit-hiring', { state: { hiringDetails: hiring } });
+    navigate('/edit-hiring', { state: {  hiring } });
   };
 
   const handleDelete = (hiring) => {
-    navigate('/delete-hiring');
+    navigate('/delete-hiring', { state: {  hiring } });
   };
 
   const handleDetails = (hiring) => {
-    navigate('/hiring-details', { state: { hiringDetails: hiring } });
+    navigate('/hiring-details', { state: {  hiring } });
   };
   return (
     <TableWithSearchFilter

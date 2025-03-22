@@ -184,6 +184,11 @@ const Payroll = () => {
                   </th>
                 ))}
               <th className="px-4 py-3 border">Action</th>
+            <tr className="bg-gray-200 text-gray-700">
+              {payrollData.length > 0 && Object.keys(payrollData[0] || {}).map(key => (
+                <th key={key} className="px-4 py-2 border">{key.replace(/([A-Z])/g, ' $1').trim()}</th>
+              ))}
+              <th className="px-4 py-2 border">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -198,6 +203,7 @@ const Payroll = () => {
                       {row[value] ?? "N/A"}
                     </td>
                   ))}
+<<<<<<< HEAD
                   <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
                     <button
                       className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -206,6 +212,9 @@ const Payroll = () => {
                       View
                     </button>
                   </td>
+                  <td><p className='btn' onClick={() => navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
+                  <td><p className='btn-primary' onClick={() => navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
+>>>>>>> 438015db570e427bd60cc210e30a718ddb13669b
                 </tr>
               ))
             ) : (

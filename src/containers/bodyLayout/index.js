@@ -106,6 +106,7 @@ import Attendance from '../attendance';
 import AttendanceUpload from '../attendance/bulkUpload';
 import AttendanceDetails from '../attendance/attendanceDetails';
 import EditAttendance from '../attendance/editAttendance';
+import AddStaffForm from '../staff/AddStaffForm';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -387,7 +388,9 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-branch" element={<AddBranchForm />} />
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
-          <Route path="/add-staff" element={<AddEditEmployeeForm />} />
+          {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
+          <Route path="/add-staff" element={<AddStaffForm/>} />
+    
           <Route path="/edit-staff" element={<AddEditEmployeeForm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
