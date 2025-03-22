@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 export default function EducationDetails({ setEducationDetails }) {
-  const [qualification, setQualification] = useState([
+  const [qualifications, setQualification] = useState([
     {
       qualificationName: "",
       marksOrCgpa: "",
-      file: null,
+      qualificationFiles: null,
     }
   ]);
 
@@ -16,7 +16,7 @@ export default function EducationDetails({ setEducationDetails }) {
       total_experience: "",
       previous_salary: "",
       letter: "experienceLetter",
-      uploadLetters: null,
+      experience: null,
     }
   ]);
 
@@ -31,7 +31,7 @@ export default function EducationDetails({ setEducationDetails }) {
 
   // Handle Qualification Input Change
   const handleQualificationChange = (index, field, value) => {
-    const updatedQualification = [...qualification];
+    const updatedQualification = [...qualifications];
     updatedQualification[index][field] = value;
     setQualification(updatedQualification);
   };
@@ -52,19 +52,19 @@ export default function EducationDetails({ setEducationDetails }) {
   // Add Qualification
   const addQualification = () => {
     setQualification([
-      ...qualification,
+      ...qualifications,
       {
         qualificationName: "",
         marksOrCgpa: "",
-        file: null,
+        qualificationFiles: null,
       }
     ]);
   };
 
   // Remove Qualification
   const removeQualification = (index) => {
-    if (qualification.length > 1) {
-      setQualification(qualification.filter((_, i) => i !== index));
+    if (qualifications.length > 1) {
+      setQualification(qualifications.filter((_, i) => i !== index));
     }
   };
 
@@ -78,7 +78,7 @@ export default function EducationDetails({ setEducationDetails }) {
         total_experience: "",
         previous_salary: "",
         letter: "experienceLetter",
-        uploadLetters: null,
+        experience: null,
       }
     ]);
   };
@@ -93,10 +93,10 @@ export default function EducationDetails({ setEducationDetails }) {
   // Send Data to Parent on Change
   useEffect(() => {
     setEducationDetails({
-      qualification,
+      qualifications,
       experience
     });
-  }, [qualification, experience, setEducationDetails]);
+  }, [qualifications, experience, setEducationDetails]);
 
   return (
     <form className="p-6 max-w-3xl mx-auto bg-white rounded-lg shadow-lg">
@@ -108,7 +108,7 @@ export default function EducationDetails({ setEducationDetails }) {
         </button>
       </h2>
 
-      {qualification.map((qual, index) => (
+      {qualifications.map((qual, index) => (
         <div key={index} className="relative mb-4 p-4 bg-gray-200 rounded-lg shadow">
           <div className="grid grid-cols-2 gap-4">
             <input

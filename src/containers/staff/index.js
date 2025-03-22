@@ -123,7 +123,7 @@ const Staff = () => {
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
-            disabled={!permissions.add}
+            // disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>Add Staff</span>

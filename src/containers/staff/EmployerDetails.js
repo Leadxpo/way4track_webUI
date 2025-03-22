@@ -6,7 +6,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     branch: "",
     staffId: "",
     joiningDate: "",
-    designation: "",
+    designation_id: "",
     department: "",
     monthlySalary: "",
     officeEmail: "",
@@ -21,6 +21,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     insuranceExpiryDate: "",
     password: "",
     description: "",
+    mailAllocation: ""
   });
 
   const [branches, setBranches] = useState([]);
@@ -31,12 +32,12 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     console.log("hiiiiii")
     try {
       const response = await ApiService.post("/branch/getBranchNamesDropDown");
-      console.log("hiiiiii22",response);
-      // if (response.status && Array.isArray(response.data)) {
-      //   setBranches(response.data);
-      // } else {
-      //   console.error("Failed to fetch branches:", response);
-      // }
+      console.log("hiiiiii22", response);
+      if (response.status && Array.isArray(response.data)) {
+        setBranches(response.data);
+      } else {
+        console.error("Failed to fetch branches:", response);
+      }
     } catch (error) {
       console.error("Error fetching branches:", error);
     }
@@ -44,7 +45,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   useEffect(() => {
     fetchBranches();
-  }, [branches]);
+  }, []);
 
   // Fetch Designations
   const getDesignations = useCallback(async () => {
@@ -62,7 +63,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   useEffect(() => {
     getDesignations();
-  }, [getDesignations]);
+  }, []);
 
   // Debounced state update to prevent infinite loops
   useEffect(() => {
@@ -80,7 +81,10 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       { label: "Department", name: "department", type: "text" },
       { label: "Monthly Salary", name: "monthlySalary", type: "number" },
       { label: "Office Email", name: "officeEmail", type: "email" },
+      { label: "Bike Number", name: "bikeNumber", type: "text" },
+      { label: "Driving Licence Number", name: "drivingLicenceNumber", type: "text" },
       { label: "Office Phone Number", name: "officePhoneNumber", type: "text" },
+      { label: "Mobile Brand", name: "mobileBrand", type: "text" },
       { label: "Termination Date", name: "terminationDate", type: "date" },
       { label: "Resignation Date", name: "resignationDate", type: "date" },
       { label: "Final Settlement Date", name: "finalSettlementDate", type: "date" },
@@ -114,7 +118,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
             <option key={branch.id} value={branch.id}>
-              {branch.name}
+              {branch.branchName}
             </option>
           ))}
         </select>
@@ -124,8 +128,8 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       <div className="mb-4">
         <label className="block font-medium mb-1">Designation</label>
         <select
-          name="designation"
-          value={data.designation}
+          name="designation_id"
+          value={data.designation_id}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
         >
@@ -158,6 +162,34 @@ const EmployerDetails = ({ setEmployerDetails }) => {
         <select
           name="bikeAllocation"
           value={data.bikeAllocation}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        >
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Mail Allocation (Yes/No)</label>
+        <select
+          name="mailAllocation"
+          value={data.mailAllocation}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        >
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Driving Licence (Yes/No)</label>
+        <select
+          name="drivingLicence"
+          value={data.drivingLicence}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-lg"
         >

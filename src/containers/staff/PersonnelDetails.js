@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { initialAuthState } from '../../services/ApiService';
 
 const PersonnelDetails = ({ setPersonnelDetails }) => {
   const [formData, setFormData] = useState({
@@ -16,10 +17,11 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',
-    staffPhoto: null,
+    photo: null,
+  
   });
 
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState('');
   const fileInputRef = useRef(null);
 
   const handleChange = useCallback((e) => {
@@ -36,19 +38,21 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     const file = e.target.files[0];
     if (file) {
       setPhotoPreview(URL.createObjectURL(file));
-      const fileObject = { name: file.name, file: file };
+      // const fileObject = { name: file.name, file: file };
       setFormData((prevData) => {
-        const updatedData = { ...prevData, staffPhoto: fileObject };
+        const updatedData = { ...prevData, photo: file };
         setPersonnelDetails(updatedData);
         return updatedData;
       });
     }
   }, [setPersonnelDetails]);
 
+
+
   const handleRemovePhoto = useCallback(() => {
     setPhotoPreview(null);
     setFormData((prevData) => {
-      const updatedData = { ...prevData, staffPhoto: null };
+      const updatedData = { ...prevData, photo: null };
       setPersonnelDetails(updatedData);
       return updatedData;
     });
@@ -96,7 +100,7 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
       <h3 className="text-3xl font-semibold mb-6 text-center">Add Personal Details</h3>
       <div className="space-y-6">
         {Object.keys(formData)
-          .filter((key) => key !== 'staffPhoto')
+          .filter((key) => key !== 'photo')
           .map((key) => (
             <div key={key} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1 capitalize">
