@@ -102,7 +102,7 @@ const Branches = () => {
           className={`px-4 py-2 text-white rounded-md transition 
             ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-branch')}
-          disabled={!permissions.add}
+          // disabled={!permissions.add}
         >
           Add Branch
         </button>
@@ -157,7 +157,7 @@ const Branches = () => {
                   className={`px-4 py-2 text-white rounded-md transition 
               ${permissions.edit ? 'bg-green-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleEdit(branch)}
-                  disabled={!permissions.edit}
+                  // disabled={!permissions.edit}
                 >
                   Edit
                 </button>
@@ -166,7 +166,7 @@ const Branches = () => {
                   className={`px-4 py-2 text-white rounded-md transition 
                     ${permissions.delete ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleDeleteClick(branch)}
-                  disabled={!permissions.delete}
+                  // disabled={!permissions.delete}
                 >
                   Delete
                 </button>

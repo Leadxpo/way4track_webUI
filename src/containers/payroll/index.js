@@ -71,6 +71,25 @@ const Payroll = () => {
     fetchPayrollData(activeTab);
   }, [activeTab]);
 
+  const payrollItem = {
+    staffId: "EMP123",
+    staffName: "John Doe",
+    designation: "Software Engineer",
+    staffPhoto: "https://via.placeholder.com/100",
+    branch: "Mumbai",
+    salaryStatus: "Paid",
+    monthDays: 30,
+    presentDays: 28,
+    leaveDays: 2,
+    actualSalary: 50000,
+    perDaySalary: 1666.67,
+    perHourSalary: 185.19,
+    totalOTHours: 10,
+    OTAmount: 1851.85,
+    lateDeductions: 500,
+    grossSalary: 52000,
+    netSalary: 50500,
+  };
 
   // Handle tab click
   const handleTabClick = (branch) => {
@@ -95,6 +114,7 @@ const Payroll = () => {
   };
   return (
     <div>
+      {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
       {/* Tabs */}
       <div className="flex space-x-4 mb-4 border-b">
         {branches.map((branch) => (
@@ -134,6 +154,7 @@ const Payroll = () => {
               {payrollData.length > 0 && Object.keys(payrollData[0] || {}).map(key => (
                 <th key={key} className="px-4 py-2 border">{key.replace(/([A-Z])/g, ' $1').trim()}</th>
               ))}
+              <th className="px-4 py-2 border">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -143,7 +164,8 @@ const Payroll = () => {
                   {Object.values(row).map((value, colIndex) => (
                     <td key={colIndex} className="px-4 py-2 border">{value ?? 'N/A'}</td>
                   ))}
-                  <td><p className='btn' onClick={()=>navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
+                  <td><p className='btn' onClick={() => navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
+                  <td><p className='btn-primary' onClick={() => navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
                 </tr>
               ))
             ) : (
