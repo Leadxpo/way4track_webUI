@@ -75,7 +75,7 @@
 //     alert('Failed to save employee details. Please try again.');
 //   }
 // }
- 
+
 
 //   return (
 //     <div className="max-w-4xl mx-auto p-4">
@@ -110,6 +110,7 @@ import BankDetails from "./BankDetails";
 import EmployerDetails from "./EmployerDetails";
 import ApiService from '../../services/ApiService';
 import { useNavigate } from "react-router";
+import { initialAuthState } from '../../services/ApiService';
 
 export default function AddStaffForm() {
   const navigate = useNavigate();
@@ -165,37 +166,39 @@ export default function AddStaffForm() {
     }
   }, [currentStep, handleTempDataUpdate]);
 
- // Submit function with optimized FormData
- const handleSubmit = useCallback(async () => {
-  try {
-    
-    const combinedData = {
-      ...formData.personnelDetails,
-      ...formData.educationDetails,
-      ...formData.bankDetails,
-      ...formData.employerDetails,
-    };
+  // Submit function with optimized FormData
+  const handleSubmit = useCallback(async () => {
+    try {
+
+      const combinedData = {
+        ...formData.personnelDetails,
+        ...formData.educationDetails,
+        ...formData.bankDetails,
+        ...formData.employerDetails,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
 
 
 
-    // Debugging: Convert FormData to object for logging
-    // console.log("Final FormData:", Object.fromEntries(formPayload.entries()));
+      // Debugging: Convert FormData to object for logging
+      // console.log("Final FormData:", Object.fromEntries(formPayload.entries()));
 
-    const response = await ApiService.post('/staff/handleStaffDetails',combinedData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+      const response = await ApiService.post('/staff/handleStaffDetails', combinedData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-    if (response.data.status) {
-      alert("Employee added successfully!");
-      navigate('/staff');
-    } else {
+      if (response.data.status) {
+        alert("Employee added successfully!");
+        navigate('/staff');
+      } else {
+        alert("Failed to save employee details. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error saving employee details:", error);
       alert("Failed to save employee details. Please try again.");
     }
-  } catch (error) {
-    console.error("Error saving employee details:", error);
-    alert("Failed to save employee details. Please try again.");
-  }
-}, [formData, navigate]);
+  }, [formData, navigate]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
