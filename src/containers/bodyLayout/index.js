@@ -99,6 +99,7 @@ import ReceiptDetails from '../receipts/receiptDetails';
 import Designation from '../designation';
 import AddDesignation from '../designation/add-designation';
 import DesignationDetails from '../designation/more-details';
+import EditDesignation from '../designation/edit-designation';
 
 import Letters from '../letters';
 import Attendance from '../attendance';
@@ -236,7 +237,7 @@ const BodyLayout = ({ children }) => {
         {/* Logo and Path */}
         <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <img
-            src="/way4tracklogo.png"
+            src="/logo.png"
             alt="Client Logo"
             className="h-8 w-auto" // Adjust the size for better responsiveness
           />
@@ -407,6 +408,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
             path="/bank-details-dashboard"
             element={<BankDetailsDashboard />}
