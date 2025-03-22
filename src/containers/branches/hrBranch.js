@@ -3,8 +3,7 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 import { FaSearch, FaFileDownload } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import ConvertPDF from '../../components/convertPDF';
-// import jsPDF from "jspdf";
-// import "jspdf-autotable";
+
 
 const BranchList = () => {
   const [branchesData, setBranchesData] = useState([]);
@@ -94,210 +93,26 @@ const BranchList = () => {
   }, [selectedStaff]);
 
 
-  // const downloadStaffPDF = async (staff) => {
-  //   if (!staff) {
-  //     alert("No staff details available.");
-  //     return;
-  //   }
-
-  //   const doc = new jsPDF();
-  //   doc.text("Staff Details Report", 20, 10);
-
-  //   const tableData = [
-  //     ["Staff ID", staff.staffId],
-  //     ["Name", staff.name],
-  //     ["Phone Number", staff.phoneNumber],
-  //     ["Email", staff.email],
-  //     ["Address", staff.address],
-  //     ["Date of Birth", staff.dob],
-  //     ["Aadhar Number", staff.aadharNumber],
-  //     ["PAN Card Number", staff.panCardNumber],
-  //     ["Bank Name", staff.bankName],
-  //     ["Branch Name", staff.branchName],
-  //     ["Account Number", staff.accountNumber],
-  //     ["Account Type", staff.accountType],
-  //     ["IFSC Code", staff.ifscCode],
-  //     ["Joining Date", staff.joiningDate],
-  //     ["Previous Company", staff.previousCompany],
-  //     ["Previous Designation", staff.previousDesignation],
-  //     ["Previous Salary", staff.previousSalary],
-  //     ["Total Experience", staff.totalExperience],
-  //     ["Before Experience", staff.beforeExperience],
-  //     ["Basic Salary", staff.monthlySalary],
-  //     ["Salary Date", staff.salaryDate],
-  //     ["Designation", staff.designation],
-  //     ["Department", staff.department ?? "N/A"],
-  //     ["Gender", staff.gender],
-  //     ["Blood Group", staff.bloodGroup],
-  //     ["Driving Licence", staff.drivingLicence],
-  //     ["Driving Licence Number", staff.drivingLicenceNumber],
-  //     ["Bike Allocation", staff.bikeAllocation],
-  //     ["Bike Number", staff.bikeNumber],
-  //     ["ESIC Number", staff.esicNumber],
-  //     ["UAN Number", staff.uanNumber],
-  //     ["Insurance Number", staff.insuranceNumber],
-  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
-  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
-  //     ["Latitude", staff.latitude],
-  //     ["Longitude", staff.longitude],
-  //     ["Location", staff.location],
-  //     ["Mobile Allocation", staff.mobileAllocation],
-  //     ["Mobile Brand", staff.mobileBrand],
-  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
-  //     ["Alternate Phone", staff.alternateNumber],
-  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
-  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
-  //     ["Termination Date", staff.terminationDate ?? "N/A"],
-  //     ["Status", staff.status ?? "N/A"],
-  //   ];
-
-  //   let startY = 20;
-
-  //   if (staff.staffPhoto) {
-  //     try {
-  //       const response = await fetch(staff.staffPhoto);
-  //       const blob = await response.blob();
-  //       const reader = new FileReader();
-
-  //       reader.readAsDataURL(blob);
-  //       reader.onloadend = () => {
-  //         const base64Image = reader.result;
-  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
-
-  //         // Adjust start position for the table after adding image
-  //         doc.autoTable({
-  //           head: [["Field", "Value"]],
-  //           body: tableData,
-  //           startY: 60,
-  //         });
-
-  //         doc.save(`Staff_${staff.staffId}.pdf`);
-  //       };
-  //       return;
-  //     } catch (error) {
-  //       console.error("Error loading image:", error);
-  //     }
-  //   }
-
-  //   // If no image, generate table normally
-  //   doc.autoTable({
-  //     head: [["Field", "Value"]],
-  //     body: tableData,
-  //     startY,
-  //   });
-
-  //   doc.save(`Staff_${staff.staffId}.pdf`);
-  // };
-
-
-  // const downloadStaffPDF1 = async (staff) => {
-  //   if (!staff) {
-  //     alert("No staff details available.");
-  //     return;
-  //   }
-
-  //   const doc = new jsPDF();
-  //   doc.text("Staff Details Report", 20, 10);
-
-  //   const tableData = [
-  //     ["Staff ID", staff.staffId],
-  //     ["Name", staff.name],
-  //     ["Phone Number", staff.phoneNumber],
-  //     ["Email", staff.email],
-  //     ["Address", staff.address],
-  //     ["Date of Birth", staff.dob],
-  //     ["Aadhar Number", staff.aadharNumber],
-  //     ["PAN Card Number", staff.panCardNumber],
-  //     ["Bank Name", staff.bankName],
-  //     ["Branch Name", staff.branchName],
-  //     ["Account Number", staff.accountNumber],
-  //     ["Account Type", staff.accountType],
-  //     ["IFSC Code", staff.ifscCode],
-  //     ["Joining Date", staff.joiningDate],
-  //     ["Previous Company", staff.previousCompany],
-  //     ["Previous Designation", staff.previousDesignation],
-  //     ["Previous Salary", staff.previousSalary],
-  //     ["Total Experience", staff.totalExperience],
-  //     ["Before Experience", staff.beforeExperience],
-  //     ["Basic Salary", staff.monthlySalary],
-  //     ["Salary Date", staff.salaryDate],
-  //     ["Designation", staff.designation],
-  //     ["Department", staff.department ?? "N/A"],
-  //     ["Gender", staff.gender],
-  //     ["Blood Group", staff.bloodGroup],
-  //     ["Driving Licence", staff.drivingLicence],
-  //     ["Driving Licence Number", staff.drivingLicenceNumber],
-  //     ["Bike Allocation", staff.bikeAllocation],
-  //     ["Bike Number", staff.bikeNumber],
-  //     ["ESIC Number", staff.esicNumber],
-  //     ["UAN Number", staff.uanNumber],
-  //     ["Insurance Number", staff.insuranceNumber],
-  //     ["Insurance Eligibility Date", staff.insuranceEligibilityDate],
-  //     ["Insurance Expiry Date", staff.insuranceExpiryDate],
-  //     ["Latitude", staff.latitude],
-  //     ["Longitude", staff.longitude],
-  //     ["Location", staff.location],
-  //     ["Mobile Allocation", staff.mobileAllocation],
-  //     ["Mobile Brand", staff.mobileBrand],
-  //     ["IMEI Number", staff.imeiNumber ?? "N/A"],
-  //     ["Alternate Phone", staff.alternateNumber],
-  //     ["Resignation Date", staff.resignationDate ?? "N/A"],
-  //     ["Final Settlement Date", staff.finalSettlementDate ?? "N/A"],
-  //     ["Termination Date", staff.terminationDate ?? "N/A"],
-  //     ["Status", staff.status ?? "N/A"],
-  //   ];
-
-  //   let startY = 20;
-
-  //   if (staff.staffPhoto) {
-  //     try {
-  //       const response = await fetch(staff.staffPhoto);
-  //       const blob = await response.blob();
-  //       const reader = new FileReader();
-
-  //       reader.readAsDataURL(blob);
-  //       reader.onloadend = () => {
-  //         const base64Image = reader.result;
-  //         doc.addImage(base64Image, "JPEG", 150, 10, 40, 40);
-
-  //         // Adjust start position for the table after adding image
-  //         doc.autoTable({
-  //           head: [["Field", "Value"]],
-  //           body: tableData,
-  //           startY: 60,
-  //         });
-
-  //         doc.save(`Staff_${staff.staffId}.pdf`);
-  //       };
-  //       return;
-  //     } catch (error) {
-  //       console.error("Error loading image:", error);
-  //     }
-  //   }
-
-  //   // If no image, generate table normally
-  //   doc.autoTable({
-  //     head: [["Field", "Value"]],
-  //     body: tableData,
-  //     startY,
-  //   });
-
-  //   doc.save(`Staff_${staff.staffId}.pdf`);
-  // };
-
+ 
   const downloadExcel = (data, filename) => {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       alert("No data available to download.");
       return;
     }
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, filename);
-    XLSX.writeFile(workbook, { filename }.xlsx);
+    
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, filename);
+  
+      // Corrected the filename syntax
+      XLSX.writeFile(workbook, `${filename}.xlsx`);
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
   };
-
-
-
+  
 
   const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
 
@@ -330,7 +145,7 @@ const BranchList = () => {
           onChange={(e) => setSelectedBranchStaff(e.target.value)}
         />
 
-        <button onClick={() => downloadExcel(filteredStaff, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
+        <button onClick={() => downloadExcel(filteredBranches, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
           <FaFileDownload className="mr-2" /> Download Excel
         </button>
       </div>

@@ -52,6 +52,7 @@ import DownloadComponent from '../reports/download';
 import Receipts from '../receipts';
 import Purchase from '../purchase';
 import Payroll from '../payroll';
+import PayrollDetails from '../payroll/payrollDetails';
 import StaffDetails from '../staff/staffDetails';
 import InHandProductsForm from '../products/inHandProductForm';
 import Tracker from '../tracker';
@@ -400,6 +401,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/ledger-details" element={<LedgerDetails />} />
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/payroll" element={<Payroll />} />
+          <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
           <Route path="/tracker" element={<Tracker />} />
           <Route path="/appointments" element={<Appointments />} />
