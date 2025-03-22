@@ -116,15 +116,20 @@
 // export default ViewStaffDetails;
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import ApiService from "../../services/ApiService";
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
-
+ const {state} = useLocation();
+console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
+  staffId
+  
+);
   const [formData] = useState({
     personnelDetails: {
+      staffId: state.staffDetails.staffId,
       name: "John Doe",
       dob: "1990-01-01",
       gender: "Male",
@@ -141,6 +146,7 @@ const ViewStaffDetails = () => {
       bloodGroup: "O+",
     },
     educationDetails: {
+      staffId: state.staffDetails.staffId,
       qualifications: [{ qualificationName: "B.Tech", marksOrCgpa: "8.5 CGPA", file: null }],
       experience: [{
         previousCompany: "XYZ Corp",
@@ -152,13 +158,15 @@ const ViewStaffDetails = () => {
       }],
     },
     bankDetails: {
+      staffId: state.staffDetails.staffId,
       accountNumber: "123456789012",
       bankName: "ABC Bank",
       ifscCode: "ABC12345",
-      accountBranch: "Downtown Branch",
+      branchName: "Downtown Branch",
       accountType: "savings",
     },
     employerDetails: {
+      staffId: state.staffDetails.staffId,
       branch: "Head Office",
       staffId: "EMP12345",
       joiningDate: "2020-06-15",

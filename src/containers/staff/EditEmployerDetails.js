@@ -5,7 +5,9 @@ import { useLocation, useNavigate } from "react-router";
 const EditEmployerDetails = () => {
    const location = useLocation();
     const navigate = useNavigate();
+    console.log("asdffhgfdsa location rammmmmmmmm",location.state)
   const [data, setData] = useState({
+    staffId:'',
     branch: "",
     joiningDate: "",
     designation: "",

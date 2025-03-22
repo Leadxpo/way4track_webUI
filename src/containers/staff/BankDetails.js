@@ -5,7 +5,7 @@ const BankDetails = ({ setBankDetails }) => {
     accountNumber: '',
     bankName: '',
     ifscCode: '',
-    accountBranch: '',
+    branchName: '',
     accountType: '',
   });
 

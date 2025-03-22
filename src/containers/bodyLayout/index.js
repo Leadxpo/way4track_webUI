@@ -106,11 +106,11 @@ import AttendanceUpload from '../attendance/bulkUpload';
 import AttendanceDetails from '../attendance/attendanceDetails';
 import EditAttendance from '../attendance/editAttendance';
 import AddStaffForm from '../staff/AddStaffForm';
-import EditEducationDetails from '../staff/EditEducationDetails';
-import EditPersonnelDetails from '../staff/EditPersonnelDetails';
+import ViewStaffDetails from '../staff/ViewStaffDetails';
 import EditBankDetails from '../staff/EditBankDetails';
 import EditEmployerDetails from '../staff/EditEmployerDetails';
-import ViewStaffDetails from '../staff/ViewStaffDetails';
+import EditPersonnelDetails from '../staff/EditPersonnelDetails';
+import EditEducationDetails from '../staff/EditEducationDetails';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -392,17 +392,17 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-branch" element={<AddBranchForm />} />
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
-
-          {/* staff module routes */}
           {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
-          <Route path="/show-staff" element={<ViewStaffDetails/>} />
+          <Route path="/add-staff" element={<AddStaffForm/>} />
+
+           <Route path="/edit-staff" element={<ViewStaffDetails/>} />
           <Route path="/add-staff" element={<AddStaffForm/>} />
           <Route path="/edit-staff-personnel" element={<EditPersonnelDetails/>} />
-          <Route path="/edit-staff-education" element={<EditEducationDetails/>} />
+           <Route path="/edit-staff-education" element={<EditEducationDetails/>} />
           <Route path="/edit-staff-bank" element={<EditBankDetails/>} />
-          <Route path="/edit-staff-employer" element={<EditEmployerDetails/>} />
-
-          <Route path="/edit-staff" element={<AddEditEmployeeForm />} />
+          <Route path="/edit-staff-employer" element={<EditEmployerDetails/>} /> 
+           
+          {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
           <Route path="/delete-vendor" element={<DeleteVendor />} />
