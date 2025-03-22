@@ -3,7 +3,7 @@ import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
-
+import { useLocation, useNavigate } from 'react-router';
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -14,7 +14,8 @@ const Payroll = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]
   );
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const fetchPayrollData = async (branchName = "All") => {
     try {
       const payload = {
@@ -41,15 +42,6 @@ const Payroll = () => {
           }));
           setBranches([{ branchName: "All" }, ...uniqueBranches]);
         }
-
-        // if (branchName === "All") {
-        //   const uniqueBranches = Array.from(
-        //     new Set(res.data.map((b) => b.branch))
-        //   ).map((branch) => ({
-        //     branchName: branch,
-        //   }));
-        //   setBranches([{ branchName: "All" }, ...uniqueBranches]);
-        // }
       } else {
         setPayrollData([]);
         if (branchName === "All") setBranches([{ branchName: "All" }]);
@@ -151,6 +143,7 @@ const Payroll = () => {
                   {Object.values(row).map((value, colIndex) => (
                     <td key={colIndex} className="px-4 py-2 border">{value ?? 'N/A'}</td>
                   ))}
+                  <td><p className='btn' onClick={()=>navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
                 </tr>
               ))
             ) : (
@@ -163,18 +156,6 @@ const Payroll = () => {
           </tbody>
         </table>
       </div>
-
-      {/* <Table
-        columns={columns}
-        data={payrollData.filter(
-          (row) => activeTab === 'All' || row.branch === activeTab
-        )}
-        onEdit={handleChangePayroll}
-        onDetails={() => { }}
-        showDelete={false}
-      /> */}
-
-
     </div>
   );
 };
