@@ -177,7 +177,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Phone Number:</span>
             <input
-            required
+              required
               type="text"
               name="phoneNumber"
               value={formData.phoneNumber}
@@ -188,7 +188,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Email:</span>
             <input
-            required
+              required
               type="email"
               name="email"
               value={formData.email}
@@ -199,7 +199,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Address:</span>
             <textarea
-            required
+              required
               name="address"
               value={formData.address}
               onChange={handleInputChange}
@@ -254,44 +254,53 @@ const AddHiring = () => {
           </div>
 
           {/* Level Wise Data */}
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <span className="text-gray-700">Is Driving Licence:</span>
-            <input
-              type="checkbox"
-              name="drivingLicence"
-              checked={formData.drivingLicence}
-              onChange={(e) =>
-                handleInputChange({
-                  target: { name: "drivingLicence", value: e.target.checked ? "Yes" : "No" },
-                })
-              }
-              className="hidden"
-              id="drivingLicenceToggle"
-            />
-            <div
-              className={`w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 transition ${formData.drivingLicence ? "bg-green-500" : "bg-gray-300"
-                }`}
-            >
-              <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${formData.drivingLicence ? "translate-x-6" : "translate-x-0"
-                  }`}
-              />
-            </div>
-          </label>
-
-          {formData.drivingLicence=="YES" && (
-            <label className="block mt-2">
-              <span className="block text-gray-700">Driving Licence Number:</span>
+          <div className="p-4">
+            {/* Toggle Switch */}
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <span className="text-gray-700">Is Driving Licence:</span>
               <input
-                type="text"
-                name="drivingLicenceNumber"
-                value={formData.drivingLicenceNumber}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md"
+                type="checkbox"
+                name="drivingLicence"
+                checked={formData.drivingLicence === "Yes"}
+                onChange={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    drivingLicence: prev.drivingLicence === "Yes" ? "No" : "Yes",
+                  }))
+                }
+                className="hidden"
               />
+              <div
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    drivingLicence: prev.drivingLicence === "Yes" ? "No" : "Yes",
+                  }))
+                }
+                className={`w-12 h-6 flex items-center rounded-full p-1 transition cursor-pointer ${formData.drivingLicence === "Yes" ? "bg-green-500" : "bg-gray-300"
+                  }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${formData.drivingLicence === "Yes" ? "translate-x-6" : "translate-x-0"
+                    }`}
+                />
+              </div>
             </label>
-          )}
-          <label className="block">
+
+            {/* Driving Licence Number Field */}
+            {formData.drivingLicence === "Yes" && (
+              <label className="block mt-2">
+                <span className="block text-gray-700">Driving Licence Number:</span>
+                <input
+                  type="text"
+                  name="drivingLicenceNumber"
+                  value={formData.drivingLicenceNumber}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
+              </label>
+            )}
+          </div>          <label className="block">
             <span className="block text-gray-700">joiningDate:</span>
             <input
               type="date"
