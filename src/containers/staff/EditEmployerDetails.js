@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ApiService from "../../services/ApiService";
+import { useLocation, useNavigate } from "react-router";
 
-const EmployerDetails = ({ setEmployerDetails }) => {
+const EditEmployerDetails = () => {
+   const location = useLocation();
+    const navigate = useNavigate();
+    console.log("asdffhgfdsa location rammmmmmmmm",location.state)
   const [data, setData] = useState({
+    staffId:'',
     branch: "",
     joiningDate: "",
-    designation_id: "",
+    designation: "",
     department: "",
     monthlySalary: "",
     officeEmail: "",
@@ -20,24 +25,29 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     insuranceExpiryDate: "",
     password: "",
     description: "",
-    mailAllocation: "",
-    drivingLicence: ""
   });
 
+
+  useEffect(() => {
+      if (location.state?.data) {
+        setData(location.state.data);
+      }
+    }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
+
 
   // Fetch Branches
   const fetchBranches = async () => {
     console.log("hiiiiii")
     try {
       const response = await ApiService.post("/branch/getBranchNamesDropDown");
-      console.log("hiiiiii22", response);
-      if (response.status && Array.isArray(response.data)) {
-        setBranches(response.data);
-      } else {
-        console.error("Failed to fetch branches:", response);
-      }
+      console.log("hiiiiii22",response);
+      // if (response.status && Array.isArray(response.data)) {
+      //   setBranches(response.data);
+      // } else {
+      //   console.error("Failed to fetch branches:", response);
+      // }
     } catch (error) {
       console.error("Error fetching branches:", error);
     }
@@ -45,7 +55,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   useEffect(() => {
     fetchBranches();
-  }, []);
+  }, [branches]);
 
   // Fetch Designations
   const getDesignations = useCallback(async () => {
@@ -63,28 +73,17 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   useEffect(() => {
     getDesignations();
-  }, []);
+  }, [getDesignations]);
 
-  // Debounced state update to prevent infinite loops
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setEmployerDetails(data);
-    }, 300); // 300ms debounce
-
-    return () => clearTimeout(timeout);
-  }, [data, setEmployerDetails]);
 
   const inputFields = useMemo(
     () => [
-      { label: "Staff ID", name: "staffId", type: "text" },
+      // { label: "Staff ID", name: "staffId", type: "text" },
       { label: "Joining Date", name: "joiningDate", type: "date" },
       { label: "Department", name: "department", type: "text" },
-      { label: "Monthly Salary", name: "monthlySalary", type: "number" },
+      { label: "Monthly Salary", name: "monthlySalary", type: "text" },
       { label: "Office Email", name: "officeEmail", type: "email" },
-      { label: "Bike Number", name: "bikeNumber", type: "text" },
-      { label: "Driving Licence Number", name: "drivingLicenceNumber", type: "text" },
       { label: "Office Phone Number", name: "officePhoneNumber", type: "text" },
-      { label: "Mobile Brand", name: "mobileBrand", type: "text" },
       { label: "Termination Date", name: "terminationDate", type: "date" },
       { label: "Resignation Date", name: "resignationDate", type: "date" },
       { label: "Final Settlement Date", name: "finalSettlementDate", type: "date" },
@@ -100,6 +99,28 @@ const EmployerDetails = ({ setEmployerDetails }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
+    console.log("data",data);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const endpoint = "/staff/handleStaffDetails"; 
+      const response = await ApiService.post(endpoint,data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      if (response.data.status) {
+        alert("Employer details updated successfully!");
+        return response.data;
+      } else {
+        alert("Failed to update employer details.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error updating employer details:", error);
+      alert("An error occurred while updating employer details.");
+      return null;
+    }
   };
 
   return (
@@ -107,7 +128,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       <h3 className="text-xl font-semibold mb-4">Employer Details</h3>
 
       {/* Branch Dropdown */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block font-medium mb-1">Branch</label>
         <select
           name="branch"
@@ -118,18 +139,18 @@ const EmployerDetails = ({ setEmployerDetails }) => {
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
             <option key={branch.id} value={branch.id}>
-              {branch.branchName}
+              {branch.name}
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Designation Dropdown */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block font-medium mb-1">Designation</label>
         <select
-          name="designation_id"
-          value={data.designation_id}
+          name="designation"
+          value={data.designation}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
         >
@@ -140,7 +161,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {/* Dynamic Input Fields */}
       {inputFields.map(({ label, name, type }) => (
@@ -171,34 +192,6 @@ const EmployerDetails = ({ setEmployerDetails }) => {
         </select>
       </div>
 
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Mail Allocation (Yes/No)</label>
-        <select
-          name="mailAllocation"
-          value={data.mailAllocation}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        >
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Driving Licence (Yes/No)</label>
-        <select
-          name="drivingLicence"
-          value={data.drivingLicence}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        >
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </div>
-
       {/* Mobile Allocation Dropdown */}
       <div className="mb-4">
         <label className="block font-medium mb-1">Mobile Allocation (Yes/No)</label>
@@ -213,8 +206,14 @@ const EmployerDetails = ({ setEmployerDetails }) => {
           <option value="No">No</option>
         </select>
       </div>
+      <button
+        onClick={handleSubmit}
+        className="mt-6 w-full bg-blue-600 text-white p-4 rounded-lg text-lg font-semibold hover:bg-blue-700"
+      >
+        Save Changes
+      </button>
     </div>
   );
 };
 
-export default EmployerDetails;
+export default EditEmployerDetails;

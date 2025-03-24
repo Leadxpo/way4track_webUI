@@ -23,6 +23,8 @@ const StaffDetails = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
+
+        console.log("qwwwwww",response);
         if (response.status) {
           const staff = response.data;
           setStaffDetails({
