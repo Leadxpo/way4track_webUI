@@ -166,7 +166,7 @@ const Home = () => {
     const fetchTicketDetails = async () => {
       try {
         const response = await ApiService.post(
-          '/tickets/getTicketDetailsById',
+          'tickets/getTicketDetailsById',
           {
             id: ticketData.id,
             companyCode: initialAuthState.companyCode,

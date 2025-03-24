@@ -176,7 +176,7 @@ const Login = ({ handleLoginFlag }) => {
     <div className="flex items-center justify-center h-screen">
       <div className="p-8 rounded-lg w-96 space-y-12 bg-white shadow-md">
         {/* Form */}
-        <img src="way4tracklogo.png" className="mx-auto" alt="Logo" />
+        <img src="logo.png" className="mx-auto" alt="Logo" />
         <form className="space-y-8" onSubmit={handleLogin}>
           {/* User ID Input */}
           <div className="mb-4">
@@ -268,3 +268,20 @@ const Login = ({ handleLoginFlag }) => {
 };
 
 export default Login;
+// const employeePayroll = async (payslipBody) => {
+//   try {
+//     const response = ApiService.post(
+//       "https://sharontelematics.org/api/PAYROLL/getPayRollStaffDetails",
+//       {
+//         staffId: staffDetails.staffId,
+//         month: payslipBody.payslipMonth,
+//         year: payslipBody.year,
+//       }
+//     );
+//     console.log("API Response:", response.data);
+//     return response.data; // Return the API response data
+//   } catch (error) {
+//     console.error("Error fetching payroll data:", error);
+//     return null; // Return null or handle errors accordingly
+//   }
+// };
