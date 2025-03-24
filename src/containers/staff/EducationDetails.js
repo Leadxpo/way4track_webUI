@@ -45,10 +45,23 @@ export default function EducationDetails({ setEducationDetails }) {
     setExperience(updatedExperience);
   };
 
+  const handleExperienceFileChange = (index, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const updatedExperience = [...experience];
+      updatedExperience[index].experience = file;
+      setExperience(updatedExperience);
+    }
+  };
+
   // Handle File Upload
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
-    handleQualificationChange(index, "file", file);
+    if (file) {
+      const updatedQualification = [...qualifications];
+      updatedQualification[index].qualificationFiles = file;  // Ensure correct key name
+      setQualification(updatedQualification);
+    }
   };
 
   // Add Qualification
@@ -200,7 +213,12 @@ export default function EducationDetails({ setEducationDetails }) {
                 <option key={option} value={option}>{option.replace(/([A-Z])/g, " $1").trim()}</option>
               ))}
             </select>
-            <input type="file" className="border rounded p-2" onChange={(e) => handleExperienceChange(index, "uploadLetters", e.target.files[0])} />
+            <input
+              type="file"
+              className="border rounded p-2"
+              onChange={(e) => handleExperienceFileChange(index, e)}
+            />
+
           </div>
           {index > 0 && (
             <button
