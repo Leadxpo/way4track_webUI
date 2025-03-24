@@ -58,7 +58,7 @@ const Attendance = () => {
       </div>
       <div className="mb-6 p-6 bg-white shadow-md rounded-xl border border-gray-200 w-full max-w-4xl mx-auto">
         <h2 className="text-xl font-semibold text-center text-gray-900 mb-4">
-        Search Attendance Records
+          Search Attendance Records
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -67,6 +67,8 @@ const Attendance = () => {
             <label className="text-xs font-medium text-gray-700 mb-1">From Date</label>
             <input
               type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             />
           </div>
@@ -76,6 +78,8 @@ const Attendance = () => {
             <label className="text-xs font-medium text-gray-700 mb-1">To Date</label>
             <input
               type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             />
           </div>
@@ -85,6 +89,8 @@ const Attendance = () => {
             <label className="text-xs font-medium text-gray-700 mb-1">Staff ID</label>
             <input
               type="text"
+              value={staffId}
+              onChange={(e) => setStaffId(e.target.value)}
               placeholder="Enter Staff ID"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition placeholder-gray-400"
             />
@@ -95,6 +101,8 @@ const Attendance = () => {
             <label className="text-xs font-medium text-gray-700 mb-1">Branch Name</label>
             <input
               type="text"
+              value={branchName}
+              onChange={(e) => setBranchName(e.target.value)}
               placeholder="Enter Branch Name"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition placeholder-gray-400"
             />
@@ -103,11 +111,14 @@ const Attendance = () => {
 
         {/* Search Button */}
         <div className="flex justify-center mt-6">
+          {/* Search Button */}
           <button
             className="bg-blue-600 text-white text-sm font-medium px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+            onClick={fetchAttendanceDetails} // Call function when button is clicked
           >
             Search
           </button>
+
         </div>
       </div>
 

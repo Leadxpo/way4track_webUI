@@ -23,6 +23,8 @@ const StaffDetails = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
+
+        console.log("qwwwwww", response);
         if (response.status) {
           const staff = response.data;
           setStaffDetails({
@@ -171,11 +173,11 @@ const StaffDetails = () => {
                           key={i}
                           className="table-cell p-1 border-r border-gray-300 text-center"
                         >
-                          {attendanceData[i]?.inTime.length > 0
-                            ? new Date(
-                              attendanceData[i].inTime[0]
-                            ).toLocaleTimeString()
+
+                          {Array.isArray(attendanceData[i]?.inTime) && attendanceData[i].inTime.length > 0
+                            ? new Date(attendanceData[i].inTime[0]).toLocaleTimeString()
                             : 'No Data'}
+
                         </div>
                       ))}
                     </div>
@@ -190,11 +192,10 @@ const StaffDetails = () => {
                           key={i}
                           className="table-cell p-1 border-r border-gray-300 text-center"
                         >
-                          {attendanceData[i]?.outTime.length > 0
-                            ? new Date(
-                              attendanceData[i].outTime[0]
-                            ).toLocaleTimeString()
+                          {Array.isArray(attendanceData[i]?.outTime) && attendanceData[i].outTime.length > 0
+                            ? new Date(attendanceData[i].outTime[0]).toLocaleTimeString()
                             : 'No Data'}
+
                         </div>
                       ))}
                     </div>

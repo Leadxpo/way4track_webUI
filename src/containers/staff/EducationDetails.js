@@ -8,7 +8,9 @@ export default function EducationDetails({ setEducationDetails }) {
       qualificationFiles: null,
     }
   ]);
-
+  const qualificationOptions = [
+    "10th Class", "Intermediate", "Degree", "Post Graduation", "ITI / Diploma"
+  ];
   const [experience, setExperience] = useState([
     {
       previousCompany: "",
@@ -43,10 +45,23 @@ export default function EducationDetails({ setEducationDetails }) {
     setExperience(updatedExperience);
   };
 
+  const handleExperienceFileChange = (index, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const updatedExperience = [...experience];
+      updatedExperience[index].experience = file;
+      setExperience(updatedExperience);
+    }
+  };
+
   // Handle File Upload
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
-    handleQualificationChange(index, "file", file);
+    if (file) {
+      const updatedQualification = [...qualifications];
+      updatedQualification[index].qualificationFiles = file;  // Ensure correct key name
+      setQualification(updatedQualification);
+    }
   };
 
   // Add Qualification
@@ -111,14 +126,19 @@ export default function EducationDetails({ setEducationDetails }) {
       {qualifications.map((qual, index) => (
         <div key={index} className="relative mb-4 p-4 bg-gray-200 rounded-lg shadow">
           <div className="grid grid-cols-2 gap-4">
-            <input
+            {/* <input
               type="text"
               placeholder="Qualification Name *"
               className="p-2 border rounded"
               value={qual.qualificationName}
               onChange={(e) => handleQualificationChange(index, "qualificationName", e.target.value)}
               required
-            />
+            /> */}
+            <select className="p-2 border rounded" value={qual.qualificationName}
+              onChange={(e) => handleQualificationChange(index, "qualificationName", e.target.value)} required>
+              <option value="">Select Qualification *</option>
+              {qualificationOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+            </select>
             <input
               type="text"
               placeholder="Marks or CGPA *"
@@ -193,7 +213,12 @@ export default function EducationDetails({ setEducationDetails }) {
                 <option key={option} value={option}>{option.replace(/([A-Z])/g, " $1").trim()}</option>
               ))}
             </select>
-            <input type="file" className="border rounded p-2" onChange={(e) => handleExperienceChange(index, "uploadLetters", e.target.files[0])} />
+            <input
+              type="file"
+              className="border rounded p-2"
+              onChange={(e) => handleExperienceFileChange(index, e)}
+            />
+
           </div>
           {index > 0 && (
             <button
