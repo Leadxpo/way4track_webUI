@@ -17,6 +17,7 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',
+    beforeExperience:null,
     photo: null,
   
   });

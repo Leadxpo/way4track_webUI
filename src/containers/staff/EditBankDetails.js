@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const EditBankDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   console.log("bankkkkkk",location.state)
   const [data, setData] = useState({
+    companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
     staffId:'',
     accountNumber: '',
     bankName: '',

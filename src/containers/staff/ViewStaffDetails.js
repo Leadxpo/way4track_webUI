@@ -115,19 +115,16 @@
 
 // export default ViewStaffDetails;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import ApiService from "../../services/ApiService";
+import ApiService, { initialAuthState } from "../../services/ApiService";
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
  const {state} = useLocation();
-console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
-  staffId
-  
-);
-  const [formData] = useState({
+
+  const [formData,setFormData] = useState({
     personnelDetails: {
       staffId: state.staffDetails.staffId,
       name: "John Doe",
@@ -192,55 +189,86 @@ console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
     navigate(path, { state: { data } });
   };
 
-  // const fetchStaffDetails = async () => {
-  //   // if (!location.state?.staffDetails) return;
-  //   try {
-  //     const response = await ApiService.post('/staff/getStaffDetailsById', {
-  //       staffId: location.state?.staffDetails.staffId,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //     });
-  //     if (!response.status) {
-  //       throw new Error('Staff not found');
-  //     }
-  //     if (response.status) {
-  //       const fetchedData = response.data; // Extract the first staff object
+  const fetchStaffDetails = async () => {
+    try {
+      const response = await ApiService.post("/staff/getStaffDetailsById", {
+        staffId: state.staffDetails.staffId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
 
-  //       // Map API response fields to formData structure
-  //       const updatedFormData = {
-  //         id: fetchedData.id || null,
-  //         name: fetchedData.name || '',
-  //         phoneNumber: fetchedData.phoneNumber || '',
-  //         staffId: fetchedData.staffId || '',
-  //         designation: fetchedData.designation || '',
-  //         branch: fetchedData.branchName || '',
-  //         dob: fetchedData.dob || '',
-  //         email: fetchedData.email || '',
-  //         aadharNumber: fetchedData.aadharNumber || '',
-  //         address: fetchedData.address || '',
-  //         companyCode:
-  //           fetchedData.companyCode || initialAuthState.companyCode,
-  //         unitCode: fetchedData.unitCode || initialAuthState.unitCode,
-  //         joiningDate: fetchedData.joiningDate || '',
-  //         attendance: fetchedData.attendance || '',
-  //         basicSalary: fetchedData.basicSalary || '',
-  //         beforeExperience: fetchedData.beforeExperience || 0,
-  //         password: '', // Leave password empty for security reasons
-  //         photo: fetchedData.staffPhoto || null,
-  //       };
+      console.log("API Response:", response);
 
-  //       setFormData(updatedFormData);
-  //       setImage(fetchedData.staffPhoto || '');
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+      if (response.errorCode === 200) {
+        const staff = response.data;
 
-      // useEffect(() => {
-      //   fetchStaffDetails();
-      // }, []);
+        setFormData({
+          personnelDetails: {
+            staffId: staff.staffId || "",
+            name: staff.name || "",
+            dob: staff.dob || "",
+            gender: staff.gender || "",
+            location: staff.location || "",
+            phoneNumber: staff.phoneNumber || "",
+            alternateNumber: staff.alternateNumber || "",
+            email: staff.email || "",
+            aadharNumber: staff.aadharNumber || "",
+            panCardNumber: staff.panCardNumber || "",
+            drivingLicence: staff.drivingLicence || "",
+            address: staff.address || "",
+            uanNumber: staff.uanNumber || "",
+            esicNumber: staff.esicNumber || "",
+            bloodGroup: staff.bloodGroup || "",
+          },
+          educationDetails: {
+            staffId: staff.staffId || "",
+            qualifications: staff.qualifications || [],
+            experience: staff.experience || [],
+          },
+          bankDetails: {
+            staffId: staff.staffId || "",
+            accountNumber: staff.accountNumber || "",
+            bankName: staff.bankName || "",
+            ifscCode: staff.ifscCode || "",
+            branchName: staff.branchName || "",
+            accountType: staff.accountType || "",
+          },
+          employerDetails: {
+            staffId: staff.staffId || "",
+            branch: staff.branchName || "",
+            joiningDate: staff.joiningDate || "",
+            designation: staff.designation || "",
+            department: staff.department || "",
+            monthlySalary: staff.monthlySalary || "",
+            officeEmail: staff.officeEmail || "",
+            officePhoneNumber: staff.officePhoneNumber || "",
+            bikeAllocation: staff.bikeAllocation || "",
+            mobileAllocation: staff.mobileAllocation || "",
+            terminationDate: staff.terminationDate || "",
+            resignationDate: staff.resignationDate || "",
+            finalSettlementDate: staff.finalSettlementDate || "",
+            insuranceNumber: staff.insuranceNumber || "",
+            insuranceEligibilityDate: staff.insuranceEligibilityDate || "",
+            insuranceExpiryDate: staff.insuranceExpiryDate || "",
+            password: staff.password || "",
+            description: staff.description || "",
+          },
+        });
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (error) {
+      console.error("Error fetching staff details:", error);
+      alert("Failed to fetch staff details.");
+    } 
+  };
+      useEffect(() => {
+    
 
+    
+        fetchStaffDetails();
+      }, [state?.staffDetails?.staffId]);
+ 
   return (
     <div className="m-6">
       <h3 className="text-2xl font-bold mb-6">Staff Details</h3>
