@@ -12,13 +12,12 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     email: '',
     aadharNumber: '',
     panCardNumber: '',
-    drivingLicence: '',
     address: '',
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',
     photo: null,
-  
+
   });
 
   const [photoPreview, setPhotoPreview] = useState('');
@@ -38,14 +37,17 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     const file = e.target.files[0];
     if (file) {
       setPhotoPreview(URL.createObjectURL(file));
-      // const fileObject = { name: file.name, file: file };
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, photo: file };
-        setPersonnelDetails(updatedData);
-        return updatedData;
-      });
+      setFormData((prevData) => ({
+        ...prevData,
+        photo: file,
+      }));
+      setPersonnelDetails((prevData) => ({
+        ...prevData,
+        photo: file,
+      }));
     }
   }, [setPersonnelDetails]);
+
 
 
 

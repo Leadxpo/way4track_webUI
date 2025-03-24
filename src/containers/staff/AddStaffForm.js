@@ -167,27 +167,95 @@ export default function AddStaffForm() {
   }, [currentStep, handleTempDataUpdate]);
 
   // Submit function with optimized FormData
+  // const handleSubmit = useCallback(async () => {
+  //   try {
+
+  //     const combinedData = {
+  //       ...formData.personnelDetails,
+  //       ...formData.educationDetails,
+  //       ...formData.bankDetails,
+  //       ...formData.employerDetails,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+
+
+
+  //     // Debugging: Convert FormData to object for logging
+  //     // console.log("Final FormData:", Object.fromEntries(formPayload.entries()));
+
+  //     const response = await ApiService.post('/staff/handleStaffDetails', combinedData, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //     });
+
+  //     if (response.data.status) {
+  //       alert("Employee added successfully!");
+  //       navigate('/staff');
+  //     } else {
+  //       alert("Failed to save employee details. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving employee details:", error);
+  //     alert("Failed to save employee details. Please try again.");
+  //   }
+  // }, [formData, navigate]);
+
+
   const handleSubmit = useCallback(async () => {
     try {
+      const formPayload = new FormData();
 
-      const combinedData = {
-        ...formData.personnelDetails,
-        ...formData.educationDetails,
-        ...formData.bankDetails,
-        ...formData.employerDetails,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      };
-
-
-
-      // Debugging: Convert FormData to object for logging
-      // console.log("Final FormData:", Object.fromEntries(formPayload.entries()));
-
-      const response = await ApiService.post('/staff/handleStaffDetails', combinedData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // Append Other Details
+      Object.entries(formData.personnelDetails).forEach(([key, value]) => {
+        formPayload.append(key, value);
       });
 
+      Object.entries(formData.educationDetails).forEach(([key, value]) => {
+        formPayload.append(key, value);
+      });
+
+      Object.entries(formData.bankDetails).forEach(([key, value]) => {
+        formPayload.append(key, value);
+      });
+
+      Object.entries(formData.employerDetails).forEach(([key, value]) => {
+        formPayload.append(key, value);
+      });
+
+      // Append company and unit code from `initialAuthState`
+      formPayload.append('companyCode', initialAuthState.companyCode);
+      formPayload.append('unitCode', initialAuthState.unitCode);
+
+      // Append Single File Fields
+      // if (formData.personnelDetails.photo) {
+      //   formPayload.append('photo', formData.personnelDetails.photo);
+      // }
+      // if (formData.personnelDetails.resume) {
+      //   formPayload.append('resume', formData.personnelDetails.resume);
+      // }
+
+      // Append Multiple Files for Qualification
+      // formData.educationDetails.qualifications.forEach((qual, index) => {
+      //   if (qual.qualificationFiles) {
+      //     qual.qualificationFiles.forEach((file, fileIndex) => {
+      //       formPayload.append(`qualificationFiles[${index}][${fileIndex}]`, file);
+      //     });
+      //   }
+      // });
+
+      // Append Multiple Files for Experience
+      // formData.educationDetails.experience.forEach((exp, index) => {
+      //   if (exp.experience) {
+      //     exp.experience.forEach((file, fileIndex) => {
+      //       formPayload.append(`experience[${index}][${fileIndex}]`, file);
+      //     });
+      //   }
+      // });
+
+      const response = await ApiService.post('/staff/handleStaffDetails', formPayload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(formPayload, "::::::;;;;")
       if (response.data.status) {
         alert("Employee added successfully!");
         navigate('/staff');
@@ -199,6 +267,8 @@ export default function AddStaffForm() {
       alert("Failed to save employee details. Please try again.");
     }
   }, [formData, navigate]);
+
+
 
   return (
     <div className="max-w-4xl mx-auto p-4">
