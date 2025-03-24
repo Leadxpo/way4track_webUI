@@ -8,7 +8,9 @@ export default function EducationDetails({ setEducationDetails }) {
       qualificationFiles: null,
     }
   ]);
-
+  const qualificationOptions = [
+    "10th Class", "Intermediate", "Degree", "Post Graduation", "ITI / Diploma"
+  ];
   const [experience, setExperience] = useState([
     {
       previousCompany: "",
@@ -124,14 +126,19 @@ export default function EducationDetails({ setEducationDetails }) {
       {qualifications.map((qual, index) => (
         <div key={index} className="relative mb-4 p-4 bg-gray-200 rounded-lg shadow">
           <div className="grid grid-cols-2 gap-4">
-            <input
+            {/* <input
               type="text"
               placeholder="Qualification Name *"
               className="p-2 border rounded"
               value={qual.qualificationName}
               onChange={(e) => handleQualificationChange(index, "qualificationName", e.target.value)}
               required
-            />
+            /> */}
+            <select className="p-2 border rounded" value={qual.qualificationName}
+              onChange={(e) => handleQualificationChange(index, "qualificationName", e.target.value)} required>
+              <option value="">Select Qualification *</option>
+              {qualificationOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+            </select>
             <input
               type="text"
               placeholder="Marks or CGPA *"
