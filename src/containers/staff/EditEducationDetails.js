@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
-import ApiService from "../../services/ApiService";
+import ApiService, { initialAuthState } from '../../services/ApiService';
+
 
 export default function EditEducationDetails() {
   const location = useLocation();
@@ -85,7 +86,7 @@ export default function EditEducationDetails() {
 
   const handleSubmit = async () => {
     try {
-      const endpoint = "/staff/handleStaffDetails"; 
+      const endpoint = "/staff/handleStaffDetails";
       const formData = new FormData();
 
       qualification.forEach((qual, index) => {
@@ -93,7 +94,8 @@ export default function EditEducationDetails() {
         formData.append(`qualifications[${index}][marksOrCgpa]`, qual.marksOrCgpa);
         if (qual.file) formData.append(`qualifications[${index}][file]`, qual.file);
       });
-
+      formData.append('companyCode', initialAuthState.companyCode);
+      formData.append('unitCode', initialAuthState.unitCode);
       experience.forEach((exp, index) => {
         formData.append(`experience[${index}][previousCompany]`, exp.previousCompany);
         formData.append(`experience[${index}][previous_designation]`, exp.previous_designation);
