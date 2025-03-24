@@ -20,7 +20,8 @@ const EmployerDetails = ({ setEmployerDetails }) => {
     insuranceExpiryDate: "",
     password: "",
     description: "",
-    mailAllocation: ""
+    mailAllocation: "",
+    drivingLicence: ""
   });
 
   const [branches, setBranches] = useState([]);
