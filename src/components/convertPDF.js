@@ -18,7 +18,7 @@ const ConverterPDF = ({ converterData }) => (
             <View style={styles.table}>
                 {Object.entries(converterData).map(([key, value], index) => (
                     <View style={styles.row} key={index}>
-                        <Text style={styles.cell}>{key.replace(/([A-Z])/g, " $1").trim()}</Text>
+                        <Text style={[styles.cell,{textTransform:'capitalize'}]}>{key.replace(/([A-Z])/g, " $1").trim()}</Text>
                         <Text style={styles.cell}>{value ?? "N/A"}</Text>
                     </View>
                 ))}
