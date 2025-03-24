@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 import { FaDownload, FaChevronDown } from 'react-icons/fa';
 import StaffDropdown from "../../components/staffDropdownId";
+import ApiService from "../../services/ApiService";
 const Letters = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -15,9 +16,26 @@ const Letters = () => {
     experienceData: "",
     description: "",
     joiningDate: "",
+    managerName:"",
+    paySlipYear:"",
+    paySlipMonth:"",
+    managerDesignation:""
   });
   const [staffDetails, setStaffDetails] = useState(null);
   const [letterType, setLetterType] = useState("offer");
+
+  const [employeeData, setEmployeeData] = useState(null);
+
+useEffect(() => {
+  const getPayrollData = async () => {
+    const data = await employeePayroll(formData);
+    setEmployeeData(prev=>prev=data); 
+    console.log("employeeDataaaaa : ",employeeData)
+
+  };
+  getPayrollData();
+}, [formData.paySlipMonthYear]);
+
 
   const getIndiaDate = () => {
     return new Date().toLocaleDateString("en-IN", {
@@ -51,31 +69,51 @@ const Letters = () => {
       [name]: value,
     }));
   };
-
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+  
+    // Ensure value is defined before splitting
+    if (value) {
+      const [year, month] = value.split("-"); // Splits "YYYY-MM" into ["YYYY", "MM"]
+      
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value, // Store full YYYY-MM value
+        paySlipYear: year, // Store extracted year separately
+        paySlipMonth: month, // Store extracted month separately
+      }));
+    }
+  };
   const styles = StyleSheet.create({
     page: {
-      padding: 30,
+      padding: 40,
       fontSize: 12,
       fontFamily: "Helvetica",
     },
     header: {
       textAlign: "center",
-      fontSize: 20,
-      marginBottom: 20,
-      fontWeight: "bold",
+      fontSize: 12,
+      marginBottom: 10,fontFamily: "Times-Roman",
+      fontWeight: "ultrabold",
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingBottom: 5,
+      marginBottom: 5,
     },
     section: {
       marginBottom: 10,
     },
     label: {
       fontWeight: "bold",
-      fontSize: 12,
+      fontSize: 12,fontFamily: "Times-Roman",
       marginTop: 5,
     },
     text: {
-      fontSize: 10,
-      lineHeight: 1.2,letterSpacing:1,
-      textAlign: "justify",marginVertical:5
+      fontSize: 10,fontFamily: "Times-Roman",
+      textAlign: "justify", marginVertical: 4
     },
     profileContainer: {
       display: "flex",
@@ -96,7 +134,26 @@ const Letters = () => {
     signatureBlock: {
       marginTop: 10,
     },
-    normalText:{letterSpacing:2,lineHeight:10}
+    logo: {
+      width: 120,
+      height: 100,
+    },
+    companyDetails: {
+      fontSize: 10,
+      textAlign: 'right',
+    },
+    footerText: {
+      marginBottom: 2,alignSelf:'center',fontSize:8,justifyContent:"center"
+    },
+    normalText: { letterSpacing: 2, lineHeight: 10,fontFamily: "Times-Roman" },
+    title: { fontSize: 16, fontWeight: 'bold', textAlign: 'center', marginBottom: 10,fontFamily: "Calibri" },
+    payslipSection: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between'},
+    column: { width: '50%' },
+    paysliptext: { marginBottom: 5,fontFamily: "Times-Roman" },
+    table: { width: '100%', borderWidth: 1 },
+    row: { flexDirection: 'row', border: 1 },
+    cell: { flex: 1, textAlign: 'left', paddingHorizontal:5,fontFamily: "Times-Roman" },
+    footer: { marginTop: 10, position: 'absolute', bottom: 5,left:0,right:0, textAlign: 'center', fontSize: 10, fontStyle: 'italic',fontFamily: "Times-Roman" }
   });
 
   const OfferLetter = ({ employee }) => {
@@ -105,15 +162,29 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={styles.profileContainer}>
-            <Image style={styles.profileImage} src="way4tracklogo.png" />
+
+          {/* Header */}
+          <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
           </View>
           <Text style={styles.header}>OFFER LETTER</Text>
-          <Text style={{alignItems:"flex-end"}}>{todayData}</Text>
 
-          <View style={styles.section}>
-            <Text style={styles.label}>{employee?.name}</Text>
-            <Text style={styles.text}>{employee?.address}</Text>
+
+          <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
+            <View style={{ width: "70%" }}>
+              <Text style={styles.label}>{employee?.name}</Text>
+              <Text style={styles.paysliptext}>{employee?.address}</Text>
+            </View>
+            <View style={{ width: "30%", flexWrap: "wrap" }}>
+              <Text style={{ alignItems: "flex-end" }}>{todayData}</Text>
+            </View>
           </View>
 
           <Text style={styles.text}>Dear {employee?.name},</Text>
@@ -152,10 +223,29 @@ const Letters = () => {
             <Text style={styles.text}>• Build and maintain strong customer relationships</Text>
             <Text style={styles.text}>• Accurately record all sales activities</Text>
           </View>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+          </View>
         </Page>
 
         {/* Page 2 */}
         <Page style={styles.page}>
+          {/* Header */}
+          <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.section}>
             <Text style={styles.label}>Sales Targets:</Text>
             <Text style={styles.text}>•  Meet or exceed individual sales targets set by the company.</Text>
@@ -163,45 +253,62 @@ const Letters = () => {
             <Text style={styles.text}>• Track and report on your sales performance, including leads generated, conversions, and revenue.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Relationship Building:</Text>
+            <Text style={styles.label}>Relationship Building:</Text>
             <Text style={styles.text}>• Build and maintain strong, long-lasting customer relationships to drive repeat business.</Text>
             <Text style={styles.text}>• Follow up with existing customers to ensure satisfaction and promote additional products or services.</Text>
             <Text style={styles.text}>•  Attend industry events, trade shows, and networking opportunities to develop new sales leads.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Sales Administration:</Text>
+            <Text style={styles.label}>Sales Administration:</Text>
             <Text style={styles.text}>•  Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
             <Text style={styles.text}>•  Prepare and submit regular sales reports to your manager.</Text>
             <Text style={styles.text}>• Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Sales Administration:</Text>
+            <Text style={styles.label}>Sales Administration:</Text>
             <Text style={styles.text}>•  Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
             <Text style={styles.text}>•  Prepare and submit regular sales reports to your manager.</Text>
             <Text style={styles.text}>• Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Market Research:</Text>
+            <Text style={styles.label}>Market Research:</Text>
             <Text style={styles.text}>• Stay informed about market trends, competitors, and industry developments. </Text>
             <Text style={styles.text}>• Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
           </View>
           <View style={styles.section}>
-            <Text  style={styles.label}>Team Collaboration:</Text>
+            <Text style={styles.label}>Team Collaboration:</Text>
             <Text style={styles.text}>• Participate in sales meetings, training sessions, and team-building activities. </Text>
             <Text style={styles.text}>• Share best practices and strategies with colleagues to help the team achieve its collective goals.</Text>
           </View>
-          <View style={styles.section}>
-            <Text  style={styles.label}>Employment Terms:</Text>
-            <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check. </Text>
-            <Text style={styles.text}>•  As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
-            <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company "</Text>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
           </View>
         </Page>
 
         {/* Page 3 */}
         <Page style={styles.page}>
+          {/* Header */}
+          <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.section}>
-            <Text style={styles.text}>"can terminate the employment relationship after the bond period, with or without cause and with or without notice."</Text>
+          <Text style={styles.label}>Employment Terms:</Text>
+            <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check. </Text>
+            <Text style={styles.text}>• As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+            <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company "</Text>
+            <Text style={styles.text}>• can terminate the employment relationship after the bond period, with or without cause and with or without notice."</Text>
             <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and on boarding costs.</Text>
           </View>
 
@@ -227,6 +334,13 @@ const Letters = () => {
           </View>
           <Text style={styles.text}>Sincerely,</Text>
           <Text style={styles.text}>Santhi Priya - HR, Sharon Telematics Pvt Ltd</Text>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+          </View>
         </Page>
       </Document>
     )
@@ -236,8 +350,16 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-        <View style={styles.profileContainer}>
-            <Image style={styles.profileImage} src="way4tracklogo.png" />
+           {/* Header */}
+           <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
           </View>
           <Text style={styles.header}>Termination Letter Template</Text>
 
@@ -293,8 +415,8 @@ const Letters = () => {
           <View style={styles.signatureSection}>
             <View style={styles.signatureBlock}>
               <Text style={styles.text}>Sincerely,</Text>
-              <Text style={styles.text}>Priya</Text>
-              <Text style={styles.text}>HR</Text>
+              <Text style={styles.text}>{employee.managerName}</Text>
+              <Text style={styles.text}>{employee.managerDesignation}</Text>
               <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
               <Text style={styles.text}>Contact: 7995512053</Text>
             </View>
@@ -303,15 +425,32 @@ const Letters = () => {
               <Text style={styles.text}>Date:</Text>
             </View>
           </View>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+          </View>
         </Page>
       </Document>
     )
   };
 
-  const RelievingLetterPDF = ({ employee }) => {
-    return (
+  const RelievingLetterPDF = ({ employee }) => (
       <Document>
         <Page style={styles.page}>
+           {/* Header */}
+           <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
+          </View>
           <Text style={styles.title}>Relieving Letter</Text>
 
           <View style={styles.section}>
@@ -355,20 +494,37 @@ const Letters = () => {
               <Text style={styles.text}>Email: hr@sharontelematics.com</Text>
             </View>
           </View>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+          </View>
         </Page>
       </Document>
-    )
-  };
+    );
 
   const ResignationLetterPDF = ({ employee }) => (
     <Document>
       <Page style={styles.page}>
+         {/* Header */}
+         <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
+          </View>
         {/* Title */}
         <Text style={styles.header}>Resignation Letter</Text>
 
         {/* Profile Section */}
         <View style={styles.profileContainer}>
-          <Image style={styles.profileImage} src="way4tracklogo.png" />
+          <Image style={styles.profileImage} src="logo.png" />
         </View>
         <View>
           <Text style={styles.label}>{employee.name}</Text>
@@ -409,58 +565,216 @@ const Letters = () => {
             <Text style={styles.text}>Email: {employee.email}</Text>
           </View>
         </View>
+        {/* Footer */}
+        <View style={styles.footer}>
+            <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+            <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+            <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+            <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+          </View>
       </Page>
     </Document>
   );
 
-  const PayrollLetterPDF = ({ employee }) => (
-    <Document>
-      <Page style={styles.page}>
-        <Text style={styles.title}>Payslip for the Month of December 2024</Text>
+  const employeePayroll = async (formdata) => {
 
-        <View style={styles.section}>
-          <View style={styles.column}>
-            <Text style={styles.label}>Payable Days in Pay Period:</Text> <Text style={styles.text}>{employee.payableDays}</Text>
-            <Text style={styles.label}>LOP Days:</Text> <Text style={styles.text}>{employee.lopDays}</Text>
-            <Text style={styles.label}>Bank Name:</Text> <Text style={styles.text}>{employee.bankName}</Text>
-            <Text style={styles.label}>Account Number:</Text> <Text style={styles.text}>{employee.accountNumber}</Text>
-            <Text style={styles.label}>PAN:</Text> <Text style={styles.text}>{employee.pan}</Text>
-            <Text style={styles.label}>UAN:</Text> <Text style={styles.text}>{employee.uan}</Text>
+    try {
+      const response = await ApiService.post(
+        "/PAYROLL/getPayRollStaffDetails",
+        {
+          staffId: staffDetails.staffId,
+          month: formdata.paySlipMonth,
+          year: formdata.paySlipYear,
+        }
+      );
+      if (response.status) {
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      //alert('Failed to fetch staff details.');
+    }
+  };
+
+
+  const PayrollLetterPDF = ({ employee }) => {
+
+  // Show loading message while fetching data
+  if (!employeeData) return <Text>Loading payroll data...</Text>; 
+    return (
+      <Document>
+        <Page style={styles.page}>
+          {/* Company Header */}
+          {/* Header */}
+          <View style={styles.headerContainer}>
+            <View style={{ width: "60%" }}>
+              <Image style={styles.logo} src="logo.png" />
+            </View>
+            <View style={{ width: "40%", flexWrap: "wrap" }}>
+              <Text style={styles.companyDetails}>
+                Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+              </Text>
+            </View>
+          </View>
+          <Text style={{ textAlign: 'center', marginBottom: 10 }}>
+            47-11-24, Flat no 501, Fifth Floor, Chillapalli Complex, Dwaraka Nagar, Visakhapatnam, Andhra Pradesh 530016
+          </Text>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', borderWidth: 2, padding: 5, borderColor: "#333333", color: "#f3f3f3", backgroundColor: "#000000" }}>
+            Payslip for the period of {employeeData.month} / {employeeData.year}
+          </Text>
+
+          {/* Employee Details */}
+          <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333" }]}>
+            <View style={[styles.column, { borderRightWidth: 2, borderColor: "#333333" }]}>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Name:</Text> <Text>{employeeData.staffName}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Designation:</Text> <Text>{employeeData.designation}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Days Worked:</Text> <Text>{employeeData.presentDays}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Leave Days:</Text> <Text>{employeeData.leaveDays}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Late Days:</Text> <Text>{employeeData.lateDays}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Total Late Minutes:</Text> <Text>{employeeData.totalLateMinutes} mins</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Total Early Minutes:</Text> <Text>{employeeData.totalEarlyMinutes} mins</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Month Days:</Text> <Text>{employeeData.monthDays}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Total OT Hours:</Text> <Text>{employeeData.totalOTHours} hrs</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Per Day Salary:</Text> <Text>₹{employeeData.perDaySalary}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Per Hour Salary:</Text> <Text>₹{employeeData.perHourSalary}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>Bank Account No:</Text> <Text>N/A</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>PAN:</Text> <Text>N/A</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={styles.label}>UAN:</Text> <Text>N/A</Text>
+              </View>
+            </View>
           </View>
 
-          <View style={styles.column}>
-            <Text style={styles.label}>Name:</Text> <Text style={styles.text}>{employee.name}</Text>
-            <Text style={styles.label}>Employee ID:</Text> <Text style={styles.text}>{employee.id}</Text>
-            <Text style={styles.label}>Designation:</Text> <Text style={styles.text}>{employee.designation}</Text>
-            <Text style={styles.label}>Department:</Text> <Text style={styles.text}>{employee.department}</Text>
-            <Text style={styles.label}>Location:</Text> <Text style={styles.text}>{employee.location}</Text>
-            <Text style={styles.label}>Date of Joining:</Text> <Text style={styles.text}>{employee.dateOfJoining}</Text>
+          {/* Earnings & Deductions Table */}
+          <Text style={{ textAlign: 'left', fontWeight: 'bold', borderWidth: 2, padding: 5, borderColor: "#333333", color: "#333333"}}>
+            Calculation
+          </Text>
+          <View style={styles.table}>
+            <View style={styles.row}>
+              <Text style={styles.cell}>Earnings</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>Amount (₹)</Text>
+              <Text style={styles.cell}>Deductions</Text>
+              <Text style={styles.cell}>Amount (₹)</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>Actual Salary</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.actualSalary}</Text>
+              <Text style={styles.cell}>ESI Employee</Text>
+              <Text style={styles.cell}>{employeeData.ESIC_Employee}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>OT Amount</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.OTAmount}</Text>
+              <Text style={styles.cell}>ESI </Text>
+              <Text style={styles.cell}>{employeeData.ESIC_Employer}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>Food Allowance</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.foodAllowance}</Text>
+              <Text style={styles.cell}>PF(Employee)</Text>
+              <Text style={styles.cell}>{employeeData.PF_Employee}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>Incentives</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.incentives}</Text>
+              <Text style={styles.cell}>PF (Employer 1)</Text>
+              <Text style={styles.cell}>{employeeData.PF_Employer1}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>Leave Encashment</Text>
+              <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.leaveEncashment}</Text>
+              <Text style={styles.cell}>Professional Tax</Text>
+              <Text style={styles.cell}>{employeeData.professionalTax}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Earnings</Text>
+              <Text style={[styles.cell, { borderRight: 2, fontWeight: 'bold' }]}>{employeeData.grossSalary}</Text>
+              <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Deductions</Text>
+              <Text style={[styles.cell, { fontWeight: 'bold' }]}>{employeeData.lateDeductions}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <View style={styles.column}>
-            <Text style={styles.label}>Deductions:</Text>
-            <Text style={styles.text}>ESI: {employee.esi}</Text>
-            <Text style={styles.text}>Provident Fund: {employee.pf}</Text>
-            <Text style={styles.text}>Professional Tax: {employee.professionalTax}</Text>
-            <Text style={styles.label}>Total Deductions:</Text> <Text style={styles.text}>{employee.totalDeductions}</Text>
+          {/* Net Pay */}
+          <Text style={{ fontWeight: 'bold', marginTop: 10, fontSize: 14 }}>
+            Net Pay (Rounded): ₹{employeeData.netSalary}
+          </Text>
+
+          {/* Signature */}
+          <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text>Employee's Signature</Text>
+            </View>
+            <View>
+              <Text>Authorized Signature</Text>
+            </View>
           </View>
 
-          <View style={styles.column}>
-            <Text style={styles.label}>Earnings:</Text>
-            <Text style={styles.text}>Actual Salary: {employee.actualSalary}</Text>
-            <Text style={styles.text}>Other Allowances: {employee.otherAllowances}</Text>
-            <Text style={styles.label}>Total Earnings:</Text> <Text style={styles.text}>{employee.totalEarnings}</Text>
-            <Text style={styles.label}>Net Salary:</Text> <Text style={styles.text}>{employee.netSalary}</Text>
-          </View>
-        </View>
+          <Text style={styles.footer}>This is a system-generated payslip and does not require a signature.</Text>
+        </Page>
+      </Document>
+    )
+  };
 
-        <Text style={styles.footer}>This is a system-generated payslip and does not require a signature.</Text>
-      </Page>
-    </Document>
-  );
+  const letterComponents = {
+    offer: {
+      component: <OfferLetter employee={formData} />,
+      fileName: "offer_letter.pdf",
+      label: "Download Offer Letter",
+    },
+    termination: {
+      component: <TerminationLetter employee={formData} />,
+      fileName: "termination_letter.pdf",
+      label: "Download Termination Letter",
+    },
+    relieving: {
+      component: <RelievingLetterPDF employee={formData} />,
+      fileName: "relieving_letter.pdf",
+      label: "Download Relieving Letter",
+    },
+    resignation: {
+      component: <ResignationLetterPDF employee={formData} />,
+      fileName: "resignation_letter.pdf",
+      label: "Download Resignation Letter",
+    },
+    payroll: {
+      component: <PayrollLetterPDF employee={formData} />,
+      fileName: "payroll_letter.pdf",
+      label: "Download PaySlip",
+    },
+  };
 
+  const { component, fileName, label } = letterComponents[letterType] || letterComponents["payroll"];
 
   return (
     <div className="flex flex-col space-y-4 w-full p-4 max-w-lg mx-auto ">
@@ -478,8 +792,6 @@ const Letters = () => {
           className="text-xl text-red-500"
         />
       </div>
-
-
 
       <StaffDropdown setStaffDetails={setStaffDetails} />
 
@@ -556,7 +868,7 @@ const Letters = () => {
             placeholder="Month"
             value={formData.paySlipMonthYear}
             className="flex justify-between items-center w-full shadow-lg rounded-md p-4 my-8 border border-gray-200"
-            onChange={handleChange}
+            onChange={handleDateChange}
           />
         </div>
       )}
@@ -596,10 +908,9 @@ const Letters = () => {
         value={formData.joiningDate}
         onChange={handleChange}
       />
-      {letterType === "offer" ? (
+      {/* {letterType === "offer" ? (
         <PDFDownloadLink
           className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
-
           document={<OfferLetter employee={formData} />}
           fileName="offer_letter.pdf"
         >
@@ -608,7 +919,6 @@ const Letters = () => {
       ) : letterType === "termination" ? (
         <PDFDownloadLink
           className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
-
           document={<TerminationLetter employee={formData} />}
           fileName="termination_letter.pdf"
         >
@@ -617,7 +927,6 @@ const Letters = () => {
       ) : letterType === "relieving" ? (
         <PDFDownloadLink
           className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
-
           document={<RelievingLetterPDF employee={formData} />}
           fileName="relieving_letter.pdf"
         >
@@ -634,7 +943,6 @@ const Letters = () => {
       ) : (
         <PDFDownloadLink
           className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
-
           document={<PayrollLetterPDF employee={formData} />}
           fileName="payroll_letter.pdf"
         >
@@ -642,7 +950,15 @@ const Letters = () => {
         </PDFDownloadLink>
       )
 
-      }
+      } */}
+
+<PDFDownloadLink
+    className="bg-green-600 text-white font-semibold py-2 px-4 w-full mt-5 rounded-md hover:bg-green-700 transition"
+    document={component}
+    fileName={fileName}
+  >
+    {label}
+  </PDFDownloadLink>
     </div>
   );
 };

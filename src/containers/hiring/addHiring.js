@@ -26,6 +26,10 @@ const AddHiring = () => {
     phoneNumber: '',
     email: '',
     address: '',
+    drivingLicence: "",
+    drivingLicenceNumber: "",
+    joiningDate: "",
+    noticePeriod: "",
     hiringLevel: 2,
     resume: null,
     file: '',
@@ -106,6 +110,10 @@ const AddHiring = () => {
     payload.append('email', formData.email);
     payload.append('address', formData.address);
     payload.append('dateOfUpload', formData.dateOfUpload);
+    payload.append('drivingLicence', formData.drivingLicence);
+    payload.append('drivingLicenceNumber', formData.drivingLicenceNumber);
+    payload.append('joiningDate', formData.joiningDate);
+    payload.append('noticePeriod', formData.noticePeriod);
     payload.append('status', formData.status);
     payload.append('companyCode', formData.companyCode);
     payload.append('unitCode', formData.unitCode);
@@ -136,8 +144,7 @@ const AddHiring = () => {
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      if (response.data.status) {
+      if (response.data) {
         alert('Hiring details saved successfully!');
         navigate('/hiring');
       } else {
@@ -158,7 +165,7 @@ const AddHiring = () => {
         <div className="space-y-4">
           <label className="block">
             <span className="block text-gray-700">Candidate Name:</span>
-            <input
+            <input required
               type="text"
               name="candidateName"
               value={formData.candidateName}
@@ -170,6 +177,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Phone Number:</span>
             <input
+              required
               type="text"
               name="phoneNumber"
               value={formData.phoneNumber}
@@ -180,6 +188,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Email:</span>
             <input
+              required
               type="email"
               name="email"
               value={formData.email}
@@ -190,6 +199,7 @@ const AddHiring = () => {
           <label className="block">
             <span className="block text-gray-700">Address:</span>
             <textarea
+              required
               name="address"
               value={formData.address}
               onChange={handleInputChange}
@@ -244,6 +254,72 @@ const AddHiring = () => {
           </div>
 
           {/* Level Wise Data */}
+          <div className="p-4">
+            {/* Toggle Switch */}
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <span className="text-gray-700">Is Driving Licence:</span>
+              <input
+                type="checkbox"
+                name="drivingLicence"
+                checked={formData.drivingLicence === "Yes"}
+                onChange={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    drivingLicence: prev.drivingLicence === "Yes" ? "No" : "Yes",
+                  }))
+                }
+                className="hidden"
+              />
+              <div
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    drivingLicence: prev.drivingLicence === "Yes" ? "No" : "Yes",
+                  }))
+                }
+                className={`w-12 h-6 flex items-center rounded-full p-1 transition cursor-pointer ${formData.drivingLicence === "Yes" ? "bg-green-500" : "bg-gray-300"
+                  }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${formData.drivingLicence === "Yes" ? "translate-x-6" : "translate-x-0"
+                    }`}
+                />
+              </div>
+            </label>
+
+            {/* Driving Licence Number Field */}
+            {formData.drivingLicence === "Yes" && (
+              <label className="block mt-2">
+                <span className="block text-gray-700">Driving Licence Number:</span>
+                <input
+                  type="text"
+                  name="drivingLicenceNumber"
+                  value={formData.drivingLicenceNumber}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
+              </label>
+            )}
+          </div>          <label className="block">
+            <span className="block text-gray-700">joiningDate:</span>
+            <input
+              type="date"
+              name="joiningDate"
+              value={formData.joiningDate}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </label>
+          <label className="block">
+            <span className="block text-gray-700">noticePeriod:</span>
+            <input
+              type="date"
+              name="noticePeriod"
+              value={formData.noticePeriod}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </label>
           {/* Level Wise Data */}
           <div>
             <div className="flex items-center justify-left mb-4 mt-2">

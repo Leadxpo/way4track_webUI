@@ -90,7 +90,7 @@ const Payroll = () => {
     grossSalary: 52000,
     netSalary: 50500,
   };
-  
+
   // Handle tab click
   const handleTabClick = (branch) => {
     setActiveTab(branch);
@@ -112,6 +112,30 @@ const Payroll = () => {
   const handleDownloadClick = () => {
     fetchPayrollData(selectedBranch, selectedDate);
   };
+
+   // Define the column order explicitly
+//    {
+//     "ESIC_Employee": "0.00",
+//     "ESIC_Employer": "0.00",
+//     "PF_Employee": "0.00",
+//     "PF_Employer1": "0.00",
+//     "PF_Employer2": "0.00",
+//     "extraHalfSalary": "0.00",
+//     "daysOutLate6HoursOrMore": 0,
+//     "carryForwardLeaves": 0,
+//     "professionalTax": "0.00",
+//     "": "0.00",
+//     "": "0.00",
+//     "leaveEncashment": "0.00",
+//     "plBikeNeedToPay": "0",
+//     "plBikeAmount": "0.00"
+// }
+   const columnOrder = [
+    "staffId", "staffName", "designation","branch", "year", "month", "monthDays", 
+    "presentDays", "leaveDays", "actualSalary", "perDaySalary", "perHourSalary", 
+    "totalOTHours", "OTAmount", "incentives","foodAllowance","lateDays", "totalEarlyMinutes",
+     "totalLateMinutes","lateDeductions", "grossSalary", "netSalary", "salaryStatus"
+];
   return (
     <div>
       {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
@@ -147,35 +171,61 @@ const Payroll = () => {
 
       {/* Table */}
 
-      <div className="overflow-x-auto mt-4 mb-6">
-        <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 whitespace-nowrap scrollbar-hide">
+        <div className='className="overflow-hidden"'>
+
+        <table className="w-full border-collapse border border-gray-300">
           <thead>
+            <tr className="bg-blue-500 text-white text-left">
+              {payrollData.length > 0 &&
+                columnOrder.map((key) => (
+                  <th key={key} className="px-4 py-3 border capitalize">
+                    {key.replace(/([A-Z])/g, " $1").trim()}
+                  </th>
+                ))}
+              <th className="px-4 py-3 border">Action</th>
+              </tr>
             <tr className="bg-gray-200 text-gray-700">
               {payrollData.length > 0 && Object.keys(payrollData[0] || {}).map(key => (
                 <th key={key} className="px-4 py-2 border">{key.replace(/([A-Z])/g, ' $1').trim()}</th>
               ))}
-              <th  className="px-4 py-2 border">Action</th>
+              <th className="px-4 py-2 border">Action</th>
             </tr>
           </thead>
           <tbody>
             {payrollData.length > 0 ? (
               payrollData.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border">
-                  {Object.values(row).map((value, colIndex) => (
-                    <td key={colIndex} className="px-4 py-2 border">{value ?? 'N/A'}</td>
+                <tr
+                  key={rowIndex} 
+                  className={`border ${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
+                >
+                  {columnOrder.map((value, colIndex) => (
+                    <td style={{textWrap:'wrap'}} key={colIndex} className="px-4 py-2 border text-center">
+                      {row[value] ?? "N/A"}
+                    </td>
                   ))}
-                  <td><p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
+                  <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
+                    <button
+                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                      onClick={() => navigate("/payroll-details", { state: { paySlipDetails: row } })}
+                    >
+                      View
+                    </button>
+                  </td>
+                  <td><p className='btn' onClick={() => navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
+                  <td><p className='btn-primary' onClick={() => navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={Object.keys(payrollData[0] || {}).length} className="text-center py-4">
+                <td colSpan={Object.keys(payrollData[0] || {}).length + 1} className="text-center py-4">
                   No data available
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

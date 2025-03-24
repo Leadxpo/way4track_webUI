@@ -123,10 +123,18 @@ const Staff = () => {
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
-            disabled={!permissions.add}
+            // disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>Add Staff</span>
+          </button>
+          <button
+            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+            onClick={() => navigate('/show-staff')}
+            disabled={!permissions.add}
+          >
+            <FaPlus size={16} />
+            <span>show Staff</span>
           </button>
         </div>
       </div>
@@ -184,20 +192,20 @@ const Staff = () => {
                   <button
                     className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.edit ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleEdit(profile)}
-                    disabled={!permissions.edit}
+                    // disabled={!permissions.edit} 
                   >
                     Edit
                   </button>
                   <button
                     className={`block w-full text-left text-red-500 px-2 py-1 text-sm hover:bg-gray-100 ${permissions.delete ? '' : ' cursor-not-allowed opacity-50'}`}
-                    disabled={!permissions.delete}
+                    // disabled={!permissions.delete}
                   >
                     Delete
                   </button>
                   <button
                     className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.view ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleMoreDetails(profile)}
-                    disabled={!permissions.view}
+                    // disabled={!permissions.view}
                   >
                     More Details
                   </button>

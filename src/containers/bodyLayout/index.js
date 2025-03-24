@@ -99,12 +99,19 @@ import ReceiptDetails from '../receipts/receiptDetails';
 import Designation from '../designation';
 import AddDesignation from '../designation/add-designation';
 import DesignationDetails from '../designation/more-details';
+import EditDesignation from '../designation/edit-designation';
 
 import Letters from '../letters';
 import Attendance from '../attendance';
 import AttendanceUpload from '../attendance/bulkUpload';
 import AttendanceDetails from '../attendance/attendanceDetails';
 import EditAttendance from '../attendance/editAttendance';
+import AddStaffForm from '../staff/AddStaffForm';
+import ViewStaffDetails from '../staff/ViewStaffDetails';
+import EditBankDetails from '../staff/EditBankDetails';
+import EditEmployerDetails from '../staff/EditEmployerDetails';
+import EditPersonnelDetails from '../staff/EditPersonnelDetails';
+import EditEducationDetails from '../staff/EditEducationDetails';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -236,7 +243,7 @@ const BodyLayout = ({ children }) => {
         {/* Logo and Path */}
         <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <img
-            src="/way4tracklogo.png"
+            src="/logo.png"
             alt="Client Logo"
             className="h-8 w-auto" // Adjust the size for better responsiveness
           />
@@ -386,8 +393,17 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-branch" element={<AddBranchForm />} />
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
-          <Route path="/add-staff" element={<AddEditEmployeeForm />} />
-          <Route path="/edit-staff" element={<AddEditEmployeeForm />} />
+          {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
+          <Route path="/add-staff" element={<AddStaffForm/>} />
+
+           <Route path="/edit-staff" element={<ViewStaffDetails/>} />
+          <Route path="/add-staff" element={<AddStaffForm/>} />
+          <Route path="/edit-staff-personnel" element={<EditPersonnelDetails/>} />
+           <Route path="/edit-staff-education" element={<EditEducationDetails/>} />
+          <Route path="/edit-staff-bank" element={<EditBankDetails/>} />
+          <Route path="/edit-staff-employer" element={<EditEmployerDetails/>} /> 
+           
+          {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
           <Route path="/delete-vendor" element={<DeleteVendor />} />
@@ -407,6 +423,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
             path="/bank-details-dashboard"
             element={<BankDetailsDashboard />}
