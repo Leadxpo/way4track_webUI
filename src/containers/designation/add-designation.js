@@ -32,21 +32,28 @@ const AddDesignation = () => {
         );
     };
 
-    // Form submission
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission
-
+    
+        // Ensure roles array is always included in the payload
+        const updatedRoles = roles.map(role => ({
+            ...role,
+            add: role.add || false,
+            edit: role.edit || false,
+            view: role.view || false,
+        }));
+    
         const payload = {
             designation,
-            roles: JSON.stringify(roles), // Convert roles to JSON string
+            roles: JSON.stringify(updatedRoles), // Convert roles to JSON string
             companyCode: initialAuthState?.companyCode,
             unitCode: initialAuthState?.unitCode,
         };
-
+    
         try {
             const endpoint = `/designations/createDesignation`;
             const response = await ApiService.post(endpoint, payload);
-
+    
             if (response.status) {
                 alert("Designation added successfully!");
                 setDesignation(""); // Clear input field after success
@@ -59,6 +66,7 @@ const AddDesignation = () => {
             alert("Error: Could not save designation. Please try again.");
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className="p-5 bg-gray-100 rounded-lg">
