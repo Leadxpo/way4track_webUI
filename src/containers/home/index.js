@@ -16,6 +16,7 @@ import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
 import IndiaMap from '../../common/indiaMap';
+import { FaFileDownload } from "react-icons/fa";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Home = () => {
     {
       id: 1,
       icon: <img src="./products_box.png" />,
-      title: 'Total Products',
+      title: 'Total Sales',
       count: 120,
       growth: '+55%',
       bgColor: '#151515',
@@ -53,7 +54,7 @@ const Home = () => {
     {
       id: 2,
       icon: <img src="./ticket.png" />,
-      title: 'Total Tickets',
+      title: 'Payables',
       count: 75,
       growth: '+40%',
       bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
@@ -61,7 +62,7 @@ const Home = () => {
     {
       id: 3,
       icon: <img src="./expenses.png" />,
-      title: 'Expenses',
+      title: 'Receivables',
       count: 5000,
       growth: '+20%',
       bgColor: '#CF0101',
@@ -117,50 +118,7 @@ const Home = () => {
     },
   ]);
   
-
-  const columns = [
-    'Ticket Number',
-    'Purpose',
-    'Branch',
-    'Date',
-    'Amount',
-    'Payment Status',
-  ];
-
-  const data = [
-    {
-      'Ticket Number': 'TK12345',
-      Purpose: 'Books',
-      Branch: 'HYD',
-      Date: '09-01-2024',
-      Amount: '2500',
-      'Payment Status': 'Done',
-    },
-    {
-      'Ticket Number': 'TK12346',
-      Purpose: 'Stationary',
-      Branch: 'KKD',
-      Date: '03-05-2024',
-      Amount: '1800',
-      'Payment Status': 'Pending',
-    },
-    {
-      'Ticket Number': 'TK12347',
-      Purpose: 'Petrol',
-      Branch: 'Vishakapatnma',
-      Date: '09-05-2024',
-      Amount: '9999',
-      'Payment Status': 'Declined',
-    },
-    {
-      'Ticket Number': 'TK12350',
-      Purpose: 'Advances',
-      Branch: 'Vijayawada',
-      Date: '12-07-2024',
-      Amount: '45000',
-      'Payment Status': 'Sent',
-    },
-  ];
+ 
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
@@ -196,38 +154,7 @@ const Home = () => {
     fetchTicketDetails();
   }, [ticketData.id]);
 
-  const tableMockData = [
-    {
-      Name: 'John Doe',
-      Age: 28,
-      Position: 'Engineer',
-      Department: 'Development',
-    },
-    {
-      Name: 'Jane Smith',
-      Age: 34,
-      Position: 'Manager',
-      Department: 'Operations',
-    },
-    {
-      Name: 'Michael Lee',
-      Age: 25,
-      Position: 'Analyst',
-      Department: 'Finance',
-    },
-    {
-      Name: 'Sophia Johnson',
-      Age: 30,
-      Position: 'Designer',
-      Department: 'Marketing',
-    },
-    {
-      Name: 'David Brown',
-      Age: 29,
-      Position: 'Developer',
-      Department: 'Development',
-    },
-  ];
+  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -657,45 +584,7 @@ const Home = () => {
     }
   };
 
-  // const getAnalysis = async () => {
-  //   try {
-  //     const date = new Date();
-  //     const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
-  //       date.getMonth() + 1
-  //     ).padStart(2, '0')}/${date.getFullYear()}`;
-
-  //     const response = await ApiService.post(
-  //       '/dashboards/getMonthWiseBalance',
-  //       {
-  //         date: formattedDate,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
-  //     if (
-  //       response.status &&
-  //       response.data?.data &&
-  //       response.data?.data.length
-  //     ) {
-  //       const formattedData = response.data.data.map((branch, index) => ({
-  //         branch: branch.branchName,
-  //         background: getBackgroundColor(index),
-  //         data: branch.data.map((entry) => ({
-  //           month: entry.monthName,
-  //           profit: (entry.creditAmount / entry.balanceAmount) * 100,
-  //         })),
-  //       }));
-  //       console.log('branches charts---', formattedData);
-  //       setBranchesData(formattedData);
-  //     } else {
-  //       alert(
-  //         response.data.internalMessage || 'Failed to fetch analysis details.'
-  //       );
-  //     }
-  //   } catch (e) {
-  //     console.error('Error fetching analysis details:', e);
-  //   }
-  // };
+  
 
   // Function to get a background color based on index
   const getBackgroundColor = (index) => {
@@ -817,55 +706,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* second section */}
-      {/* <div className="flex items-center justify-center space-x-10">
-        <div>
-          {bracnhWiseSolidLiquidData.map((cash) => (
-            <div className="grid grid-cols-4 gap-4 space-y-4">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="logo-name-square.png"
-                  alt="Branch Logo"
-                  className="w-10 h-10 object-cover"
-                />
-                <div>
-                  <p className="text-gray-800 font-semibold">Branch</p>
-                  <p className="text-green-700 font-semibold">
-                    {cash.branchName}
-                  </p>
-                </div>
-              </div>
-              <div className="text-left">
-                <p className="text-gray-500">Solid Cash</p>
-                <p className="text-gray-800 font-bold">{cash.solidCash}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          {bracnhWiseSolidLiquidData.map((cash) => (
-            <div className="grid grid-cols-4 gap-4 space-y-4">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="logo-name-square.png"
-                  alt="Branch Logo"
-                  className="w-10 h-10 object-cover"
-                />
-                <div>
-                  <p className="text-gray-800 font-semibold">Branch</p>
-                  <p className="text-green-700 font-semibold">
-                    {cash.branchName}
-                  </p>
-                </div>
-              </div>
-              <div className="text-left">
-                <p className="text-gray-500">Liquid Cash</p>
-                <p className="text-gray-800 font-bold">{cash.liquidCash}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
+      
+    
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"
@@ -939,10 +781,15 @@ const Home = () => {
             </div>
             <button
               onClick={handleSearch}
-              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+              className="h-12 px-6 bg-green-700 text-white  hover:bg-green-500 rounded-md flex items-center"
             >
               <FaSearch className="mr-2" /> Search
             </button>
+
+ <button   className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
+          <FaFileDownload className="mr-2" /> Download Excel
+        </button>
+
           </div>
         ) : null}
         <div className="mt-8">

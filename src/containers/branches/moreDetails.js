@@ -20,28 +20,36 @@ const BranchDetails = () => {
 
   const location = useLocation();
   const branchDetailsFromState = location.state?.branchDetails || {};
-  console.log(location.state?.branchDetails)
-  console.log(branchDetailsFromState, "---")
-
 
   useEffect(() => {
     const fetchBranchDetails = async () => {
+      if (!branchDetailsFromState?.id) {
+        alert("Branch ID is missing. Please select a valid branch.");
+        return;
+      }
+    
+      console.log("Fetching branch details for ID:", branchDetailsFromState.id);
+    
       try {
         const response = await ApiService.post("/branch/getBranchDetailsById", {
-          id: branchDetailsFromState.id,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
+          // id: branchDetailsFromState.id,
+          // companyCode: initialAuthState.companyCode,
+          // unitCode: initialAuthState.unitCode,
         });
+    
         if (response?.status) {
           setBranchDetails(response.data);
         } else {
-          console.error("Failed to fetch branch details:", response);
+          console.warn("Branch not found:", response);
+          alert(response.internalMessage || "Branch not found. It may have been deleted.");
         }
       } catch (error) {
         console.error("Error fetching branch details:", error);
-        alert("Failed to fetch branch details.");
+        alert("Failed to fetch branch details. Please try again later.");
       }
     };
+    
+
     fetchBranchDetails();
   }, [branchDetailsFromState.id]);
 
@@ -55,7 +63,7 @@ const BranchDetails = () => {
           className="w-16 h-16 rounded-full"
         />
         <h1 className="text-3xl font-bold text-green-600">
-          {branchDetails.branchName}
+          {branchDetails.branchName || "Branch Details"}
         </h1>
       </div>
 
@@ -63,31 +71,31 @@ const BranchDetails = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <strong>Branch Name:</strong>
-          <p>{branchDetails.branchName}</p>
+          <p>{branchDetails.branchName || "N/A"}</p>
         </div>
         <div>
           <strong>Branch Number:</strong>
-          <p>{branchDetails.branchNumber}</p>
+          <p>{branchDetails.branchNumber || "N/A"}</p>
         </div>
         <div>
           <strong>Email:</strong>
-          <p>{branchDetails.email}</p>
+          <p>{branchDetails.email || "N/A"}</p>
         </div>
         <div>
           <strong>Address:</strong>
-          <p>{branchDetails.address}</p>
+          <p>{branchDetails.address || "N/A"}</p>
         </div>
         <div>
           <strong>City:</strong>
-          <p>{branchDetails.city}</p>
+          <p>{branchDetails.city || "N/A"}</p>
         </div>
         <div>
           <strong>State:</strong>
-          <p>{branchDetails.state}</p>
+          <p>{branchDetails.state || "N/A"}</p>
         </div>
         <div>
           <strong>Branch Opening:</strong>
-          <p>{branchDetails.branchOpening}</p>
+          <p>{branchDetails.branchOpening || "N/A"}</p>
         </div>
       </div>
 
@@ -95,18 +103,22 @@ const BranchDetails = () => {
       <div>
         <h2 className="text-xl font-semibold mb-4">Branch Staff</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {branchDetails.staff.map((staff, index) => (
-            <div key={index} className="text-center">
-              <img
-                src={staff.staffPhoto || "default-staff.png"}
-                alt={staff.name}
-                className="rounded-full w-24 h-24"
-              />
-              <p>{staff.name}</p>
-              <p>{staff.designation}</p>
-              <p>{branchDetails.branchName}</p>
-            </div>
-          ))}
+          {branchDetails.staff.length > 0 ? (
+            branchDetails.staff.map((staff, index) => (
+              <div key={index} className="text-center">
+                <img
+                  src={staff.staffPhoto || "default-staff.png"}
+                  alt={staff.name}
+                  className="rounded-full w-24 h-24"
+                />
+                <p>{staff.name}</p>
+                <p>{staff.designation}</p>
+                <p>{branchDetails.branchName}</p>
+              </div>
+            ))
+          ) : (
+            <p>No staff available for this branch.</p>
+          )}
         </div>
       </div>
 
@@ -145,4 +157,3 @@ const BranchDetails = () => {
 };
 
 export default BranchDetails;
-
