@@ -289,7 +289,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Date of Conductor:</span>
+                      <span>Date of Interview:</span>
                       <input
                         type="date"
                         className="w-full border px-4 py-2 rounded-md"
@@ -298,7 +298,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Conductor By:</span>
+                      <span>Interviewed By:</span>
                       <input
                         type="text"
                         className="w-full border px-4 py-2 rounded-md"
@@ -307,7 +307,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Conductor Place:</span>
+                      <span>Place of Interview:</span>
                       <input
                         type="text"
                         className="w-full border px-4 py-2 rounded-md"

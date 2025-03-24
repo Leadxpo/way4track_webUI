@@ -258,7 +258,7 @@ const AddHiring = () => {
             {/* Toggle Switch */}
             <label className="flex items-center space-x-2 cursor-pointer">
               <span className="text-gray-700">Is Driving Licence:</span>
-              <input
+              {/* <input
                 type="checkbox"
                 name="drivingLicence"
                 checked={formData.drivingLicence === "Yes"}
@@ -269,7 +269,7 @@ const AddHiring = () => {
                   }))
                 }
                 className="hidden"
-              />
+              /> */}
               <div
                 onClick={() =>
                   setFormData((prev) => ({
@@ -338,21 +338,21 @@ const AddHiring = () => {
                   type="date"
                   value={level.dateOfConductor}
                   onChange={(e) => handleLevelInputChange(index, 'dateOfConductor', e.target.value)}
-                  placeholder="Date of Conductor"
+                  placeholder="Date of Interview"
                   className="w-1/5 p-2"
                 />
                 <input
                   type="text"
                   value={level.conductorBy}
                   onChange={(e) => handleLevelInputChange(index, 'conductorBy', e.target.value)}
-                  placeholder="Conductor By"
+                  placeholder="Interviewed By"
                   className="w-1/5 p-2"
                 />
                 <input
                   type="text"
                   value={level.conductorPlace}
                   onChange={(e) => handleLevelInputChange(index, 'conductorPlace', e.target.value)}
-                  placeholder="Conductor Place"
+                  placeholder="Place of Interview"
                   className="w-1/5 p-2"
                 />
                 <input
