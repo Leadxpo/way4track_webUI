@@ -192,20 +192,20 @@ const Staff = () => {
                   <button
                     className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.edit ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleEdit(profile)}
-                    disabled={!permissions.edit}
+                    // disabled={!permissions.edit} 
                   >
                     Edit
                   </button>
                   <button
                     className={`block w-full text-left text-red-500 px-2 py-1 text-sm hover:bg-gray-100 ${permissions.delete ? '' : ' cursor-not-allowed opacity-50'}`}
-                    disabled={!permissions.delete}
+                    // disabled={!permissions.delete}
                   >
                     Delete
                   </button>
                   <button
                     className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.view ? '' : ' cursor-not-allowed opacity-50'}`}
                     onClick={() => handleMoreDetails(profile)}
-                    disabled={!permissions.view}
+                    // disabled={!permissions.view}
                   >
                     More Details
                   </button>

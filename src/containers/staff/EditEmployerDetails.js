@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import ApiService from "../../services/ApiService";
+import ApiService, { initialAuthState } from "../../services/ApiService";
 import { useLocation, useNavigate } from "react-router";
 
 const EditEmployerDetails = () => {
-   const location = useLocation();
-    const navigate = useNavigate();
-    console.log("asdffhgfdsa location rammmmmmmmm",location.state)
+  const location = useLocation();
+  const navigate = useNavigate();
+  console.log("asdffhgfdsa location rammmmmmmmm", location.state)
   const [data, setData] = useState({
-    staffId:'',
+    staffId: '',
     branch: "",
     joiningDate: "",
     designation: "",
@@ -29,10 +29,10 @@ const EditEmployerDetails = () => {
 
 
   useEffect(() => {
-      if (location.state?.data) {
-        setData(location.state.data);
-      }
-    }, [location.state]);
+    if (location.state?.data) {
+      setData(location.state.data);
+    }
+  }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
 
@@ -42,12 +42,12 @@ const EditEmployerDetails = () => {
     console.log("hiiiiii")
     try {
       const response = await ApiService.post("/branch/getBranchNamesDropDown");
-      console.log("hiiiiii22",response);
-      // if (response.status && Array.isArray(response.data)) {
-      //   setBranches(response.data);
-      // } else {
-      //   console.error("Failed to fetch branches:", response);
-      // }
+      console.log("hiiiiii22", response);
+      if (response.status && Array.isArray(response.data)) {
+        setBranches(response.data);
+      } else {
+        console.error("Failed to fetch branches:", response);
+      }
     } catch (error) {
       console.error("Error fetching branches:", error);
     }
@@ -55,7 +55,7 @@ const EditEmployerDetails = () => {
 
   useEffect(() => {
     fetchBranches();
-  }, [branches]);
+  }, []);
 
   // Fetch Designations
   const getDesignations = useCallback(async () => {
@@ -99,16 +99,21 @@ const EditEmployerDetails = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
-    console.log("data",data);
+    console.log("data", data);
   };
 
   const handleSubmit = async () => {
     try {
-      const endpoint = "/staff/handleStaffDetails"; 
-      const response = await ApiService.post(endpoint,data, {
+      const endpoint = "/staff/handleStaffDetails";
+      let payload = new FormData()
+      payload = {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode, ...data
+      }
+      const response = await ApiService.post(endpoint, payload, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (response.data.status) {
         alert("Employer details updated successfully!");
         return response.data;
@@ -127,8 +132,7 @@ const EditEmployerDetails = () => {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">Employer Details</h3>
 
-      {/* Branch Dropdown */}
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <label className="block font-medium mb-1">Branch</label>
         <select
           name="branch"
@@ -139,14 +143,14 @@ const EditEmployerDetails = () => {
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
             <option key={branch.id} value={branch.id}>
-              {branch.name}
+              {branch.branchName}
             </option>
           ))}
         </select>
-      </div> */}
+      </div>
 
       {/* Designation Dropdown */}
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <label className="block font-medium mb-1">Designation</label>
         <select
           name="designation"
@@ -161,7 +165,7 @@ const EditEmployerDetails = () => {
             </option>
           ))}
         </select>
-      </div> */}
+      </div>
 
       {/* Dynamic Input Fields */}
       {inputFields.map(({ label, name, type }) => (
