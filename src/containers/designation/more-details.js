@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ApiService from "../../services/ApiService";
 import { initialAuthState } from "../../services/ApiService";
 
@@ -8,11 +8,9 @@ const DesignationDetails = () => {
         designation: "",
         roles: [],
     });
-
+    const navigate = useNavigate();
     const location = useLocation();
     const branchDetailsFromState = location.state?.designationDetails || {};
-    console.log(location.state?.branchDetails)
-    console.log(branchDetailsFromState, "---")
 
 
     useEffect(() => {
@@ -39,15 +37,20 @@ const DesignationDetails = () => {
     return (
         <div className="space-y-10 px-8 py-4">
 
-
             {/* Branch Info */}
             <div className="space-y-6 px-8 py-4">
                 {/* Designation Info Card */}
                 <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-2">Designation Details</h2>
-                    <div className="text-lg font-medium text-gray-900">
-                        <span className="text-blue-600">Designation:</span> {branchDetails.designation}
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-700 mb-2">Designation Details</h2>
+                        <div className="text-lg font-medium text-gray-900">
+                            <span className="text-blue-600">Designation:</span> {branchDetails.designation}
+                        </div>
                     </div>
+                    <button className="btn-primarypx-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600" style={{paddingLeft:15,paddingRight:15,paddingTop:5,paddingBottom:5,margin:5}} onClick={() => navigate('/edit-designation', { state: { designationDetails: branchDetails } })}>
+                        EDIT
+                    </button>
+
                 </div>
 
                 {/* Roles Section */}
