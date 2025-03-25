@@ -215,7 +215,7 @@ const HrHome = () => {
       <div className="flex mx-6">
         <div className="bg-red-300 rounded-2xl shadow-lg w-[100%] p-6 mr-4">
           <p className="p-2 text-xl font-semibold mb-1 bg-white rounded-md">
-            Total Staff
+            TOTAL STAFF
           </p>
           <div className="text-6xl font-bold mt-4 text-white">
             {staffCards.totalStaff}

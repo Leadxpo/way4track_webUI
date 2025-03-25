@@ -1,18 +1,19 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { initialAuthState } from '../../services/ApiService';
 
-const PersonnelDetails = ({ setPersonnelDetails }) => {
+const PersonnelDetails = ({ setPersonnelDetails,candidateData }) => {
+console.log("candidateData : ",candidateData);
   const [formData, setFormData] = useState({
-    name: '',
+    name: candidateData.candidateName,
     dob: '',
     gender: '',
     location: '',
-    phoneNumber: '',
+    phoneNumber:candidateData.phoneNumber,
     alternateNumber: '',
-    email: '',
+    email:candidateData.email,
     aadharNumber: '',
     panCardNumber: '',
-    address: '',
+    address:candidateData.address,
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',

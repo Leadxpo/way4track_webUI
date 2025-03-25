@@ -422,7 +422,7 @@ const EditHiring = () => {
                         />
                       </label>
                       <label>
-                        <span>Conductor By:</span>
+                        <span>Interviewed By:</span>
                         <input
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
@@ -461,7 +461,7 @@ const EditHiring = () => {
                         </select> */}
                       </label>
                       <label>
-                        <span>Conductor Place:</span>
+                        <span>Interview Place:</span>
                         <input
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"

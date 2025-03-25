@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 
-export default function EducationDetails({ setEducationDetails }) {
+export default function EducationDetails({ setEducationDetails,candidateData }) {
+  console.log("candidateData : ",candidateData);
+
   const [qualifications, setQualification] = useState([
     {
       qualificationName: "",

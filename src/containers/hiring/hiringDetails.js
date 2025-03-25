@@ -255,7 +255,7 @@ const HiringDetails = () => {
   {candidate.status === "Qualified" && (
     <button
       className="absolute m-3 top-0 right-0 h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
-      onClick={() => navigate("/add-staff")}
+      onClick={() => navigate("/add-staff", { state: {candidateDetails:candidate} })}
     >
       Add to Staff
     </button>
@@ -289,7 +289,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Date of Conductor:</span>
+                      <span>Date of Interview:</span>
                       <input
                         type="date"
                         className="w-full border px-4 py-2 rounded-md"
@@ -298,7 +298,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Conductor By:</span>
+                      <span>Interviewed By:</span>
                       <input
                         type="text"
                         className="w-full border px-4 py-2 rounded-md"
@@ -307,7 +307,7 @@ const HiringDetails = () => {
                       />
                     </label>
                     <label>
-                      <span>Conductor Place:</span>
+                      <span>Place of Interview:</span>
                       <input
                         type="text"
                         className="w-full border px-4 py-2 rounded-md"
