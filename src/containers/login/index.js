@@ -117,8 +117,9 @@ const Login = ({ handleLoginFlag }) => {
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
+      console.log("ramesh login",response )
 
-      if (response && response.status) {
+      if (response && response.data.status) {
         const userProfile = response.data;
 
         localStorage.setItem('userId', userId);
@@ -139,6 +140,7 @@ const Login = ({ handleLoginFlag }) => {
 
         handleLoginFlag();
       } else {
+        alert("Entered Correct Login details");
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {
