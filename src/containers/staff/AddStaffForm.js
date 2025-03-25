@@ -5,13 +5,14 @@ import EducationDetails from "./EducationDetails";
 import BankDetails from "./BankDetails";
 import EmployerDetails from "./EmployerDetails";
 import ApiService from '../../services/ApiService';
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { initialAuthState } from '../../services/ApiService';
 
 export default function AddStaffForm() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-
+  const candidateData = location.state?.candidateDetails || {};
   const [formData, setFormData] = useState(() => ({
     personnelDetails: {},
     educationDetails: {},
@@ -46,9 +47,9 @@ export default function AddStaffForm() {
   const renderForm = useMemo(() => {
     switch (currentStep) {
       case 1:
-        return <PersonnelDetails setPersonnelDetails={(data) => handleTempDataUpdate(data, 'personnelDetails')} />;
+        return <PersonnelDetails candidateData={candidateData} setPersonnelDetails={(data) => handleTempDataUpdate(data, 'personnelDetails')} />;
       case 2:
-        return <EducationDetails setEducationDetails={(data) => handleTempDataUpdate(data, 'educationDetails')} />;
+        return <EducationDetails candidateData={candidateData} setEducationDetails={(data) => handleTempDataUpdate(data, 'educationDetails')} />;
       case 3:
         return <BankDetails setBankDetails={(data) => handleTempDataUpdate(data, 'bankDetails')} />;
       case 4:

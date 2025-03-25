@@ -5,7 +5,6 @@ import ApiService, { initialAuthState } from "../../services/ApiService";
 const EditPersonnelDetails = () => {
   const location = useLocation();
   const stateData = location.state?.data || location.state || {}; // Extract data properly
-
   const [data, setData] = useState({
     staffId: "",
     name: "",

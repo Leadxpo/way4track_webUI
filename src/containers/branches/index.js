@@ -183,7 +183,7 @@ const Branches = () => {
                 <button
                   className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => handleMoreDetails(branch)}
-                   disabled={!permissions.view}
+                  //  disabled={!permissions.view}
                 >
                   More Details
                 </button>

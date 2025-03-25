@@ -92,7 +92,39 @@ const BranchList = () => {
     fetchStaffDetails();
   }, [selectedStaff]);
 
-
+  const formatExcelData = (data) => {
+    return data.map(item => ({
+      "No.": item.staffId,
+      "Employee Name": item.name,
+      "Designation": item.designation,
+      "Branch": item.branchName,
+      "Phone Number": item.phoneNumber,
+      "Joining Date": item.joiningDate,
+      "Salary": item.monthlySalary,
+      "Aadhar Number": item.aadharNumber,
+      "Account Number": item.accountNumber,
+      "Account Type": item.accountType,
+      "Address": item.address,
+      "Alternate Number": item.alternateNumber,
+      "Bank Name": item.bankName,
+      "Experience (Years)": item.experience,
+      "Department": item.department,
+      "Date of Birth": item.dob,
+      "Gender": item.gender,
+      "Email": item.email,
+      "Office Email": item.officeEmail,
+      "Office Phone Number": item.officePhoneNumber,
+      "PAN Card Number": item.panCardNumber,
+      "IFSC Code": item.ifscCode,
+      "Previous Company": item.previousCompany,
+      "Previous Designation": item.previousDesignation,
+      "Previous Salary": item.previousSalary,
+      "Total Experience": item.totalExperience,
+      "UAN Number": item.uanNumber,
+      "Status": item.status
+    }));
+  };
+  
  
   const downloadExcel = (data, filename) => {
     if (!data || data.length === 0) {
@@ -101,17 +133,16 @@ const BranchList = () => {
     }
     
     try {
-      const worksheet = XLSX.utils.json_to_sheet(data);
+      const worksheet = XLSX.utils.json_to_sheet(formatExcelData(data));
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, filename);
-  
-      // Corrected the filename syntax
       XLSX.writeFile(workbook, `${filename}.xlsx`);
     } catch (error) {
       console.error("Error generating Excel file:", error);
       alert("Failed to generate the Excel file. Please try again.");
     }
   };
+
   
 
   const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
@@ -221,7 +252,7 @@ const BranchList = () => {
                 <td className="px-4 py-2 border">{staff.designation}</td>
                 <td className="px-4 py-2 border">{staff.phoneNumber}</td>
                 <td className="px-4 py-2 border">{staff.email}</td>
-                <td className="px-4 py-2 border">₹{staff.salary}</td>
+                <td className="px-4 py-2 border">{staff.monthlySalary}</td>
                 <td className="px-4 py-2 border">
                   <FaFileDownload
                     className="text-blue-500 cursor-pointer"
@@ -230,7 +261,7 @@ const BranchList = () => {
                       document.getElementById(`download-pdf-${staff.staffId}`).click();
                     }}
                   />
-                  <ConvertPDF  staff={staff} />
+                 <ConvertPDF staff={staff} />
                 </td>
               </tr>
             ))}

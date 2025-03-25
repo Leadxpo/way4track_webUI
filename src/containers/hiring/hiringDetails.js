@@ -255,7 +255,7 @@ const HiringDetails = () => {
   {candidate.status === "Qualified" && (
     <button
       className="absolute m-3 top-0 right-0 h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
-      onClick={() => navigate("/add-staff")}
+      onClick={() => navigate("/add-staff", { state: {candidateDetails:candidate} })}
     >
       Add to Staff
     </button>

@@ -382,7 +382,7 @@ export const menuOptions = {
     { name: 'Letters', icon: <img src="./letters.png" />, route: '/letters' },
     {
       name: 'Attendance',
-      icon: <img src="./attendance.png" />,
+      icon: <img src="./attendance.jpg" />,
       route: '/attendance',
     },
     {
