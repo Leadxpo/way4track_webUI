@@ -10,7 +10,7 @@ class CommonReq {
     this.userName = userName;
   }
 }
-
+//test
 const Purchase = ({ onEdit, onDetails }) => {
   const [tableData, setTableData] = useState([]);
   const [columns, setColumns] = useState([]);
