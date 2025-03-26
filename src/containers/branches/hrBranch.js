@@ -10,10 +10,7 @@ const BranchList = () => {
   const [employees, setEmployees] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedStaff, setSelectedStaff] = useState("");
-  const [staffDetails, setStaffDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedBranchStaff, setSelectedBranchStaff] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState("");
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
