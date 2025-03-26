@@ -115,6 +115,21 @@
 
 // export default ViewStaffDetails;
 
+<<<<<<< HEAD
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import ApiService from "../../services/ApiService";
+
+const ViewStaffDetails = () => {
+  const navigate = useNavigate();
+ const {state} = useLocation();
+console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
+  staffId
+  
+);
+  const [formData] = useState({
+=======
 // import React, { useEffect, useState } from "react";
 // import { useLocation, useNavigate } from "react-router-dom";
 // import { FaEdit } from "react-icons/fa";
@@ -572,6 +587,7 @@ const ViewStaffDetails = () => {
   const { state } = useLocation();
 
   const [formData, setFormData] = useState({
+>>>>>>> 4a25c5045a21555fb501585b6b08f791039b155f
     personnelDetails: {
       staffId: state.staffDetails.staffId,
       name: "John Doe",
@@ -636,19 +652,56 @@ const ViewStaffDetails = () => {
     navigate(path, { state: { data } });
   };
 
-  const fetchStaffDetails = async () => {
-    try {
-      const response = await ApiService.post("/staff/getStaffDetailsById", {
-        staffId: state.staffDetails.staffId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
+  // const fetchStaffDetails = async () => {
+  //   // if (!location.state?.staffDetails) return;
+  //   try {
+  //     const response = await ApiService.post('/staff/getStaffDetailsById', {
+  //       staffId: location.state?.staffDetails.staffId,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     });
+  //     if (!response.status) {
+  //       throw new Error('Staff not found');
+  //     }
+  //     if (response.status) {
+  //       const fetchedData = response.data; // Extract the first staff object
 
-      console.log("API Response:", response);
+  //       // Map API response fields to formData structure
+  //       const updatedFormData = {
+  //         id: fetchedData.id || null,
+  //         name: fetchedData.name || '',
+  //         phoneNumber: fetchedData.phoneNumber || '',
+  //         staffId: fetchedData.staffId || '',
+  //         designation: fetchedData.designation || '',
+  //         branch: fetchedData.branchName || '',
+  //         dob: fetchedData.dob || '',
+  //         email: fetchedData.email || '',
+  //         aadharNumber: fetchedData.aadharNumber || '',
+  //         address: fetchedData.address || '',
+  //         companyCode:
+  //           fetchedData.companyCode || initialAuthState.companyCode,
+  //         unitCode: fetchedData.unitCode || initialAuthState.unitCode,
+  //         joiningDate: fetchedData.joiningDate || '',
+  //         attendance: fetchedData.attendance || '',
+  //         basicSalary: fetchedData.basicSalary || '',
+  //         beforeExperience: fetchedData.beforeExperience || 0,
+  //         password: '', // Leave password empty for security reasons
+  //         photo: fetchedData.staffPhoto || null,
+  //       };
 
-      if (response.errorCode === 200) {
-        const staff = response.data;
+  //       setFormData(updatedFormData);
+  //       setImage(fetchedData.staffPhoto || '');
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
+<<<<<<< HEAD
+      // useEffect(() => {
+      //   fetchStaffDetails();
+      // }, []);
+=======
         setFormData({
           personnelDetails: {
             name: staff.name || "",
@@ -711,6 +764,7 @@ const ViewStaffDetails = () => {
 
     fetchStaffDetails();
   }, [state?.staffDetails?.staffId]);
+>>>>>>> 4a25c5045a21555fb501585b6b08f791039b155f
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg shadow-md mb-6 p-3">

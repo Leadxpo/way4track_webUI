@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import ApiService, { initialAuthState } from "../../services/ApiService";
+import ApiService from "../../services/ApiService";
 
 const EditPersonnelDetails = () => {
   const location = useLocation();
   const stateData = location.state?.data || location.state || {}; // Extract data properly
+
   const [data, setData] = useState({
     staffId: "",
     name: "",
@@ -22,8 +23,6 @@ const EditPersonnelDetails = () => {
     esicNumber: "",
     bloodGroup: "",
     staffPhoto: null,
-    companyCode: initialAuthState?.companyCode,
-    unitCode: initialAuthState?.unitCode, 
   });
 
   const [photoPreview, setPhotoPreview] = useState(null);
