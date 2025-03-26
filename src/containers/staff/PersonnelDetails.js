@@ -1,25 +1,24 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { initialAuthState } from '../../services/ApiService';
 
-const PersonnelDetails = ({ setPersonnelDetails,candidateData }) => {
-console.log("candidateData : ",candidateData);
+const PersonnelDetails = ({ setPersonnelDetails }) => {
   const [formData, setFormData] = useState({
-    name: candidateData.candidateName,
+    name: '',
     dob: '',
     gender: '',
     location: '',
-    phoneNumber:candidateData.phoneNumber,
+    phoneNumber: '',
     alternateNumber: '',
-    email:candidateData.email,
+    email: '',
     aadharNumber: '',
     panCardNumber: '',
-    address:candidateData.address,
+    drivingLicence: '',
+    address: '',
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',
-    beforeExperience:null,
     photo: null,
-
+  
   });
 
   const [photoPreview, setPhotoPreview] = useState('');
@@ -39,17 +38,14 @@ console.log("candidateData : ",candidateData);
     const file = e.target.files[0];
     if (file) {
       setPhotoPreview(URL.createObjectURL(file));
-      setFormData((prevData) => ({
-        ...prevData,
-        photo: file,
-      }));
-      setPersonnelDetails((prevData) => ({
-        ...prevData,
-        photo: file,
-      }));
+      // const fileObject = { name: file.name, file: file };
+      setFormData((prevData) => {
+        const updatedData = { ...prevData, photo: file };
+        setPersonnelDetails(updatedData);
+        return updatedData;
+      });
     }
   }, [setPersonnelDetails]);
-
 
 
 
