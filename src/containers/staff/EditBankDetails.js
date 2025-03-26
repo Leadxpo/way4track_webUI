@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ApiService, { initialAuthState } from '../../services/ApiService';
+import ApiService from '../../services/ApiService';
 
 const EditBankDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log("bankkkkkk", location.state)
+  console.log("bankkkkkk",location.state)
   const [data, setData] = useState({
-
-    staffId: '',
+    staffId:'',
     accountNumber: '',
     bankName: '',
     ifscCode: '',
@@ -29,16 +28,11 @@ const EditBankDetails = () => {
 
   const handleSubmit = async () => {
     try {
-      const endpoint = "/staff/handleStaffDetails";
-      let payload = new FormData()
-      payload = {
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode, ...data
-      }
-      const response = await ApiService.post(endpoint, payload, {
+      const endpoint = "/staff/handleStaffDetails"; 
+      const response = await ApiService.post(endpoint,data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+  
       if (response.data.status) {
         alert("Bank details updated successfully!");
         return response.data;
@@ -52,7 +46,7 @@ const EditBankDetails = () => {
       return null;
     }
   };
-
+  
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
