@@ -114,27 +114,12 @@ const Payroll = () => {
   };
 
    // Define the column order explicitly
-//    {
-//     "ESIC_Employee": "0.00",
-//     "ESIC_Employer": "0.00",
-//     "PF_Employee": "0.00",
-//     "PF_Employer1": "0.00",
-//     "PF_Employer2": "0.00",
-//     "extraHalfSalary": "0.00",
-//     "daysOutLate6HoursOrMore": 0,
-//     "carryForwardLeaves": 0,
-//     "professionalTax": "0.00",
-//     "": "0.00",
-//     "": "0.00",
-//     "leaveEncashment": "0.00",
-//     "plBikeNeedToPay": "0",
-//     "plBikeAmount": "0.00"
-// }
    const columnOrder = [
-    "staffId", "staffName", "designation","branch", "year", "month", "monthDays", 
-    "presentDays", "leaveDays", "actualSalary", "perDaySalary", "perHourSalary", 
-    "totalOTHours", "OTAmount", "incentives","foodAllowance","lateDays", "totalEarlyMinutes",
-     "totalLateMinutes","lateDeductions", "grossSalary", "netSalary", "salaryStatus"
+    "staffId", "staffName", "branch", "designation", "year", "monthDays", "presentDays", "month",  
+    "actualSalary", "leaveDays", "lateDays", "lateDeductions","totalLateMinutes", "carryForwardLeaves", "leaveEncashment", "perDaySalary", "perHourSalary", 
+    "plBikeNeedToPay", "plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance",
+    "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
+    "paybleAmount","salaryStatus"
 ];
   return (
     <div>
@@ -185,12 +170,6 @@ const Payroll = () => {
                 ))}
               <th className="px-4 py-3 border">Action</th>
               </tr>
-            <tr className="bg-gray-200 text-gray-700">
-              {payrollData.length > 0 && Object.keys(payrollData[0] || {}).map(key => (
-                <th key={key} className="px-4 py-2 border">{key.replace(/([A-Z])/g, ' $1').trim()}</th>
-              ))}
-              <th className="px-4 py-2 border">Action</th>
-            </tr>
           </thead>
           <tbody>
             {payrollData.length > 0 ? (
@@ -199,11 +178,15 @@ const Payroll = () => {
                   key={rowIndex} 
                   className={`border ${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
                 >
-                  {columnOrder.map((value, colIndex) => (
+                  {columnOrder.map((value, colIndex) => {
+                    if (value==="ActualEarnedMonthlySalary") {
+                      row["ActualEarnedMonthlySalary"]=parseInt(row["incentives"])+parseInt(row["foodAllowance"])+parseInt(row["OTAmount"])+parseInt(row["extraHalfSalary"]+parseInt(row["plBikeAmount"]));
+                    }
+                    return(
                     <td style={{textWrap:'wrap'}} key={colIndex} className="px-4 py-2 border text-center">
                       {row[value] ?? "N/A"}
                     </td>
-                  ))}
+                  )})}
                   <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
                     <button
                       className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -212,8 +195,6 @@ const Payroll = () => {
                       View
                     </button>
                   </td>
-                  <td><p className='btn' onClick={() => navigate('/edit-payroll', { state: { paySlipDetails: row } })}>View</p></td>
-                  <td><p className='btn-primary' onClick={() => navigate('/payroll-details', { state: { paySlipDetails: row } })}>View</p></td>
                 </tr>
               ))
             ) : (

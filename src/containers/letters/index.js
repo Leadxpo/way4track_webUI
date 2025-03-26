@@ -1459,6 +1459,176 @@ const Letters = () => {
     )
   };
 
+  const BranchManagerOfferLetter = ({ employee }) => {
+    const todayData = new Date().toISOString();
+    return (
+      <Document>
+        {/* Page 1 */}
+        <Page style={styles.page}>
+          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image style={styles.logo} src="logo.png" />
+              </View>
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.header}>OFFER LETTER</Text>
+
+
+            <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
+              <View style={{ width: "70%" }}>
+                <Text style={styles.label}>{employee?.name}</Text>
+                <Text style={styles.paysliptext}>{employee?.address}</Text>
+              </View>
+              <View style={{ width: "30%", flexWrap: "wrap" }}>
+                <Text style={{ alignItems: "flex-end" }}>{todayData.split("T")[0]}</Text>
+              </View>
+            </View>
+
+            <Text style={styles.text}>Dear {employee?.name},</Text>
+            <Text style={styles.text}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Branch Manager. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <View style={styles.section}>
+              <Text style={styles.label}>Position Details:</Text>
+              <Text style={styles.text}>• Job Title:Branch Manager</Text>
+              <Text style={styles.text}>• Department:Manager</Text>
+              <Text style={styles.text}>• Reporting To: Suneel.G, Director of Sharon Telematics Pvt Ltd</Text>
+              <Text style={styles.text}>• Start Date: {employee?.joiningDate}</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Compensation and Benefits:</Text>
+              <Text style={styles.text}>• Base Salary: {employee?.salary} LPA, subject to standard deductions and withholdings.</Text>
+              <Text style={styles.text}>• Hike: Your salary will be subject to performance-based increments, evaluated annually.</Text>
+              <Text style={styles.text}>• Benefits: You will be eligible for our standard benefits package, which currently includes health insurance, retirement plan, paid time off, and other benefits. More details will be provided upon your joining.</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <Text style={styles.text}>• Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Overtime and travel may be required as per business needs.</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+
+              <Text style={styles.label}>Sales Strategy and Planning:</Text>
+              <Text style={styles.text}>• Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
+              <Text style={styles.text}>• Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
+              <Text style={styles.text}>• Analyze market trends and customer needs to identify new business opportunities.</Text>
+
+              <Text style={styles.label}>Team Management:</Text>
+              <Text style={styles.text}>• Lead, mentor, and motivate the sales team to ensure high performance and team cohesion.</Text>
+              <Text style={styles.text}>• Conduct regular sales training and development sessions to improve team skills and productivity.</Text>
+              <Text style={styles.text}>• Bring out the best of the branch’s personnel by providing training, coaching, development, and motivation.</Text>
+            </View>
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+              <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+
+
+        {/* Page 2 */}
+        <Page style={styles.page}>
+          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image style={styles.logo} src="logo.png" />
+              </View>
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
+            </View>
+            <View>
+              <Text style={styles.label}>Client Relationship Management:</Text>
+              <Text style={styles.text}>• Build and maintain strong relationships with key clients and stakeholders.</Text>
+              <Text style={styles.text}>• Ensure client satisfaction by providing excellent customer service and addressing any concerns promptly.</Text>
+
+              <Text style={styles.label}>Sales Reporting and Analysis:</Text>
+              <Text style={styles.text}>• Prepare and present detailed sales reports, forecasts, and performance metrics to senior management.</Text>
+              <Text style={styles.text}>• Use data-driven insights to optimize sales processes and strategies.</Text>
+
+              <Text style={styles.label}>Collaboration:</Text>
+              <Text style={styles.text}>• Work closely with other departments, such as Marketing, Product Development, and Customer Support, to align sales strategies with company objectives.</Text>
+              <Text style={styles.text}>• Participate in cross-functional meetings and contribute to company-wide initiatives.</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Employment Terms:</Text>
+              <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check.</Text>
+              <Text style={styles.text}>• As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company can terminate the employment relationship after the bond period, with or without cause and with or without notice.</Text>
+              <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and onboarding costs.</Text>
+              <Text style={styles.text}>• There are no leaves and no permissions for 3 months from the joining date.</Text>
+            </View>
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+              <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+
+
+        {/* Page 3 */}
+        <Page style={styles.page}>
+          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image style={styles.logo} src="logo.png" />
+              </View>
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.text}>• To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.text}>We look forward to welcoming you to Sharon Telematics Pvt Ltd and are confident that you will be a valuable addition to our team.</Text>
+            </View>
+
+            <View style={styles.signatureSection}>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.text}>Signature: ___________________________</Text>
+                <Text style={styles.text}>Date: ___________________________</Text>
+              </View>
+            </View>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
+              <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+
+      </Document>
+    )
+  };
+
   const TechSupportOfferLetter = ({ employee }) => {
     const todayData = new Date().toISOString();
     return (
@@ -2006,15 +2176,11 @@ const Letters = () => {
                 <Text style={styles.text}>{employee.branch}</Text>
               </View>
               <View style={{ width: "30%", flexWrap: "wrap" }}>
+              <Text style={styles.text}>{employee.designation}</Text>
+              <Text style={styles.text}>{employee.department}</Text>
                 <Text style={{ alignItems: "flex-end" }}>{todayData.split("T")[0]}</Text>
               </View>
             </View>
-
-            <View style={styles.section}>
-              <Text style={styles.text}>{employee.designation}</Text>
-              <Text style={styles.text}>{employee.department}</Text>
-            </View>
-
             <View style={styles.section}>
               <Text style={styles.text}>
                 This is an official notice that your employment with Sharon Telematics
@@ -2265,7 +2431,6 @@ const Letters = () => {
     }
   };
 
-
   const PayrollLetterPDF = ({ employee }) => {
 
     // Show loading message while fetching data
@@ -2426,6 +2591,12 @@ const Letters = () => {
       label: "Download Offer Letter",
     },
 
+    branchManagerOfferLetter: {
+      component: <BranchManagerOfferLetter employee={formData} />,
+      fileName: "branchManagerOffer_letter.pdf",
+      label: "Download Branch Manager Offer Letterr",
+    },
+
     accountantOfferLetter: {
       component: < AccountantOfferLetter employee={formData} />,
       fileName: " AccountantOffer_letter.pdf",
@@ -2514,6 +2685,7 @@ const Letters = () => {
         <div className="flex justify-between items-center shadow-lg rounded-md p-4 my-8 border border-gray-200">
           <select onChange={(e) => setLetterType(e.target.value)}>
             <option value="offer">HR Offer Letter</option>
+            <option value={"branchManagerOfferLetter"}>branchManagerOfferLetter</option>
             <option value={"accountantOfferLetter"}>accountantOfferLetter</option>
             <option value={"digitalManagerOfferLetter"}>digitalManagerOfferLetter</option>
             <option value={"FieldSalesManagerOfferLetter"}>FieldSalesManagerOfferLetter</option>
