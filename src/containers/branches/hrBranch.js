@@ -14,6 +14,8 @@ const BranchList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBranchStaff, setSelectedBranchStaff] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [previewData, setPreviewData] = useState([]);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
 
 
@@ -45,105 +47,196 @@ const BranchList = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getStaff', {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
+        const response = await ApiService.post("/dashboards/getStaff", {
+          companyCode: initialAuthState?.companyCode, // Ensure initialAuthState is defined
+          unitCode: initialAuthState?.unitCode,
         });
-
+  
         if (response.status && Array.isArray(response.data)) {
-          setEmployees(response.data);
+          const staffData = response.data.map((staff) => ({
+            staffId: staff.staffId?.trim() || "",
+            name: staff.name?.trim() || "",
+            dob: staff.dob || "",
+            gender: staff.gender || "",
+            location: staff.location?.trim() || "",
+            phoneNumber: staff.phoneNumber?.trim() || "",
+            alternateNumber: staff.alternateNumber?.trim() || "",
+            email: staff.email?.trim() || "",
+            aadharNumber: staff.aadharNumber?.trim() || "",
+            panCardNumber: staff.panCardNumber?.trim() || "",
+            drivingLicence: staff.drivingLicence?.trim() || "",
+            drivingLicenceNumber: staff.drivingLicenceNumber?.trim() || "",
+            address: staff.address?.trim() || "",
+            uanNumber: staff.uanNumber?.trim() || "",
+            esicNumber: staff.esicNumber?.trim() || "",
+            bloodGroup: staff.bloodGroup?.trim() || "",
+            bankName: staff.bankName?.trim() || "",
+            accountNumber: staff.accountNumber?.trim() || "",
+            ifscCode: staff.ifscCode?.trim() || "",
+            branchName: staff.branchName?.trim() || "",
+            department: staff.department?.trim() || "",
+            monthlySalary: staff.monthlySalary || "",
+            salaryDate: staff.salaryDate || "",
+            bikeAllocation: staff.bikeAllocation || "",
+            bikeNumber: staff.bikeNumber?.trim() || "",
+            mobileAllocation: staff.mobileAllocation || "",
+            mobileBrand: staff.mobileBrand?.trim() || "",
+            mobileNumber: staff.mobileNumber?.trim() || "",
+            designation: staff.designation?.trim() || "",
+            experience: staff?.totalExperience || "",
+  
+            // ✅ Fixed Qualifications Mapping
+            qualifications: JSON.stringify(staff.qualifications),
+          //     ? staff.qualifications.map((rec) => ({
+          //         marksOrCgpa: rec.marksOrCgpa || "",
+          //         qualificationName: rec.qualificationName || "",
+          //       }))
+          //     : [],
+          }));
+  
+          setEmployees(staffData);
+          console.log("Processed Employee Data:", staffData);
         } else {
           setEmployees([]);
         }
       } catch (error) {
-        console.error('Error fetching employees:', error);
-        alert('Failed to fetch employee data.');
+        console.error("Error fetching employees:", error);
+        alert("Failed to fetch employee data.");
       }
     };
-
+  
     fetchEmployees();
   }, []);
-
-
-  useEffect(() => {
-    const fetchStaffDetails = async () => {
-      if (!selectedStaff) return;
-
-      setIsLoading(true);
-      try {
-        const response = await ApiService.post("/staff/getStaffDetailsById", {
-          staffId: selectedStaff,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        });
-
-        if (response.status) {
-          setStaffDetails(response.data.data);
-          console.log("==============", response.data.data)
-        }
-      } catch (error) {
-        console.error("Error fetching staff details:", error);
-        alert("Failed to fetch staff details.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStaffDetails();
-  }, [selectedStaff]);
-
+  
+  
   const formatExcelData = (data) => {
-    return data.map(item => ({
-      "No.": item.staffId,
-      "Employee Name": item.name,
+    return data.map((item) => ({
+      "Emp ID": item.staffId,
+      "Name of the Employee": item.name,
       "Designation": item.designation,
-      "Branch": item.branchName,
-      "Phone Number": item.phoneNumber,
-      "Joining Date": item.joiningDate,
-      "Salary": item.monthlySalary,
-      "Aadhar Number": item.aadharNumber,
-      "Account Number": item.accountNumber,
-      "Account Type": item.accountType,
-      "Address": item.address,
-      "Alternate Number": item.alternateNumber,
-      "Bank Name": item.bankName,
-      "Experience (Years)": item.experience,
-      "Department": item.department,
+      "Branch": item.branchName || "",
       "Date of Birth": item.dob,
+      "Aadhar Number": item.aadharNumber,
+      "Pan Number": item.panCardNumber || "",
+      "Contact Number": item.phoneNumber,
+      "Alternative Contact Number": item.alternateNumber || "",
+      "Email ID": item.email,
+      "Address": item.address,
       "Gender": item.gender,
-      "Email": item.email,
-      "Office Email": item.officeEmail,
-      "Office Phone Number": item.officePhoneNumber,
-      "PAN Card Number": item.panCardNumber,
-      "IFSC Code": item.ifscCode,
-      "Previous Company": item.previousCompany,
-      "Previous Designation": item.previousDesignation,
-      "Previous Salary": item.previousSalary,
-      "Total Experience": item.totalExperience,
-      "UAN Number": item.uanNumber,
-      "Status": item.status
+      "Joining Date": item.joiningDate,
+      "Present Salary": item.monthlySalary || "",
+      "Total Experience": item.totalExperience || "",
+      "Previous Experience": item.beforeExperience || "",
+      "Previous Salary": item.previousSalary || "",
+      "Previous Company": item.previousCompany || "",
+      "Previous Designation": item.previousDesignation || "",
+      "Bank Name": item.bankName || "",
+      "Account Number": item.accountNumber || "",
+      "Account Type": item.accountType || "",
+      "IFSC Code": item.ifscCode || "",
+      "Branch Name": item.branchName || "",
+      "Official Email ID": item.officeEmail || "",
+      "Official Contact Number": item.officePhoneNumber || "",
+      "UAN Number": item.uanNumber || "",
+      "ESIC Number": item.esicNumber || "",
+      "Insurance Number": item.insuranceNumber || "",
+      "Status": item.staffStatus || ""
     }));
   };
   
- 
-  const downloadExcel = (data, filename) => {
-    if (!data || data.length === 0) {
-      alert("No data available to download.");
-      return;
-    }
-    
-    try {
-      const worksheet = XLSX.utils.json_to_sheet(formatExcelData(data));
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, filename);
-      XLSX.writeFile(workbook, `${filename}.xlsx`);
-    } catch (error) {
-      console.error("Error generating Excel file:", error);
-      alert("Failed to generate the Excel file. Please try again.");
-    }
-  };
 
+const handlePreview = () => {
+  const filteredData = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
+  const formattedData = formatExcelData(filteredData);
   
+  if (formattedData.length === 0) {
+    alert("No data available to preview.");
+    return;
+  }
+
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+const handlePreview1 = () => {
+  const filteredEmployees = employees.filter(emp =>
+    !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
+  );
+
+  const formattedData = formatExcelData(filteredEmployees);
+  
+  if (formattedData.length === 0) {
+    alert("No data available to preview.");
+    return;
+  }
+
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+
+
+
+
+
+const handleDownload = () => {
+  if (!previewData || previewData.length === 0) {
+    alert("No data available to download.");
+    return;
+  }
+  
+  try {
+    const worksheet = XLSX.utils.json_to_sheet(previewData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Branch_Staff");
+    XLSX.writeFile(workbook, "Filtered_Branch_Staff.xlsx");
+    
+    setIsPreviewOpen(false); // Close modal after download
+  } catch (error) {
+    console.error("Error generating Excel file:", error);
+    alert("Failed to generate the Excel file. Please try again.");
+  }
+};
+
+const rrr=(qualificationData)=>{
+console.log("qualificationData:",qualificationData)
+if (!Array.isArray(qualificationData)) {
+  console.error("Invalid data: qualificationData should be an array");
+  return "";
+}
+
+const formattedString = qualificationData
+  .map((q) => `${q.qualificationName} (${q.marksOrCgpa})`)
+  .join(",  ");
+
+return formattedString;
+}
+ 
+const downloadExcel = () => {
+  const formattedData = employees.map((emp) => ({
+    Staff_ID: emp.staffId,
+    Name: emp.name,
+    Designation: emp.designation,
+    Branch: emp.branchName,
+    Phone: emp.phoneNumber,
+    Joining_Date: emp.joiningDate,
+    Salary: emp.monthlySalary,
+
+    // ✅ Fixed Qualifications Mapping for Excel
+    Qualifications: rrr(JSON.parse(emp.qualifications)),
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(formattedData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Employees");
+
+  XLSX.writeFile(wb, "Employee_Data.xlsx");
+};
+
+
+
+
+ 
 
   const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
 
@@ -154,32 +247,83 @@ const BranchList = () => {
   );
 
 
-  const filteredEmployees = employees.filter(emp =>
-    !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
-  );
+ const filteredEmployees = employees.filter(emp =>
+  !selectedStaff || (emp.staffId && emp.staffId.toLowerCase().includes(selectedStaff.trim().toLowerCase()))
+);
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-      <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
-      <div className="flex justify-between gap-4 mb-4">
-        <select className="p-3 border rounded-lg w-1/3" value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
-          <option value="">All Branches</option>
-          {branchesData.map(branch => (
-            <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
-          ))}
-        </select>
-        <input
-          type="text"
-          placeholder="Search by Staff ID"
-          className="p-3 border rounded-lg w-1/3"
-          value={selectedBranchStaff}
-          onChange={(e) => setSelectedBranchStaff(e.target.value)}
-        />
+    <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
+    <div className="flex justify-between gap-4 mb-4">
+      <select className="p-3 border rounded-lg w-1/3" value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
+        <option value="">All Branches</option>
+        {branchesData.map(branch => (
+          <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
+        ))}
+      </select>
 
-        <button onClick={() => downloadExcel(filteredBranches, "Filtered_Branch_Staff")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
-          <FaFileDownload className="mr-2" /> Download Excel
-        </button>
+      <input
+        type="text"
+        placeholder="Search by Staff ID"
+        className="p-3 border rounded-lg w-1/3"
+        value={selectedBranchStaff}
+        onChange={(e) => setSelectedBranchStaff(e.target.value)}
+      />
+
+      <button
+        onClick={handlePreview}
+        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+      >
+        <FaFileDownload className="mr-2" /> Preview & Download
+      </button>
+    </div>
+
+    {/* Preview Modal */}
+    {isPreviewOpen && (
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+          <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
+          <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
+            <table className="min-w-full border">
+              <thead className="bg-gray-200 text-gray-700">
+                <tr>
+                  {Object.keys(previewData[0]).map((key, index) => (
+                    <th key={index} className="p-2 text-left border">{key}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {previewData.map((row, index) => (
+                  <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                    {Object.values(row).map((value, i) => (
+                      <td key={i} className="p-2 border">{value}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={() => setIsPreviewOpen(false)}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDownload}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            >
+              Download Excel
+            </button>
+          </div>
+        </div>
       </div>
+    )}
+
+
+
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-200 text-gray-700">
@@ -190,24 +334,24 @@ const BranchList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredStaff.map((emp, index) => (
-              <tr key={emp.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
-                <td className="p-3">{emp.staffId}</td>
-                <td className="p-3">{emp.name}</td>
-                <td className="p-3">{emp.designation}</td>
-                <td className="p-3">{emp.branchName}</td>
-                <td className="p-3">{emp.phoneNumber}</td>
-                <td className="p-3">{emp.joiningDate}</td>
-                <td className="p-3">{emp.monthlySalary}</td>
+            {filteredStaff.map((staff, index) => (
+              <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                <td className="p-3">{staff.staffId}</td>
+                <td className="p-3">{staff.name}</td>
+                <td className="p-3">{staff.designation}</td>
+                <td className="p-3">{staff.branchName}</td>
+                <td className="p-3">{staff.phoneNumber}</td>
+                <td className="p-3">{staff.joiningDate}</td>
+                <td className="p-3">{staff.salary}</td>
                 <td className="px-4 py-2 border">
                   <FaFileDownload
                     className="text-blue-500 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevents event bubbling if inside a list
-                      document.getElementById(`download-pdf-${emp.staffId}`).click();
+                      document.getElementById(`download-pdf-${staff.staffId}`).click();
                     }}
                   />
-                  <ConvertPDF staff={emp} />
+                  <ConvertPDF staff={staff} />
                 </td>
 
               </tr>
@@ -215,6 +359,13 @@ const BranchList = () => {
           </tbody>
         </table>
       </div>
+
+
+
+
+
+
+
 
       <h3 className="text-2xl font-semibold my-4">Employees</h3>
       <div className="flex justify-between gap-4 mb-4">
@@ -226,9 +377,12 @@ const BranchList = () => {
           onChange={(e) => setSelectedStaff(e.target.value)}
         />
 
-        <button onClick={() => downloadExcel(filteredEmployees, "Filtered_Employees")} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
-          <FaFileDownload className="mr-2" /> Download Excel
-        </button>
+        <button
+        onClick={handlePreview1}
+        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+      >
+        <FaFileDownload className="mr-2" /> Preview & Download
+      </button>
       </div>
       <div className="overflow-x-auto mt-4 mb-6">
         <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
@@ -245,23 +399,23 @@ const BranchList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((staff) => (
-              <tr key={staff.staffId} className="text-gray-800 text-center border-b">
-                <td className="px-4 py-2 border">{staff.staffId}</td>
-                <td className="px-4 py-2 border">{staff.staffName}</td>
-                <td className="px-4 py-2 border">{staff.designation}</td>
-                <td className="px-4 py-2 border">{staff.phoneNumber}</td>
-                <td className="px-4 py-2 border">{staff.email}</td>
-                <td className="px-4 py-2 border">{staff.monthlySalary}</td>
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.staffId} className="text-gray-800 text-center border-b">
+                <td className="px-4 py-2 border">{emp.staffId}</td>
+                <td className="px-4 py-2 border">{emp.staffName}</td>
+                <td className="px-4 py-2 border">{emp.designation}</td>
+                <td className="px-4 py-2 border">{emp.phoneNumber}</td>
+                <td className="px-4 py-2 border">{emp.email}</td>
+                <td className="px-4 py-2 border">{emp.salary}</td>
                 <td className="px-4 py-2 border">
                   <FaFileDownload
                     className="text-blue-500 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevents event bubbling if inside a list
-                      document.getElementById(`download-pdf-${staff.staffId}`).click();
+                      document.getElementById(`download-pdf-${emp.staffId}`).click();
                     }}
                   />
-                 <ConvertPDF staff={staff} />
+                 <ConvertPDF staff={emp} />
                 </td>
               </tr>
             ))}
