@@ -209,7 +209,7 @@ const formattedString = qualificationData
 return formattedString;
 }
  
-const downloadExcel = () => {
+const downloadExce = () => {
   const formattedData = employees.map((emp) => ({
     Staff_ID: emp.staffId,
     Name: emp.name,
