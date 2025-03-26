@@ -12,7 +12,7 @@ const EditBankDetails = () => {
     accountNumber: '',
     bankName: '',
     ifscCode: '',
-    branchName: '',
+    accountBranch: '',
     accountType: '',
   });
 
@@ -58,7 +58,7 @@ const EditBankDetails = () => {
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
       <h3 className="text-3xl font-semibold mb-6 text-center">Edit Bank Details</h3>
       <div className="space-y-6">
-        {['accountNumber', 'bankName', 'ifscCode', 'branchName'].map((field) => (
+        {['accountNumber', 'bankName', 'ifscCode', 'accountBranch'].map((field) => (
           <div key={field} className="flex flex-col">
             <label className="text-gray-700 font-medium mb-1 capitalize">
               {field.replace(/([A-Z])/g, ' $1').trim()}

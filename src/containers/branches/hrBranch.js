@@ -23,14 +23,14 @@ const BranchList = () => {
   useEffect(() => {
     const fetchBranchStaff = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getBranchStaffDetails', {
+        const response = await ApiService.post('/staff/getStaffDetails', {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
 
-        if (response.status && Array.isArray(response.data.data)) {
-          setBranchesData(response.data.data);
-          console.log(response.data.data, "Branch Data");
+        if (response.status && Array.isArray(response.data)) {
+          setBranchesData(response.data);
+          console.log(response.data, "Branch Data");
         } else {
           setBranchesData([]);
         }
@@ -51,7 +51,7 @@ const BranchList = () => {
           companyCode: initialAuthState?.companyCode, // Ensure initialAuthState is defined
           unitCode: initialAuthState?.unitCode,
         });
-  
+
         if (response.status && Array.isArray(response.data)) {
           const staffData = response.data.map((staff) => ({
             staffId: staff.staffId?.trim() || "",
@@ -84,16 +84,16 @@ const BranchList = () => {
             mobileNumber: staff.mobileNumber?.trim() || "",
             designation: staff.designation?.trim() || "",
             experience: staff?.totalExperience || "",
-  
+
             // ✅ Fixed Qualifications Mapping
             qualifications: JSON.stringify(staff.qualifications),
-          //     ? staff.qualifications.map((rec) => ({
-          //         marksOrCgpa: rec.marksOrCgpa || "",
-          //         qualificationName: rec.qualificationName || "",
-          //       }))
-          //     : [],
+            //     ? staff.qualifications.map((rec) => ({
+            //         marksOrCgpa: rec.marksOrCgpa || "",
+            //         qualificationName: rec.qualificationName || "",
+            //       }))
+            //     : [],
           }));
-  
+
           setEmployees(staffData);
           console.log("Processed Employee Data:", staffData);
         } else {
@@ -104,11 +104,11 @@ const BranchList = () => {
         alert("Failed to fetch employee data.");
       }
     };
-  
+
     fetchEmployees();
   }, []);
-  
-  
+
+
   const formatExcelData = (data) => {
     return data.map((item) => ({
       "Emp ID": item.staffId,
@@ -143,184 +143,211 @@ const BranchList = () => {
       "Status": item.staffStatus || ""
     }));
   };
-  
 
-const handlePreview = () => {
-  const filteredData = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
-  const formattedData = formatExcelData(filteredData);
-  
-  if (formattedData.length === 0) {
-    alert("No data available to preview.");
-    return;
+
+  const handlePreview = () => {
+    const filteredData = branchesData.filter(branch => branch.branchName &&
+      !selectedBranch || branch.branchName.trim().toLowerCase() === selectedBranch.trim().toLowerCase()
+    );
+
+    const formattedData = formatExcelData(filteredData);
+
+    if (formattedData.length === 0) {
+      alert("No data available to preview.");
+      return;
+    }
+
+    setPreviewData(formattedData);
+    setIsPreviewOpen(true);
+  };
+
+  const handlePreview1 = () => {
+    const filteredEmployees = employees.filter(emp =>
+      !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
+    );
+
+    const formattedData = formatExcelData(filteredEmployees);
+
+    if (formattedData.length === 0) {
+      alert("No data available to preview.");
+      return;
+    }
+
+    setPreviewData(formattedData);
+    setIsPreviewOpen(true);
+  };
+
+
+
+
+
+
+  const handleDownload = () => {
+    if (!previewData || previewData.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(previewData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Branch_Staff");
+      XLSX.writeFile(workbook, "Filtered_Branch_Staff.xlsx");
+
+      setIsPreviewOpen(false); // Close modal after download
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
+  };
+
+  const rrr = (qualificationData) => {
+    console.log("qualificationData:", qualificationData)
+    if (!Array.isArray(qualificationData)) {
+      console.error("Invalid data: qualificationData should be an array");
+      return "";
+    }
+
+    const formattedString = qualificationData
+      .map((q) => `${q.qualificationName} (${q.marksOrCgpa})`)
+      .join(",  ");
+
+    return formattedString;
   }
 
-  setPreviewData(formattedData);
-  setIsPreviewOpen(true);
-};
+  const downloadExcel = () => {
+    const formattedData = employees.map((emp) => ({
+      Staff_ID: emp.staffId,
+      Name: emp.name,
+      Designation: emp.designation,
+      Branch: emp.branchName,
+      Phone: emp.phoneNumber,
+      Joining_Date: emp.joiningDate,
+      Salary: emp.monthlySalary,
 
-const handlePreview1 = () => {
+      // ✅ Fixed Qualifications Mapping for Excel
+      Qualifications: rrr(JSON.parse(emp.qualifications)),
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Employees");
+
+    XLSX.writeFile(wb, "Employee_Data.xlsx");
+  };
+
+
+
+
+
+
+  const uniqueBranchNames = new Set();
+
+  const filteredBranches = branchesData.filter(branch => {
+    if (!branch.branchName) return false; // ✅ Exclude null or undefined branchName
+
+    const branchNameLower = branch.branchName
+
+    if (selectedBranch && branchNameLower !== selectedBranch.trim().toLowerCase()) {
+      return false; // ✅ Only include matching selectedBranch (if provided)
+    }
+
+    if (uniqueBranchNames.has(branchNameLower)) {
+      return false; // ✅ Skip duplicates
+    }
+
+    uniqueBranchNames.add(branchNameLower);
+    return true;
+  });
+
+
+
+
   const filteredEmployees = employees.filter(emp =>
-    !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
+    !selectedStaff || (emp.staffId && emp.staffId.toLowerCase().includes(selectedStaff.trim().toLowerCase()))
   );
-
-  const formattedData = formatExcelData(filteredEmployees);
-  
-  if (formattedData.length === 0) {
-    alert("No data available to preview.");
-    return;
-  }
-
-  setPreviewData(formattedData);
-  setIsPreviewOpen(true);
-};
-
-
-
-
-
-
-const handleDownload = () => {
-  if (!previewData || previewData.length === 0) {
-    alert("No data available to download.");
-    return;
-  }
-  
-  try {
-    const worksheet = XLSX.utils.json_to_sheet(previewData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Branch_Staff");
-    XLSX.writeFile(workbook, "Filtered_Branch_Staff.xlsx");
-    
-    setIsPreviewOpen(false); // Close modal after download
-  } catch (error) {
-    console.error("Error generating Excel file:", error);
-    alert("Failed to generate the Excel file. Please try again.");
-  }
-};
-
-const rrr=(qualificationData)=>{
-console.log("qualificationData:",qualificationData)
-if (!Array.isArray(qualificationData)) {
-  console.error("Invalid data: qualificationData should be an array");
-  return "";
-}
-
-const formattedString = qualificationData
-  .map((q) => `${q.qualificationName} (${q.marksOrCgpa})`)
-  .join(",  ");
-
-return formattedString;
-}
- 
-const downloadExcel = () => {
-  const formattedData = employees.map((emp) => ({
-    Staff_ID: emp.staffId,
-    Name: emp.name,
-    Designation: emp.designation,
-    Branch: emp.branchName,
-    Phone: emp.phoneNumber,
-    Joining_Date: emp.joiningDate,
-    Salary: emp.monthlySalary,
-
-    // ✅ Fixed Qualifications Mapping for Excel
-    Qualifications: rrr(JSON.parse(emp.qualifications)),
-  }));
-
-  const ws = XLSX.utils.json_to_sheet(formattedData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Employees");
-
-  XLSX.writeFile(wb, "Employee_Data.xlsx");
-};
-
-
-
-
- 
-
-  const filteredBranches = branchesData.filter(branch => !selectedBranch || branch.branchName === selectedBranch);
-
-  const filteredStaff = filteredBranches.flatMap(branch =>
-    [...(branch.nonTechnicalStaff || []), ...(branch.technicalStaff || []), ...(branch.salesStaff || [])]
-  ).filter(emp =>
-    (!selectedBranchStaff || emp.staffId.toString().includes(selectedBranchStaff))
-  );
-
-
- const filteredEmployees = employees.filter(emp =>
-  !selectedStaff || (emp.staffId && emp.staffId.toLowerCase().includes(selectedStaff.trim().toLowerCase()))
-);
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-    <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
-    <div className="flex justify-between gap-4 mb-4">
-      <select className="p-3 border rounded-lg w-1/3" value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
-        <option value="">All Branches</option>
-        {branchesData.map(branch => (
-          <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
-        ))}
-      </select>
+      <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
 
-      <input
-        type="text"
-        placeholder="Search by Staff ID"
-        className="p-3 border rounded-lg w-1/3"
-        value={selectedBranchStaff}
-        onChange={(e) => setSelectedBranchStaff(e.target.value)}
-      />
+      <div className="flex justify-between gap-4 mb-4">
+        {/* Branch Selection Dropdown */}
+        <select
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedBranch}
+          onChange={(e) => setSelectedBranch(e.target.value.trim())}
+        >
+          <option value="">All Branches</option>
+          {filteredBranches.map(branch => (
+            <option key={branch.branchName} value={branch.branchName.trim()}>
+              {branch.branchName.trim()}
+            </option>
+          ))}
+        </select>
 
-      <button
-        onClick={handlePreview}
-        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
-      >
-        <FaFileDownload className="mr-2" /> Preview & Download
-      </button>
-    </div>
+        {/* Search Input for Staff ID */}
+        <input
+          type="text"
+          placeholder="Search by Staff ID"
+          className="p-3 border rounded-lg w-1/3"
+          value={selectedBranchStaff}
+          onChange={(e) => setSelectedBranchStaff(e.target.value.trim())}
+        />
 
-    {/* Preview Modal */}
-    {isPreviewOpen && (
-      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-          <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
-          <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
-            <table className="min-w-full border">
-              <thead className="bg-gray-200 text-gray-700">
-                <tr>
-                  {Object.keys(previewData[0]).map((key, index) => (
-                    <th key={index} className="p-2 text-left border">{key}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {previewData.map((row, index) => (
-                  <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
-                    {Object.values(row).map((value, i) => (
-                      <td key={i} className="p-2 border">{value}</td>
+        {/* Preview & Download Button */}
+        <button
+          onClick={handlePreview}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+        >
+          <FaFileDownload className="mr-2" /> Preview & Download
+        </button>
+      </div>
+
+
+      {/* Preview Modal */}
+      {isPreviewOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+            <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
+            <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
+              <table className="min-w-full border">
+                <thead className="bg-gray-200 text-gray-700">
+                  <tr>
+                    {Object.keys(previewData[0]).map((key, index) => (
+                      <th key={index} className="p-2 text-left border">{key}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {previewData.map((row, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                      {Object.values(row).map((value, i) => (
+                        <td key={i} className="p-2 border">{value}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => setIsPreviewOpen(false)}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDownload}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-            >
-              Download Excel
-            </button>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Download Excel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
 
 
@@ -334,7 +361,7 @@ const downloadExcel = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredStaff.map((staff, index) => (
+            {filteredBranches.map((staff, index) => (
               <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
                 <td className="p-3">{staff.staffId}</td>
                 <td className="p-3">{staff.name}</td>
@@ -378,11 +405,11 @@ const downloadExcel = () => {
         />
 
         <button
-        onClick={handlePreview1}
-        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
-      >
-        <FaFileDownload className="mr-2" /> Preview & Download
-      </button>
+          onClick={handlePreview1}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+        >
+          <FaFileDownload className="mr-2" /> Preview & Download
+        </button>
       </div>
       <div className="overflow-x-auto mt-4 mb-6">
         <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
@@ -415,7 +442,7 @@ const downloadExcel = () => {
                       document.getElementById(`download-pdf-${emp.staffId}`).click();
                     }}
                   />
-                 <ConvertPDF staff={emp} />
+                  <ConvertPDF staff={emp} />
                 </td>
               </tr>
             ))}
