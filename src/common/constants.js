@@ -41,6 +41,7 @@ export const menuOptions = {
       route: '/vouchers',
     },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    
     {
       name: 'Work Allocation',
       icon: <img src="./work_allocation.png" />,
@@ -106,7 +107,7 @@ export const menuOptions = {
     { name: 'Branches', icon: <img src="./branch.png" />, route: '/branches' },
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
-    { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
+    { name: 'Customer', icon: <img src="./clients.png" />, route: '/clients' },
     { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
     {
       name: 'Sub Dealers',
@@ -295,7 +296,7 @@ export const menuOptions = {
     },
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
-    { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
+    { name: 'Customer', icon: <img src="./clients.png" />, route: '/clients' },
     { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
     {
       name: 'Sub Dealers',
@@ -324,6 +325,11 @@ export const menuOptions = {
       route: '/vouchers',
     },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    {
+      name: 'Sales Visits',
+      icon: <img src="./work_allocation.png" />,
+      route: '/sales_visit',
+    },
     {
       name: 'Work Allocation',
       icon: <img src="./work_allocation.png" />,
@@ -447,14 +453,14 @@ export const formattedPaths = {
       name: 'Request Details',
       icon: <img src="./request_details.png" />,
     },
-    '/clients': { name: 'Clients', icon: <img src="./clients.png" /> },
-    '/add-client': { name: 'Add Client', icon: <img src="./clients.png" /> },
+    '/clients': { name: 'Customer', icon: <img src="./clients.png" /> },
+    '/add-client': { name: 'Add Customer', icon: <img src="./clients.png" /> },
     '/delete-client': {
-      name: 'Delete Client',
+      name: 'Delete Customer',
       icon: <img src="./delete_client.png" />,
     },
     '/client-details': {
-      name: 'Client Details',
+      name: 'Customer Details',
       icon: <img src="./client_details.png" />,
     },
     '/products_assign': {
@@ -692,14 +698,14 @@ export const formattedPaths = {
       name: 'Request Details',
       icon: <img src="./request_details.png" />,
     },
-    '/clients': { name: 'Clients', icon: <img src="./clients.png" /> },
-    '/add-client': { name: 'Add Client', icon: <img src="./clients.png" /> },
+    '/clients': { name: 'Customer', icon: <img src="./clients.png" /> },
+    '/add-client': { name: 'Add Customer', icon: <img src="./clients.png" /> },
     '/delete-client': {
-      name: 'Delete Client',
+      name: 'Delete Customer',
       icon: <img src="./delete_client.png" />,
     },
     '/client-details': {
-      name: 'Client Details',
+      name: 'Customer Details',
       icon: <img src="./client_details.png" />,
     },
     '/ledger': { name: 'Ledger', icon: <img src="./ledger.png" /> },
@@ -795,14 +801,14 @@ export const formattedPaths = {
     '/staff': { name: 'Staff', icon: <img src="./users.png" /> },
     '/add-staff': { name: 'Add Staff', icon: <img src="./users.png" /> },
     '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
-    '/clients': { name: 'Clients', icon: <img src="./clients.png" /> },
+    '/clients': { name: 'Customer', icon: <img src="./clients.png" /> },
     '/add-client': { name: 'Add Client', icon: <img src="./clients.png" /> },
     '/delete-client': {
-      name: 'Delete Client',
+      name: 'Delete Customer',
       icon: <img src="./delete_client.png" />,
     },
     '/client-details': {
-      name: 'Client Details',
+      name: 'Customer Details',
       icon: <img src="./client_details.png" />,
     },
     '/vendors': { name: 'Vendors', icon: <img src="./vendors.png" /> },
