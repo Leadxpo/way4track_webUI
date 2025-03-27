@@ -11,6 +11,7 @@ const AddEditClient = () => {
     id: clientData?.id || null,
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
+    gstNumber: clientData.gstNumber || '',
     clientId: clientData.clientId || '',
     branch: clientData.branch || '',
     dob: clientData.dob || '',
@@ -104,7 +105,7 @@ const AddEditClient = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {clientData.id ? 'Edit Client' : 'Add Client'}
+            {clientData.id ? 'Edit Customer' : 'Add Customer'}
           </h1>
         </div>
         {/* Photo Section */}
@@ -159,6 +160,22 @@ const AddEditClient = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+
+
+ {/* Phone Number */}
+ <div>
+            <p className="font-semibold mb-1">GST Number</p>
+            <input
+              type="text"
+              name="gstNumber"
+              value={formData.gstNumber}
+              onChange={handleInputChange}
+              placeholder="Enter Gst Number"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+
+
           {/* Client ID */}
           {/* Branch */}
           {branches.length > 0 && (

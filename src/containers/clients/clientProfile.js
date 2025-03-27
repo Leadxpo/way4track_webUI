@@ -66,7 +66,7 @@ const ClientProfile = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
-      <p className="font-bold text-xl">Client ID : {clientDetails.clientId}</p>
+      <p className="font-bold text-xl">Customer ID : {clientDetails.clientId}</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
           src={clientDetails.clientPhoto}
@@ -75,18 +75,18 @@ const ClientProfile = () => {
         />
         <div className="space-y-2">
           <p className="text-gray-800 font-bold text-xl">
-            Client Name : {clientDetails.name}
+            Customer Name : {clientDetails.name}
           </p>
           <p className="text-gray-800">Phone number : {clientDetails.phoneNumber}</p>
           <p className="text-gray-800">Email : {clientDetails.email}</p>
-          <p className="text-gray-800">Client Branch : {clientDetails.branch}</p>
+          <p className="text-gray-800">Customer Branch : {clientDetails.branch}</p>
           <p className="text-gray-800">Date of Birth : {clientDetails.dob}</p>
           <p className="text-gray-800">Address : {clientDetails.address}</p>
         </div>
       </div>
 
       {/* Client Pitchers Table */}
-      <p className="font-bold text-xl">Client Pitchers</p>
+      <p className="font-bold text-xl">Customer Pitchers</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>

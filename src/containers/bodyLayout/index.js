@@ -113,6 +113,9 @@ import EditEmployerDetails from '../staff/EditEmployerDetails';
 import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
 import AddInhandProduct from '../products/AddInhandProduct';
+import SalesVisit from '../salesVisit';
+
+
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -379,6 +382,13 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
+          <Route
+            path="/sales_visit"
+            element={<SalesVisit />}
+          />
+
+
+
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />

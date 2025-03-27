@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import ApiService, { initialAuthState } from "../../services/ApiService";
-
+import { useLocation, useNavigate } from "react-router-dom";
 const AddDesignation = () => {
     const [designation, setDesignation] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [roles, setRoles] = useState([
         { name: "branch", add: false, edit: false, view: false },
         { name: "assets", add: false, edit: false, view: false },
@@ -54,12 +57,13 @@ const AddDesignation = () => {
             const endpoint = `/designations/createDesignation`;
             const response = await ApiService.post(endpoint, payload);
     
-            if (response.status) {
+            if (response.designation===designation) {
                 alert("Designation added successfully!");
                 setDesignation(""); // Clear input field after success
                 setRoles(roles.map(role => ({ ...role, add: false, edit: false, view: false }))); // Reset roles
+                navigate("/designations")
             } else {
-                alert("Failed to save designation. Please try again.");
+                alert("Failed to update designation. Please try again.");
             }
         } catch (error) {
             console.error("Error saving designation:", error);

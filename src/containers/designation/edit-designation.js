@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ApiService, { initialAuthState } from "../../services/ApiService";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const EditDesignation = () => {
     const [designationDetails, setDesignationDetails] = useState({
@@ -9,6 +9,7 @@ const EditDesignation = () => {
         roles: [],
     });
 
+    const navigate = useNavigate();
     const location = useLocation();
     const designationData = location.state?.designationDetails || {};
 
@@ -66,12 +67,13 @@ const EditDesignation = () => {
             companyCode: initialAuthState?.companyCode,
             unitCode: initialAuthState?.unitCode,
         };
-console.log(" payload :", payload)
         try {
             const response = await ApiService.post("/designations/createDesignation", payload);
-
-            if (response.status) {
+            console.log(" payloadss :", response.designation,"===",designationDetails.designation)
+            
+            if (response.designation===designationDetails.designation) {
                 alert("Designation updated successfully!");
+                navigate("/designations")
             } else {
                 alert("Failed to update designation. Please try again.");
             }

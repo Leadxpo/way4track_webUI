@@ -39,14 +39,16 @@ const TableWithSearchFilter = ({
   const clientData = location.state?.clientDetails || {};
   const workData = location.state?.workData || {};
   const [qualifiedCount, setQualifiedCount] = useState(0);
-useEffect(() => {
-  const countQualified = filteredData.filter(item => item.status === 'Qualified').length;
-  setQualifiedCount(countQualified);
-}, []);
+  useEffect(() => {
+    const countQualified = filteredData.filter(
+      (item) => item.status === 'Qualified'
+    ).length;
+    setQualifiedCount(countQualified);
+  }, []);
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
-  if(hiringData){
-  console.log("fgsgs hiringData",hiringData)
+  if (hiringData) {
+    console.log('fgsgs hiringData', hiringData);
   }
   const voucherData = location.state?.voucherData || {};
   const getSearchDetailClient = useCallback(async () => {
@@ -73,7 +75,6 @@ useEffect(() => {
     }
   }, [searchID, searchName, clientData?.branchName]);
 
-
   const getHiringSearchDetails = useCallback(async () => {
     try {
       const response = await ApiService.post('/hiring/getHiringSearchDetails', {
@@ -83,10 +84,9 @@ useEffect(() => {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-      
+
       // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
       if (response.status) {
-        
         console.log(response.data, 'Response Data'); // Log data to verify it
         const filteredData = response.data.map(
           ({ qualifications, ...rest }) => rest
@@ -187,13 +187,16 @@ useEffect(() => {
 
   const getWorkDetailsAgainstSearch = useCallback(async () => {
     try {
-      const response = await ApiService.post('/work-allocations/getWorkAllocation', {
-        clientName: searchName,
-        workAllocationNumber: workData?.workAllocationNumber,
-        serviceOrProduct: workData?.serviceOrProduct,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/work-allocations/getWorkAllocation',
+        {
+          clientName: searchName,
+          workAllocationNumber: workData?.workAllocationNumber,
+          serviceOrProduct: workData?.serviceOrProduct,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
       if (response.status) {
         console.log(response.data, 'Response Data');
         setFilteredData(response.data);
@@ -292,17 +295,17 @@ useEffect(() => {
   }, []);
 
   const handleStatus = (e) => {
-    console.log("Selected status:", e.target.value);
+    console.log('Selected status:', e.target.value);
     setStatus(e.target.value);
   };
 
   const handleQualified = () => {
-    setStatus("Qualified");
+    setStatus('Qualified');
     // handleSearch();
   };
 
-  if(status){
-    console.log("statusssqqqqqqqqqqqqqqqqq",status);
+  if (status) {
+    console.log('statusssqqqqqqqqqqqqqqqqq', status);
   }
 
   const handleStatusChange = (e) => {
@@ -408,10 +411,10 @@ useEffect(() => {
             // }
 
             placeholder={
-              type === 'tickets' 
-                ? 'Search with Ticket ID' 
-                : type === 'hiring' 
-                  ? 'Search with Hire Id' 
+              type === 'tickets'
+                ? 'Search with Ticket ID'
+                : type === 'hiring'
+                  ? 'Search with Hire Id'
                   : 'Search with Client ID'
             }
             onChange={(e) => setSearchID(e.target.value)}
@@ -430,10 +433,10 @@ useEffect(() => {
             //     : 'Search with Name'
             // }
             placeholder={
-              type === 'tickets' 
-                ? 'Search with Client Name' 
-                : type === 'hiring' 
-                  ? 'Search with Hire Name' 
+              type === 'tickets'
+                ? 'Search with Client Name'
+                : type === 'hiring'
+                  ? 'Search with Hire Name'
                   : 'Search with Name'
             }
             onChange={(e) => setSearchName(e.target.value)}
@@ -457,17 +460,23 @@ useEffect(() => {
             // </select>
 
             <select
-            value={status}
-            onChange={handleStatus}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-          >
-            <option value="">All Statuses</option>
-            {['pending', 'Rejected', 'Qualified', 'APPLIED', 'INTERVIEWED'].map((statusOption) => (
-              <option key={statusOption} value={statusOption}>
-                {statusOption}
-              </option>
-            ))}
-          </select>
+              value={status}
+              onChange={handleStatus}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            >
+              <option value="">All Statuses</option>
+              {[
+                'pending',
+                'Rejected',
+                'Qualified',
+                'APPLIED',
+                'INTERVIEWED',
+              ].map((statusOption) => (
+                <option key={statusOption} value={statusOption}>
+                  {statusOption}
+                </option>
+              ))}
+            </select>
           ) : (
             <select
               value={statusFilter}
