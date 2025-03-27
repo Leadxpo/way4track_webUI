@@ -4,6 +4,7 @@ import ApiService from "../../services/ApiService";
 const EmployerDetails = ({ setEmployerDetails }) => {
   const [data, setData] = useState({
     branch: "",
+    staffId:"",
     joiningDate: "",
     designation_id: "",
     department: "",
@@ -75,7 +76,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   const inputFields = useMemo(
     () => [
-      // { label: "Staff ID", name: "staffId", type: "text" },
+       { label: "Staff ID", name: "staffId", type: "text" },
       { label: "Joining Date", name: "joiningDate", type: "date" },
       { label: "Department", name: "department", type: "text" },
       { label: "Monthly Salary", name: "monthlySalary", type: "number" },
