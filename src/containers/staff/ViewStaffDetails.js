@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import ApiService from "../../services/ApiService";
+import ApiService, { initialAuthState } from "../../services/ApiService";
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
@@ -91,7 +91,10 @@ console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
       // useEffect(() => {
       //   fetchStaffDetails();
       // }, []);
-
+}
+      }catch (error) {
+      
+      }
   return (
     <div className="m-6">
       <h3 className="text-2xl font-bold mb-6">Staff Details</h3>
@@ -133,6 +136,5 @@ const DetailsCard = ({ title, children, onEdit }) => (
     </div>
     <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
   </div>
-);
-
+)};
 export default ViewStaffDetails;
