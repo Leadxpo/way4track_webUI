@@ -10,43 +10,39 @@ import { FaEllipsisV } from 'react-icons/fa';
 const data = [
   {
     id: '01',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '5897',
-    amount: '₹2099',
-    paymentStatus: "success",
-    paymentMode: 'Credit Card',
+    visitId: '4376T4RT5TG',
+    company: 'Way4track',
+    contact: '9876543210',
+    visitDate: '09-12-2024',
+    estimateDate: '09-12-2024',
   },
   {
     id: '02',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Service',
-    vehicleNumber: '6464',
-    amount: '₹2099',
-    paymentStatus: "success",
-    paymentMode: 'Cash',
+    visitId: '4376T4RT5TG',
+    company: 'Way4track',
+    contact: '9876543210',
+    visitDate: '09-12-2024',
+    estimateDate: '09-12-2024',
   },
   {
     id: '03',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '3234',
-    amount: '₹2099',
-    paymentStatus: "success",
-    paymentMode: 'Autopay',
+    visitId: '4376T4RT5TG',
+    company: 'Way4track',
+    contact: '9876543210',
+    visitDate: '09-12-2024',
+    estimateDate: '09-12-2024',
   },
   {
     id: '04',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '7655',
-    amount: '₹2099',
-    paymentStatus: "success",
-    paymentMode: 'Net Banking',
+    visitId: '4376T4RT5TG',
+    company: 'Way4track',
+    contact: '9876543210',
+    visitDate: '09-12-2024',
+    estimateDate: '09-12-2024',
   },
 ];
 
-const WorkAllocation = () => {
+const SalesVisit = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // Check if there's workAllocation data passed through location.state
@@ -227,8 +223,8 @@ const WorkAllocation = () => {
   return (
     <div className="p-10">
       <div className="flex justify-between mb-4">
-        <p className="text-xl font-bold">Work Allocation</p>
-        <button
+        <p className="text-xl font-bold">Sales Visits</p>
+        {/* <button
           className={`h-12 px-8 text-white font-bold rounded-md hover:cursor-pointer  ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           style={{
             backgroundColor: '#FFF504',
@@ -240,7 +236,7 @@ const WorkAllocation = () => {
         >
           <span className="text-black mr-2">➕</span>
           Create Work Allocation
-        </button>
+        </button> */}
       </div>
 
       {isModalOpen && (
@@ -540,13 +536,13 @@ const WorkAllocation = () => {
       <div className="flex mb-4">
         <input
           type="text"
-          placeholder="Work Allocation ID:"
+          placeholder="Staff ID:"
           className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
           style={{ height: '47px' }}
         />
         <input
           type="text"
-          placeholder="Work Allocation Name:"
+          placeholder="Company Name:"
           className="h-12 block w-1/2 border border-gray-500 px-2 mx-2 rounded"
         />
 
@@ -555,98 +551,37 @@ const WorkAllocation = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto" style={{ marginTop: '40px' }}>
-        <table className="min-w-full border border-gray-300">
+      {/* <div className="p-6">
+        <h2 className="text-2xl font-semibold mb-4">Staff Visits</h2>
+        <div className="flex items-center gap-4 mb-4">
+          <input
+            type="text"
+            placeholder="staff ID :"
+            className="border border-gray-300 rounded-lg px-3 py-2 w-1/3"
+          />
+          <input
+            type="text"
+            placeholder="Company name :"
+            className="border border-gray-300 rounded-lg px-3 py-2 w-1/3"
+          />
+          <button className="bg-green-600 p-3 rounded-lg">
+            <FaSearch className="text-white" size={20} />
+          </button>
+        </div> */}
+      <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
+        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead>
-            <tr className="bg-gray-200" style={{ backgroundColor: '#FFFFFF' }}>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                No.
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Work Allocation ID
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Product / Service
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Vehicle Number
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Amount
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Payment Status
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Payment Mode
-              </th>
-              <th
-                className="px-4 py-2 text-left"
-                style={{
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  color: '#000000',
-                  height: '60px',
-                }}
-              >
-                Action
-              </th>
+            <tr
+              className="bg-gray-200 text-left"
+              style={{ backgroundColor: '#FFFFFF' }}
+            >
+              <th className="p-3">No.</th>
+              <th className="p-3">Visit ID</th>
+              <th className="p-3">Company</th>
+              <th className="p-3">Contact</th>
+              <th className="p-3">Date of Visit</th>
+              <th className="p-3">Estimate Date</th>
+              <th className="p-3">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -658,83 +593,12 @@ const WorkAllocation = () => {
                   backgroundColor: index % 2 === 0 ? '#D0D0D0' : '#FFFFFF',
                 }}
               >
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.id}
-                </td>
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.workAllocationID}
-                </td>
-                <td
-                  className="px-4 py-2 font-bold"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.type}
-                </td>
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.vehicleNumber}
-                </td>
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.amount}
-                </td>
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.paymentStatus}
-                </td>
-                <td
-                  className="px-4 py-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    color: '#000000',
-                    height: '60px',
-                  }}
-                >
-                  {item.paymentMode}
-                </td>
+                <td className="p-3 font-semibold">{item.id}</td>
+                <td className="p-3">{item.visitId}</td>
+                <td className="p-3 font-semibold">{item.company}</td>
+                <td className="p-3">{item.contact}</td>
+                <td className="p-3 font-semibold">{item.visitDate}</td>
+                <td className="p-3">{item.estimateDate}</td>
                 <td className="border p-2 relative">
                   <button
                     // onClick={(e) => handleOpenPopup(e, group.id)}
@@ -748,6 +612,7 @@ const WorkAllocation = () => {
           </tbody>
         </table>
       </div>
+      {/* </div> */}
 
       {/* <TableWithSearchFilter
         type="work-allocations"
@@ -762,4 +627,4 @@ const WorkAllocation = () => {
   );
 };
 
-export default WorkAllocation;
+export default SalesVisit;
