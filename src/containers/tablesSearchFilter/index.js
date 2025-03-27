@@ -372,7 +372,7 @@ useEffect(() => {
       {/* Create New Button Row */}
 
       <div className="flex justify-end mb-4">
-      
+      {type==="staff"&&(
      <button
      className="h-10 px-4 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 hover:cursor-pointer relative"
      onClick={handleQualified}
@@ -382,7 +382,7 @@ useEffect(() => {
      <span className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
        {qualifiedCount}
      </span>
-   </button>
+   </button>)}
         
       </div>
       <div className="flex justify-end mb-4">

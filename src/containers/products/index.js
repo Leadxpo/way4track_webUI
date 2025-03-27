@@ -1,12 +1,50 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaEllipsisVertical } from 'react-icons/fa6';
-import { FaList, FaTh, FaPlus, FaSearch } from 'react-icons/fa';
+import { FaList, FaTh, FaPlus, FaSearch, FaEllipsisV } from 'react-icons/fa';
 import DropdownCard from '../../components/DropdownCard';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import Table from '../../components/Table';
 import { getPermissions } from '../../common/commonUtils';
+
+const data = [
+  { id: '01', name: 'Bike GPS Tracker', stock: 5342 },
+  { id: '02', name: 'Car GPS Tracker', stock: 3423 },
+  { id: '03', name: 'Fuel Monitoring System', stock: 234 },
+  { id: '04', name: 'Bike GPS Tracker', stock: 3412 },
+  { id: '05', name: 'Car GPS Tracker', stock: 3322 },
+  { id: '06', name: 'Fuel Monitoring System', stock: 3421 },
+  { id: '07', name: 'Bike GPS Tracker', stock: 0 },
+];
+
+const data1 = [
+  { id: 1, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 5342, date: "5342" },
+  { id: 2, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3423, date: "3423" },
+  { id: 3, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 234, date: "234" },
+  { id: 4, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3412, date: "3412" },
+  { id: 5, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3322, date: "3322" },
+];
+
 const Products = () => {
+  const [selected, setSelected] = useState("branchstock");
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+  const [filters, setFilters] = useState({
+    staffId: "",
+    staffName: "",
+    productName: "",
+    fromDate: "",
+    toDate: "",
+  });
+
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+
+  const toggleDropdown = (id) => {
+    setDropdownOpen(dropdownOpen === id ? null : id);
+  };
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isGridView, setIsGridView] = useState(true);
@@ -155,21 +193,6 @@ const Products = () => {
 
         {/* Right: Icons and Add Staff Button */}
         <div className="flex items-center space-x-4">
-          {/* List View Icon */}
-          <button
-            className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
-            onClick={() => setIsGridView(false)}
-          >
-            <FaList size={18} />
-          </button>
-
-          {/* Grid View Icon */}
-          <button
-            className={`p-2 cursor-pointer ${isGridView && 'border border-black'}`}
-            onClick={() => setIsGridView(true)}
-          >
-            <FaTh size={18} />
-          </button>
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-product')}
@@ -177,45 +200,44 @@ const Products = () => {
           >
             <span>Add Product</span>
           </button>
+          <button
+  className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer shadow-md ${
+    permissions.add ? 'bg-orange-500 hover:bg-orange-600' : 'bg-gray-400 cursor-not-allowed opacity-50'
+  }`}
+  onClick={() => navigate('/add-inhand-product')}
+  disabled={!permissions.add}
+>
+  <span>In hand Products</span>
+</button>
+
         </div>
       </div>
 
-      {/* Conditional Cards Display */}
-      <div className="flex justify-between mx-6">
-        {/* Conditionally render based on role */}
-        {role !== 'Technician' && role !== 'Sales Man' && (
-          <>
-            <DropdownCard
-              bgColor="red"
-              title="Total Products"
-              count={productCounts.totalQty}
-              branches={branches}
-              selectedBranch={selectedBranch}
-              setSelectedBranch={setSelectedBranch}
-            />
-            <DropdownCard
-              bgColor="purple"
-              title="Assigned Products"
-              count={productCounts.totalAssignedQty}
-              branches={branches}
-              selectedBranch={selectedBranch}
-              setSelectedBranch={setSelectedBranch}
-            />
-          </>
-        )}
-
-        {/* Always display In Hand Products card */}
-        <DropdownCard
-          bgColor="green"
-          title="In Hand Products"
-          count={productCounts.totalInHandsQty}
-          branches={branches}
-          selectedBranch={selectedBranch}
-          setSelectedBranch={setSelectedBranch}
-        />
+      <div className="grid grid-cols-2 gap-6 m-6">
+  {/* Conditionally render based on role */}
+  {role !== 'Technician' && role !== 'Sales Man' && (
+    <div className="bg-red-400 rounded-2xl p-6 shadow-lg flex flex-col justify-between"
+    onClick={() => setSelected("branchstock")}>
+      <div className="bg-white shadow-md rounded-md p-2 w-3/4">
+        <span className="text-gray-800 font-medium">Branch Stack</span>
       </div>
+      <div className="text-white text-6xl font-bold mt-4">500</div>
+    </div>
+  )}
+
+  {/* Always display In Hand Products card */}
+  <div className="bg-green-400 rounded-2xl p-6 shadow-lg flex flex-col justify-between"
+  onClick={() => setSelected("handstock")}>
+    <div className="bg-white shadow-md rounded-md p-2 w-3/4">
+      <span className="text-gray-800 font-medium">In Hand Products</span>
+    </div>
+    <div className="text-white text-6xl font-bold mt-4">220</div>
+  </div>
+</div>
+
 
       {/* Search and Table */}
+      {selected==="branchstock"&&(<>
       <div className="flex mb-4">
         <div className="flex-grow mr-2">
           <input
@@ -258,212 +280,148 @@ const Products = () => {
         </button>
       </div>
 
-      {/* Grid View or Table */}
-      {isGridView ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
-          {products.map((profile, index) => (
-            <div
-              key={index}
-              className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-400"
+      <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+        <thead>
+          <tr className="bg-gray-100 border-b">
+            <th className="px-6 py-3 text-left text-sm font-bold">No.</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Product Name</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Present Stock</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr
+              key={item.id}
+              className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}
             >
-              <div className="absolute top-4 right-4 text-gray-400 cursor-pointer">
-                <FaEllipsisVertical />
-              </div>
+              <td className="px-6 py-4">{item.id}</td>
+              <td className="px-6 py-4">{item.name}</td>
+              <td className="px-6 py-4">{item.stock}</td>
+              <td className="border p-2 text-center relative">
+  <button 
+    onClick={() => toggleDropdown(item.id)} 
+    className="p-2 bg-white rounded-md focus:outline-none"
+  >
+    <FaEllipsisV className="cursor-pointer text-gray-700" />
+  </button>
 
-              {/* Profile Picture */}
-              <img
-                className="rounded-full mx-auto h-24 w-24 object-cover"
-                src={`https://i.pravatar.cc/150?img=${index + 1}`} // Placeholder image source
-                alt="Profile"
-              />
+  {dropdownOpen === item.id && (
+    <div className="absolute right-0 bg-white shadow-md border rounded-md w-32 z-10">
+      <ul className="text-left">
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">More Details</li>
+      </ul>
+    </div>
+  )}
+</td>
 
-              <div className="text-center mt-4">
-                <h2 className="text-lg font-semibold">{profile.productName}</h2>
-                <p className="text-sm text-gray-500">
-                  {truncateString(profile.productDescription || '')}
-                </p>
-              </div>
-
-              <div className="mt-4 flex justify-center">
-                <button
-                  className={`px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer  ${permissions.add ? '' : 'cursor-not-allowed opacity-50'}`}
-                  onClick={handleMoreDetails}
-                  disabled={!permissions.view}
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
+            </tr>
           ))}
+        </tbody>
+      </table>
+    </div></>)}
+
+    {selected==="handstock"&&(<>
+    <div className="flex mb-4">
+        <div className="flex-grow mr-2">
+          <input
+            type="text"
+            name="productId"
+            placeholder="Search with ID"
+            value={searchData.productId}
+            onChange={handleInputChange}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
         </div>
-      ) : (
-        <Table
-          columns={columns}
-          data={tableData}
-          showEdit={false}
-          showDelete={permissions.delete}
-          showDetails={permissions.view}
-          onDetails={handleMoreDetails}
-        />
-      )}
+        <div className="flex-grow mx-2">
+          <input
+            type="text"
+            name="productName"
+            placeholder="Search with Name"
+            value={searchData.productName}
+            onChange={handleInputChange}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
+        </div>
+        <div className="flex-grow mx-2">
+          <input
+            type="text"
+            name="location"
+            placeholder="Search with location"
+            value={searchData.location}
+            onChange={handleInputChange}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
+        </div>
+        <button
+          onClick={handleSearch}
+          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+        >
+          <FaSearch className="mr-2" /> Search
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+        <thead>
+          <tr className="bg-gray-100 border-b">
+            <th className="px-6 py-3 text-left text-sm font-bold">Staff Id</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Staff Name</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Product</th>
+            <th className="px-6 py-3 text-left text-sm font-bold"> Quantity</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">  Date</th>
+            <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data1.map((item, index) => (
+            <tr
+              key={item.id}
+              className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}
+            >
+              <td className="px-6 py-4">{item.staffId}</td>
+              <td className="px-6 py-4">{item.staffName}</td>
+              <td className="px-6 py-4">{item.product}</td>
+              <td className="px-6 py-4">{item.quantity}</td>
+              <td className="px-6 py-4">{item.date}</td>
+              <td className="border p-2 text-center relative">
+  <button 
+    onClick={() => toggleDropdown(item.id)} 
+    className="p-2 bg-white rounded-md focus:outline-none"
+  >
+    <FaEllipsisV className="cursor-pointer text-gray-700" />
+  </button>
+
+  {dropdownOpen === item.id && (
+    <div className="absolute right-0 bg-white shadow-md border rounded-md w-32 z-10">
+      <ul className="text-left">
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
+        <li className="p-2 hover:bg-gray-100 cursor-pointer">More Details</li>
+      </ul>
+    </div>
+  )}
+</td>
+
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></>)}
+
+
+
+
     </div>
   );
 
 
-  // return (
-  //   <div className="m-2">
-  //     <div className="flex justify-between items-center py-4">
-  //       {/* Left: Staff Details Heading */}
-  //       <h2 className="text-2xl font-semibold text-gray-800">Products</h2>
-
-  //       {/* Right: Icons and Add Staff Button */}
-  //       <div className="flex items-center space-x-4">
-  //         {/* List View Icon */}
-  //         <button
-  //           className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
-  //           onClick={() => setIsGridView(false)}
-  //         >
-  //           <FaList size={18} />
-  //         </button>
-
-  //         {/* Grid View Icon */}
-  //         <button
-  //           className={`p-2 cursor-pointer ${isGridView && 'border border-black'}`}
-  //           onClick={() => setIsGridView(true)}
-  //         >
-  //           <FaTh size={18} />
-  //         </button>
-  //         <button
-  //           className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
-  //           onClick={() => navigate('/add-product')}
-  //           disabled={!permissions.add}
-  //         >
-  //           <span>Add Product</span>
-  //         </button>
-  //       </div>
-  //     </div>
-  //     <div className="flex justify-between mx-6">
-  //       <DropdownCard
-  //         bgColor="red"
-  //         title="Total Products"
-  //         count={productCounts.totalQty}
-  //         branches={branches}
-  //         selectedBranch={selectedBranch}
-  //         setSelectedBranch={setSelectedBranch}
-  //       />
-  //       <DropdownCard
-  //         bgColor="green"
-  //         title="In Hand Products"
-  //         count={productCounts.totalInHandsQty}
-  //         branches={branches}
-  //         selectedBranch={selectedBranch}
-  //         setSelectedBranch={setSelectedBranch}
-  //       />
-  //       <DropdownCard
-  //         bgColor="purple"
-  //         title="Assigned Products"
-  //         count={productCounts.totalAssignedQty}
-  //         branches={branches}
-  //         selectedBranch={selectedBranch}
-  //         setSelectedBranch={setSelectedBranch}
-  //       />
-  //     </div>
-
-  //     <div className="flex mb-4">
-  //       <div className="flex-grow mr-2">
-  //         <input
-  //           type="text"
-  //           name="productId"
-  //           placeholder="Search with ID"
-  //           value={searchData.productId}
-  //           onChange={handleInputChange}
-  //           className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-  //           style={{ paddingLeft: '8px' }}
-  //         />
-  //       </div>
-  //       <div className="flex-grow mx-2">
-  //         <input
-  //           type="text"
-  //           name="productName"
-  //           placeholder="Search with Name"
-  //           value={searchData.productName}
-  //           onChange={handleInputChange}
-  //           className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-  //           style={{ paddingLeft: '8px' }}
-  //         />
-  //       </div>
-  //       <div className="flex-grow mx-2">
-  //         <input
-  //           type="text"
-  //           name="location"
-  //           placeholder="Search with location"
-  //           value={searchData.location}
-  //           onChange={handleInputChange}
-  //           className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-  //           style={{ paddingLeft: '8px' }}
-  //         />
-  //       </div>
-  //       <button
-  //         onClick={handleSearch}
-  //         className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-  //       >
-  //         <FaSearch className="mr-2" /> Search
-  //       </button>
-  //     </div>
-
-  //     {isGridView ? (
-  //       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
-  //         {products.map((profile, index) => (
-  //           <div
-  //             key={index}
-  //             className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-400"
-  //           >
-  //             {/* Static 3 dots */}
-  //             <div className="absolute top-4 right-4 text-gray-400 cursor-pointer">
-  //               <FaEllipsisVertical />
-  //             </div>
-
-  //             {/* Profile Picture */}
-  //             <img
-  //               className="rounded-full mx-auto h-24 w-24 object-cover"
-  //               src={`https://i.pravatar.cc/150?img=${index + 1}`} // Placeholder image source
-  //               alt="Profile"
-  //             />
-
-  //             {/* Name and Description */}
-  //             <div className="text-center mt-4">
-  //               <h2 className="text-lg font-semibold">{profile.productName}</h2>
-  //               <p className="text-sm text-gray-500">
-  //                 {truncateString(profile.productDescription || '')}
-  //               </p>
-  //             </div>
-
-  //             {/* Button */}
-  //             <div className="mt-4 flex justify-center">
-  //               <button
-  //                 className={`px-2 py-1 border border-gray-400 rounded-[3px] text-gray-400 hover:cursor-pointer  ${permissions.add ? '' : 'cursor-not-allowed opacity-50'}`}
-  //                 onClick={handleMoreDetails}
-  //                 disabled={!permissions.view}
-  //               >
-  //                 View Details
-  //               </button>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     ) : (
-  //       <Table
-  //         columns={columns}
-  //         data={tableData}
-  //         // onEdit={(profile) => console.log('Edit:', profile)}
-  //         showEdit={false}
-  //         showDelete={permissions.delete}
-  //         showDetails={permissions.view}
-  //         onDetails={handleMoreDetails}
-  //       />
-  //     )}
-  //   </div>
-  // );
 };
 
 export default Products;

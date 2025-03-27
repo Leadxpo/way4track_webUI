@@ -112,6 +112,7 @@ import EditBankDetails from '../staff/EditBankDetails';
 import EditEmployerDetails from '../staff/EditEmployerDetails';
 import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
+import AddInhandProduct from '../products/AddInhandProduct';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -335,6 +336,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/add-inhand-product" element={<AddInhandProduct/>} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />

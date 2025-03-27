@@ -385,35 +385,8 @@ const StaffDetails = () => {
             description: staff.description || "",
           },
         });
-<<<<<<< HEAD
-
-        console.log("qwwwwww",response);
-        if (response.status) {
-          const staff = response.data;
-          setStaffDetails({
-            name: staff.name,
-            phoneNumber: staff.phoneNumber,
-            address: staff.address,
-            email: staff.email,
-            staffPhoto: staff.staffPhoto,
-            dob: staff.dob,
-            aadharNumber: staff.aadharNumber,
-            joiningDate: staff.joiningDate,
-            basicSalary: staff.basicSalary,
-            branchName: staff.branchName,
-            designation: staff.designation,
-            staffId: staff.staffId,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching staff details:', error);
-        alert('Failed to fetch staff details.');
-      } finally {
-        setIsLoading(false);
-=======
       } else {
         throw new Error("Invalid response from server");
->>>>>>> 4a25c5045a21555fb501585b6b08f791039b155f
       }
     } catch (error) {
       console.error("Error fetching staff details:", error);
@@ -457,117 +430,12 @@ const StaffDetails = () => {
     </PDFDownloadLink>
  </div>
 
-<<<<<<< HEAD
-            {/* Attendance Table */}
-            {selectedDate && (
-              <div className="w-full overflow-auto border border-gray-300 rounded-md mt-6">
-                <div className="p-4 text-center font-semibold text-lg border-b border-gray-300 min-w-full">
-                  Monthly Attendance Summary For{' '}
-                  {selectedDate.toLocaleString('default', { month: 'long' })}{' '}
-                  {selectedDate.getFullYear()}
-                </div>
-                <div className="table w-full border-collapse">
-                  <div className="table-header-group bg-gray-100 border-b border-gray-300">
-                    <div className="table-row border-b border-gray-300">
-                      <div className="table-cell p-2 border-r border-gray-300 text-center font-semibold">
-                        Day
-                      </div>
-                      {Array.from({ length: 30 }, (_, i) => (
-                        <div
-                          key={i}
-                          className="table-cell p-2 border-r border-gray-300 text-center font-semibold"
-                        >
-                          {i + 1}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="table-row-group">
-                    {/* In Time Row */}
-                    <div className="table-row border-b border-gray-300">
-                      <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                        In
-                      </div>
-                      {Array.from({ length: 30 }, (_, i) => (
-                        <div
-                          key={i}
-                          className="table-cell p-1 border-r border-gray-300 text-center"
-                        >
-                          {attendanceData[i]?.inTime.length > 0
-                            ? new Date(
-                              attendanceData[i].inTime[0]
-                            ).toLocaleTimeString()
-                            : 'No Data'}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Out Time Row */}
-                    <div className="table-row border-b border-gray-300">
-                      <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                        Out
-                      </div>
-                      {Array.from({ length: 30 }, (_, i) => (
-                        <div
-                          key={i}
-                          className="table-cell p-1 border-r border-gray-300 text-center"
-                        >
-                          {attendanceData[i]?.outTime.length > 0
-                            ? new Date(
-                              attendanceData[i].outTime[0]
-                            ).toLocaleTimeString()
-                            : 'No Data'}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Total Hours Row */}
-                    <div className="table-row border-b border-gray-300">
-                      <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                        Total Hrs
-                      </div>
-                      {Array.from({ length: 30 }, (_, i) => (
-                        <div
-                          key={i}
-                          className="table-cell p-1 border-r border-gray-300 text-center"
-                        >
-                          {attendanceData[i]?.totalHours > 0
-                            ? attendanceData[i].totalHours
-                            : 'No Data'}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Status Row */}
-                    <div className="table-row border-b border-gray-300">
-                      <div className="table-cell p-1 border-r border-gray-300 text-center font-semibold">
-                        Status
-                      </div>
-                      {Array.from({ length: 30 }, (_, i) => (
-                        <div
-                          key={i}
-                          className="table-cell p-1 border-r border-gray-300 text-center"
-                        >
-                          {attendanceData[i]?.status
-                            ? attendanceData[i].status
-                            : 'Absent'}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-=======
 <DetailsCard title="Personnel Details" onEdit={() => handleEdit("/edit-staff-personnel", formData.personnelDetails)}>
   <div className="grid grid-cols-2 gap-x-6 gap-y-2">
     {Object.entries(formData.personnelDetails).map(([key, value]) => (
       <div key={key} className="flex">
         <strong className="text-gray-700 mr-2">{key.replace(/([A-Z])/g, ' $1').trim()}:</strong>
         <span>{value}</span>
->>>>>>> 4a25c5045a21555fb501585b6b08f791039b155f
       </div>
     ))}
   </div>
