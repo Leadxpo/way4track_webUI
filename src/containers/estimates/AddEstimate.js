@@ -42,6 +42,8 @@ const AddEstimate = () => {
   };
   // Populate form state for edit mode
   const [formData, setFormData] = useState(initialFormState);
+  const [serveProd, setServeProd] = useState("");
+
 
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
@@ -147,7 +149,7 @@ const AddEstimate = () => {
   };
 
   const handleSave = async () => {
-    console.log(formData.items);
+    console.log("=======++++++++", formData.items);
     const estimateDto = {
       clientId: formData.clientNumber,
       buildingAddress: formData.billingAddress,
@@ -350,13 +352,25 @@ const AddEstimate = () => {
               </div>
 
               {/* Items Rows */}
-              {formData.items &&
+              {/* {formData.items &&
                 formData.items.map((item, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-12 gap-2 items-center p-2 border-t"
                   >
                     <span className="col-span-1">{index + 1}</span>
+                    <select
+                      name="type"
+                      value={serveProd} // Bind value to state
+                      onChange={(e) => setServeProd(e.target.value)} // Update state correctly
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Select Type</option>
+                      <option value="service">Service</option>
+                      <option value="product">Product</option>
+                    </select>
+
+                    {serveProd==="product"?
                     <select
                       name="name"
                       value={item.name}
@@ -369,7 +383,7 @@ const AddEstimate = () => {
                           {product.productName}
                         </option>
                       ))}
-                    </select>
+                    </select>:
 
                     <input
                       type="text"
@@ -380,7 +394,7 @@ const AddEstimate = () => {
                       }
                       placeholder="Quantity"
                       className="col-span-2 p-2 border rounded-md"
-                    />
+                    />}
                     <input
                       type="text"
                       name="rate"
@@ -413,7 +427,97 @@ const AddEstimate = () => {
                       -
                     </button>
                   </div>
-                ))}
+                ))} */}
+
+
+                {/* Items Rows */}
+{formData.items &&
+  formData.items.map((item, index) => (
+    <div
+      key={index}
+      className="grid grid-cols-12 gap-2 items-center p-2 border-t"
+    >
+      <span className="col-span-1">{index + 1}</span>
+
+      {/* Type Selection */}
+      <select
+        name="type"
+        value={serveProd} // Bind value to state
+        onChange={(e) => setServeProd(e.target.value)} // Update state correctly
+        className="col-span-2 p-2 border rounded-md w-full"
+      >
+        <option value="">Select Type</option>
+        <option value="service">Service</option>
+        <option value="product">Product</option>
+      </select>
+
+      {/* Product or Service Selection */}
+      {serveProd === "product" ? (
+        <select
+          name="name"
+          value={item.name}
+          onChange={(e) => handleProductItemChange(index, e)}
+          className="col-span-2 p-2 border rounded-md w-full"
+        >
+          <option value="">Select Product</option>
+          {products.map((product) => (
+            <option key={product.id} value={product.productName}>
+              {product.productName}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          name="quantity"
+          value={item.quantity}
+          onChange={(e) => handleProductItemQuantityChange(index, e)}
+          placeholder="Quantity"
+          className="col-span-2 p-2 border rounded-md w-full"
+        />
+      )}
+
+      {/* Rate Input */}
+      <input
+        type="text"
+        name="rate"
+        value={item.rate}
+        onChange={(e) => handleItemChange(index, e)}
+        placeholder="Rate"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      {/* Amount Input */}
+      <input
+        type="number"
+        name="amount"
+        value={item.amount}
+        onChange={(e) => handleItemChange(index, e)}
+        placeholder="Amount"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      {/* HSN Code Input */}
+      <input
+        type="text"
+        name="hsnCode"
+        value={item.hsnCode}
+        onChange={(e) => handleItemChange(index, e)}
+        placeholder="HSN code"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      {/* Remove Button */}
+      <button
+        type="button"
+        onClick={() => removeItem(index)}
+        className="bg-gray-100 rounded-md w-fit p-2"
+      >
+        -
+      </button>
+    </div>
+  ))}
+
               <div className="flex justify-end p-2">
                 <button
                   type="button"

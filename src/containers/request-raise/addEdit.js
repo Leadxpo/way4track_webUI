@@ -162,14 +162,25 @@ const AddEditRequestForm = () => {
           {/* Form field for Name */}
           <div>
             <p className="font-semibold mb-1">Request Type</p>
-            <input
+            {/* <input
               type="text"
               name="requestType"
               value={formData.requestType}
               onChange={handleInputChange}
               placeholder="Enter Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
+            /> */}
+            <select
+        name="requestType"
+        value={formData.requestType}
+        onChange={handleInputChange}
+        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+      >
+        <option value="">Select Request Type</option>
+        <option value="assets">Asserts</option>
+        <option value="money">Money</option>
+        <option value="products">Product</option>
+      </select>
           </div>
           <div>
             <div className="flex flex-col">
@@ -201,30 +212,8 @@ const AddEditRequestForm = () => {
             </div>
           </div>
 
-          {/* Branch */}
-          {branch.length > 0 && (
-            <div className="space-y-4">
-              <div>
-                <p className="font-semibold mb-1">Branch</p>
-                <select
-                  name="branch"
-                  value={formData.branchName}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Select a Branch
-                  </option>
-                  {branch.map((br) => (
-                    <option key={br.id} value={br.id}>
-                      {br.branchName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-          <div>
+     
+          {/* <div>
             <p className="font-semibold mb-1">Status</p>
             <select
               name="status"
@@ -242,7 +231,7 @@ const AddEditRequestForm = () => {
               <option value="declined">declined</option>
               <option value="pending">pending</option>
             </select>
-          </div>
+          </div> */}
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -288,6 +277,31 @@ const AddEditRequestForm = () => {
             )}
           </div>
 
+
+               {/* Branch */}
+               {branch.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
+                <select
+                  name="branch"
+                  value={formData.branchName}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>
+                    Select a Branch
+                  </option>
+                  {branch.map((br) => (
+                    <option key={br.id} value={br.id}>
+                      {br.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
           {/* Address */}
           <div>
             <p className="font-semibold mb-1">Description</p>
@@ -301,7 +315,7 @@ const AddEditRequestForm = () => {
             />
           </div>
         </div>
-        <div>
+        {/* <div>
           <p className="font-semibold mb-1">created Date</p>
           <input
             type="date"
@@ -310,7 +324,7 @@ const AddEditRequestForm = () => {
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div>
+        </div> */}
 
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">
