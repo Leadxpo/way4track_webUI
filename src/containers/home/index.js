@@ -3,9 +3,6 @@ import TotalCountCard from '../../components/TotalCountCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
-// import totalProducts from '../../mockData/mockTotalProducts.json';
-// import totalExpenses from '../../mockData/mockExpenses.json';
-// import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { FaSearch } from 'react-icons/fa';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -647,65 +644,57 @@ const Home = () => {
           />
         </div>
 
-        <div className="flex mt-8">
-          <div className="w-full">
-            {branches.map((branch) => (
-              <div className="grid grid-cols-6  space-y-4">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src="logo-name-square.png"
-                    alt="Branch Logo"
-                    className="w-10 h-10 object-cover"
-                  />
-                  <div>
-                    <p className="text-gray-800 font-semibold">Branch</p>
-                    <p className="text-green-700 font-semibold">
-                      {branch.branchName}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-left">
-                  <p className="text-gray-500">Rectifications</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.serviceSales}
-                  </p>
-                </div>
-                <div className="text-left">
-                  <p className="text-gray-500">Renewals</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.productSales}
-                  </p>
-                </div>
-
-                <div className="text-left">
-                  <p className="text-gray-500">Replacement</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.productSales}
-                  </p>
-                </div>
-
-                <div className="text-left">
-                  <p className="text-gray-500">Products Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.productSales}
-                  </p>
-                </div>
 
 
-                <div className="text-left">
-                  <p className="text-gray-500">Total Sales</p>
-                  <p className="text-gray-800 font-bold">{branch.totalSales}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="w-2/12 relative flex justify-center items-center">
-          <img src="https://www.google.com/maps/vt/data=Pxte0E_oK3nuwOhkfOtz3CynGpZLKSyIPSTQo3gPAganLydvfC72ltwSUN2CyjraPVd3bpG0HNs4MRDEo2qA0SXDaTOEFDXVNL2t_KEu4GY9hKbWJW7G3SFfT_3_vExLYsu32CXFAxR9AD8V0O1ibupEPN9WobX4EdFJ2F2pmCUfg1lwkbwNF4Mn119iJz-x0Kwr6xyj6XBUKgRIq63mmfZZQb5JDNKG7APJTdtT_0XJxGDHiNisV1oZENJHrA2ys17nx_ktH_dpo6ZP3NKN0r0OMJ-x-CA" alt="India Map" />
+        <div className="flex mt-4">
+  <div className="w-full">
+    {branches.map((branch, index) => (
+      <div key={index} className="grid grid-cols-6  py-1">
+        <div className="flex items-center ">
+          <img
+            src="logo-name-square.png"
+            alt="Branch Logo"
+            className="w-16 h-16 object-cover"
+          />
+          <div className="text-xs">
+            <p className="text-gray-800 font-semibold">Branch</p>
+            <p className="text-green-700 font-semibold">{branch.branchName}</p>
           </div>
         </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Rectifications</p>
+          <p className="text-gray-800 font-bold">{branch.serviceSales}</p>
+        </div>
+        <div className="text-left text-xs ">
+          <p className="text-gray-600 font-bold">Renewals</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Replacement</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Products Sales</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Total Sales</p>
+          <p className="text-gray-800 font-bold">{branch.totalSales}</p>
+        </div>
       </div>
+    ))}
+  </div>
 
+
+  <div className="w-1/2 flex justify-center items-center">
+    <img
+      src="https://www.google.com/maps/vt/data=Pxte0E_oK3nuwOhkfOtz3CynGpZLKSyIPSTQo3gPAganLydvfC72ltwSUN2CyjraPVd3bpG0HNs4MRDEo2qA0SXDaTOEFDXVNL2t_KEu4GY9hKbWJW7G3SFfT_3_vExLYsu32CXFAxR9AD8V0O1ibupEPN9WobX4EdFJ2F2pmCUfg1lwkbwNF4Mn119iJz-x0Kwr6xyj6XBUKgRIq63mmfZZQb5JDNKG7APJTdtT_0XJxGDHiNisV1oZENJHrA2ys17nx_ktH_dpo6ZP3NKN0r0OMJ-x-CA"
+      alt="India Map"
+      className="w-full h-full"
+    />
+  </div>
+</div>
+</div>
       
     
       <div className="flex items-center justify-center space-x-10">
