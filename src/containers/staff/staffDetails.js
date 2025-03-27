@@ -5,7 +5,7 @@ import ApiService, { initialAuthState } from "../../services/ApiService";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import StaffDetailsPDF from "./StaffDetailsPDF";
 
-const StaffDetails = () => {
+const ViewStaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -165,7 +165,7 @@ const StaffDetails = () => {
 
     {/* Right: Print Button */}
 
-    <PDFDownloadLink
+    {/* <PDFDownloadLink
       document={<StaffDetailsPDF staff={formData} />}
       fileName="Staff_Details.pdf"
     >
@@ -177,7 +177,7 @@ const StaffDetails = () => {
           {loading ? "Generating..." : "Print"}
         </button>
       )}
-    </PDFDownloadLink>
+    </PDFDownloadLink> */}
  </div>
 
 <DetailsCard title="Personnel Details" onEdit={() => handleEdit("/edit-staff-personnel", formData.personnelDetails)}>
@@ -232,14 +232,14 @@ const DetailsCard = ({ title, children, onEdit }) => (<>
     {/* <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2" onClick={onEdit}>
         <FaEdit /> Edit
       </button> */}
-    {/* <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-col items-center gap-1 border border-gray-300 shadow" onClick={onEdit}>
+    <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-col items-center gap-1 border border-gray-300 shadow" onClick={onEdit}>
       <FaPencilAlt className="text-black" />
       <span className="flex items-center gap-2">
         Edit
       </span>
-    </button> */}
+    </button>
   </div>
   <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
 </>);
 
-export default StaffDetails;
+export default ViewStaffDetails;

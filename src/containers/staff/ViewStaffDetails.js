@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaEdit, FaPencilAlt, FaPrint } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import ApiService, { initialAuthState } from "../../services/ApiService";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import StaffDetailsPDF from "./StaffDetailsPDF";
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
-
-  const [formData, setFormData] = useState({
+ const {state} = useLocation();
+console.log("locationnnnnnnnnnnnnnnnnnn",state.staffDetails.
+  staffId
+  
+);
+  const [formData] = useState({
     personnelDetails: {
       staffId: state.staffDetails.staffId,
       name: "John Doe",
@@ -87,111 +88,22 @@ const ViewStaffDetails = () => {
       if (response.errorCode === 200) {
         const staff = response.data;
 
-        setFormData({
-          personnelDetails: {
-            name: staff.name || "",
-            dob: staff.dob || "",
-            gender: staff.gender || "",
-            location: staff.location || "",
-            phoneNumber: staff.phoneNumber || "",
-            alternateNumber: staff.alternateNumber || "",
-            email: staff.email || "",
-            aadharNumber: staff.aadharNumber || "",
-            panCardNumber: staff.panCardNumber || "",
-            drivingLicence: staff.drivingLicence || "",
-            address: staff.address || "",
-            uanNumber: staff.uanNumber || "",
-            esicNumber: staff.esicNumber || "",
-            bloodGroup: staff.bloodGroup || "",
-          },
-          educationDetails: {
-            qualifications: staff.qualifications || [],
-            experience: staff.experience || [],
-          },
-          bankDetails: {
-            accountNumber: staff.accountNumber || "",
-            bankName: staff.bankName || "",
-            ifscCode: staff.ifscCode || "",
-            branchName: staff.branchName || "",
-            accountType: staff.accountType || "",
-          },
-          employerDetails: {
-            branch: staff.branchName || "",
-            joiningDate: staff.joiningDate || "",
-            designation: staff.designation || "",
-            department: staff.department || "",
-            monthlySalary: staff.monthlySalary || "",
-            officeEmail: staff.officeEmail || "",
-            officePhoneNumber: staff.officePhoneNumber || "",
-            bikeAllocation: staff.bikeAllocation || "",
-            mobileAllocation: staff.mobileAllocation || "",
-            terminationDate: staff.terminationDate || "",
-            resignationDate: staff.resignationDate || "",
-            finalSettlementDate: staff.finalSettlementDate || "",
-            insuranceNumber: staff.insuranceNumber || "",
-            insuranceEligibilityDate: staff.insuranceEligibilityDate || "",
-            insuranceExpiryDate: staff.insuranceExpiryDate || "",
-            password: staff.password || "",
-            description: staff.description || "",
-          },
-        });
-      } else {
-        throw new Error("Invalid response from server");
+      // useEffect(() => {
+      //   fetchStaffDetails();
+      // }, []);
+}
+      }catch (error) {
+      
       }
-    } catch (error) {
-      console.error("Error fetching staff details:", error);
-      alert("Failed to fetch staff details.");
-    }
-  };
-  useEffect(() => {
-
-
-
-    fetchStaffDetails();
-  }, [state?.staffDetails?.staffId]);
-
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-md mb-6 p-3">
-  <div className="flex justify-between items-center mb-6">
-    {/* Left: Profile Image & Name */}
-    <div className="flex items-center gap-4">
-      {/* <img
-        src={""}
-        alt="Employee"
-        className="w-16 h-16 rounded-full object-cover shadow-md"
-      />
-      <h3 className="text-2xl font-bold">name</h3> */}
-    </div>
+    <div className="m-6">
+      <h3 className="text-2xl font-bold mb-6">Staff Details</h3>
 
-    {/* Right: Print Button */}
-
-    {/* <PDFDownloadLink
-      document={<StaffDetailsPDF staff={formData} />}
-      fileName="Staff_Details.pdf"
-    >
-      {({ loading }) => (
-        <button
-          className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex items-center gap-2 border border-gray-300 shadow"
-        >
-          <FaPrint className="text-green-500" />
-          {loading ? "Generating..." : "Print"}
-        </button>
-      )}
-    </PDFDownloadLink> */}
- </div>
-
-<DetailsCard title="Personnel Details" onEdit={() => handleEdit("/edit-staff-personnel", formData.personnelDetails)}>
-  <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-    {Object.entries(formData.personnelDetails).map(([key, value]) => (
-      <div key={key} className="flex">
-        <strong className="text-gray-700 mr-2">{key.replace(/([A-Z])/g, ' $1').trim()}:</strong>
-        <span>{value}</span>
-      </div>
-    ))}
-  </div>
-</DetailsCard>
-
-
+      <DetailsCard title="Personnel Details" onEdit={() => handleEdit("/edit-staff-personnel", formData.personnelDetails)}>
+        {Object.entries(formData.personnelDetails).map(([key, value]) => (
+          <p key={key}><strong>{key.replace(/([A-Z])/g, ' $1').trim()}:</strong> {value}</p>
+        ))}
+      </DetailsCard>
 
       <DetailsCard title="Education Details" onEdit={() => handleEdit("/edit-staff-education", formData.educationDetails)}>
         {formData.educationDetails.qualifications.map((qual, index) => (
@@ -200,46 +112,29 @@ const ViewStaffDetails = () => {
       </DetailsCard>
 
       <DetailsCard title="Bank Details" onEdit={() => handleEdit("/edit-staff-bank", formData.bankDetails)}>
-  <div className="grid grid-cols-1 gap-y-2">
-    {Object.entries(formData.bankDetails).map(([key, value]) => (
-      <div key={key} className="flex">
-        <strong className="text-gray-700 mr-2">{key.replace(/([A-Z])/g, ' $1').trim()}:</strong>
-        <span>{value}</span>
-      </div>
-    ))}
-  </div>
-</DetailsCard>
+        {Object.entries(formData.bankDetails).map(([key, value]) => (
+          <p key={key}><strong>{key.replace(/([A-Z])/g, ' $1').trim()}:</strong> {value}</p>
+        ))}
+      </DetailsCard>
 
-
-<DetailsCard title="Employer Details" onEdit={() => handleEdit("/edit-staff-employer", formData.employerDetails)}>
-  <div className="flex flex-col gap-y-3">
-    {Object.entries(formData.employerDetails).map(([key, value]) => (
-      <div key={key} className="flex">
-        <strong className="text-gray-700 mr-2">{key.replace(/([A-Z])/g, ' $1').trim()}:</strong>
-        <span>{value}</span>
-      </div>
-    ))}
-  </div>
-</DetailsCard>
-
+      <DetailsCard title="Employer Details" onEdit={() => handleEdit("/edit-staff-employer", formData.employerDetails)}>
+        {Object.entries(formData.employerDetails).map(([key, value]) => (
+          <p key={key}><strong>{key.replace(/([A-Z])/g, ' $1').trim()}:</strong> {value}</p>
+        ))}
+      </DetailsCard>
     </div>
   );
 };
 
-const DetailsCard = ({ title, children, onEdit }) => (<>
-  <div className="flex justify-between items-center bg-gray-100 p-2 rounded-t-lg">
-    <h4 className="text-xl font-bold">{title}</h4>
-    {/* <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2" onClick={onEdit}>
+const DetailsCard = ({ title, children, onEdit }) => (
+  <div className="bg-white border border-gray-300 rounded-lg shadow-md mb-6">
+    <div className="flex justify-between items-center bg-gray-100 p-4 rounded-t-lg">
+      <h4 className="text-xl font-semibold">{title}</h4>
+      <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2" onClick={onEdit}>
         <FaEdit /> Edit
-      </button> */}
-    <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-col items-center gap-1 border border-gray-300 shadow" onClick={onEdit}>
-      <FaPencilAlt className="text-black" />
-      <span className="flex items-center gap-2">
-        Edit
-      </span>
-    </button>
+      </button>
+    </div>
+    <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
   </div>
-  <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
-</>);
-
+)};
 export default ViewStaffDetails;
