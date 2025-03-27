@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { FaSearch } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import * as XLSX from "xlsx";
+
 
 const getColorClasses = (color) => {
   switch (color) {
@@ -22,6 +26,13 @@ const BranchManagerHome = () => {
   const [assertsCardData, setAssertsCardData] = useState([]);
   const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   const [totalStaffDetails, setTotalStaffDetails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showTable, setShowTable] = useState(false);
+  const [activeTable, setActiveTable] = useState(null);
+
+  
   const fetchProductDetailsByBranch = async () => {
     try {
       const payload = {
@@ -203,6 +214,115 @@ const BranchManagerHome = () => {
     fetchData();
   }, []);
   const branchData = creditAndDebitPercentages?.[0] || {};
+
+  const stats = [
+    { label: "Total Payment", value: 500, color: "bg-red-300", textColor: "text-red-700" },
+    { label: "Received Amount", value: 220, color: "bg-green-300", textColor: "text-green-700" },
+    { label: "Pending Amount", value: 280, color: "bg-purple-300", textColor: "text-purple-700" }
+  ];
+
+
+  
+  const data = [
+    { id: "E-001", product: "Bike GPS Tracker", total: 564, inHand: "Praveen", remaining: 635 },
+    { id: "E-002", product: "Bike GPS Tracker", total: 564, inHand: "Praveen", remaining: 635 },
+    { id: "E-003", product: "Bike GPS Tracker", total: 564, inHand: "Praveen", remaining: 635 },
+    { id: "E-004", product: "Bike GPS Tracker", total: 564, inHand: "Praveen", remaining: 635 }
+  ];
+
+
+  const statss = [
+    {
+      title: "Asserts",
+      total: 70,
+      details: [
+        { label: "Office Asserts", value: 30 },
+        { label: "Transport Asserts", value: 40 }
+      ],
+      color: "bg-green-600",
+      borderColor: "border-green-400"
+    },
+    {
+      title: "Staff",
+      total: 64,
+      details: [
+        { label: "Technician", value: 20 },
+        { label: "Non Technician", value: 34 },
+        { label: "Sale Staff", value: 10 }
+      ],
+      color: "bg-red-600",
+      borderColor: "border-red-400"
+    }
+  ];
+
+  const employees = [
+    {
+      id: "E-001",
+      name: "P. Chaitanya",
+      designation: "CEO",
+      branch: "Visakhapatnam",
+      phone: "9911223344",
+      status: "Present"
+    },
+    {
+      id: "E-002",
+      name: "P. Chaitanya",
+      designation: "CEO",
+      branch: "Visakhapatnam",
+      phone: "9911223344",
+      status: "Present"
+    }
+  ];
+
+
+ // Filter data based on search query
+ const filteredData = data.filter((row) =>
+  row.product.toLowerCase().includes(search.toLowerCase())
+);
+
+// Function to Export to Excel
+const handleDownloadExcel = () => {
+  const worksheet = XLSX.utils.json_to_sheet(filteredData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+  XLSX.writeFile(workbook, "Product_Data.xlsx");
+};
+
+  
+
+const payments = [
+  { id: "5837RH4T4T3", title: "Bike GPS Tracker", date: "09-06-2024", invoice: "5837RH4T4T3", amount: "50,000", status: "Successful" },
+  { id: "5837RH4T4T3", title: "Bike GPS Tracker", date: "09-06-2024", invoice: "5837RH4T4T3", amount: "50,000", status: "Successful" },
+  { id: "5837RH4T4T3", title: "Bike GPS Tracker", date: "26-02-2024", invoice: "5837RH4T4T3", amount: "50,000", status: "Pending" },
+  { id: "5837RH4T4T3", title: "Bike GPS Tracker", date: "26-02-2024", invoice: "5837RH4T4T3", amount: "50,000", status: "Failed" },
+  { id: "5837RH4T4T3", title: "Bike GPS Tracker", date: "09-06-2024", invoice: "5837RH4T4T3", amount: "50,000", status: "Successful" },
+];
+
+const filteredPayments = payments.filter(payment =>
+  payment.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  payment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  payment.date.includes(searchTerm) ||
+  payment.invoice.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  payment.amount.includes(searchTerm) ||
+  payment.status.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+const exportToExcel = () => {
+  const worksheet = XLSX.utils.json_to_sheet(payments);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Payments");
+  XLSX.writeFile(workbook, "Payments.xlsx");
+};
+
+
+
+const toggleTable = (label) => {
+  setActiveTable(activeTable === label ? null : label);
+};
+
+
+
+
   return (
     <div className="p-6">
       {/* branch card Section */}
@@ -251,125 +371,351 @@ const BranchManagerHome = () => {
           </div>
         </div>
       </div>
-      {/* cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        {Array.isArray(requestBranchWiseData) && requestBranchWiseData.length > 0 ? (
-          requestBranchWiseData.map((location) => {
-            // Ensure color is defined or provide a default
-            const { border, bg } = getColorClasses(location.color || "gray");
-            // Calculate total requests count dynamically
-            const totalRequests = location.requests.reduce((sum, req) => sum + req.count, 0);
-            return (
-              <div key={location.location} className={`border-2 ${border} rounded-lg shadow-md`}>
-                <h3 className={`${bg} text-white font-semibold text-lg p-3 flex justify-between`}>
-                  <span>{location.location}</span>
-                  <span>Total: {totalRequests}</span> {/* Dynamic total */}
-                </h3>
-                {location.requests?.map((req, index) => (
-                  <p key={index} className="text-sm font-medium ml-4 mt-4">
-                    {req.name}: <span className="font-bold">{req.count}</span>
-                  </p>
-                ))}
-              </div>
-            );
-          })
-        ) : (
-          <p>No data available</p>
-        )}
+
+
+      
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-10">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className={`p-6 rounded-xl shadow-md w-80 text-center cursor-pointer ${stat.color}`}
+            onClick={() => toggleTable(stat.label)}
+          >
+            <div className="text-lg font-semibold">{stat.label}</div>
+            <div className={`text-4xl font-bold ${stat.textColor} mt-2`}>{stat.value}</div>
+            <button
+              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+              onClick={() => toggleTable(stat.label)}
+            >
+              {stat.label} Details
+            </button>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {/* Assets Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            Assets Summary
-          </h3>
-          <div className="p-4 space-y-2">
-            <p className="text-sm font-medium">
-              Office Assets: <span className="font-bold text-blue-600">{assertsCardData?.officeAsserts || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Transport Assets: <span className="font-bold text-green-600">{assertsCardData?.transportAsserts || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Total Assets: <span className="font-bold text-purple-600">{assertsCardData?.totalAsserts || 0}</span>
-            </p>
+
+ {/* Payments Table - Visible only if showTable is true */}
+ {activeTable === "Total Payment" && (
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Total Payments</h2>
+          <div className="flex justify-between mb-4">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="border p-2 rounded w-1/3"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="bg-red-300 text-white px-4 py-2 rounded">Download Excel</button>
           </div>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-red-300 text-white">
+                <th className="p-2 border">Transaction ID</th>
+                <th className="p-2 border">Title</th>
+                <th className="p-2 border">Date of Payment</th>
+                <th className="p-2 border">Invoice ID</th>
+                <th className="p-2 border">Amount</th>
+                <th className="p-2 border">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPayments.map((payment, index) => (
+                <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+                  <td className="p-2 border text-center">{payment.id}</td>
+                  <td className="p-2 border text-center">{payment.title}</td>
+                  <td className="p-2 border text-center">{payment.date}</td>
+                  <td className="p-2 border text-center">{payment.invoice}</td>
+                  <td className="p-2 border text-center">{payment.amount}</td>
+                  <td className="p-2 border text-center">
+                    <span
+                      className={`px-2 py-1 rounded text-white ${
+                        payment.status === "Successful"
+                          ? "bg-green-500"
+                          : payment.status === "Pending"
+                          ? "bg-yellow-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {payment.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div className="mt-6">
-        {/* Staff Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md p-4 mb-6">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            Staff Summary
-          </h3>
-          <div className="p-4">
-            <p className="text-sm font-medium mb-2">
-              Total Staff: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalStaff || 0}</span>
-            </p>
-            <p className="text-sm font-medium mb-2">
-              Total Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalTechnicians || 0}</span>
-            </p>
-            <p className="text-sm font-medium mb-2">
-              Total Sales: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalSales || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Total Non-Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalNonTechnicians || 0}</span>
-            </p>
-          </div>
-        </div>
-        <Table
-          dataSource={totalStaffDetails?.data?.staff || []}
-          columns={[
-            {
-              title: "Staff ID",
-              dataIndex: "staffId",
-              key: "staffId",
-            },
-            {
-              title: "Staff Name",
-              dataIndex: "staffName",
-              key: "staffName",
-            },
-            {
-              title: "Designation",
-              dataIndex: "staffDesignation",
-              key: "staffDesignation",
-            },
-            {
-              title: "Branch Name",
-              dataIndex: "branchName",
-              key: "branchName",
-            },
-          ]}
-          pagination={{ pageSize: 5 }}
-          rowKey="staffId"
+      )}
+    
+
+{/* Receved Payments Table */}
+{activeTable === "Received Amount" && (
+<div>
+<h2 className="text-2xl font-bold mb-4">Received Payments</h2>
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border p-2 rounded w-1/3"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button className="bg-green-400 text-white px-4 py-2 rounded" onClick={exportToExcel}>
+          Download Excel
+        </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {/* Product Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            {branchData.branchName} - Product Summary
-          </h3>
-          <div className="p-4 space-y-2">
-            <p className="text-sm font-medium">
-              Total Products: <span className="font-bold text-purple-600">{totalQuantity}</span>
-            </p>
-          </div>
-        </div>
-        {/* Products List Card */}
-        <div className="border-2 border-gray-400 rounded-lg shadow-md">
-          <h3 className="bg-gray-400 text-white font-semibold text-lg p-3">Product Details</h3>
-          <div className="p-4 space-y-2">
-            {branchProductData.products.map((product) => (
-              <p key={product.id} className="text-sm font-medium">
-                {product.name}: <span className="font-bold text-blue-600">{product.totalProducts}</span>
-              </p>
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-green-400 text-white">
+            <th className="p-2 border">Transaction ID</th>
+            <th className="p-2 border">Title</th>
+            <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Amount</th>
+            <th className="p-2 border">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPayments.map((payment, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+              <td className="p-2 border text-center">{payment.id}</td>
+              <td className="p-2 border text-center">{payment.title}</td>
+              <td className="p-2 border text-center">{payment.date}</td>
+              <td className="p-2 border text-center">{payment.invoice}</td>
+              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">
+                <span className={`px-2 py-1 rounded text-white ${
+                  payment.status === "Successful" ? "bg-green-500" :
+                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                }`}>
+                  {payment.status}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+{/* Pending Amount */}
+{activeTable === "Pending Amount" && (
+<div>
+<h2 className="text-2xl font-bold mb-4">Total Payments</h2>
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border p-2 rounded w-1/3"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button className="bg-violet-500 text-white px-4 py-2 rounded" onClick={exportToExcel}>
+          Download Excel
+        </button>
+      </div>
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-violet-500 text-white">
+            <th className="p-2 border">Transaction ID</th>
+            <th className="p-2 border">Title</th>
+            <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Amount</th>
+            <th className="p-2 border">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPayments.map((payment, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+              <td className="p-2 border text-center">{payment.id}</td>
+              <td className="p-2 border text-center">{payment.title}</td>
+              <td className="p-2 border text-center">{payment.date}</td>
+              <td className="p-2 border text-center">{payment.invoice}</td>
+              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">
+                <span className={`px-2 py-1 rounded text-white ${
+                  payment.status === "Successful" ? "bg-green-500" :
+                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                }`}>
+                  {payment.status}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+
+
+
+
+<div className=' flex  justify-between mt-10'>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search product..."
+        className="border p-2 mb-4 w-96 rounded-md"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* Download Excel Button */}
+      <div>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded-md mb-4"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Download Excel
+        </button>
+      </div>
+      </div>
+
+        {/* Table Section */}
+        <div className="bg-white p-4 rounded-lg shadow-md">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-blue-700 text-white">
+              <th className="py-3 px-4 text-left">NO.</th>
+              <th className="py-3 px-4 text-left">Product</th>
+              <th className="py-3 px-4 text-left">Total</th>
+              <th className="py-3 px-4 text-left">In hand Products</th>
+              <th className="py-3 px-4 text-left">Remaining Products</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData.map((row, index) => (
+              <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
+                <td className="py-3 px-4">{row.id}</td>
+                <td className="py-3 px-4">{row.product}</td>
+                <td className="py-3 px-4">{row.total}</td>
+                <td className="py-3 px-4">{row.inHand}</td>
+                <td className="py-3 px-4">{row.remaining}</td>
+              </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+    
+ {/* Modal for Download Confirmation */}
+ {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
+            <h2 className="text-xl font-semibold mb-4">Confirm Download</h2>
+            <p className="mb-4">Do you want to download the filtered data as an Excel file?</p>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end gap-4">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                onClick={() => {
+                  handleDownloadExcel();
+                  setIsModalOpen(false);
+                }}
+              >
+                Download
+              </button>
+            </div>
           </div>
         </div>
+      )}
+
+
+
+
+
+
+
+
+{/* Stat Cards */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-10">
+        {statss.map((stat, index) => (
+          <div key={index} className={`rounded-lg shadow-md p-5 border ${stat.borderColor}`}>
+            <div className={`text-white p-3 rounded-t-lg font-semibold text-xl ${stat.color}`}>
+              {stat.title} <span className="float-right">Total : {stat.total}</span>
+            </div>
+            <div className="p-4">
+              {stat.details.map((detail, i) => (
+                <p key={i} className="text-gray-700 font-medium">
+                  {detail.label} : {detail.value}
+                </p>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    </div>)
+
+
+
+
+      <div className=' flex  justify-between mt-10'>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search product..."
+        className="border p-2 mb-4 w-96 rounded-md"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* Download Excel Button */}
+      <div>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded-md mb-4"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Download Excel
+        </button>
+      </div>
+      </div>
+
+ {/* Table */}
+ <div className="bg-white p-4 rounded-lg shadow-md mt-2">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-blue-700 text-white">
+              <th className="py-3 px-4 text-left">Employ ID</th>
+              <th className="py-3 px-4 text-left">Employ Name</th>
+              <th className="py-3 px-4 text-left">Designation</th>
+              <th className="py-3 px-4 text-left">Branch</th>
+              <th className="py-3 px-4 text-left">Phone Number</th>
+              <th className="py-3 px-4 text-left">At ident</th>
+              <th className="py-3 px-4 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map((emp, index) => (
+              <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
+                <td className="py-3 px-4">{emp.id}</td>
+                <td className="py-3 px-4">{emp.name}</td>
+                <td className="py-3 px-4">{emp.designation}</td>
+                <td className="py-3 px-4">{emp.branch}</td>
+                <td className="py-3 px-4">{emp.phone}</td>
+                <td className="py-3 px-4">
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">{emp.status}</span>
+                </td>
+                <td className="py-3 px-4">
+                  <BsThreeDotsVertical className="text-gray-600 cursor-pointer" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+</div>
+
+
+    
+      </div>
+   
+  )
 };
 export default BranchManagerHome;

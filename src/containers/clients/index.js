@@ -27,7 +27,7 @@ const Clients = () => {
       type="clients"
       showCreateBtn={true}
       showDelete={permissions.delete}
-      showEdit={permissions.edit}
+      showEdit={true}
       showDetails={true}
       onEdit={handleVendorEdit}
       onDelete={handleDelete}
