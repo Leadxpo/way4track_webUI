@@ -4,7 +4,7 @@ import ApiService from "../../services/ApiService";
 const EmployerDetails = ({ setEmployerDetails }) => {
   const [data, setData] = useState({
     branch: "",
-    staffId:"",
+    staffId: "",
     joiningDate: "",
     designation_id: "",
     department: "",
