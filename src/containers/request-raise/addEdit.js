@@ -2,81 +2,86 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 
 const AddEditRequestForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [staffData, setStaffData] = useState([]);
   const [subDealer, setSubDealer] = useState([]);
+
+  console.log("Hi subDealer",subDealer);
   const [branch, setBranches] = useState([]);
   // Check if data is available from the location state
   const requestData = location.state?.requestDetails || {};
 
-  // Initialize form data, using employeeData if available
-  const initialFormData = {
+  const [formData, setFormData] = useState({
     id: requestData.requestId || null,
     requestType: requestData.requestType || '',
-    // requestBy: requestData.requestBy || '',
     requestFrom: Number(requestData.requestFrom) || null,
     requestTo: Number(requestData.requestTo) || null,
     branch: Number(requestData.branch) || null,
-
+    requestFor: requestData.requestFor || '',
     description: requestData.description || '',
-    // amount: requestData.amount || '',
+    products: requestData.products?.length > 0 
+      ? requestData.products  // Use existing products in edit mode
+      : [{ product: '', amount: '' }], // Default for add mode
     createdDate: requestData.createdDate || '',
     status: requestData.status || '',
     subDealerId: Number(requestData.subDealerId) || null,
     requestId: requestData.requestNumber || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
+  });
+  
+  
+  const fetchStaffData = async () => {
+    try {
+      const response = await ApiService.post('/staff/getStaffNamesDropDown');
+      if (response.status) {
+        setStaffData(response.data);
+      } else {
+        console.error('Error fetching staff data');
+      }
+    } catch (e) {
+      console.error('Error fetching staff data', e);
+    }
   };
 
-  const [formData, setFormData] = useState(initialFormData);
+  const fetchSubDealers = async () => {
+    try {
+      const response = await ApiService.post(
+        '/subdealer/getSubDealerNamesDropDown'
+      );
+      if (response.status) {
+        setSubDealer(response.data);
+      } else {
+        alert('Error in fetching sub dealers');
+        console.error('Error fetching sub dealers');
+      }
+    } catch (e) {
+      alert('Error in fetching sub dealers');
+      console.error('Error fetching sub dealers', e);
+    }
+  };
+  const fetchBranches = async () => {
+    try {
+      const response = await ApiService.post(
+        '/branch/getBranchNamesDropDown'
+      );
+      if (response.status) {
+        setBranches(response.data); // Set branches to state
+      } else {
+        console.error('Failed to fetch branches');
+      }
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchStaffData = async () => {
-      try {
-        const response = await ApiService.post('/staff/getStaffNamesDropDown');
-        if (response.status) {
-          setStaffData(response.data);
-        } else {
-          console.error('Error fetching staff data');
-        }
-      } catch (e) {
-        console.error('Error fetching staff data', e);
-      }
-    };
 
-    const fetchSubDealers = async () => {
-      try {
-        const response = await ApiService.post(
-          '/subdealer/getSubDealerNamesDropDown'
-        );
-        if (response.status) {
-          setSubDealer(response.data);
-        } else {
-          alert('Error in fetching sub dealers');
-          console.error('Error fetching sub dealers');
-        }
-      } catch (e) {
-        alert('Error in fetching sub dealers');
-        console.error('Error fetching sub dealers', e);
-      }
-    };
-    const fetchBranches = async () => {
-      try {
-        const response = await ApiService.post(
-          '/branch/getBranchNamesDropDown'
-        );
-        if (response.status) {
-          setBranches(response.data); // Set branches to state
-        } else {
-          console.error('Failed to fetch branches');
-        }
-      } catch (error) {
-        console.error('Error fetching branches:', error);
-      }
-    };
 
     fetchBranches();
 
@@ -88,64 +93,96 @@ const AddEditRequestForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSave = async () => {
-    const payload = {
-      ...formData,
-    };
+  
 
     try {
-      const endpoint = formData.id
-        ? '/requests/handleRequestDetails'
-        : '/requests/handleRequestDetails';
-      const response = await ApiService.post(endpoint, payload);
-      console.log(response);
-      if (response) {
-        alert(
-          formData.id
-            ? 'requests updated successfully!'
-            : 'requests created successfully!'
-        );
+      const payload = {
+
+        // requestType: RequestType;
+        // // staffID: number;
+        // requestTo?: number;
+        // requestFrom?: number;
+        // branch: number;
+        // description: string;
+        // requestFor: string;
+    
+        // createdDate: Date;
+        // status: ClientStatusEnum
+        // subDealerId: number
+        // companyCode: string;
+        // unitCode: string;
+
+
+        requestType: formData.requestType,
+        requestTo: Number(formData.requestTo),
+        requestFrom: Number(formData.requestFrom),
+        branch: Number(formData.branch),
+        description: formData.description,
+        status: "pending",
+        products:formData.requestType==="products"?formData.products:null,
+        subDealerId: formData.subDealerId || 1,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode
+      };
+
+
+      console.log("qwert",payload);
+      const response = await ApiService.post(
+        '/requests/handleRequestDetails',
+        payload
+      );
+      if (response.status) {
         navigate('/requests');
       } else {
-        alert('Failed to save appointment details. Please try again.');
+        alert('failed to raise request');
       }
     } catch (error) {
-      console.error('Error saving appointment details:', error);
-      alert('Failed to save appointment details. Please try again.');
+      console.error(error);
+      alert('failed to raise request');
     }
   };
-  // const handleSave = async () => {
-  //   try {
-  //     const payload = {
-  //       requestType: formData.requestType,
-  //       requestTo: Number(formData.requestTo),
-  //       requestFrom: Number(formData.requestFrom),
-  //       branch: Number(formData.branch),
-  //       description: formData.description,
-  //       status: formData.status,
-  //       subDealerId: formData.subDealerId || 1,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //     };
-  //     const response = await ApiService.post(
-  //       '/requests/handleRequestDetails',
-  //       payload
-  //     );
-  //     if (response.status) {
-  //       navigate('/requests');
-  //     } else {
-  //       alert('failed to raise request');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert('failed to raise request');
-  //   }
-  // };
 
   const handleCancel = () => {
     // Handle cancel action
     navigate('/requests');
   };
+
+
+  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+
+ // Function to handle adding a new product row
+const addRow = () => {
+  setFormData((prevData) => ({
+    ...prevData,
+    products: [...prevData.products, { product: '', amount: '' }],
+  }));
+};
+
+// Function to remove a product row
+const removeRow = (index) => {
+  setFormData((prevData) => {
+    if (prevData.products.length > 1) {
+      const updatedProducts = prevData.products.filter((_, i) => i !== index);
+      return { ...prevData, products: updatedProducts };
+    }
+    return prevData;
+  });
+};
+
+  // Handle input change
+// Function to handle input change in product rows
+const handleInputProductChange = (index, field, value) => {
+  setFormData((prevData) => {
+    const updatedProducts = [...prevData.products];
+    updatedProducts[index][field] = value;
+    return { ...prevData, products: updatedProducts };
+  });
+};
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -162,14 +199,6 @@ const AddEditRequestForm = () => {
           {/* Form field for Name */}
           <div>
             <p className="font-semibold mb-1">Request Type</p>
-            {/* <input
-              type="text"
-              name="requestType"
-              value={formData.requestType}
-              onChange={handleInputChange}
-              placeholder="Enter Name"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            /> */}
             <select
         name="requestType"
         value={formData.requestType}
@@ -185,15 +214,6 @@ const AddEditRequestForm = () => {
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request By:</label>
-              {/* <input
-                type="text"
-                name="requestType"
-                value={formData.requestFrom}
-                onChange={handleInputChange}
-                placeholder="Enter Name"
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                disabled
-              /> */}
               <select
                 name="requestFrom"
                 value={formData.requestFrom}
@@ -201,7 +221,7 @@ const AddEditRequestForm = () => {
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Select Staff
+                  Select Request By
                 </option>
                 {staffData.map((staffMember) => (
                   <option key={staffMember.id} value={staffMember.id}>
@@ -211,27 +231,6 @@ const AddEditRequestForm = () => {
               </select>
             </div>
           </div>
-
-     
-          {/* <div>
-            <p className="font-semibold mb-1">Status</p>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select a status
-              </option>
-              <option value="accepted">accepted</option>
-              <option value="rejected">rejected</option>
-              <option value="expire">expire</option>
-              <option value="sent">sent</option>
-              <option value="declined">declined</option>
-              <option value="pending">pending</option>
-            </select>
-          </div> */}
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -242,7 +241,7 @@ const AddEditRequestForm = () => {
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
-                  Request To
+                  Select Request To
                 </option>
                 {staffData.map((staffMember) => (
                   <option key={staffMember.id} value={staffMember.id}>
@@ -253,7 +252,7 @@ const AddEditRequestForm = () => {
             </div>
           </div>
           <div>
-            {subDealer.length > 0 && (
+            {/* {subDealer.length > 0 && ( */}
               <div className="flex flex-col">
                 <label className="font-semibold mb-2">
                   Request To subDealer:
@@ -274,7 +273,7 @@ const AddEditRequestForm = () => {
                   ))}
                 </select>
               </div>
-            )}
+            {/* )} */}
           </div>
 
 
@@ -314,18 +313,71 @@ const AddEditRequestForm = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-        </div>
-        {/* <div>
-          <p className="font-semibold mb-1">created Date</p>
-          <input
-            type="date"
-            name="createdDate"
-            value={formData.createdDate}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          />
-        </div> */}
 
+          
+          {formData.requestType === "products" ? (
+  <>
+   {formData.products.map((row, index) => (
+  <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
+    
+    {/* Product Field */}
+    <div className="flex-1">
+      <label className="font-semibold">Product:</label>
+      <div className="flex items-center border rounded-md p-2 bg-gray-100">
+        <input
+          type="text"
+          value={row.product}
+          onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
+          placeholder="Enter Product"
+          className="w-full bg-transparent outline-none"
+        />
+      </div>
+    </div>
+
+    {/* Amount Field */}
+    <div className="flex-1">
+      <label className="font-semibold">Amount:</label>
+      <input
+        type="number"
+        value={row.amount}
+        onChange={(e) => handleInputProductChange(index, "amount", e.target.value)}
+        placeholder="Enter Amount"
+        className="w-full border rounded-md p-2 bg-gray-100"
+      />
+    </div>
+
+    {/* Add Row Button - Only in the first row */}
+    {index === 0 && (
+      <button onClick={addRow} className="bg-green-500 text-white p-2 rounded-md shadow-md flex items-center mt-2">
+        <FaPlus className="mr-1" />
+      </button>
+    )}
+
+    {/* Delete Button - Only for additional rows */}
+    {index !== 0 && (
+      <button onClick={() => removeRow(index)} className="text-red-500 p-2">
+        <FaTrash />
+      </button>
+    )}
+  </div>
+))}
+
+  </>
+) : (
+  <div>
+    <p className="font-semibold mb-1">Request For</p>
+    <input
+      type="text"
+      name="requestFor"
+      value={formData.requestFor}
+      onChange={handleInputChange}
+      placeholder="Enter Request For"
+      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+    />
+  </div>
+)}
+
+        </div>
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">
           <button

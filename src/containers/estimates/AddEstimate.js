@@ -65,6 +65,7 @@ const AddEstimate = () => {
   const fetchProducts = async () => {
     try {
       const res = await ApiService.post('/products/getAllproductDetails');
+      console.log("res.data Ram",res.data)
       setProducts(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -83,6 +84,7 @@ const AddEstimate = () => {
       email: selectedClient.email,
       clientAddress: selectedClient.address,
     }));
+
   };
 
   // Handle field changes
@@ -204,9 +206,11 @@ const AddEstimate = () => {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       estimateDto.estimatePdf = pdfUrl;
       console.log(pdfUrl);
+      
       await ApiService.post('/estimate/handleEstimateDetails', estimateDto);
       console.log('Estimate saved:', estimateDto);
-      navigate('/estimate');
+      console.log("formDataaaaaaaaaaaaaa",formData);
+      // navigate('/estimate');
     } catch (err) {
       console.error('Failed to save estimate:', err);
     }
@@ -232,7 +236,6 @@ const AddEstimate = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">
           Create Estimates
         </h1>
-
         {/* Form */}
         <form className="space-y-6">
           {/* Client Info */}
@@ -343,6 +346,7 @@ const AddEstimate = () => {
               {/* Header Row */}
               <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2">
                 <span className="col-span-1 font-semibold">#</span>
+                <span className="col-span-2 font-semibold">Type</span>
                 <span className="col-span-2 font-semibold">Name</span>
                 <span className="col-span-2 font-semibold">Quantity</span>
                 <span className="col-span-2 font-semibold">Rate</span>
@@ -469,13 +473,22 @@ const AddEstimate = () => {
       ) : (
         <input
           type="text"
+          name="quan"
+          // value={item.quantity}
+          // onChange={(e) => handleProductItemQuantityChange(index, e)}
+          placeholder="Service"
+          className="col-span-2 p-2 border rounded-md w-full"
+        />
+      )}
+
+<input
+          type="text"
           name="quantity"
           value={item.quantity}
           onChange={(e) => handleProductItemQuantityChange(index, e)}
           placeholder="Quantity"
           className="col-span-2 p-2 border rounded-md w-full"
         />
-      )}
 
       {/* Rate Input */}
       <input
@@ -548,7 +561,7 @@ const AddEstimate = () => {
 
           {/* Buttons */}
           <div className="flex space-x-4 justify-center">
-            <PDFDownloadLink
+            {/* <PDFDownloadLink
               document={<EstimatePDF data={gridData} />}
               fileName="grid-layout.pdf"
               className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600"
@@ -556,7 +569,7 @@ const AddEstimate = () => {
               {({ loading }) =>
                 loading ? 'Loading document...' : 'Download PDF'
               }
-            </PDFDownloadLink>
+            </PDFDownloadLink> */}
             <button
               type="button"
               onClick={handleSave}

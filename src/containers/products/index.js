@@ -27,6 +27,12 @@ const data1 = [
 
 const Products = () => {
   const [selected, setSelected] = useState("branchstock");
+  const [branchStock, setBranchStock] = useState([]);
+  const [inhandStock, setInhandStock] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  if(branchStock){
+    console.log("++++++++ R",branchStock)
+  }
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -40,11 +46,7 @@ const Products = () => {
     toDate: "",
   });
 
-  const [dropdownOpen, setDropdownOpen] = useState(null);
 
-  const toggleDropdown = (id) => {
-    setDropdownOpen(dropdownOpen === id ? null : id);
-  };
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isGridView, setIsGridView] = useState(true);
@@ -161,13 +163,26 @@ const Products = () => {
     }));
   };
 
+  const handleSearch = () => {
+    const searchQuery = searchData.name.toLowerCase().trim();
+
+    if (searchQuery === "") {
+      setBranchStock(branchStock); // Reset to original data
+    } else {
+      const filteredData = branchStock.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery)
+      );
+      setBranchStock(filteredData);
+    }
+  };
+
   useEffect(() => {
     getSearchDetailProduct();
   }, [getSearchDetailProduct]);
 
-  const handleSearch = async () => {
-    getSearchDetailProduct();
-  };
+  // const handleSearch = async () => {
+  //   getSearchDetailProduct();
+  // };
 
   // Navigate to details page
   const handleMoreDetails = () => {
@@ -184,6 +199,51 @@ const Products = () => {
 
   // Check role and conditionally render the cards
   const role = localStorage.getItem('role');
+  const toggleDropdown = (id) => {
+    setDropdownOpen(dropdownOpen === id ? null : id);
+  };
+  useEffect(() => {
+    fetchBranchStock();
+    fetchInhandStock();
+  }, []);
+
+  const fetchBranchStock = async () => {
+    try {
+      const response = await ApiService.post("/products/getDetailProduct",
+        {companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode}
+        );
+      if (response.data) {
+        setBranchStock(response.data);
+        console.log("qazwsxedc",response.data)
+      } else {
+        console.error("Invalid API response");
+      }
+    } catch (error) {
+      console.error("Error fetching product types:", error);
+    } finally {
+      
+    }
+  };
+
+  const fetchInhandStock = async () => {
+    try {
+      const response = await ApiService.post("/products/getAllproductDetails",
+        // {companyCode: initialAuthState.companyCode,
+        //   unitCode: initialAuthState.unitCode}
+        );
+      if (response.data) {
+        setInhandStock(response.data);
+        console.log("qazwsxedc",response.data)
+      } else {
+        console.error("Invalid API response");
+      }
+    } catch (error) {
+      console.error("Error fetching product types:", error);
+    } finally {
+      
+    }
+  };
 
   return (
     <div className="m-2">
@@ -238,38 +298,15 @@ const Products = () => {
 
       {/* Search and Table */}
       {selected==="branchstock"&&(<>
-      <div className="flex mb-4">
-        <div className="flex-grow mr-2">
-          <input
-            type="text"
-            name="productId"
-            placeholder="Search with ID"
-            value={searchData.productId}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
+        <div className="flex mb-4">
         <div className="flex-grow mx-2">
           <input
             type="text"
-            name="productName"
-            placeholder="Search with Name"
-            value={searchData.productName}
+            name="name"
+            placeholder="Search by Name"
+            value={searchData.name}
             onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        <div className="flex-grow mx-2">
-          <input
-            type="text"
-            name="location"
-            placeholder="Search with location"
-            value={searchData.location}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
           />
         </div>
         <button
@@ -281,48 +318,59 @@ const Products = () => {
       </div>
 
       <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-gray-100 border-b">
-            <th className="px-6 py-3 text-left text-sm font-bold">No.</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Product Name</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Present Stock</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr
-              key={item.id}
-              className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}
-            >
-              <td className="px-6 py-4">{item.id}</td>
-              <td className="px-6 py-4">{item.name}</td>
-              <td className="px-6 py-4">{item.stock}</td>
-              <td className="border p-2 text-center relative">
-  <button 
-    onClick={() => toggleDropdown(item.id)} 
-    className="p-2 bg-white rounded-md focus:outline-none"
-  >
-    <FaEllipsisV className="cursor-pointer text-gray-700" />
-  </button>
-
-  {dropdownOpen === item.id && (
-    <div className="absolute right-0 bg-white shadow-md border rounded-md w-32 z-10">
-      <ul className="text-left">
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">More Details</li>
-      </ul>
-    </div>
+                <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-100 border-b">
+                    <th className="px-6 py-3 text-left text-sm font-bold">S.No.</th>
+                      <th className="px-6 py-3 text-left text-sm font-bold">Product Name</th>
+                
+                      <th className="px-6 py-3 text-left text-sm font-bold">Present Stock</th>
+                      <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {branchStock.length > 0 ? (
+                      branchStock.map((item, index) => (
+                        <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
+                          <td className="px-6 py-4">{index+1}</td>
+                          <td className="px-6 py-4">{item.productName}</td>
+                          <td className="px-6 py-4">{item.presentStock}</td>
+                          <td className="px-6 py-4 text-center relative dropdown-container">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleDropdown(index);
+                              }}
+                              className="p-2 bg-white rounded-md focus:outline-none"
+                            >
+                              <FaEllipsisV className="cursor-pointer text-gray-700" />
+                            </button>
+      
+                            {dropdownOpen === index && (
+                              <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
+                                <ul className="text-left">
+                                  <li className="p-2 hover:bg-gray-100 cursor-pointer" >Edit</li>
+                                  <li className="p-2 hover:bg-gray-100 cursor-pointer"  >Delete</li>
+                                  <li className="p-2 hover:bg-gray-100 cursor-pointer" >More Details</li>
+                                </ul>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center py-4">
+                          No product types found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div></>
+  
+  
   )}
-</td>
-
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div></>)}
 
     {selected==="handstock"&&(<>
     <div className="flex mb-4">
@@ -380,7 +428,7 @@ const Products = () => {
           </tr>
         </thead>
         <tbody>
-          {data1.map((item, index) => (
+          {inhandStock.map((item, index) => (
             <tr
               key={item.id}
               className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}

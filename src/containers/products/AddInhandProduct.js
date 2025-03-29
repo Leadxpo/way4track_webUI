@@ -10,59 +10,36 @@ const AddInhandProduct = () => {
   });
 
   const [staffList, setStaffList] = useState([]);
-  const [productList, setProductList] = useState([]);
+  const [productTypes, setProductTypes] = useState([]);
 
   // Fetch Staff List
   const fetchEmployees = async () => {
+    const branchName="Vishakapatnam"
     try {
-      const response = await ApiService.post("/dashboards/getStaff", {
+      const response = await ApiService.post("/dashboards/getTotalStaffDetails", {
+        branchName:branchName,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
 
-      if (response.status && Array.isArray(response.data)) {
-        const staffData = response.data.map((staff) => ({
-          id: staff.staffId?.trim() || "",
-          name: staff.name?.trim() || "Unknown", // Ensure name exists
-        }));
-        setStaffList(staffData);
-      } else {
-        setStaffList([]);
-      }
+      console.log(
+        "qqqqq",
+        response.data.staff.filter(staff => staff.staffDesignation === "Technician")
+      );
+
+      setStaffList(response.data.staff.filter(staff => staff.staffDesignation === "Technician"));
+
     } catch (error) {
       console.error("Error fetching employees:", error);
       alert("Failed to fetch employee data.");
     }
   };
 
-  // Fetch Product Type List
-  const fetchProductType = async () => {
-    try {
-      // Uncomment when using API
-      // const response = await ApiService.get("/productType/getProductTypeNamesDropDown");
-      // if (response.status && Array.isArray(response.data)) {
-      //   setProductList(response.data);
-      // } else {
-      //   setProductList([]);
-      // }
 
-      // Static Data for testing
-      const response = [
-        { id: 1, name: "Electronics" },
-        { id: 2, name: "Furniture" },
-        { id: 3, name: "Clothing" },
-        { id: 4, name: "Groceries" },
-        { id: 5, name: "Books" },
-      ];
-      setProductList(response);
-    } catch (error) {
-      console.error("Error fetching product types:", error);
-    }
-  };
 
   useEffect(() => {
     fetchEmployees();
-    fetchProductType();
+
   }, []);
 
   // Handle input change
@@ -90,6 +67,8 @@ const AddInhandProduct = () => {
           ...formData,
           productTypeId: Number(formData.productTypeId),
           numberOfProducts: Number(formData.numberOfProducts),
+          companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
         }
       );
 
@@ -106,6 +85,27 @@ const AddInhandProduct = () => {
     } catch (error) {
       console.error("Error submitting data:", error);
       alert("Submission failed.");
+    }
+  };
+
+
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post("/productType/getProductTypeDetails");
+      if (response.data) {
+        setProductTypes(response.data);
+        console.log("qazwsxedc",response.data)
+      } else {
+        console.error("Invalid API response");
+      }
+    } catch (error) {
+      console.error("Error fetching product types:", error);
+    } finally {
+      
     }
   };
 
@@ -126,8 +126,8 @@ const AddInhandProduct = () => {
           >
             <option value="">Select Staff</option>
             {staffList.map((staff) => (
-              <option key={staff.id} value={staff.id}>
-                {staff.id} {/* Show both name and ID */}
+              <option key={staff.staffId} value={staff.staffId}>
+                {staff.staffId}
               </option>
             ))}
           </select>
@@ -137,7 +137,7 @@ const AddInhandProduct = () => {
         <div>
           <label className="block text-sm font-medium">Assign Time</label>
           <input
-            type="datetime-local"
+            type="date"
             name="assignTime"
             value={formData.assignTime}
             onChange={handleChange}
@@ -157,7 +157,7 @@ const AddInhandProduct = () => {
             required
           >
             <option value="">Select Product</option>
-            {productList.map((product) => (
+            {productTypes.map((product) => (
               <option key={product.id} value={product.id}>
                 {product.name}
               </option>

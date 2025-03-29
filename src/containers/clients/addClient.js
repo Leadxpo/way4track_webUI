@@ -12,7 +12,7 @@ const AddEditClient = () => {
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
     gstNumber: clientData.gstNumber || '',
-    clientId: clientData.clientId || '',
+    // clientId: clientData.clientId || '',
     branch: clientData.branch || '',
     dob: clientData.dob || '',
     email: clientData.email || '',
@@ -76,7 +76,7 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, "___________")
+    console.log(payload, "_____")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -162,8 +162,8 @@ const AddEditClient = () => {
           </div>
 
 
- {/* Phone Number */}
- <div>
+         {/* Phone Number */}
+          <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
