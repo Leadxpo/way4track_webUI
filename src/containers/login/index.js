@@ -131,6 +131,8 @@ console.log("=======",userProfile)
         let branchName = userProfile.branchName;
 
         localStorage.setItem('branchName', branchName);
+        localStorage.setItem('branch_id', userProfile.branch_id);
+        localStorage.setItem('id', userProfile.id);
 
         await fetchUserPermissions(
           userId,
