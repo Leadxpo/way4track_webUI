@@ -20,6 +20,13 @@ const AddEstimate = () => {
     billingAddress: '',
     estimateDate: '',
     expiryDate: '',
+    cgstPercentage:'',
+    scstPercentage:'',
+    tdsPercentage:'',
+    includeTax:'',
+    CGST:'',
+    SCST:'',
+    GSTORTDS:isGST?'gst':'tds',
     items: [
       {
         productId: '',
@@ -181,10 +188,12 @@ const AddEstimate = () => {
       GSTORTDS: formData.GSTORTDS || undefined,
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
+      tds:formData.tds,
       quantity: formData.items.reduce(
         (total, item) => total + parseInt(item.quantity, 10),
         0
       ),
+      tdsPercentage:formData.tdsPercentage||0,
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
       convertToInvoice: formData.convertToInvoice || false,
@@ -214,6 +223,10 @@ const AddEstimate = () => {
   
     try {
       const pdfFile = await generatePdf(pdfData); // Generate PDF File
+      
+      const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
+      const scst=(estimateDto.totalAmount * formData.scstPercentage) /100;
+      const includeTax=estimateDto.totalAmount+cgst+scst
   console.log("acsdbttrdf : ",pdfFile)
       // Create FormData to send binary data
       const formDataPayload = new FormData();
@@ -227,11 +240,14 @@ const AddEstimate = () => {
       formDataPayload.append("totalAmount", estimateDto.totalAmount);
       formDataPayload.append("companyCode","WAY4TRACK" );
       formDataPayload.append("unitCode","WAY4" );
-      // formDataPayload.append("GSTORTDS", estimateDto.GSTORTDS || "");
-      // formDataPayload.append("SCST", estimateDto.SCST || "0");
-      // formDataPayload.append("CGST", estimateDto.CGST || "0");
-      // formDataPayload.append("cgstPercentage", estimateDto.cgstPercentage || "0");
-      // formDataPayload.append("scstPercentage", estimateDto.scstPercentage || "0");
+      formDataPayload.append("GSTORTDS", estimateDto.GSTORTDS || "");
+      formDataPayload.append("CGST", cgst);
+      formDataPayload.append("SCST",  scst);
+      formDataPayload.append("includeTax",  includeTax);
+      formDataPayload.append("tdsPercentage", estimateDto.tdsPercentage);
+      
+      formDataPayload.append("cgstPercentage", estimateDto.cgstPercentage || "0");
+      formDataPayload.append("scstPercentage", estimateDto.scstPercentage || "0");
       // formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
   
       // Append Product Details as JSON String
@@ -498,14 +514,68 @@ const AddEstimate = () => {
           </strong>
 
 
-          <label>
+
+       <div className="flex items-center space-x-2">
+      <span className={isGST ? "text-gray-400" : "font-semibold"}>TDS Enabled</span>
+      <label className="relative inline-flex items-center cursor-pointer">
         <input
           type="checkbox"
           checked={isGST}
           onChange={() => setIsGST(!isGST)}
+          className="sr-only peer"
         />
-        {isGST ? "GST Enabled" : "TDS Enabled"}
+        <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
+          <div
+            className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${
+              isGST ? "translate-x-7" : ""
+            }`}
+          ></div>
+        </div>
       </label>
+      <span className={isGST ? "font-semibold" : "text-gray-400"}>GST Enabled</span>
+    </div>
+{isGST?
+    <div>
+              <label className="block text-sm font-semibold mb-1">
+                CGST %
+              </label>
+              <input
+                type="number"
+                name="cgstPercentage"
+                value={formData.cgstPercentage}
+                onChange={handleInputChange}
+                placeholder="CGST %"
+                className="w-full p-2 border rounded-md"
+              />
+
+<label className="block text-sm font-semibold mb-1">
+                SGST %
+              </label>
+              <input
+                type="number"
+                name="scstPercentage"
+                value={formData.scstPercentage}
+                onChange={handleInputChange}
+                placeholder="SGST %"
+                className="w-full p-2 border rounded-md"
+              />
+            </div>:
+
+<div>
+<label className="block text-sm font-semibold mb-1">
+  TDS %
+</label>
+<input
+                type="number"
+                name="tdsPercentage"
+                value={formData.tdsPercentage}
+                onChange={handleInputChange}
+                placeholder="TDS %"
+                className="w-full p-2 border rounded-md"
+              />
+</div>
+            }
+
           {/* Terms & Conditions */}
           <div>
             <label className="block text-sm font-semibold mb-1">
