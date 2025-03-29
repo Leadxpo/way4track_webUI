@@ -14,6 +14,7 @@ const AddEditClient = () => {
     gstNumber: clientData.gstNumber || '',
     clientId: clientData.clientId || '',
     branch: clientData.branch || '',
+    branchName: clientData.branchName || '', 
     dob: clientData.dob || '',
     email: clientData.email || '',
     address: clientData.address || '',
@@ -22,6 +23,7 @@ const AddEditClient = () => {
     unitCode: initialAuthState.unitCode,
     file: clientData?.file || null,
   };
+  
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
@@ -67,8 +69,8 @@ const AddEditClient = () => {
 
 
   const handleSave = async () => {
-
     const payload = new FormData();
+  
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
         payload.append(key, value);
@@ -76,24 +78,36 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
-    console.log(payload, "___________")
+  
+    // Ensure both branchId (branch) and branchName are explicitly added
+    if (formData.branch) {
+      payload.append('branchId', formData.branch); // branch is the branchId
+    }
+    
+    if (formData.branchName) {
+      payload.append('branchName', formData.branchName);
+    }
+  
+    console.log([...payload.entries()], "Payload Data Before Sending"); // Debugging
+  
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
+  
       if (response.data.status) {
-        alert(formData.id ? 'client updated successfully!' : 'client added successfully!');
+        alert(formData.id ? 'Client updated successfully!' : 'Client added successfully!');
         navigate('/clients');
       } else {
-        alert('Failed to save employee details. Please try again.');
+        alert('Failed to save client details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving employee details:', error);
-      alert('Failed to save employee details. Please try again.');
+      console.error('Error saving client details:', error);
+      alert('Failed to save client details. Please try again.');
     }
   };
+  
 
   const handleCancel = () => {
     navigate('/clients');
@@ -162,8 +176,8 @@ const AddEditClient = () => {
           </div>
 
 
- {/* Phone Number */}
- <div>
+         {/* Phone Number */}
+          <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"

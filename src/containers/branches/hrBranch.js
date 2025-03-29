@@ -17,6 +17,7 @@ const BranchList = () => {
 
 
 
+
   useEffect(() => {
     const fetchBranchStaff = async () => {
       try {
@@ -26,8 +27,43 @@ const BranchList = () => {
         });
 
         if (response.status && Array.isArray(response.data)) {
-          setBranchesData(response.data);
-          console.log(response.data, "Branch Data");
+          const staffData = response.data.map((staff) => ({
+            staffId: staff.staffId?.trim() || "",
+            name: staff.name?.trim() || "",
+            dob: staff.dob || "",
+            gender: staff.gender || "",
+            location: staff.location?.trim() || "",
+            phoneNumber: staff.phoneNumber?.trim() || "",
+            alternateNumber: staff.alternateNumber?.trim() || "",
+            email: staff.email?.trim() || "",
+            aadharNumber: staff.aadharNumber?.trim() || "",
+            panCardNumber: staff.panCardNumber?.trim() || "",
+            drivingLicence: staff.drivingLicence?.trim() || "",
+            drivingLicenceNumber: staff.drivingLicenceNumber?.trim() || "",
+            address: staff.address?.trim() || "",
+            uanNumber: staff.uanNumber?.trim() || "",
+            esicNumber: staff.esicNumber?.trim() || "",
+            bloodGroup: staff.bloodGroup?.trim() || "",
+            bankName: staff.bankName?.trim() || "",
+            accountNumber: staff.accountNumber?.trim() || "",
+            ifscCode: staff.ifscCode?.trim() || "",
+            branchName: staff.branchName?.trim() || "",
+            department: staff.department?.trim() || "",
+            monthlySalary: staff.monthlySalary || "",
+            salaryDate: staff.salaryDate || "",
+            bikeAllocation: staff.bikeAllocation || "",
+            bikeNumber: staff.bikeNumber?.trim() || "",
+            mobileAllocation: staff.mobileAllocation || "",
+            mobileBrand: staff.mobileBrand?.trim() || "",
+            mobileNumber: staff.mobileNumber?.trim() || "",
+            designation: staff.designation?.trim() || "",
+            // experience: staff?.totalExperience || "",
+            // ✅ Fixed Qualifications Mapping
+            qualifications: JSON.stringify(staff.qualifications),
+
+          }));
+          setBranchesData(staffData);
+          console.log(staffData, "Branch Data");
         } else {
           setBranchesData([]);
         }
@@ -39,7 +75,6 @@ const BranchList = () => {
 
     fetchBranchStaff();
   }, []);
-
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -70,7 +105,7 @@ const BranchList = () => {
             bankName: staff.bankName?.trim() || "",
             accountNumber: staff.accountNumber?.trim() || "",
             ifscCode: staff.ifscCode?.trim() || "",
-            branchName: staff.branchName?.trim() || "",
+            branchName: staff.branchName || "",
             department: staff.department?.trim() || "",
             monthlySalary: staff.monthlySalary || "",
             salaryDate: staff.salaryDate || "",
@@ -177,8 +212,6 @@ const BranchList = () => {
 
 
 
-
-
   const handleDownload = () => {
     if (!previewData || previewData.length === 0) {
       alert("No data available to download.");
@@ -234,31 +267,14 @@ const BranchList = () => {
   };
 
 
+  const uniqueBranches = [...new Set(branchesData.map(emp => emp.branchName?.trim()))]
+    .filter(branch => branch);
 
-
-
-
-  const uniqueBranchNames = new Set();
-
-  const filteredBranches = branchesData.filter(branch => {
-    if (!branch.branchName) return false; // ✅ Exclude null or undefined branchName
-
-    const branchNameLower = branch.branchName
-
-    if (selectedBranch && branchNameLower !== selectedBranch.trim().toLowerCase()) {
-      return false; // ✅ Only include matching selectedBranch (if provided)
-    }
-
-    if (uniqueBranchNames.has(branchNameLower)) {
-      return false; // ✅ Skip duplicates
-    }
-
-    uniqueBranchNames.add(branchNameLower);
-    return true;
-  });
-
-
-
+  // Filter staff based on selected branch and search input
+  const filteredStaff = branchesData.filter(staff =>
+    (selectedBranch ? staff.branchName === selectedBranch : true) &&
+    (selectedBranchStaff ? staff.staffId.includes(selectedBranchStaff) : true)
+  );
 
   const filteredEmployees = employees.filter(emp =>
     !selectedStaff || (emp.staffId && emp.staffId.toLowerCase().includes(selectedStaff.trim().toLowerCase()))
@@ -276,9 +292,9 @@ const BranchList = () => {
           onChange={(e) => setSelectedBranch(e.target.value.trim())}
         >
           <option value="">All Branches</option>
-          {filteredBranches.map(branch => (
-            <option key={branch.branchName} value={branch.branchName.trim()}>
-              {branch.branchName.trim()}
+          {uniqueBranches.map(branch => (
+            <option key={branch} value={branch}>
+              {branch}
             </option>
           ))}
         </select>
@@ -292,7 +308,6 @@ const BranchList = () => {
           onChange={(e) => setSelectedBranchStaff(e.target.value.trim())}
         />
 
-        {/* Preview & Download Button */}
         <button
           onClick={handlePreview}
           className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
@@ -302,7 +317,7 @@ const BranchList = () => {
       </div>
 
 
-      {/* Preview Modal */}
+
       {isPreviewOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
@@ -347,49 +362,46 @@ const BranchList = () => {
       )}
 
 
-
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              {["NO.", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
+              {["NO.", "Employ Id", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
                 <th key={index} className="p-3 text-left">{head}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filteredBranches.map((staff, index) => (
-              <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
-                <td className="p-3">{staff.staffId}</td>
-                <td className="p-3">{staff.name}</td>
-                <td className="p-3">{staff.designation}</td>
-                <td className="p-3">{staff.branchName}</td>
-                <td className="p-3">{staff.phoneNumber}</td>
-                <td className="p-3">{staff.joiningDate}</td>
-                <td className="p-3">{staff.salary}</td>
-                <td className="px-4 py-2 border">
-                  <FaFileDownload
-                    className="text-blue-500 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents event bubbling if inside a list
-                      document.getElementById(`download-pdf-${staff.staffId}`).click();
-                    }}
-                  />
-                  <ConvertPDF staff={staff} />
-                </td>
-
+            {filteredStaff.length > 0 ? (
+              filteredStaff.map((staff, index) => (
+                <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                  <td className="p-3">{index + 1}</td>
+                  <td className="p-3">{staff.staffId}</td>
+                  <td className="p-3">{staff.name}</td>
+                  <td className="p-3">{staff.designation}</td>
+                  <td className="p-3">{staff.branchName}</td>
+                  <td className="p-3">{staff.phoneNumber}</td>
+                  <td className="p-3">{staff.monthlySalary}</td>
+                  <td className="px-4 py-2 border">
+                    <FaFileDownload
+                      className="text-blue-500 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevents event bubbling
+                        document.getElementById(`download-pdf-${staff.staffId}`).click();
+                      }}
+                    />
+                    <ConvertPDF staff={staff} />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className="p-4 text-center text-gray-500">No matching staff found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-
-
-
-
-
-
-
 
       <h3 className="text-2xl font-semibold my-4">Employees</h3>
       <div className="flex justify-between gap-4 mb-4">
@@ -426,11 +438,11 @@ const BranchList = () => {
             {filteredEmployees.map((emp) => (
               <tr key={emp.staffId} className="text-gray-800 text-center border-b">
                 <td className="px-4 py-2 border">{emp.staffId}</td>
-                <td className="px-4 py-2 border">{emp.staffName}</td>
+                <td className="px-4 py-2 border">{emp.name}</td>
                 <td className="px-4 py-2 border">{emp.designation}</td>
                 <td className="px-4 py-2 border">{emp.phoneNumber}</td>
                 <td className="px-4 py-2 border">{emp.email}</td>
-                <td className="px-4 py-2 border">{emp.salary}</td>
+                <td className="px-4 py-2 border">{emp.monthlySalary}</td>
                 <td className="px-4 py-2 border">
                   <FaFileDownload
                     className="text-blue-500 cursor-pointer"
@@ -448,6 +460,7 @@ const BranchList = () => {
       </div>
     </div>
   );
+
 
 };
 
