@@ -9,22 +9,26 @@ const AddEditSubDealer = () => {
   const location = useLocation();
 
   const subDealerData = location.state?.subDealerDetails || {};
-  console.log(subDealerData, "<<<<<<<")
-  const initialFormData = {
-    id: subDealerData?.id || null,
-    name: subDealerData.name || '',
-    subDealerPhoneNumber: subDealerData.subDealerPhoneNumber || '',
-    alternatePhoneNumber: subDealerData.alternateNumber || '',
-    gstNumber: subDealerData.gstNumber || '',
-    password: subDealerData.password || '',
-    startingDate: subDealerData.startDate || '',
-    emailId: subDealerData.emailId || '',
-    aadharNumber: subDealerData.aadharNumber || '',
-    address: subDealerData.address || '',
-    photo: subDealerData?.photo || null,
-    companyCode: initialAuthState.companyCode,
-    unitCode: initialAuthState.unitCode,
-  };
+console.log(subDealerData, "<<<<<<< SubDealer Data");
+
+const initialFormData = {
+  id: subDealerData?.id || null, // Ensure single occurrence of id
+  name: subDealerData?.name || '',
+  subDealerPhoneNumber: subDealerData?.subDealerPhoneNumber || '',
+  alternatePhoneNumber: subDealerData?.alternatePhoneNumber || '',
+  gstNumber: subDealerData?.gstNumber || '',
+  password: subDealerData?.password || '', // Ensure password holds actual password
+  startingDate: subDealerData?.startingDate || '',
+  emailId: subDealerData?.emailId || '',
+  aadharNumber: subDealerData?.aadharNumber || '',
+  address: subDealerData?.address || '',
+  subDealerPhoto: subDealerData?.subDealerPhoto || null, // Ensure it's an image/file
+  companyCode: subDealerData?.companyCode || '',
+  unitCode: subDealerData?.unitCode || '',
+  branchName: subDealerData?.branchName || '',
+
+};
+
 
   const [formData, setFormData] = useState(initialFormData);
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,7 +55,7 @@ const AddEditSubDealer = () => {
             }
           );
           const subDealer = response.data?.[0];
-          console.log(subDealer);
+          console.log("+++++++++++++++",subDealer);
           setFormData((prev) => ({
             ...prev,
             ...subDealer,
@@ -68,37 +72,43 @@ const AddEditSubDealer = () => {
 
   const handleSave = async () => {
     const payload = new FormData();
+  
+    // Append form fields correctly, ensuring no duplicate id
     Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'photo' && value instanceof File) {
-        payload.append(key, value);
-      } else {
+      if (key === 'id' && value !== null) {
+        payload.append(key, String(value)); // Ensure id is a string
+      } else if (key === 'subDealerPhoto' && value instanceof File) {
+        payload.append(key, value); // Ensure photo is a file if uploaded
+      } else if (value !== null && value !== undefined) {
         payload.append(key, value);
       }
     });
-    console.log(payload, formData, '+++++++++++++++++++++++++');
+  
+    console.log([...payload.entries()], '✅ Corrected Payload Before Sending');
+  
     try {
       const endpoint = formData.id
-        ? '/subdealer/handleSubDealerDetails'
-        : '/subdealer/handleSubDealerDetails';
+        ? '/subdealer/handleSubDealerDetails' // Update sub-dealer
+        : '/subdealer/handleSubDealerDetails'; // Create new sub-dealer
+  
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      if (response.status) {
-        alert(
-          formData.id
-            ? 'vendor updated successfully!'
-            : 'vendor added successfully!'
-        );
+  
+      console.log(response.data, '✅ API Response');
+  
+      if (response.data && response.data.status) {
+        alert(formData.id ? 'Sub-dealer updated successfully!' : 'Sub-dealer added successfully!');
         navigate('/sub_dealers');
       } else {
-        alert('Failed to save employee details. Please try again.');
+        alert(response.data.internalMessage || 'Failed to save sub-dealer details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving employee details:', error);
-      alert('Failed to save employee details. Please try again.');
+      console.error('🚨 Error saving sub-dealer details:', error);
+      alert('Failed to save sub-dealer details. Please try again.');
     }
   };
+  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -137,10 +147,10 @@ const AddEditSubDealer = () => {
             className="ml-4 border p-2 rounded"
             onChange={handleFileChange}
           />
-          {formData.photo && (
+          {formData.subDealerPhoto && (
             <button
               onClick={() => {
-                setFormData({ ...formData, photo: null });
+                setFormData({ ...formData, subDealerPhoto: null });
                 setImage('');
               }}
               className="ml-2 text-red-500"
