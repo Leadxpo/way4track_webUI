@@ -355,7 +355,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEstimate />} />
+          <Route path="/add-estimate" element={<AddEstimate/>} />
           <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />

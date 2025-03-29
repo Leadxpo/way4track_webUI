@@ -140,7 +140,7 @@ console.log("=======",userProfile)
 
         handleLoginFlag();
       } else {
-        alert("Entered Correct Login details");
+        alert("Please enter correct login details");
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {
