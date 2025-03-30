@@ -3,9 +3,6 @@ import TotalCountCard from '../../components/TotalCountCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
-// import totalProducts from '../../mockData/mockTotalProducts.json';
-// import totalExpenses from '../../mockData/mockExpenses.json';
-// import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import { FaSearch } from 'react-icons/fa';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +12,9 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
+import IndiaMap from '../../common/indiaMap';
+import { FaFileDownload } from "react-icons/fa";
+
 const Home = () => {
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
@@ -43,7 +43,7 @@ const Home = () => {
     {
       id: 1,
       icon: <img src="./products_box.png" />,
-      title: 'Total Products',
+      title: 'Total Sales',
       count: 120,
       growth: '+55%',
       bgColor: '#151515',
@@ -51,7 +51,7 @@ const Home = () => {
     {
       id: 2,
       icon: <img src="./ticket.png" />,
-      title: 'Total Tickets',
+      title: 'Payables',
       count: 75,
       growth: '+40%',
       bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
@@ -59,7 +59,7 @@ const Home = () => {
     {
       id: 3,
       icon: <img src="./expenses.png" />,
-      title: 'Expenses',
+      title: 'Receivables',
       count: 5000,
       growth: '+20%',
       bgColor: '#CF0101',
@@ -114,118 +114,14 @@ const Home = () => {
       ],
     },
   ]);
-  // const branches = ['Vishakapatnam', 'Hyderabad', 'Vijayawada', 'Kakinada',]
-  // const branch_details = [
-  //   {
-  //     branch_name: 'Vishakapatnam',
-  //     service_sales: 500,
-  //     product_sales: 1200,
-  //     total_sales: 1700,
-  //   },
-  //   {
-  //     branch_name: 'Hyderabad',
-  //     service_sales: 600,
-  //     product_sales: 1400,
-  //     total_sales: 2000,
-  //   },
-  //   {
-  //     branch_name: 'Vijayawada',
-  //     service_sales: 500,
-  //     product_sales: 500,
-  //     total_sales: 1000,
-  //   },
-  //   {
-  //     branch_name: 'Kakinada',
-  //     service_sales: 500,
-  //     product_sales: 1100,
-  //     total_sales: 1600,
-  //   },
-  // ];
-
-  const CardData = [
-    {
-      id: 1,
-      icon: <img src="./products_box.png" />,
-      title: 'Total Products',
-      count: 120,
-      growth: '+55%',
-      bgColor: '#151515',
-    },
-    {
-      id: 2,
-      icon: <img src="./ticket.png" />,
-      title: 'Total Tickets',
-      count: 75,
-      growth: '+40%',
-      bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
-    },
-    {
-      id: 3,
-      icon: <img src="./expenses.png" />,
-      title: 'Expenses',
-      count: 5000,
-      growth: '+20%',
-      bgColor: '#CF0101',
-    },
-    {
-      id: 4,
-      icon: <img src="./sale.png" />,
-      title: 'Total Purchases',
-      count: 80,
-      growth: '+30%',
-      bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
-    },
-  ];
-
-  const columns = [
-    'Ticket Number',
-    'Purpose',
-    'Branch',
-    'Date',
-    'Amount',
-    'Payment Status',
-  ];
-
-  const data = [
-    {
-      'Ticket Number': 'TK12345',
-      Purpose: 'Books',
-      Branch: 'HYD',
-      Date: '09-01-2024',
-      Amount: '2500',
-      'Payment Status': 'Done',
-    },
-    {
-      'Ticket Number': 'TK12346',
-      Purpose: 'Stationary',
-      Branch: 'KKD',
-      Date: '03-05-2024',
-      Amount: '1800',
-      'Payment Status': 'Pending',
-    },
-    {
-      'Ticket Number': 'TK12347',
-      Purpose: 'Petrol',
-      Branch: 'Vishakapatnma',
-      Date: '09-05-2024',
-      Amount: '9999',
-      'Payment Status': 'Declined',
-    },
-    {
-      'Ticket Number': 'TK12350',
-      Purpose: 'Advances',
-      Branch: 'Vijayawada',
-      Date: '12-07-2024',
-      Amount: '45000',
-      'Payment Status': 'Sent',
-    },
-  ];
+  
+ 
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
       try {
         const response = await ApiService.post(
-          '/tickets/getTicketDetailsById',
+          'tickets/getTicketDetailsById',
           {
             id: ticketData.id,
             companyCode: initialAuthState.companyCode,
@@ -255,38 +151,7 @@ const Home = () => {
     fetchTicketDetails();
   }, [ticketData.id]);
 
-  const tableMockData = [
-    {
-      Name: 'John Doe',
-      Age: 28,
-      Position: 'Engineer',
-      Department: 'Development',
-    },
-    {
-      Name: 'Jane Smith',
-      Age: 34,
-      Position: 'Manager',
-      Department: 'Operations',
-    },
-    {
-      Name: 'Michael Lee',
-      Age: 25,
-      Position: 'Analyst',
-      Department: 'Finance',
-    },
-    {
-      Name: 'Sophia Johnson',
-      Age: 30,
-      Position: 'Designer',
-      Department: 'Marketing',
-    },
-    {
-      Name: 'David Brown',
-      Age: 29,
-      Position: 'Developer',
-      Department: 'Development',
-    },
-  ];
+  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -716,45 +581,7 @@ const Home = () => {
     }
   };
 
-  // const getAnalysis = async () => {
-  //   try {
-  //     const date = new Date();
-  //     const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
-  //       date.getMonth() + 1
-  //     ).padStart(2, '0')}/${date.getFullYear()}`;
-
-  //     const response = await ApiService.post(
-  //       '/dashboards/getMonthWiseBalance',
-  //       {
-  //         date: formattedDate,
-  //         companyCode: initialAuthState?.companyCode,
-  //         unitCode: initialAuthState?.unitCode,
-  //       }
-  //     );
-  //     if (
-  //       response.status &&
-  //       response.data?.data &&
-  //       response.data?.data.length
-  //     ) {
-  //       const formattedData = response.data.data.map((branch, index) => ({
-  //         branch: branch.branchName,
-  //         background: getBackgroundColor(index),
-  //         data: branch.data.map((entry) => ({
-  //           month: entry.monthName,
-  //           profit: (entry.creditAmount / entry.balanceAmount) * 100,
-  //         })),
-  //       }));
-  //       console.log('branches charts---', formattedData);
-  //       setBranchesData(formattedData);
-  //     } else {
-  //       alert(
-  //         response.data.internalMessage || 'Failed to fetch analysis details.'
-  //       );
-  //     }
-  //   } catch (e) {
-  //     console.error('Error fetching analysis details:', e);
-  //   }
-  // };
+  
 
   // Function to get a background color based on index
   const getBackgroundColor = (index) => {
@@ -817,98 +644,59 @@ const Home = () => {
           />
         </div>
 
-        <div className="flex mt-8">
-          <div className="w-3/5">
-            {branch_details.map((branch) => (
-              <div className="grid grid-cols-4 gap-4 space-y-4">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src="logo-name-square.png"
-                    alt="Branch Logo"
-                    className="w-10 h-10 object-cover"
-                  />
-                  <div>
-                    <p className="text-gray-800 font-semibold">Branch</p>
-                    <p className="text-green-700 font-semibold">
-                      {branch.branchName}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-left">
-                  <p className="text-gray-500">Service Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.serviceSales}
-                  </p>
-                </div>
-                <div className="text-left">
-                  <p className="text-gray-500">Product Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.productSales}
-                  </p>
-                </div>
-                <div className="text-left">
-                  <p className="text-gray-500">Total Sales</p>
-                  <p className="text-gray-800 font-bold">{branch.totalSales}</p>
-                </div>
-              </div>
-            ))}
-          </div>
 
-          <div className="w-2/5 relative flex justify-center items-center">
-            <img src="./map.png" />
+
+        <div className="flex mt-4">
+  <div className="w-full">
+    {branches.map((branch, index) => (
+      <div key={index} className="grid grid-cols-6  py-1">
+        <div className="flex items-center ">
+          <img
+            src="logo-name-square.png"
+            alt="Branch Logo"
+            className="w-16 h-16 object-cover"
+          />
+          <div className="text-xs">
+            <p className="text-gray-800 font-semibold">Branch</p>
+            <p className="text-green-700 font-semibold">{branch.branchName}</p>
           </div>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Rectifications</p>
+          <p className="text-gray-800 font-bold">{branch.serviceSales}</p>
+        </div>
+        <div className="text-left text-xs ">
+          <p className="text-gray-600 font-bold">Renewals</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Replacement</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Products Sales</p>
+          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+        </div>
+        <div className="text-left text-xs">
+          <p className="text-gray-600 font-bold">Total Sales</p>
+          <p className="text-gray-800 font-bold">{branch.totalSales}</p>
         </div>
       </div>
+    ))}
+  </div>
 
-      {/* second section */}
-      {/* <div className="flex items-center justify-center space-x-10">
-        <div>
-          {bracnhWiseSolidLiquidData.map((cash) => (
-            <div className="grid grid-cols-4 gap-4 space-y-4">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="logo-name-square.png"
-                  alt="Branch Logo"
-                  className="w-10 h-10 object-cover"
-                />
-                <div>
-                  <p className="text-gray-800 font-semibold">Branch</p>
-                  <p className="text-green-700 font-semibold">
-                    {cash.branchName}
-                  </p>
-                </div>
-              </div>
-              <div className="text-left">
-                <p className="text-gray-500">Solid Cash</p>
-                <p className="text-gray-800 font-bold">{cash.solidCash}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          {bracnhWiseSolidLiquidData.map((cash) => (
-            <div className="grid grid-cols-4 gap-4 space-y-4">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="logo-name-square.png"
-                  alt="Branch Logo"
-                  className="w-10 h-10 object-cover"
-                />
-                <div>
-                  <p className="text-gray-800 font-semibold">Branch</p>
-                  <p className="text-green-700 font-semibold">
-                    {cash.branchName}
-                  </p>
-                </div>
-              </div>
-              <div className="text-left">
-                <p className="text-gray-500">Liquid Cash</p>
-                <p className="text-gray-800 font-bold">{cash.liquidCash}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
+
+  <div className="w-1/2 flex justify-center items-center">
+    <img
+      src="https://www.google.com/maps/vt/data=Pxte0E_oK3nuwOhkfOtz3CynGpZLKSyIPSTQo3gPAganLydvfC72ltwSUN2CyjraPVd3bpG0HNs4MRDEo2qA0SXDaTOEFDXVNL2t_KEu4GY9hKbWJW7G3SFfT_3_vExLYsu32CXFAxR9AD8V0O1ibupEPN9WobX4EdFJ2F2pmCUfg1lwkbwNF4Mn119iJz-x0Kwr6xyj6XBUKgRIq63mmfZZQb5JDNKG7APJTdtT_0XJxGDHiNisV1oZENJHrA2ys17nx_ktH_dpo6ZP3NKN0r0OMJ-x-CA"
+      alt="India Map"
+      className="w-full h-full"
+    />
+  </div>
+</div>
+</div>
+      
+    
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"
@@ -982,10 +770,15 @@ const Home = () => {
             </div>
             <button
               onClick={handleSearch}
-              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+              className="h-12 px-6 bg-green-700 text-white  hover:bg-green-500 rounded-md flex items-center"
             >
               <FaSearch className="mr-2" /> Search
             </button>
+
+ <button   className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
+          <FaFileDownload className="mr-2" /> Download Excel
+        </button>
+
           </div>
         ) : null}
         <div className="mt-8">

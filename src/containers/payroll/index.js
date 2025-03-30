@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { formatString } from '../../common/commonUtils';
+import { useLocation, useNavigate } from 'react-router';
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -10,70 +12,84 @@ const Payroll = () => {
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  // Fetch payroll data
-  const fetchPayrollData = async (branchName = 'All') => {
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]
+  );
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fetchPayrollData = async (branchName = "All") => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        date: selectedDate,
       };
 
-      if (branchName !== 'All') {
-        payload.branch = branchName; // Ensure correct key is sent
+      if (branchName !== "All") {
+        payload.branch = branchName;
       }
 
-
-      const res = await ApiService.post('/dashboards/payRoll', payload);
+      const res = await ApiService.post("/dashboards/payRoll", payload);
       if (res.status) {
-        setPayrollData(res.data);
 
-        if (branchName === 'All') {
-          // const branchOptions = [
-          //   { branchName: 'All' },
-          //   ...res.data.map((branch) => ({
-          //     branchName: branch.branch, // Ensure branch list uses the correct key
-          //   })),
-          // ];
-          const uniqueBranches = Array.from(new Set(res.data.map((b) => b.branch))).map((branch) => ({
+        console.log("Formatted Payroll Data:", res.data);
+
+        setPayrollData(res.data);
+        if (branchName === "All") {
+          const uniqueBranches = Array.from(
+            new Set(res.data.map((b) => b.branch).filter(Boolean)) // Filter out null values
+          ).map((branch) => ({
             branchName: branch,
           }));
-          setBranches([{ branchName: 'All' }, ...uniqueBranches]);
-          // setBranches(branchOptions);
+          setBranches([{ branchName: "All" }, ...uniqueBranches]);
         }
       } else {
         setPayrollData([]);
-        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
+        if (branchName === "All") setBranches([{ branchName: "All" }]);
       }
     } catch (err) {
-      console.error('Failed to fetch payroll data:', err);
+      console.error("Failed to fetch payroll data:", err);
       setPayrollData([]);
     }
   };
 
+  useEffect(() => {
+    fetchPayrollData(selectedBranch);
+  }, [selectedBranch, selectedDate]);
 
-  // Fetch data on initial render
+
   useEffect(() => {
     fetchPayrollData();
   }, []);
-
+  // Columns for the table
+  const columns = payrollData.length
+    ? Object.keys(payrollData[0]).map((key, index) => ({
+      title: typeof key === "string" ? formatString(key) : key,  // Ensure key is a string
+      dataIndex: key, // Use key instead of index for proper column mapping
+    }))
+    : [];
   useEffect(() => {
     fetchPayrollData(activeTab);
   }, [activeTab]);
 
-
-  // Fetch data when selected branch changes
-  useEffect(() => {
-    fetchPayrollData(selectedBranch);
-  }, [selectedBranch]);
-
-  // Columns for the table
-  const columns = payrollData.length
-    ? Object.keys(payrollData[0]).map((key, index) => ({
-      title: key,
-      dataIndex: index,
-    }))
-    : [];
+  const payrollItem = {
+    staffId: "EMP123",
+    staffName: "John Doe",
+    designation: "Software Engineer",
+    staffPhoto: "https://via.placeholder.com/100",
+    branch: "Mumbai",
+    salaryStatus: "Paid",
+    monthDays: 30,
+    presentDays: 28,
+    leaveDays: 2,
+    actualSalary: 50000,
+    perDaySalary: 1666.67,
+    perHourSalary: 185.19,
+    totalOTHours: 10,
+    OTAmount: 1851.85,
+    lateDeductions: 500,
+    grossSalary: 52000,
+    netSalary: 50500,
+  };
 
   // Handle tab click
   const handleTabClick = (branch) => {
@@ -81,8 +97,6 @@ const Payroll = () => {
     setSelectedBranch(branch);
     fetchPayrollData(branch);  // Immediately fetch new data when a tab is clicked
   };
-
-
 
   // Handle row edit
   const handleChangePayroll = (row) => {
@@ -95,9 +109,21 @@ const Payroll = () => {
     setIsPopupOpen(false);
     setSelectedRow(null);
   };
+  const handleDownloadClick = () => {
+    fetchPayrollData(selectedBranch, selectedDate);
+  };
 
+   // Define the column order explicitly
+   const columnOrder = [
+    "staffId", "staffName", "branch", "designation", "year", "monthDays", "presentDays", "month",  
+    "actualSalary", "leaveDays", "lateDays", "lateDeductions","totalLateMinutes", "carryForwardLeaves", "leaveEncashment", "perDaySalary", "perHourSalary", 
+    "plBikeNeedToPay", "plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance",
+    "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
+    "paybleAmount","salaryStatus"
+];
   return (
     <div>
+      {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
       {/* Tabs */}
       <div className="flex space-x-4 mb-4 border-b">
         {branches.map((branch) => (
@@ -113,83 +139,75 @@ const Payroll = () => {
           </button>
         ))}
       </div>
+      <div className="flex items-center space-x-4 mb-4">
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          onClick={handleDownloadClick}
+        >
+          Search
+        </button>
+      </div>
 
       {/* Table */}
-      <Table
-        columns={payrollData.length > 0 ? Object.keys(payrollData[0]) : []}
-        data={payrollData.filter(
-          (row) => activeTab === 'All' || row.branch === activeTab
-        )}
-        onEdit={handleChangePayroll}
-        onDetails={() => { }}
-        showDelete={false}
-      />
 
-      {/* Popup Modal */}
-      {isPopupOpen && selectedRow && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-xl p-8 w-[90%] max-w-lg shadow-lg relative">
-            {/* Close Button */}
-            <button
-              onClick={handleClosePopup}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-            >
-              &times;
-            </button>
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 whitespace-nowrap scrollbar-hide">
+        <div className='className="overflow-hidden"'>
 
-            {/* Popup Content */}
-            <h2 className="text-xl font-bold text-center mb-6 text-green-600">
-              Payroll Details
-            </h2>
-            <div className="flex justify-center mb-6">
-              <img
-                className="rounded-full h-28 w-28 object-cover shadow-lg"
-                src={selectedRow.staffPhoto || "/default-profile.png"}
-                alt={selectedRow.staffName}
-              />
-
-            </div>
-            <div className="space-y-2">
-              <p>
-                <strong>Staff ID:</strong> {selectedRow.staffId}
-              </p>
-              <p>
-                <strong>Staff Name:</strong> {selectedRow.staffName}
-              </p>
-              <p>
-                <strong>Branch:</strong> {selectedRow.branch}
-              </p>
-              <p>
-                <strong>In-Company Experience:</strong> {selectedRow.inExperience} years
-              </p>
-              <p>
-                <strong>Overall Experience:</strong> {selectedRow.overallExperience} years
-              </p>
-              <p>
-                <strong>Basic Salary:</strong> ${selectedRow.basicSalary}
-              </p>
-            </div>
-
-            {/* Input Field */}
-            <div className="mt-6">
-              <label className="block text-green-600 font-bold mb-2">
-                Enter New Payroll Amount
-              </label>
-              <input
-                type="text"
-                placeholder="Enter Payroll Amount"
-                className="w-full border border-green-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button className="w-full bg-green-600 text-white py-2 mt-6 rounded-md hover:bg-green-700">
-              Submit
-            </button>
-          </div>
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-blue-500 text-white text-left">
+              {payrollData.length > 0 &&
+                columnOrder.map((key) => (
+                  <th key={key} className="px-4 py-3 border capitalize">
+                    {key.replace(/([A-Z])/g, " $1").trim()}
+                  </th>
+                ))}
+              <th className="px-4 py-3 border">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+            {payrollData.length > 0 ? (
+              payrollData.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex} 
+                  className={`border ${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
+                >
+                  {columnOrder.map((value, colIndex) => {
+                    if (value==="ActualEarnedMonthlySalary") {
+                      row["ActualEarnedMonthlySalary"]=parseInt(row["incentives"])+parseInt(row["foodAllowance"])+parseInt(row["OTAmount"])+parseInt(row["extraHalfSalary"]+parseInt(row["plBikeAmount"]));
+                    }
+                    return(
+                    <td style={{textWrap:'wrap'}} key={colIndex} className="px-4 py-2 border text-center">
+                      {row[value] ?? "N/A"}
+                    </td>
+                  )})}
+                  <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
+                    <button
+                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                      onClick={() => navigate("/payroll-details", { state: { paySlipDetails: row } })}
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={Object.keys(payrollData[0] || {}).length + 1} className="text-center py-4">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
         </div>
-      )}
-
+      </div>
     </div>
   );
 };

@@ -1,85 +1,224 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { BsThreeDotsVertical } from "react-icons/bs";
+import * as XLSX from "xlsx";
+import { FaFileDownload } from "react-icons/fa";
 
-const getColorClasses = (color) => {
-  switch (color) {
-    case 'blue':
-      return { border: 'border-blue-700', bg: 'bg-blue-700' };
-    case 'red':
-      return { border: 'border-red-700', bg: 'bg-red-700' };
-    case 'green':
-      return { border: 'border-green-700', bg: 'bg-green-700' };
-    case 'orange':
-      return { border: 'border-orange-700', bg: 'bg-orange-700' };
-    default:
-      return { border: 'border-gray-700', bg: 'bg-gray-700' };
-  }
-};
+
+
+
 const BranchManagerHome = () => {
-  const [productDetailsByBranch, setProductDetailsByBranch] = useState([]);
-  const [creditAndDebitPercentages, setCreditAndDebitPercentages] = useState([]);
-  const [assertsCardData, setAssertsCardData] = useState([]);
+
+  const [workStatus, setWorkStatus] = useState({
+    installedPercentage: 0,
+    pendingPercentage: 0,
+  });
+  const [paymentData, setPaymentData] = useState({
+    totalPayment: 0,
+    totalPendingPayment: 0,
+    totalSuccessPayment: 0,
+  });
+
   const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   const [totalStaffDetails, setTotalStaffDetails] = useState([]);
-  const fetchProductDetailsByBranch = async () => {
+  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTable, setActiveTable] = useState(null);
+  const [previewData, setPreviewData] = useState([]);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [warehouseProducts, setWarehouseProducts] = useState([]);
+  const [totalPayments, setTotalPayments] = useState([]);
+  const [receivedPayments, setReceivedPayments] = useState([]);
+  const [pendingAmount, setPendingAmount] = useState([]);
+  const [assertsData, setAssertsData] = useState([]);
+  const [staffData, setStaffData] = useState([]);
+
+
+
+
+  
+
+  
+  useEffect(() => {
+    fetchPaymentStatus();
+  }, []);
+
+  const fetchPaymentStatus = async () => {
     try {
       const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
+        companyCode: localStorage.getItem("companyCode"),
+        unitCode: localStorage.getItem("unitCode"),
+        role: localStorage.getItem("role"),
       };
 
-      if (payload.role === 'Branch Manager') {
-        payload.branch = localStorage.getItem('branchName');
+      if (payload.role === "Branch Manager") {
+        payload.branch = localStorage.getItem("branchName");
       }
 
       let response;
       if (payload.branch) {
-        response = await ApiService.post('/dashboards/getProductDetailsByBranch', payload);
+        response = await ApiService.post(
+          "/technician/getPaymentStatusPayments",
+          payload
+        );
       }
 
-      if (response && response.status) {
-        setProductDetailsByBranch(response.data || []);
+      if (response?.status) {
+        setPaymentData({
+          totalPayment: response.data?.totalPayment || 0,
+          totalPendingPayment: response.data?.totalPendingPayment || 0,
+          totalSuccessPayment: response.data?.totalSuccessPayment || 0,
+        });
       } else {
-        alert(response?.message || 'Failed to fetch product details.');
+        alert(response?.message || "Failed to fetch payment details.");
       }
     } catch (error) {
-      console.error('Error fetching product details:', error);
-      // alert('Failed to fetch product details.');
+      console.error("Error fetching payment details:", error);
     }
   };
 
-  // const fetchProductDetailsByBranch = async () => {
-  //   try {
-  //     const payload = {
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //       role: localStorage.getItem('role'),
-  //     };
-  //     if (payload.role === 'Branch Manager') {
-  //       payload.branch = localStorage.getItem('branchName');
-  //     }
-  //     let response;
-  //     if (payload.branchName) {
-  //       response = await ApiService.post('/dashboards/getProductDetailsByBranch', payload);
-  //     }
-  //     if (response.status) {
-  //       setProductDetailsByBranch(response.data || []);
-  //     } else {
-  //       alert(response.message || 'Failed to fetch ticket details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tickets data:', error);
-  //     //alert('Failed to fetch tickets data.');
-  //   }
-  // };
-  // // const branchProductData = productDetailsByBranch[0]; // Assuming only one branch in response
-  // const totalQuantity = branchProductData?.products?.reduce(
-  //   (sum, product) => sum + product.totalProducts,
-  //   0
-  // ) || 0;
-  const fetchCreditAndDebitPercentages = async () => {
+  const paymentStatus = [
+    {
+      label: "Total Payment",
+      value: paymentData.totalPayment,
+      color: "bg-red-300",
+      textColor: "text-red-700",
+    },
+    {
+      label: "Received Amount",
+      value: paymentData.totalSuccessPayment,
+      color: "bg-green-300",
+      textColor: "text-green-700",
+    },
+    {
+      label: "Pending Amount",
+      value: paymentData.totalPendingPayment,
+      color: "bg-purple-300",
+      textColor: "text-purple-700",
+    },
+  ];
+
+
+   useEffect(() => {
+    fetchWorkStatusPercentages();
+  }, []);
+
+  const fetchWorkStatusPercentages = async () => {
+    try {
+      const payload = {
+        companyCode: localStorage.getItem("companyCode"), 
+        unitCode: localStorage.getItem("unitCode"),
+        role: localStorage.getItem("role"),
+      };
+
+      if (payload.role === "Branch Manager") {
+        payload.branchName = localStorage.getItem("branchName");
+      }
+
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post(
+          "/work-allocations/getTotalPendingAndCompletedPercentage",
+          payload
+        );
+      }
+
+      if (response?.status) {
+        setWorkStatus({
+          installedPercentage: response.data?.creditPercentage || 0,
+          pendingPercentage: response.data?.debitPercentage || 0,
+        });
+      } else {
+        alert(response.data?.message || "Failed to fetch work status data.");
+      }
+    } catch (error) {
+      console.error("Error fetching work status data:", error);
+    }
+  };
+
+
+
+
+ // Fetch Asserts Data
+ const fetchAssertsCardData = async () => {
+  try {
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem("role"),
+    };
+    if (payload.role === "Branch Manager") {
+      payload.branch = localStorage.getItem("branchName");
+    }
+    let response;
+    if (payload.branch) {
+      response = await ApiService.post("asserts/getAllAssertDetails", payload);
+    }
+    if (response.status) {
+      setAssertsData(response.data || []);
+    } else {
+      alert(response.data.message || "Failed to fetch asserts details.");
+    }
+  } catch (error) {
+    console.error("Error fetching asserts data:", error);
+  }
+};
+
+// Fetch Staff Data
+const fetchStaffData = async () => {
+  try {
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem("role"),
+    };
+    if (payload.role === "Branch Manager") {
+      payload.branchName = localStorage.getItem("branchName");
+    }
+    let response;
+    if (payload.branchName) {
+      response = await ApiService.post("/dashboards/getTotalStaffDetails", payload);
+    }
+    if (response?.status) {
+      setStaffData(Array.isArray(response.data.result) ? response.data.result : []);
+    } else {
+      alert(response.data.message || "Failed to fetch staff details.");
+    }
+  } catch (error) {
+    console.error("Error fetching staff data:", error);
+  }
+};
+
+useEffect(() => {
+  fetchAssertsCardData();
+  fetchStaffData();
+}, []);
+
+// Format Data for Display
+const stats = [
+  {
+    title: "Asserts",
+    total: assertsData.reduce((sum, item) => sum + item.value, 0),
+    details: assertsData,
+    color: "bg-green-600",
+    borderColor: "border-green-400",
+  },
+  {
+    title: "Staff",
+    total: staffData.reduce((sum, item) => sum + item.value, 0),
+    details: staffData,
+    color: "bg-red-600",
+    borderColor: "border-red-400",
+  },
+];
+
+
+
+
+// Total Payments
+
+  const TotalPayments = async () => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
@@ -91,285 +230,689 @@ const BranchManagerHome = () => {
       }
       let response;
       if (payload.branchName) {
-        response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', payload);
-      }
-      //  else {
-      //   response = await ApiService.post('/dashboards/getLast30DaysCreditAndDebitPercentages', payload);
-      // }
-      if (response.status) {
-        setCreditAndDebitPercentages(response.data || []);
-      } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
-      }
-    } catch (error) {
-      console.error('Error fetching tickets data:', error);
-      //alert('Failed to fetch tickets data.');
-    }
-  };
-  const fetchAssertsCardData = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branch = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post('/dashboards/assertsCardData', payload);
-      }
-      if (response.status) {
-        setAssertsCardData(response.data || []);
-      } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
-      }
-    } catch (error) {
-      console.error('Error fetching tickets data:', error);
-      //alert('Failed to fetch tickets data.');
-    }
-  };
-  const fetchRequestBranchWise = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post('/requests/getTodayRequestBranchWise', payload);
+        response = await ApiService.post("/technician/getAllPaymentsForTable", payload);
       }
       // Ensure response.data is always an array
       if (response?.status && Array.isArray(response.data)) {
-        setRequestBranchWiseData(response.data);
+        setTotalPayments(response.data);
       } else {
-        setRequestBranchWiseData([]); // Prevent undefined
+        setTotalPayments([]); // Prevent undefined
       }
     } catch (error) {
       console.error('Error fetching request data:', error);
       setRequestBranchWiseData([]); // Handle errors gracefully
     }
   };
-  const TotalStaffDetails = async (staff_branchName) => {
+
+  useEffect(() => {
+    TotalPayments();
+  }, []);
+
+  // Filtering payments based on search query
+const filteredTotalPayments = Array.isArray(totalPayments)
+? totalPayments.filter((payment) =>
+    payment.technicianName.toLowerCase().includes(search.toLowerCase())
+  )
+: [];
+
+
+// Received Payments
+
+const ReceivedPayments = async () => {
+  try {
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem('role'),
+    };
+    if (payload.role === 'Branch Manager') {
+      payload.branchName = localStorage.getItem('branchName');
+    }
+    let response;
+    if (payload.branchName) {
+      response = await ApiService.post("/technician/getSucessPaymentsForTable", payload);
+    }
+    // Ensure response.data is always an array
+    if (response?.status && Array.isArray(response.data)) {
+      setReceivedPayments(response.data);
+    } else {
+      setReceivedPayments([]); // Prevent undefined
+    }
+  } catch (error) {
+    console.error('Error fetching received payments:', error);
+    setReceivedPayments([]); // Handle errors gracefully
+  }
+};
+
+useEffect(() => {
+  ReceivedPayments();
+}, []);
+
+// Filtering received payments based on search query
+const filteredPayments = Array.isArray(receivedPayments)
+  ? receivedPayments.filter((payment) =>
+      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+    )
+  : [];
+
+
+// Pending Amount
+
+const PendingAmount = async () => {
+  try {
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem('role'),
+    };
+    if (payload.role === 'Branch Manager') {
+      payload.branchName = localStorage.getItem('branchName');
+    }
+    let response;
+    if (payload.branchName) {
+      response = await ApiService.post("/technician/getPendingPaymentsForTable", payload);
+    }
+    // Ensure response.data is always an array
+    if (response?.status && Array.isArray(response.data)) {
+      setPendingAmount(response.data);
+    } else {
+      setPendingAmount([]); // Prevent undefined
+    }
+  } catch (error) {
+    console.error('Error fetching pending amount data:', error);
+    setPendingAmount([]); // Handle errors gracefully
+  }
+};
+
+useEffect(() => {
+  PendingAmount();
+}, []);
+
+// Filtering pending amounts based on search query
+const filteredPendingAmount = Array.isArray(pendingAmount)
+  ? pendingAmount.filter((payment) =>
+      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+    )
+  : [];
+
+
+
+
+
+
+  // product Details
+
+  useEffect(() => {
+    fetchWarehouseProducts();
+  }, []);
+
+  const fetchWarehouseProducts = async () => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
+        role: localStorage.getItem("role"),
       };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
+      if (payload.role === "Branch Manager") {
+        payload.branchName = localStorage.getItem("branchName");
       }
+      
       let response;
       if (payload.branchName) {
-        response = await ApiService.post('/dashboards/getTotalStaffDetails', payload);
+        response = await ApiService.post("/dashboards/getWareHouseProductDetailsByBranch", payload);
       }
-      if (response.status) {
-        setTotalStaffDetails(response.data || []);
+
+      if (response?.status) {
+        setWarehouseProducts(Array.isArray(response.data) ? response.data : []);
+        console.log("Warehouse Products:", response.data);
       } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
+        alert(response.data.message || "Failed to fetch warehouse products.");
       }
     } catch (error) {
-      console.error('Error fetching tickets data:', error);
-      //alert('Failed to fetch tickets data.');
+      console.error("Error fetching warehouse products:", error);
     }
   };
 
-  const branchProductData = productDetailsByBranch?.[0] ?? { products: [] };// Safe fallback if array is empty or undefined
-  const totalQuantity = branchProductData?.products?.reduce(
-    (sum, product) => sum + (product.totalProducts || 0),
-    0
-  ) ?? 0;
+  const filteredProducts = Array.isArray(warehouseProducts)
+    ? warehouseProducts.filter((product) =>
+        product.productName.toLowerCase().includes(search.toLowerCase())
+      )
+    : [];
 
-  // const branchData = creditAndDebitPercentages?.[0] || {};  
-  useEffect(() => {
-    fetchProductDetailsByBranch();
-  }, []);
-  const fetchData = async () => {
-    await Promise.all([
-      fetchCreditAndDebitPercentages(),
-      fetchProductDetailsByBranch(),
-      fetchAssertsCardData(),
-      fetchRequestBranchWise(),
-      TotalStaffDetails(),
-    ]);
+
+
+// Get all staff Data
+
+
+useEffect(() => {
+  TotalStaffDetails();
+}, []);
+
+  const TotalStaffDetails = async () => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem("role"),
+      };
+      if (payload.role === "Branch Manager") {
+        payload.branchName = localStorage.getItem("branchName");
+      }
+      let response;
+      if (payload.branchName) {
+        response = await ApiService.post("/dashboards/getTotalStaffDetails", payload);
+      }
+      if (response?.status) {
+        // Ensure data is always an array
+        setTotalStaffDetails(Array.isArray(response.data.staff) ? response.data.staff : []);
+
+        console.log("total staff details",response.data.staff)
+      } else {
+        alert(response.data.message || "Failed to fetch staff details.");
+      }
+    } catch (error) {
+      console.error("Error fetching staff data:", error);
+    }
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const branchData = creditAndDebitPercentages?.[0] || {};
+  
+
+// Filtered Staff Details (Case Insensitive)
+const filteredStaff = totalStaffDetails.filter((emp) =>
+  Object.values(emp).some((value) =>
+    String(value).toLowerCase().includes(search.toLowerCase())
+  )
+);
+
+
+const toggleTable = (label) => {
+  setActiveTable(activeTable === label ? null : label);
+};
+
+
+const formatExcelData = (data) => {
+  return data.map((item) => ({
+    "Emp ID": item.staffId,
+    "Name of the Employee": item.name,
+    "Designation": item.designation,
+    "Branch": item.branchName || "",
+    "Contact Number": item.phoneNumber,
+   
+  }));
+};
+
+
+const handlePreview = () => {
+  const filteredData = totalStaffDetails.filter((row) =>
+    row.name && typeof row.name === "string" // Use 'name' instead of 'product' if filtering by employee name
+      ? row.name.toLowerCase().includes(search.toLowerCase())
+      : false
+  );
+
+  console.log("Filtered Data:", filteredData); // Debugging output
+
+  const formattedData = formatExcelData(filteredData);
+
+  if (formattedData.length === 0) {
+    alert("No data available to preview.");
+    return;
+  }
+
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+
+
+ const handleDownload = () => {
+    if (!previewData || previewData.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(previewData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Branch_Staff");
+      XLSX.writeFile(workbook, "Filtered_Branch_Staff.xlsx");
+
+      setIsPreviewOpen(false); // Close modal after download
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
+  };
+
+
+
+
   return (
     <div className="p-6">
-      {/* branch card Section */}
-      <div className="flex justify-center mt-10 mb-6">
-        <div
-          className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
-          style={{ width: "80%" }}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <div className="absolute -top-6 left-4">
-              <img
-                src="/logo-square.png"
-                alt="Branch Logo"
-                className="w-14 h-14 rounded-md shadow-md bg-white"
-              />
-            </div>
-            <span className="text-2xl font-semibold text-gray-800 mt-4">
-              {branchData.branchName || "N/A"}
-            </span>
+    <div className="flex justify-center mt-10">
+      <div
+        className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-200"
+        style={{ width: "100%" }}
+      >
+        <div className="flex justify-between items-center mb-4">
+          <div className="absolute -top-6 left-4">
+            <img
+              src="/logo-square.png"
+              alt="Branch Logo"
+              className="w-14 h-14 rounded-md shadow-md bg-white"
+            />
           </div>
-          <div className="space-y-4">
-            <div className="text-green-600 flex items-center text-xl font-bold">
-              <span>Credit Percentage:</span>
-              <span className="ml-2">
-                {branchData.creditPercentage !== undefined ? `${branchData.creditPercentage}%` : "N/A"}
-              </span>
-            </div>
-            <div className="bg-gray-200 rounded-full h-6">
-              <div
-                className="bg-green-600 h-6 rounded-full"
-                style={{ width: `${branchData.creditPercentage || 0}%` }}
-              ></div>
-            </div>
-            <div className="text-red-500 flex items-center text-xl font-bold">
-              <span>Debit Percentage:</span>
-              <span className="ml-2">
-                {branchData.debitPercentage !== undefined ? `${branchData.debitPercentage}%` : "N/A"}
-              </span>
-            </div>
-            <div className="bg-gray-200 rounded-full h-6">
-              <div
-                className="bg-red-600 h-6 rounded-full"
-                style={{ width: `${branchData.debitPercentage || 0}%` }}
-              ></div>
-            </div>
+          <span className="text-2xl font-semibold text-gray-800 mt-4">
+            {localStorage.getItem("branchName") || "Branch"}
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          <div className="text-green-600 flex items-center text-xl font-bold">
+            <span>Installed Work Percentage:</span>
+            <span className="ml-2">{workStatus.installedPercentage}%</span>
+          </div>
+          <div className="bg-gray-200 rounded-full h-6">
+            <div
+              className="bg-green-600 h-6 rounded-full"
+              style={{ width: `${workStatus.installedPercentage}%` }}
+            ></div>
+          </div>
+
+          <div className="text-red-500 flex items-center text-xl font-bold">
+            <span>Pending Work Percentage:</span>
+            <span className="ml-2">{workStatus.pendingPercentage}%</span>
+          </div>
+          <div className="bg-gray-200 rounded-full h-6">
+            <div
+              className="bg-red-600 h-6 rounded-full"
+              style={{ width: `${workStatus.pendingPercentage}%` }}
+            ></div>
           </div>
         </div>
+
+        <div className="mt-6 flex justify-center space-x-4">
+          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200">
+            Edit
+          </button>
+
+          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200">
+            More Details
+          </button>
+        </div>
       </div>
-      {/* cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        {Array.isArray(requestBranchWiseData) && requestBranchWiseData.length > 0 ? (
-          requestBranchWiseData.map((location) => {
-            // Ensure color is defined or provide a default
-            const { border, bg } = getColorClasses(location.color || "gray");
-            // Calculate total requests count dynamically
-            const totalRequests = location.requests.reduce((sum, req) => sum + req.count, 0);
-            return (
-              <div key={location.location} className={`border-2 ${border} rounded-lg shadow-md`}>
-                <h3 className={`${bg} text-white font-semibold text-lg p-3 flex justify-between`}>
-                  <span>{location.location}</span>
-                  <span>Total: {totalRequests}</span> {/* Dynamic total */}
-                </h3>
-                {location.requests?.map((req, index) => (
-                  <p key={index} className="text-sm font-medium ml-4 mt-4">
-                    {req.name}: <span className="font-bold">{req.count}</span>
-                  </p>
-                ))}
-              </div>
-            );
-          })
-        ) : (
-          <p>No data available</p>
-        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {/* Assets Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            Assets Summary
-          </h3>
-          <div className="p-4 space-y-2">
-            <p className="text-sm font-medium">
-              Office Assets: <span className="font-bold text-blue-600">{assertsCardData?.officeAsserts || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Transport Assets: <span className="font-bold text-green-600">{assertsCardData?.transportAsserts || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Total Assets: <span className="font-bold text-purple-600">{assertsCardData?.totalAsserts || 0}</span>
-            </p>
+
+      
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-10">
+        {paymentStatus.map((stat, index) => (
+          <div
+            key={index}
+            className={`p-6 rounded-xl shadow-md w-80 text-center cursor-pointer ${stat.color}`}
+            onClick={() => toggleTable(stat.label)}
+          >
+            <button
+              className="mt-5 px-6 py-2  text-black rounded-lg font-bold hover:bg-blue-100"
+              onClick={() => toggleTable(stat.label)}
+            >
+              {stat.label} 
+            </button>
+            {/* <div className="text-lg font-semibold">{stat.label}</div> */}
+            <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
           </div>
-        </div>
+        ))}
       </div>
-      <div className="mt-6">
-        {/* Staff Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md p-4 mb-6">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            Staff Summary
-          </h3>
-          <div className="p-4">
-            <p className="text-sm font-medium mb-2">
-              Total Staff: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalStaff || 0}</span>
-            </p>
-            <p className="text-sm font-medium mb-2">
-              Total Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalTechnicians || 0}</span>
-            </p>
-            <p className="text-sm font-medium mb-2">
-              Total Sales: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalSales || 0}</span>
-            </p>
-            <p className="text-sm font-medium">
-              Total Non-Technicians: <span className="font-bold">{totalStaffDetails?.data?.result[0]?.totalNonTechnicians || 0}</span>
-            </p>
+
+
+ {/* Payments Table - Visible only if showTable is true */}
+ {activeTable === "Total Payment" && (
+        <div>
+          <h2 className="text-2xl font-bold mb-4 text-red-400">Total Payments</h2>
+          <div className="flex justify-between mb-4">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="border p-2 rounded w-1/3"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+           {/* Preview & Download Button */}
+                   <button
+                     onClick={handlePreview}
+                     className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+                   >
+                     <FaFileDownload className="mr-2" /> Preview & Download
+                   </button>
           </div>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-red-300 text-white">
+                <th className="p-2 border">Transaction ID</th>
+                <th className="p-2 border">Title</th>
+                <th className="p-2 border">Date of Payment</th>
+                <th className="p-2 border">Invoice ID</th>
+                <th className="p-2 border">Amount</th>
+                <th className="p-2 border">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTotalPayments.map((payment, index) => (
+                <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+                  <td className="p-2 border text-center">{payment.id}</td>
+                  <td className="p-2 border text-center">{payment.title}</td>
+                  <td className="p-2 border text-center">{payment.date}</td>
+                  <td className="p-2 border text-center">{payment.invoice}</td>
+                  <td className="p-2 border text-center">{payment.amount}</td>
+                  <td className="p-2 border text-center">
+                    <span
+                      className={`px-2 py-1 rounded text-white ${
+                        payment.status === "Successful"
+                          ? "bg-green-500"
+                          : payment.status === "Pending"
+                          ? "bg-yellow-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {payment.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <Table
-          dataSource={totalStaffDetails?.data?.staff || []}
-          columns={[
-            {
-              title: "Staff ID",
-              dataIndex: "staffId",
-              key: "staffId",
-            },
-            {
-              title: "Staff Name",
-              dataIndex: "staffName",
-              key: "staffName",
-            },
-            {
-              title: "Designation",
-              dataIndex: "staffDesignation",
-              key: "staffDesignation",
-            },
-            {
-              title: "Branch Name",
-              dataIndex: "branchName",
-              key: "branchName",
-            },
-          ]}
-          pagination={{ pageSize: 5 }}
-          rowKey="staffId"
+      )}
+    
+
+{/* Receved Payments Table */}
+{activeTable === "Received Amount" && (
+<div>
+<h2 className="text-2xl font-bold mb-4 text-green-400">Received Amount</h2>
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border p-2 rounded w-1/3"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
+       {/* Preview & Download Button */}
+               <button
+                 onClick={handlePreview}
+                 className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+               >
+                 <FaFileDownload className="mr-2" /> Preview & Download
+               </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {/* Product Summary Card */}
-        <div className="border-2 border-gray-500 rounded-lg shadow-md">
-          <h3 className="bg-gray-500 text-white font-semibold text-lg p-3">
-            {branchData.branchName} - Product Summary
-          </h3>
-          <div className="p-4 space-y-2">
-            <p className="text-sm font-medium">
-              Total Products: <span className="font-bold text-purple-600">{totalQuantity}</span>
-            </p>
-          </div>
-        </div>
-        {/* Products List Card */}
-        <div className="border-2 border-gray-400 rounded-lg shadow-md">
-          <h3 className="bg-gray-400 text-white font-semibold text-lg p-3">Product Details</h3>
-          <div className="p-4 space-y-2">
-            {branchProductData.products.map((product) => (
-              <p key={product.id} className="text-sm font-medium">
-                {product.name}: <span className="font-bold text-blue-600">{product.totalProducts}</span>
-              </p>
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-green-400 text-white">
+            <th className="p-2 border">Transaction ID</th>
+            <th className="p-2 border">Title</th>
+            <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Amount</th>
+            <th className="p-2 border">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPayments.map((payment, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+              <td className="p-2 border text-center">{payment.id}</td>
+              <td className="p-2 border text-center">{payment.title}</td>
+              <td className="p-2 border text-center">{payment.date}</td>
+              <td className="p-2 border text-center">{payment.invoice}</td>
+              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">
+                <span className={`px-2 py-1 rounded text-white ${
+                  payment.status === "Successful" ? "bg-green-500" :
+                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                }`}>
+                  {payment.status}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+{/* Pending Amount */}
+{activeTable === "Pending Amount" && (
+<div>
+<h2 className="text-2xl font-bold mb-4 text-violet-500">Pending Amount</h2>
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border p-2 rounded w-1/3"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+       {/* Preview & Download Button */}
+               <button
+                 onClick={handlePreview}
+                 className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+               >
+                 <FaFileDownload className="mr-2" /> Preview & Download
+               </button>
+      </div>
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-violet-500 text-white">
+            <th className="p-2 border">Transaction ID</th>
+            <th className="p-2 border">Title</th>
+            <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Amount</th>
+            <th className="p-2 border">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPendingAmount.map((payment, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+              <td className="p-2 border text-center">{payment.id}</td>
+              <td className="p-2 border text-center">{payment.title}</td>
+              <td className="p-2 border text-center">{payment.date}</td>
+              <td className="p-2 border text-center">{payment.invoice}</td>
+              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">
+                <span className={`px-2 py-1 rounded text-white ${
+                  payment.status === "Successful" ? "bg-green-500" :
+                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                }`}>
+                  {payment.status}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+
+<div className=' flex  justify-between mt-10'>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search product..."
+        className="border p-2 mb-4 w-96 rounded-md"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+     {/* Preview & Download Button */}
+             <button
+               onClick={handlePreview}
+               className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+             >
+               <FaFileDownload className="mr-2" /> Preview & Download
+             </button>
+      </div>
+
+        {/* Table Section */}
+        <div className="bg-white p-4 rounded-lg shadow-md">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-blue-700 text-white">
+              <th className="py-3 px-4 text-left">NO.</th>
+              <th className="py-3 px-4 text-left">Product</th>
+              <th className="py-3 px-4 text-left">Total</th>
+              <th className="py-3 px-4 text-left">In hand Products</th>
+              <th className="py-3 px-4 text-left">Remaining Products</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredProducts.map((row, index) => (
+              <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
+                <td className="py-3 px-4">{row.id}</td>
+                <td className="py-3 px-4">{row.product}</td>
+                <td className="py-3 px-4">{row.total}</td>
+                <td className="py-3 px-4">{row.inHand}</td>
+                <td className="py-3 px-4">{row.remaining}</td>
+              </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+    
+ 
+
+
+{/* Stat Cards */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-10">
+        {stats.map((stat, index) => (
+          <div key={index} className={`rounded-lg shadow-md p-5 border ${stat.borderColor}`}>
+            <div className={`text-white p-3 rounded-t-lg font-semibold text-xl ${stat.color}`}>
+              {stat.title} <span className="float-right">Total : {stat.total}</span>
+            </div>
+            <div className="p-4">
+              {stat.details.map((detail, i) => (
+                <p key={i} className="text-gray-700 font-medium">
+                  {detail.label} : {detail.value}
+                </p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+
+
+      <div className=' flex  justify-between mt-10'>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search product..."
+        className="border p-2 mb-4 w-96 rounded-md"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+       {/* Preview & Download Button */}
+      <div>
+               <button
+                 onClick={handlePreview}
+                 className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+               >
+                 <FaFileDownload className="mr-2" /> Preview & Download
+               </button>
+      </div>
+      </div>
+
+ {/* Table */}
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-blue-700 text-white">
+              <th className="py-3 px-4 text-left">Employ ID</th>
+              <th className="py-3 px-4 text-left">Employ Name</th>
+              <th className="py-3 px-4 text-left">Designation</th>
+              <th className="py-3 px-4 text-left">Branch</th>
+              <th className="py-3 px-4 text-left">Phone Number</th>
+              <th className="py-3 px-4 text-left">At ident</th>
+              <th className="py-3 px-4 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStaff.map((emp, index) => (
+              <tr
+                key={index}
+                className={`${
+                  index % 2 === 0 ? "bg-gray-200" : "bg-white"
+                } border-b`}
+              >
+                <td className="py-3 px-4">{emp.staffId}</td>
+                <td className="py-3 px-4">{emp.staffName}</td>
+                <td className="py-3 px-4">{emp.staffDesignation}</td>
+                <td className="py-3 px-4">{emp.branchName}</td>
+                <td className="py-3 px-4">{emp.phoneNumber}</td>
+                <td className="py-3 px-4">
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                    {emp.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4">
+                  <BsThreeDotsVertical className="text-gray-600 cursor-pointer" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+
+
+ {/* Preview Modal */}
+ {isPreviewOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+            <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
+            <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
+              <table className="min-w-full border">
+                <thead className="bg-gray-200 text-gray-700">
+                  <tr>
+                    {Object.keys(previewData[0]).map((key, index) => (
+                      <th key={index} className="p-2 text-left border">{key}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewData.map((row, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                      {Object.values(row).map((value, i) => (
+                        <td key={i} className="p-2 border">{value}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Download Excel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>)
+      )}
+
+
+
+
+</div>   
+  )
 };
 export default BranchManagerHome;

@@ -100,9 +100,9 @@ const Branches = () => {
       <div className="flex justify-end">
         <button
           className={`px-4 py-2 text-white rounded-md transition 
-            ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+            ${permissions.add ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-branch')}
-          disabled={!permissions.add}
+          //  disabled={!permissions.add}
         >
           Add Branch
         </button>
@@ -130,7 +130,7 @@ const Branches = () => {
 
               <div className="space-y-4">
                 <div className="text-green-600 flex items-center text-xl font-bold">
-                  <span>Credit Percentage:</span>
+                  <span>Receivables Percentage:</span>
                   <span className="ml-2">{branch.creditPercentage}%</span>
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
@@ -141,7 +141,7 @@ const Branches = () => {
                 </div>
 
                 <div className="text-red-500 flex items-center text-xl font-bold">
-                  <span>Debit Percentage:</span>
+                  <span>Payable Percentage:</span>
                   <span className="ml-2">{branch.debitPercentage}%</span>
                 </div>
                 <div className="bg-gray-200 rounded-full h-6">
@@ -155,7 +155,7 @@ const Branches = () => {
               <div className="mt-6 flex justify-center space-x-4">
                 <button
                   className={`px-4 py-2 text-white rounded-md transition 
-              ${permissions.edit ? 'bg-green-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+              ${permissions.edit ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleEdit(branch)}
                   disabled={!permissions.edit}
                 >
@@ -166,7 +166,7 @@ const Branches = () => {
                   className={`px-4 py-2 text-white rounded-md transition 
                     ${permissions.delete ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleDeleteClick(branch)}
-                  disabled={!permissions.delete}
+                   disabled={!permissions.delete}
                 >
                   Delete
                 </button>
@@ -183,7 +183,7 @@ const Branches = () => {
                 <button
                   className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => handleMoreDetails(branch)}
-                  // disabled={!permissions.view}
+                  //  disabled={!permissions.view}
                 >
                   More Details
                 </button>

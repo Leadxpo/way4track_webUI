@@ -182,16 +182,17 @@ import { initialAuthState } from '../../services/ApiService';
 const EditHiring = () => {
   const [candidate, setCandidate] = useState(null);
   const [levels, setLevels] = useState([]);
+  const [status, setStatus] = useState();
   const [expandedLevels, setExpandedLevels] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const hiringToEdit = location.state?.hiringDetails || {};
+  const hiringToEdit =  location.state?.hiring || {};
 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
         const response = await ApiService.post('/hiring/getHiringDetailsById', {
-          id: hiringToEdit.hiringId,
+          id: hiringToEdit?.hiringId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
@@ -225,17 +226,17 @@ const EditHiring = () => {
     };
 
     fetchClientDetails();
-  }, [location.state?.hiringDetails]);
+  }, [location.state?.hiring]);
   const handleSubmit = async () => {
     const payload = new FormData();
-    payload.append('id', location.state.hiringDetails.hiringId);
+    payload.append('id', hiringToEdit.hiringId);
     payload.append('hiringLevel', hiringToEdit.hiringLevel);
     payload.append('candidateName', hiringToEdit.candidateName);
     payload.append('phoneNumber', hiringToEdit.phoneNumber);
     payload.append('email', hiringToEdit.email);
     payload.append('address', hiringToEdit.address);
     payload.append('dateOfUpload', hiringToEdit.dateOfUpload);
-    payload.append('status', hiringToEdit.status);
+    payload.append('status', status);
     payload.append('companyCode', hiringToEdit.companyCode);
     payload.append('unitCode', hiringToEdit.unitCode);
 
@@ -326,6 +327,12 @@ const EditHiring = () => {
     });
   };
 
+  const handleStatus = (e) => {
+    console.log("Selected status:", e.target.value);
+    setStatus(e.target.value);
+  };
+
+
   const toggleLevel = (index) => {
     setExpandedLevels((prev) => {
       const updated = [...prev];
@@ -364,11 +371,11 @@ const EditHiring = () => {
         ) : (
           <>
             <div className="flex items-center space-x-6 bg-white p-4 rounded-md shadow">
-              <img
+              {/* <img
                 src="https://via.placeholder.com/150"
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover"
-              />
+              /> */}
               <div>
                 <h2 className="text-xl font-semibold">
                   {candidate.candidateName}
@@ -415,7 +422,7 @@ const EditHiring = () => {
                         />
                       </label>
                       <label>
-                        <span>Conductor By:</span>
+                        <span>Interviewed By:</span>
                         <input
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
@@ -454,7 +461,7 @@ const EditHiring = () => {
                         </select> */}
                       </label>
                       <label>
-                        <span>Conductor Place:</span>
+                        <span>Interview Place:</span>
                         <input
                           type="text"
                           className="w-full border px-4 py-2 rounded-md"
@@ -509,6 +516,22 @@ const EditHiring = () => {
                 </button>
               </div>
             </div>
+
+            <label>
+                        <span>Hiring status:</span>
+                        <select
+            value={status}
+            onChange={handleStatus}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+          >
+            <option value="">Select Status</option>
+            {['rejected', 'INTERVIEWED','qualified',].map((statusOption) => (
+              <option key={statusOption} value={statusOption}>
+                {statusOption}
+              </option>
+            ))}
+          </select>
+                      </label>
             <button
               onClick={handleSubmit}
               className="bg-green-700 w-20 text-white p-2 rounded-md"

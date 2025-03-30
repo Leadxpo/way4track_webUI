@@ -52,6 +52,7 @@ import DownloadComponent from '../reports/download';
 import Receipts from '../receipts';
 import Purchase from '../purchase';
 import Payroll from '../payroll';
+import PayrollDetails from '../payroll/payrollDetails';
 import StaffDetails from '../staff/staffDetails';
 import InHandProductsForm from '../products/inHandProductForm';
 import Tracker from '../tracker';
@@ -96,11 +97,29 @@ import HrHome from '../home/hrHome';
 import HrBranch from '../branches/hrBranch';
 import ReceiptDetails from '../receipts/receiptDetails';
 import Designation from '../designation';
+import AddDesignation from '../designation/add-designation';
+import DesignationDetails from '../designation/more-details';
+import EditDesignation from '../designation/edit-designation';
+
 import Letters from '../letters';
 import Attendance from '../attendance';
 import AttendanceUpload from '../attendance/bulkUpload';
 import AttendanceDetails from '../attendance/attendanceDetails';
 import EditAttendance from '../attendance/editAttendance';
+import AddStaffForm from '../staff/AddStaffForm';
+import ViewStaffDetails from '../staff/ViewStaffDetails';
+import EditBankDetails from '../staff/EditBankDetails';
+import EditEmployerDetails from '../staff/EditEmployerDetails';
+import EditPersonnelDetails from '../staff/EditPersonnelDetails';
+import EditEducationDetails from '../staff/EditEducationDetails';
+import AddInhandProduct from '../products/AddInhandProduct';
+import SalesVisit from '../salesVisit';
+import ProductType from '../product-type';
+import AddProductType from '../product-type/AddProductType';
+import EditProductType from '../product-type/EditProductType';
+import ShowProductType from '../product-type/ShowProductTypes';
+
+
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -232,7 +251,7 @@ const BodyLayout = ({ children }) => {
         {/* Logo and Path */}
         <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <img
-            src="/way4tracklogo.png"
+            src="/logo.png"
             alt="Client Logo"
             className="h-8 w-auto" // Adjust the size for better responsiveness
           />
@@ -282,8 +301,8 @@ const BodyLayout = ({ children }) => {
           )}
 
           <div className="flex items-center">
-            <span className="text-sm font-medium mr-2">Enable Location</span>
-            <label className="relative inline-flex items-center cursor-pointer">
+            {/* <span className="text-sm font-medium mr-2">Enable Location</span> */}
+            {/* <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 className="sr-only peer"
@@ -297,7 +316,7 @@ const BodyLayout = ({ children }) => {
                           after:bg-white after:border-gray-300 after:border after:rounded-full 
                           after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
               ></div>
-            </label>
+            </label> */}
           </div>
           {/* Icons */}
           <div className="flex space-x-4">
@@ -323,13 +342,20 @@ const BodyLayout = ({ children }) => {
           <Route path="/branches" element={<Branches />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
+          <Route path="/product-type" element={<ProductType/>} />
+          <Route path="/add-product-type" element={<AddProductType/>} />
+          <Route path="/edit-product-type" element={<EditProductType/>} />
+          <Route path="/show-product-type" element={<ShowProductType/>} />
+          
+          
           <Route path="/products" element={<Products />} />
+          <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEstimate />} />
+          <Route path="/add-estimate" element={<AddEstimate/>} />
           <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />
@@ -366,6 +392,13 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
+          <Route
+            path="/sales_visit"
+            element={<SalesVisit />}
+          />
+
+
+
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -382,8 +415,17 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-branch" element={<AddBranchForm />} />
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
-          <Route path="/add-staff" element={<AddEditEmployeeForm />} />
-          <Route path="/edit-staff" element={<AddEditEmployeeForm />} />
+          {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
+          <Route path="/add-staff" element={<AddStaffForm />} />
+
+          <Route path="/edit-staff" element={<ViewStaffDetails />} />
+          <Route path="/add-staff" element={<AddStaffForm />} />
+          <Route path="/edit-staff-personnel" element={<EditPersonnelDetails />} />
+          <Route path="/edit-staff-education" element={<EditEducationDetails />} />
+          <Route path="/edit-staff-bank" element={<EditBankDetails />} />
+          <Route path="/edit-staff-employer" element={<EditEmployerDetails />} />
+
+          {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
           <Route path="/delete-vendor" element={<DeleteVendor />} />
@@ -397,11 +439,13 @@ const BodyLayout = ({ children }) => {
           <Route path="/ledger-details" element={<LedgerDetails />} />
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/payroll" element={<Payroll />} />
+          <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
           <Route path="/tracker" element={<Tracker />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
             path="/bank-details-dashboard"
             element={<BankDetailsDashboard />}
@@ -429,6 +473,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/hr-branch" element={<HrBranch />} />
           <Route path="/receipt-details" element={<ReceiptDetails />} />
           <Route path="/designations" element={<Designation />} />
+          <Route path="/designation-details" element={<DesignationDetails />} />
+
+          <Route path="/add-designation" element={<AddDesignation />} />
+
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />

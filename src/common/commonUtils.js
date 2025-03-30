@@ -212,21 +212,37 @@ export const PurchaseOrderPDF = ({ data }) => (
   </Document>
 );
 
+// export function formatString(input) {
+//   // Convert camelCase to space-separated words
+//   console.log(input);
+//   const camelCaseToSpaces = input.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+//   // Convert snake_case to space-separated words
+//   const snakeCaseToSpaces = camelCaseToSpaces.replace(/_/g, ' ');
+
+//   // Capitalize the first letter of each word
+//   const formattedString = snakeCaseToSpaces
+//     .toLowerCase()
+//     .replace(/\b\w/g, (char) => char.toUpperCase());
+
+//   return formattedString;
+// }
+
 export function formatString(input) {
+  if (typeof input !== "string") return String(input); // Ensure it's a string
+
   // Convert camelCase to space-separated words
-  console.log(input);
-  const camelCaseToSpaces = input.replace(/([a-z])([A-Z])/g, '$1 $2');
+  const camelCaseToSpaces = input.replace(/([a-z])([A-Z])/g, "$1 $2");
 
   // Convert snake_case to space-separated words
-  const snakeCaseToSpaces = camelCaseToSpaces.replace(/_/g, ' ');
+  const snakeCaseToSpaces = camelCaseToSpaces.replace(/_/g, " ");
 
   // Capitalize the first letter of each word
-  const formattedString = snakeCaseToSpaces
+  return snakeCaseToSpaces
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
-
-  return formattedString;
 }
+
 
 export const getPermissions = (roleName) => {
   const permissions = JSON.parse(

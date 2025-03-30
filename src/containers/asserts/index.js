@@ -7,6 +7,83 @@ import React, { useEffect, useState, useCallback } from 'react';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
+import AssertCard from './assertCard';
+
+const assets = [
+  {
+    name: 'Motorbike',
+    location: 'Visakhapatnam',
+    price: 50000,
+    status: '2 EMI Pending',
+    statusColor: 'text-red-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'JCB',
+    location: 'Hyderabad',
+    price: 200000,
+    status: '5 EMI Pending',
+    statusColor: 'text-red-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Chair',
+    location: 'Kakinada',
+    price: 50000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Boss Chair',
+    location: 'Visakhapatnam',
+    price: 35000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Manager Chair',
+    location: 'Vijayawada',
+    price: 200000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Table & Chair',
+    location: 'Kakinada',
+    price: 50000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Office Table',
+    location: 'Vijayawada',
+    price: 50000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+  {
+    name: 'Chair & Table',
+    location: 'Visakhapatnam',
+    price: 50000,
+    status: 'Payment Done',
+    statusColor: 'text-green-500',
+    image:
+      'https://res.cloudinary.com/dabzdwxet/image/upload/v1734614941/venue_profile-1_bpo7p8.jpg',
+  },
+];
+
 const Asserts = () => {
   const navigate = useNavigate();
   const [branches, setBranches] = useState([]);
@@ -24,7 +101,7 @@ const Asserts = () => {
   const [dateTo, setDateTo] = useState('');
   const location = useLocation();
   const assetDetailsFromState = location.state?.assetsData || {};
-  console.log(assetDetailsFromState, ">>>>>>>>>>")
+  console.log(assetDetailsFromState, '>>>>>>>>>>');
   // Fetch data for branches and asset counts
   const fetchData = async (branchName) => {
     try {
@@ -59,7 +136,6 @@ const Asserts = () => {
       console.error('Failed to fetch data:', err);
     }
   };
-
 
   useEffect(() => {
     const perms = getPermissions('assets');
@@ -107,12 +183,10 @@ const Asserts = () => {
     getAssertDataByDate();
   }, []);
 
-
   const handleMoreDetails = (assetDetails) => {
-    console.log(assetDetails, "Navigating with this asset data");
+    console.log(assetDetails, 'Navigating with this asset data');
     navigate('/asset-details', { state: { assetDetails } });
   };
-
 
   const getAssertDataByDate = useCallback(async () => {
     try {
@@ -144,48 +218,65 @@ const Asserts = () => {
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
   return (
-    <div className="m-2">
-      <div className="flex justify-between items-center py-4">
+    <div className="p-8 space-y-6">
+      <div className="flex justify-between items-center py-4 mx-6">
         {/* Left: Staff Details Heading */}
-        <h2 className="text-2xl font-semibold text-gray-800">Asserts</h2>
+        <h2
+          className="text-2xl font-semibold text-gray-800"
+          style={{ fontSize: '17px', fontWeight: '500' }}
+        >
+          Asserts
+        </h2>
 
         {/* Right: Icons and Add Staff Button */}
         <div className="flex items-center space-x-4">
           {/* List View Icon */}
-          <button
+          {/* <button
             className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
             onClick={() => setIsGridView(false)}
           >
             <FaList size={18} />
-          </button>
+          </button> */}
 
           {/* Grid View Icon */}
-          <button
+          {/* <button
             className={`p-2 cursor-pointer ${isGridView && 'border border-black'}`}
             onClick={() => setIsGridView(true)}
           >
             <FaTh size={18} />
-          </button>
+          </button> */}
           {/* Add Assert Button */}
           <button
+            className="bg-yellow-400 text-black font-bold py-2 px-4 rounded-lg flex items-center shadow-lg"
+            style={{
+              backgroundColor: '#FFF504',
+              borderRadius: '25px',
+              fontSize: '15px',
+              fontWeight: '500',
+            }}
+            onClick={() => navigate('/add-asset')}
+          >
+            <span className="text-black mr-2">➕</span> Add Assert
+          </button>
+          {/* <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer  ${permissions.add ? 'bg-green-600 ' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-asset')}
             disabled={!permissions.add}
           >
             <span>Add Assert</span>
-          </button>
+          </button> */}
         </div>
       </div>
       {isGridView && (
         <div className="flex justify-between mx-6">
-          <DropdownCard
+          {/* <DropdownCard
             bgColor="red"
             title="Total Asserts"
             count={assetCounts.totalAsserts}
             branches={branches}
             selectedBranch={selectedBranch}
             setSelectedBranch={setSelectedBranch}
-          />
+          /> */}
           <DropdownCard
             bgColor="green"
             title="Office Asserts"
@@ -203,6 +294,23 @@ const Asserts = () => {
           />
         </div>
       )}
+      <div style={{display: 'flex',marginLeft: "30px"}}>
+        <input
+          type="text"
+          placeholder="Staff ID:"
+          className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
+          style={{ height: '47px' }}
+        />
+        <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
+          <FaSearch />
+        </button>
+      </div>
+
+      <div className="p-6 grid grid-cols-3 gap-6">
+        {assets.map((asset, index) => (
+          <AssertCard key={index} asset={asset} />
+        ))}
+      </div>
 
       {isGridView ? (
         <div
@@ -263,7 +371,6 @@ const Asserts = () => {
                 >
                   More Details
                 </button>
-
               </div>
             </div>
           ))}
@@ -308,7 +415,7 @@ const Asserts = () => {
               filteredData.length > 0 ? Object.keys(filteredData[0]) : []
             }
             data={filteredData}
-            onDetails={() => { }}
+            onDetails={() => {}}
             showEdit={permissions.edit}
             showDelete={permissions.delete}
             showDetails={permissions.view}

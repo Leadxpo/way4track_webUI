@@ -1,25 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
 
 const EditAttendance = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const attendanceDetails = location.state?.attendanceDetails || {};
+
   const [formData, setFormData] = useState({
-    staffId: '',
-    name: '',
-    branch: '',
-    monthYear: '',
-    day1InTime: '',
-    day1InRemarks: '',
-    day1OutTime: '',
-    day1OutRemarks: '',
-    day1Status: '',
+    id: attendanceDetails.id || null,
+    staffId: attendanceDetails.staffId || '',
+    day: attendanceDetails.day || '',
+    branchName: attendanceDetails.branchName || '',
+    inTime: attendanceDetails.inTime || '',
+    outTime: attendanceDetails.outTime || '',
+    inTimeRemark: attendanceDetails.inTimeRemark || '',
+    staffName: attendanceDetails.staffName || '',
+    outTimeRemark: attendanceDetails.outTimeRemark || '',
+    status: attendanceDetails.status || '',
+    remarks: attendanceDetails.remarks || '',
   });
+
+  useEffect(() => {
+    if (attendanceDetails) {
+      setFormData({
+        ...attendanceDetails,
+        day: attendanceDetails.day ? formatDate(attendanceDetails.day) : '',
+      });
+    }
+  }, [attendanceDetails]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitted Data:', formData);
+
+    const updatedFormData = {
+      ...formData,
+      day: formatDate(formData.day), // Ensure date is properly formatted before sending
+    };
+
+    try {
+      const response = await ApiService.post('/attendance/updateAttendanceDetails', updatedFormData);
+
+      if (response.status) {
+        alert('Attendance updated successfully!');
+        navigate('/attendance');
+      } else {
+        alert('Failed to update attendance. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating attendance:', error);
+      alert('Failed to update attendance. Please try again.');
+    }
   };
 
   return (
@@ -29,12 +70,12 @@ const EditAttendance = () => {
         {Object.keys(formData).map((key) => (
           <div key={key}>
             <label className="block font-semibold capitalize">
-              {key.replace(/([A-Z])/g, ' $1').replace('day1', 'Day 1')}
+              {key.replace(/([A-Z])/g, ' $1')}
             </label>
             <input
               type="text"
               name={key}
-              value={formData[key]}
+              value={formData[key] || ''}
               onChange={handleChange}
               placeholder="Enter"
               className="w-full p-2 mt-1 border rounded-lg bg-gray-200"

@@ -16,7 +16,7 @@ const TableWithSearchFilter = ({
   onDetails,
   onDelete = null,
   showCreateBtn = true,
-  showStatusFilter = false,
+  showStatusFilter = true,
   showEdit = true,
   showDelete = true,
   showDetails = true,
@@ -34,12 +34,22 @@ const TableWithSearchFilter = ({
   const [filteredData, setFilteredData] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [status, setStatus] = useState();
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
   const workData = location.state?.workData || {};
-
+  const [qualifiedCount, setQualifiedCount] = useState(0);
+  useEffect(() => {
+    const countQualified = filteredData.filter(
+      (item) => item.status === 'Qualified'
+    ).length;
+    setQualifiedCount(countQualified);
+  }, []);
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
+  if (hiringData) {
+    console.log('fgsgs hiringData', hiringData);
+  }
   const voucherData = location.state?.voucherData || {};
   const getSearchDetailClient = useCallback(async () => {
     try {
@@ -69,13 +79,13 @@ const TableWithSearchFilter = ({
     try {
       const response = await ApiService.post('/hiring/getHiringSearchDetails', {
         hiringId: searchID,
-        candidateName: hiringData?.candidateName,
-        status: hiringData?.status,
+        candidateName: searchName,
+        status: status,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
 
-      console.log(response);
+      // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
         const filteredData = response.data.map(
@@ -89,7 +99,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName, hiringData?.status]);
+  }, [searchID, searchName, status]);
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
@@ -177,13 +187,16 @@ const TableWithSearchFilter = ({
 
   const getWorkDetailsAgainstSearch = useCallback(async () => {
     try {
-      const response = await ApiService.post('/work-allocations/getWorkAllocation', {
-        clientName: searchName,
-        workAllocationNumber: workData?.workAllocationNumber,
-        serviceOrProduct: workData?.serviceOrProduct,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/work-allocations/getWorkAllocation',
+        {
+          clientName: searchName,
+          workAllocationNumber: workData?.workAllocationNumber,
+          serviceOrProduct: workData?.serviceOrProduct,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
       if (response.status) {
         console.log(response.data, 'Response Data');
         setFilteredData(response.data);
@@ -281,6 +294,20 @@ const TableWithSearchFilter = ({
     fetchBranches();
   }, []);
 
+  const handleStatus = (e) => {
+    console.log('Selected status:', e.target.value);
+    setStatus(e.target.value);
+  };
+
+  const handleQualified = () => {
+    setStatus('Qualified');
+    // handleSearch();
+  };
+
+  if (status) {
+    console.log('statusssqqqqqqqqqqqqqqqqq', status);
+  }
+
   const handleStatusChange = (e) => {
     const selectedStatus = e.target.value;
     setStatusFilter(selectedStatus);
@@ -346,6 +373,21 @@ const TableWithSearchFilter = ({
     <div className="p-10">
       <p className="font-bold text-xl">{pageTitle}</p>
       {/* Create New Button Row */}
+
+      <div className="flex justify-end mb-4">
+      {type==="staff"&&(
+     <button
+     className="h-10 px-4 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 hover:cursor-pointer relative"
+     onClick={handleQualified}
+   >
+     Add Staff
+     
+     <span className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+       {qualifiedCount}
+     </span>
+   </button>)}
+        
+      </div>
       <div className="flex justify-end mb-4">
         {showCreateBtn && (
           <button
@@ -362,10 +404,18 @@ const TableWithSearchFilter = ({
           <input
             type="text"
             value={searchID}
+            // placeholder={
+            //   type === 'tickets'
+            //     ? 'Search with Ticket ID'
+            //     : 'Search with Client ID'
+            // }
+
             placeholder={
               type === 'tickets'
                 ? 'Search with Ticket ID'
-                : 'Search with Client ID'
+                : type === 'hiring'
+                  ? 'Search with Hire Id'
+                  : 'Search with Client ID'
             }
             onChange={(e) => setSearchID(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
@@ -377,10 +427,17 @@ const TableWithSearchFilter = ({
           <input
             type="text"
             value={searchName}
+            // placeholder={
+            //   type === 'tickets'
+            //     ? 'Search with Client Name'
+            //     : 'Search with Name'
+            // }
             placeholder={
               type === 'tickets'
                 ? 'Search with Client Name'
-                : 'Search with Name'
+                : type === 'hiring'
+                  ? 'Search with Hire Name'
+                  : 'Search with Name'
             }
             onChange={(e) => setSearchName(e.target.value)}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
@@ -389,15 +446,34 @@ const TableWithSearchFilter = ({
         </div>
         <div className="flex-grow mx-2">
           {showStatusFilter ? (
+            // <select
+            //   value={statusFilter}
+            //   onChange={handleStatusChange}
+            //   className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            // >
+            //   <option value="">All Statuses</option>
+            //   {statuses.map((status, index) => (
+            //     <option key={index} value={status}>
+            //       {status}
+            //     </option>
+            //   ))}
+            // </select>
+
             <select
-              value={statusFilter}
-              onChange={handleStatusChange}
+              value={status}
+              onChange={handleStatus}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
               <option value="">All Statuses</option>
-              {statuses.map((status, index) => (
-                <option key={index} value={status}>
-                  {status}
+              {[
+                'pending',
+                'Rejected',
+                'Qualified',
+                'APPLIED',
+                'INTERVIEWED',
+              ].map((statusOption) => (
+                <option key={statusOption} value={statusOption}>
+                  {statusOption}
                 </option>
               ))}
             </select>
