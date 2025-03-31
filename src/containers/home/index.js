@@ -14,6 +14,7 @@ import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
 import IndiaMap from '../../common/indiaMap';
 import { FaFileDownload } from "react-icons/fa";
+import GoogleMapComponent from "../../components/googleMap";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -635,7 +636,7 @@ const Home = () => {
   return (
     <div className="flex flex-col space-y-16">
       {/* first section */}
-      <div className="flex flex-col bg-white shadow-lg rounded-lg p-6 mx-auto mt-10">
+      <div className="flex flex-col bg-white shadow-lg rounded-lg p-6 mx-auto w-full mt-10">
         <div className="relative">
           <img
             src="logo-square.png"
@@ -687,11 +688,7 @@ const Home = () => {
 
 
   <div className="w-1/2 flex justify-center items-center">
-    <img
-      src="https://www.google.com/maps/vt/data=Pxte0E_oK3nuwOhkfOtz3CynGpZLKSyIPSTQo3gPAganLydvfC72ltwSUN2CyjraPVd3bpG0HNs4MRDEo2qA0SXDaTOEFDXVNL2t_KEu4GY9hKbWJW7G3SFfT_3_vExLYsu32CXFAxR9AD8V0O1ibupEPN9WobX4EdFJ2F2pmCUfg1lwkbwNF4Mn119iJz-x0Kwr6xyj6XBUKgRIq63mmfZZQb5JDNKG7APJTdtT_0XJxGDHiNisV1oZENJHrA2ys17nx_ktH_dpo6ZP3NKN0r0OMJ-x-CA"
-      alt="India Map"
-      className="w-full h-full"
-    />
+  <GoogleMapComponent />
   </div>
 </div>
 </div>

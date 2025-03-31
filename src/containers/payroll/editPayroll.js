@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 
+
+
+const salaryStatusOptions = [
+    { value: 'Paid', label: 'Paid' },
+    { value: 'Hold', label: 'Hold' },
+    { value: 'Other Reason', label: 'Other Reason' },
+  ];
+
 const EditPayroll = ({ initialData, onClose, onSave }) => {
     const { control, handleSubmit, watch, setValue } = useForm({ defaultValues: initialData });
     const formData = watch();
@@ -39,7 +47,7 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
    "leaveDays", "lateDays", "lateDeductions","totalLateMinutes", "carryForwardLeaves", "leaveEncashment", "perDaySalary", "perHourSalary", 
     "plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance",
     "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
-    "paybleAmount","salaryStatus"].map((field) => (
+    "paybleAmount",].map((field) => (
                     <Controller
                         key={field}
                         name={field}
@@ -53,13 +61,22 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
                     />
                 ))}
 
-                <Controller
-                    name="salaryStatus"
-                    control={control}
-                    render={({ field }) => (
-                        <input {...field} placeholder="Salary Status" className="w-full p-2 border rounded-md" />
-                    )}
-                />
+<Controller
+        name="salaryStatus"
+        control={control}
+        defaultValue=""
+        rules={{ required: 'Salary status is required' }}
+        render={({ field }) => (
+          <select {...field}>
+            <option value="" disabled>Select salary status</option>
+            {salaryStatusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
+      />
             </div>
             <div className="flex justify-end gap-2">
                 <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded-md">
