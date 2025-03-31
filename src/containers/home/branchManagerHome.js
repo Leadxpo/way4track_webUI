@@ -181,7 +181,7 @@ const fetchStaffData = async () => {
       response = await ApiService.post("/dashboards/getTotalStaffDetails", payload);
     }
     if (response?.status) {
-      setStaffData(Array.isArray(response.data.result) ? response.data.result : []);
+      setStaffData(Array.isArray(response.data.result[0]) ? response.data.result[0] : []);
     } else {
       alert(response.data.message || "Failed to fetch staff details.");
     }
@@ -199,7 +199,7 @@ useEffect(() => {
 const stats = [
   {
     title: "Asserts",
-    total: assertsData.reduce((sum, item) => sum + item.value, 0),
+    total: assertsData.reduce((sum, item) => 0),
     details: assertsData,
     color: "bg-green-600",
     borderColor: "border-green-400",

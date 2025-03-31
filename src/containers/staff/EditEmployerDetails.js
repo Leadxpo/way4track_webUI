@@ -35,27 +35,25 @@ const EditEmployerDetails = () => {
   }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
-  console.log(data,'datejh');
+  console.log(branches, 'datejh');
 
   // Fetch Branches
   const fetchBranches = async () => {
-    console.log('hiiiiii');
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
-      console.log('hiiiiii22', response);
-      // if (response.status && Array.isArray(response.data)) {
-      //   setBranches(response.data);
-      // } else {
-      //   console.error("Failed to fetch branches:", response);
-      // }
+      if (response.status) {
+        setBranches(response.data);
+      } else {
+        console.error('Failed to fetch branch names.');
+      }
     } catch (error) {
-      console.error('Error fetching branches:', error);
+      console.error('Error fetching branch names:', error);
     }
   };
 
   useEffect(() => {
     fetchBranches();
-  }, [branches]);
+  }, []);
 
   // Fetch Designations
   const getDesignations = useCallback(async () => {
@@ -80,6 +78,7 @@ const EditEmployerDetails = () => {
       // { label: "Staff ID", name: "staffId", type: "text" },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
+
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
       { label: 'Office Email', name: 'officeEmail', type: 'email' },
       { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
@@ -187,6 +186,48 @@ const EditEmployerDetails = () => {
           />
         </div>
       ))}
+      {/* Branch Dropdown */}
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Branch Name</label>
+        {/* <select
+          name="branchName"
+          value={data.branchName}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
+        >
+          <option value="">Select a Branch</option>
+          {branches.map((branch) => (
+            <option key={branch.id} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select> */}
+
+        <select
+          name="branchId"
+          value={data.branchId} // Store branchId as a number
+          onChange={(e) => {
+            const selectedBranch = branches.find(
+              (branch) => branch.id === Number(e.target.value)
+            );
+            setData((prevData) => ({
+              ...prevData,
+              branch: selectedBranch?.id || '', // Store branchId as a number
+              branchName: selectedBranch?.branchName || '',
+            }));
+          }}
+          className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
+        >
+          <option value="">Select a Branch</option>
+          {branches.map((branch) => (
+            <option key={branch.id} value={branch.id}>
+              {' '}
+              {/* Use branch.id as value */}
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Bike Allocation Dropdown */}
       <div className="mb-4">

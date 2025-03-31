@@ -53,6 +53,7 @@ const checkColumn = (col) => {
 const Table = ({
   name,
   columns = [],
+  columnNames = [],
   data = [],
   onEdit,
   onDetails,
@@ -68,7 +69,7 @@ const Table = ({
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
-  console.log(columns, "|||||||||||||||");
+  console.log(columns, '|||||||||||||||');
   return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
@@ -77,21 +78,28 @@ const Table = ({
         <div className="overflow-y-auto" style={{ maxHeight: '300px' }}>
           <table className="min-w-full border-collapse border border-gray-200">
             <thead className="bg-gray-100 sticky top-0">
-              <tr>
-                {columns.map((column, index) => (
-                  <th
-                    key={index}
-                    className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700"
-                    style={{ textTransform: 'capitalize' }}
-                  >
-                    {formatString(column)}
-                  </th>
-                ))}
-                <th className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <tr className="bg-blue-500 text-white text-left">
+                {columnNames.map((column, index) => {
+                  const minWidth = Math.max(column.length * 10, 120); // Ensure wider space for longer names
+                  return (
+                    <th
+                      key={index}
+                      className="px-4 py-3 border capitalize whitespace-nowrap"
+                      style={{
+                        textTransform: 'capitalize',
+                        minWidth: `${minWidth}px`,
+                      }}
+                    >
+                      {formatString(column)}
+                    </th>
+                  );
+                })}
+                <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
                   Action
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {data.map((row, rowIndex) => (
                 <tr
@@ -101,10 +109,11 @@ const Table = ({
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${checkColumn(column)
+                      className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${
+                        checkColumn(column)
                           ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
                           : ''
-                        }`}
+                      }`}
                     >
                       {row[column] || '-'}
                     </td>
