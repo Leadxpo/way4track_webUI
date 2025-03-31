@@ -199,7 +199,7 @@ useEffect(() => {
 const stats = [
   {
     title: "Asserts",
-    total: assertsData.reduce((sum, item) => sum + item.value, 0),
+    total: assertsData.reduce((sum, item) => 0),
     details: assertsData,
     color: "bg-green-600",
     borderColor: "border-green-400",
