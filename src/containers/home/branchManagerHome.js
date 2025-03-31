@@ -53,7 +53,7 @@ const BranchManagerHome = () => {
       };
 
       if (payload.role === "Branch Manager") {
-        payload.branch = localStorage.getItem("branchName");
+        payload.branchName = localStorage.getItem("branchName");
       }
 
       let response;
@@ -109,7 +109,7 @@ const BranchManagerHome = () => {
       const payload = {
         companyCode: localStorage.getItem("companyCode"), 
         unitCode: localStorage.getItem("unitCode"),
-        role: localStorage.getItem("role"),
+        // role: localStorage.getItem("role"),
       };
 
       if (payload.role === "Branch Manager") {
@@ -153,7 +153,7 @@ const BranchManagerHome = () => {
     }
     let response;
     if (payload.branch) {
-      response = await ApiService.post("asserts/getAllAssertDetails", payload);
+      response = await ApiService.post("/dashboards/getWareHouseProductDetailsByBranch", payload);
     }
     if (response.status) {
       setAssertsData(response.data || []);
@@ -375,7 +375,7 @@ const filteredPendingAmount = Array.isArray(pendingAmount)
 
   const filteredProducts = Array.isArray(warehouseProducts)
     ? warehouseProducts.filter((product) =>
-        product.productName.toLowerCase().includes(search.toLowerCase())
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];
 
@@ -855,7 +855,7 @@ const handlePreview = () => {
       {/* Search Bar */}
       <input
         type="text"
-        placeholder="Search product..."
+        placeholder="Search Employee Id..."
         className="border p-2 mb-4 w-96 rounded-md"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -882,7 +882,7 @@ const handlePreview = () => {
               <th className="py-3 px-4 text-left">Designation</th>
               <th className="py-3 px-4 text-left">Branch</th>
               <th className="py-3 px-4 text-left">Phone Number</th>
-              <th className="py-3 px-4 text-left">At ident</th>
+              {/* <th className="py-3 px-4 text-left">At ident</th> */}
               <th className="py-3 px-4 text-left">Action</th>
             </tr>
           </thead>
@@ -899,11 +899,11 @@ const handlePreview = () => {
                 <td className="py-3 px-4">{emp.staffDesignation}</td>
                 <td className="py-3 px-4">{emp.branchName}</td>
                 <td className="py-3 px-4">{emp.phoneNumber}</td>
-                <td className="py-3 px-4">
+                {/* <td className="py-3 px-4">
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
                     {emp.status}
                   </span>
-                </td>
+                </td> */}
                 <td className="py-3 px-4">
                   <BsThreeDotsVertical className="text-gray-600 cursor-pointer" />
                 </td>
