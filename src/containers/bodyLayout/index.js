@@ -107,13 +107,14 @@ import AttendanceUpload from '../attendance/bulkUpload';
 import AttendanceDetails from '../attendance/attendanceDetails';
 import EditAttendance from '../attendance/editAttendance';
 import AddStaffForm from '../staff/AddStaffForm';
-import ViewStaffDetails from '../staff/ViewStaffDetails';
+// import ViewStaffDetails from '../staff/ViewStaffDetails';
 import EditBankDetails from '../staff/EditBankDetails';
 import EditEmployerDetails from '../staff/EditEmployerDetails';
 import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
 import SalesVisit from '../salesVisit';
-
+import SalesVisitDetails from '../salesVisit/salesVisitDetails';
+import EditAsset from '../asserts/editAssert';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -341,6 +342,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
+          <Route path="/edit-asset" element={<EditAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
           <Route path="/add-estimate" element={<AddEstimate />} />
@@ -380,10 +382,9 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
-          <Route
-            path="/sales_visit"
-            element={<SalesVisit />}
-          />
+          <Route path="/sales_visit" element={<SalesVisit />} />
+
+          <Route path="/sales-visit-details" element={<SalesVisitDetails />} />
 
 
 
@@ -404,15 +405,24 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
           {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
-          <Route path="/add-staff" element={<AddStaffForm/>} />
+          <Route path="/add-staff" element={<AddStaffForm />} />
 
-           <Route path="/edit-staff" element={<ViewStaffDetails/>} />
-          <Route path="/add-staff" element={<AddStaffForm/>} />
-          <Route path="/edit-staff-personnel" element={<EditPersonnelDetails/>} />
-           <Route path="/edit-staff-education" element={<EditEducationDetails/>} />
-          <Route path="/edit-staff-bank" element={<EditBankDetails/>} />
-          <Route path="/edit-staff-employer" element={<EditEmployerDetails/>} /> 
-           
+          {/* <Route path="/edit-staff" element={<ViewStaffDetails />} /> */}
+          <Route path="/add-staff" element={<AddStaffForm />} />
+          <Route
+            path="/edit-staff-personnel"
+            element={<EditPersonnelDetails />}
+          />
+          <Route
+            path="/edit-staff-education"
+            element={<EditEducationDetails />}
+          />
+          <Route path="/edit-staff-bank" element={<EditBankDetails />} />
+          <Route
+            path="/edit-staff-employer"
+            element={<EditEmployerDetails />}
+          />
+
           {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
