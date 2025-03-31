@@ -6,6 +6,9 @@ import { EstimatePDF } from '../../components/EstimatePdf';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import { PurchaseOrderPDF } from '../../common/commonUtils';
+
+
+
 const DownloadComponent = () => {
   const location = useLocation();
   const { filterData = [], name } = location.state || {};
@@ -62,10 +65,10 @@ const DownloadComponent = () => {
 
   const exportExcel = async () => {
     switch (name) {
-      case 'Day Book':
+      case 'Branch Stock':
         await exportDayBookExcel();
         break;
-      case 'Ledger':
+      case 'Payment Stock':
         await exportLedgerExcel();
         break;
       case 'Sales':
@@ -429,6 +432,33 @@ const DownloadComponent = () => {
             {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF')}
           </PDFDownloadLink>
         )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     </div>
   );
 };
