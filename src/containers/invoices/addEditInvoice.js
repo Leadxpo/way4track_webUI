@@ -17,7 +17,12 @@ const AddEditInvoice = () => {
     console.log(location.state);
     if (location.state?.invoiceDetails) {
       const { estimateData } = location.state.invoiceDetails;
+      console.log("estimateData estimateDataestimateData",estimateData)
       setFormData({
+        
+        SCST:estimateData.SCST,
+        CGST:estimateData.CGST,
+
         client: estimateData.billTo.name,
         clientNumber: estimateData.billTo.phone,
         email: estimateData.billTo.email,
@@ -25,10 +30,12 @@ const AddEditInvoice = () => {
         billingAddress: estimateData.billTo.address,
         estimateDate: estimateData.estimateDetails.date.split('T')[0],
         expiryDate: estimateData.estimateDetails.expiryDate,
+        cgstPercentage:(estimateData.CGST * 100) / estimateData.estimateDetails.amount,
+        scstPercentage:(estimateData.SCST * 100) / estimateData.estimateDetails.amount,
         items: estimateData.products.map((product) => ({
           name: product.name,
           qauntity: product.quantity,
-          rate: product.amount,
+          rate: product.rate,
           hsnCode: product.hsnCode,
           amount: product.totalAmount,
         })),
@@ -120,8 +127,8 @@ const AddEditInvoice = () => {
       //   0
       // ),
       // hsnCode: formData.items[0].hsnCode,
-      cgstPercentage: sgstPercentage, // For temporary use
-      scstPercentage: cgstPercentage, // For temporary use
+      scstPercentage: sgstPercentage, // For temporary use
+      cgstPercentage: cgstPercentage, // For temporary use
       productDetails: formData.items.map((item) => ({
         productId: item.productId, // Assuming each item has a productId
         productName: item.name,
@@ -130,6 +137,8 @@ const AddEditInvoice = () => {
         hsnCode: parseFloat(item.hsnCode), // Total cost calculation
       })),
     };
+
+    
     // invoicePDF
     console.log(estimateDto);
     console.log('date type', typeof estimateDto.estimateDate);
@@ -145,7 +154,7 @@ const AddEditInvoice = () => {
 
   const handleSaveAndSend = () => {
     console.log('Saving and sending estimate:', formData);
-    navigate('/invoice');
+    // navigate('/invoice');
   };
 
   return (
@@ -279,7 +288,7 @@ const AddEditInvoice = () => {
                       type="text"
                       name="name"
                       value={item.name}
-                      onChange={(e) => handleItemChange(index, e)}
+                      // onChange={(e) => handleItemChange(index, e)}
                       placeholder="Name"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -287,7 +296,7 @@ const AddEditInvoice = () => {
                       type="text"
                       name="qauntity"
                       value={item.qauntity}
-                      onChange={(e) => handleItemChange(index, e)}
+                      // onChange={(e) => handleItemChange(index, e)}
                       placeholder="Quantity"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -295,7 +304,7 @@ const AddEditInvoice = () => {
                       type="number"
                       name="rate"
                       value={item.rate}
-                      onChange={(e) => handleItemChange(index, e)}
+                      // onChange={(e) => handleItemChange(index, e)}
                       placeholder="Rate"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -303,7 +312,7 @@ const AddEditInvoice = () => {
                       type="number"
                       name="hsnCode"
                       value={item.hsnCode}
-                      onChange={(e) => handleItemChange(index, e)}
+                      // onChange={(e) => handleItemChange(index, e)}
                       placeholder="HSN Code"
                       className="col-span-2 p-2 border rounded-md"
                     />
@@ -311,13 +320,13 @@ const AddEditInvoice = () => {
                       type="number"
                       name="amount"
                       value={item.amount}
-                      onChange={(e) => handleItemChange(index, e)}
+                      // onChange={(e) => handleItemChange(index, e)}
                       placeholder="Amount"
                       className="col-span-2 p-2 border rounded-md"
                     />
                   </div>
                 ))}
-              <div className="flex justify-end p-2">
+              {/* <div className="flex justify-end p-2">
                 <button
                   type="button"
                   onClick={addNewItem}
@@ -325,7 +334,7 @@ const AddEditInvoice = () => {
                 >
                   + Add Item
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -343,10 +352,10 @@ const AddEditInvoice = () => {
                   SGST Tax{' '}
                   <span>
                     <input
-                      value={sgstPercentage}
+                      value={formData?.scstPercentage}
                       className="w-16 text-center outline:none border rounded-md p-1 mx-2"
                       placeholder="9%"
-                      onChange={(e) => setSgstPercentage(e.target.value)}
+                      // onChange={(e) => setSgstPercentage(e.target.value)}
                     />
                   </span>
                   %
@@ -354,7 +363,7 @@ const AddEditInvoice = () => {
                 <td>
                   <input
                     type="text"
-                    value={`₹${sgst.toFixed(2)}`}
+                    value={`₹${formData?.SCST?.toFixed(2)}`}
                     readOnly
                     className="bg-blue-50 text-right border rounded-md px-2 w-24"
                   />
@@ -367,10 +376,10 @@ const AddEditInvoice = () => {
                   CGST Tax{' '}
                   <span>
                     <input
-                      value={cgstPercentage}
+                      value={formData?.cgstPercentage}
                       className="w-16 text-center outline:none border rounded-md p-1 mx-2"
                       placeholder="9%"
-                      onChange={(e) => setCgstPercentage(e.target.value)}
+                      // onChange={(e) => setCgstPercentage(e.target.value)}
                     />
                   </span>
                   %
@@ -378,7 +387,7 @@ const AddEditInvoice = () => {
                 <td>
                   <input
                     type="text"
-                    value={`₹${cgst.toFixed(2)}`}
+                    value={`₹${formData?.CGST?.toFixed(2)}`}
                     readOnly
                     className="bg-blue-50 text-right border rounded-md px-2 w-24"
                   />
@@ -389,7 +398,7 @@ const AddEditInvoice = () => {
               <tr className="border-b">
                 <td className="text-right py-2 font-semibold">Final Total</td>
                 <td className="pr-4 font-semibold">
-                  ₹{(totalAmount + sgst + cgst).toFixed(2)}
+                  ₹{(totalAmount + formData?.SCST + formData?.CGST).toFixed(2)}
                 </td>
               </tr>
             </table>
@@ -410,19 +419,19 @@ const AddEditInvoice = () => {
 
           {/* Actions */}
           <div className="flex justify-end gap-4 mt-6">
-            <button
+            {/* <button
               type="button"
               onClick={handleSave}
               className="py-2 px-4 text-white bg-blue-500 rounded-md"
             >
               Save
-            </button>
+            </button> */}
             <button
               type="button"
               onClick={handleSaveAndSend}
               className="py-2 px-4 text-white bg-green-500 rounded-md"
             >
-              Save & Send
+              Save Invoice
             </button>
           </div>
         </form>
