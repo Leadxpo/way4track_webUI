@@ -25,8 +25,10 @@ const EstimateDetails = () => {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
+
+      console.log("hiiiiiii iiiii",)
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
+        console.log(response.data, 'Response Data 0000000'); // Log data to verify it
         const estimateData = response.data[0]; // Access the first element of the array
         setEstimateData({
           company: {
@@ -52,13 +54,18 @@ const EstimateDetails = () => {
           products: estimateData.products.map((product, index) => ({
             id: index + 1,
             name: product.name,
-            description: product.description || '',
+            // description: product.description || '',
             amount: product.amount,
             quantity: product.quantity,
+            rate:product.costPerUnit,
             totalAmount: product.totalCost,
             hsnCode: product.hsnCode,
           })),
           terms: estimateData.description,
+          estimatePdfUrl: estimateData.estimatePdfUrl,
+          SCST:estimateData.SCST,
+          CGST:estimateData.CGST
+
         });
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
@@ -90,6 +97,8 @@ const EstimateDetails = () => {
           unitCode: initialAuthState.unitCode,
         }
       );
+
+      console.log("estimation pdf",response.data)
 
       const pdfUrl = response.data.estimate_estimatePdfUrl;
 
@@ -194,8 +203,10 @@ const EstimateDetails = () => {
             <tr className="bg-gray-200 rounded-md">
               <th className=" px-4 py-2 text-left">#</th>
               <th className=" px-4 py-2 text-left">Product / Service</th>
-              <th className=" px-4 py-2 text-left">Description</th>
-              <th className=" px-4 py-2 text-right">Amount</th>
+              <th className=" px-4 py-2 text-center">quantity</th>
+              <th className=" px-4 py-2 text-center">Rate</th>
+              <th className=" px-4 py-2 text-center">Amount</th>
+              <th className=" px-4 py-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody className="rounded-md">
@@ -203,30 +214,56 @@ const EstimateDetails = () => {
               <tr key={product.id}>
                 <td className=" px-4 py-2">{product.id}</td>
                 <td className=" px-4 py-2">{product.name}</td>
-                <td className=" px-4 py-2">{product.description}</td>
-                <td className=" px-4 py-2 text-right">{product.amount}</td>
+                <td className=" px-4 py-2 text-center">{product.quantity}</td>
+                <td className=" px-4 py-2 text-center">{product.rate}</td>                  
+                <td className=" px-4 py-2 text-center">{product.totalAmount}</td>
+                <td className="px-4 py-2 text-center">
+                <button
+  className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
+  onClick={() =>
+    navigate("/work-allocation", {
+      state: {
+        logo: "path/to/logo.png", // Replace with actual logo path
+        name: estimateData.name, // Company name
+        address: estimateData.address,
+        gstin: estimateData.gstin,
+        cin: estimateData.cin, // CIN number
+        number: estimateData.estimateId,
+        date: estimateData.estimateDate,
+        expiryDate: estimateData.expireDate,
+        amount: estimateData.totalAmount,
+        clientId: estimateData.clientId,
+        phone: estimateData.phone,
+        email: estimateData.email,
+        terms: estimateData.terms,
+        estimatePdfUrl: estimateData.estimatePdfUrl,
+        product: product, // Ensure 'product' is defined
+      },
+    })
+  }
+>
+  Work Allocation
+</button>
+</td>
+                
               </tr>
             ))}
           </tbody>
         </table>
 
         {/* Terms and Conditions */}
-        <div className="text-gray-600 mb-6">
-          <p>{estimateData.terms}</p>
+        <div className="text-black-600 mb-6">
+          <p><span className="font-bold">Description: </span>{estimateData.terms}</p>
         </div>
 
         {/* Footer Buttons */}
         <div className="flex items-center justify-center space-x-4">
-          {/* <button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">
-            Save & Send
-          </button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-            Save
-          </button> */}
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            onClick={getEstimatesForReport}>
-            Download PDF
-          </button>
+          <button
+  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+  onClick={() => window.open(estimateData.estimatePdfUrl, "_blank")}
+>
+  Download PDF
+</button>
         </div>
       </div>
     </div>

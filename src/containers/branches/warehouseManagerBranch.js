@@ -144,7 +144,7 @@ const WarehouseManagerBranch = () => {
         Branch <span className="text-green-600">Details</span>
       </h2>
       <div className="space-y-4">
-        {branches.map((branch, index) => (
+        {data.map((branch, index) => (
           <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <button
               onClick={() => toggleAccordion(index)}
@@ -174,7 +174,7 @@ const WarehouseManagerBranch = () => {
                       </tr>
                     </thead>
                     <tbody className="text-gray-700">
-                      {branch.products.map((product, i) => (
+                      {data.products.map((product, i) => (
                         <tr key={product.id} className="border-t border-gray-200">
                           <td className="py-4 px-6">{i + 1}</td>
                           <td className="py-4 px-6 flex items-center space-x-3">
