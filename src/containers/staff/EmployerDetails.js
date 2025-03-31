@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import ApiService from "../../services/ApiService";
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import ApiService from '../../services/ApiService';
 
 const EmployerDetails = ({ setEmployerDetails }) => {
   const [data, setData] = useState({
-    branch: "",
-    staffId: "",
-    joiningDate: "",
-    designation_id: "",
-    department: "",
-    monthlySalary: "",
-    officeEmail: "",
-    officePhoneNumber: "",
-    bikeAllocation: "",
-    mobileAllocation: "",
-    terminationDate: "",
-    resignationDate: "",
-    finalSettlementDate: "",
-    insuranceNumber: "",
-    insuranceEligibilityDate: "",
-    insuranceExpiryDate: "",
-    password: "",
-    description: "",
-    mailAllocation: ""
+    branch: '',
+    staffId: '',
+    joiningDate: '',
+    designation_id: '',
+    department: '',
+    monthlySalary: '',
+    officeEmail: '',
+    officePhoneNumber: '',
+    bikeAllocation: '',
+    mobileAllocation: '',
+    terminationDate: '',
+    resignationDate: '',
+    finalSettlementDate: '',
+    insuranceNumber: '',
+    insuranceEligibilityDate: '',
+    insuranceExpiryDate: '',
+    password: '',
+    description: '',
+    mailAllocation: '',
   });
 
   const [branches, setBranches] = useState([]);
@@ -29,17 +29,17 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   // Fetch Branches
   const fetchBranches = async () => {
-    console.log("hiiiiii")
+    console.log('hiiiiii');
     try {
-      const response = await ApiService.post("/branch/getBranchNamesDropDown");
-      console.log("hiiiiii22", response);
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      console.log('hiiiiii22', response);
       if (response.status && Array.isArray(response.data)) {
         setBranches(response.data);
       } else {
-        console.error("Failed to fetch branches:", response);
+        console.error('Failed to fetch branches:', response);
       }
     } catch (error) {
-      console.error("Error fetching branches:", error);
+      console.error('Error fetching branches:', error);
     }
   };
 
@@ -50,14 +50,14 @@ const EmployerDetails = ({ setEmployerDetails }) => {
   // Fetch Designations
   const getDesignations = useCallback(async () => {
     try {
-      const response = await ApiService.post("/designations/getAllDesignation");
+      const response = await ApiService.post('/designations/getAllDesignation');
       if (response.status && Array.isArray(response.data)) {
         setDesignations(response.data);
       } else {
-        console.error("Failed to fetch designation details.");
+        console.error('Failed to fetch designation details.');
       }
     } catch (error) {
-      console.error("Error fetching designation details:", error);
+      console.error('Error fetching designation details:', error);
     }
   }, []);
 
@@ -76,23 +76,39 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   const inputFields = useMemo(
     () => [
-      { label: "Staff ID", name: "staffId", type: "text" },
-      { label: "Joining Date", name: "joiningDate", type: "date" },
-      { label: "Department", name: "department", type: "text" },
-      { label: "Monthly Salary", name: "monthlySalary", type: "number" },
-      { label: "Office Email", name: "officeEmail", type: "email" },
-      { label: "Bike Number", name: "bikeNumber", type: "text" },
-      { label: "Driving Licence Number", name: "drivingLicenceNumber", type: "text" },
-      { label: "Office Phone Number", name: "officePhoneNumber", type: "text" },
-      { label: "Mobile Brand", name: "mobileBrand", type: "text" },
-      { label: "Termination Date", name: "terminationDate", type: "date" },
-      { label: "Resignation Date", name: "resignationDate", type: "date" },
-      { label: "Final Settlement Date", name: "finalSettlementDate", type: "date" },
-      { label: "Insurance Number", name: "insuranceNumber", type: "text" },
-      { label: "Insurance Eligibility Date", name: "insuranceEligibilityDate", type: "date" },
-      { label: "Insurance Expiry Date", name: "insuranceExpiryDate", type: "date" },
-      { label: "Password", name: "password", type: "password" },
-      { label: "Description", name: "description", type: "text" },
+      { label: 'Staff ID', name: 'staffId', type: 'text' },
+      { label: 'Joining Date', name: 'joiningDate', type: 'date' },
+      { label: 'Department', name: 'department', type: 'text' },
+      { label: 'Monthly Salary', name: 'monthlySalary', type: 'number' },
+      { label: 'Office Email', name: 'officeEmail', type: 'email' },
+      { label: 'Bike Number', name: 'bikeNumber', type: 'text' },
+      {
+        label: 'Driving Licence Number',
+        name: 'drivingLicenceNumber',
+        type: 'text',
+      },
+      { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
+      { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
+      { label: 'Termination Date', name: 'terminationDate', type: 'date' },
+      { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
+      {
+        label: 'Final Settlement Date',
+        name: 'finalSettlementDate',
+        type: 'date',
+      },
+      { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
+      {
+        label: 'Insurance Eligibility Date',
+        name: 'insuranceEligibilityDate',
+        type: 'date',
+      },
+      {
+        label: 'Insurance Expiry Date',
+        name: 'insuranceExpiryDate',
+        type: 'date',
+      },
+      { label: 'Password', name: 'password', type: 'password' },
+      { label: 'Description', name: 'description', type: 'text' },
     ],
     []
   );
@@ -110,14 +126,25 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       <div className="mb-4">
         <label className="block font-medium mb-1">Branch</label>
         <select
-          name="branch"
-          value={data.branch}
-          onChange={handleChange}
+          name="branchId"
+          value={data.branchId} // Store branchId as a number
+          onChange={(e) => {
+            const selectedBranch = branches.find(
+              (branch) => branch.id === Number(e.target.value)
+            );
+            setData((prevData) => ({
+              ...prevData,
+              branch: selectedBranch?.id || '', // Store branchId as a number
+              branchName: selectedBranch?.branchName || '',
+            }));
+          }}
           className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
         >
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
             <option key={branch.id} value={branch.id}>
+              {' '}
+              {/* Use branch.id as value */}
               {branch.branchName}
             </option>
           ))}
@@ -158,7 +185,9 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
       {/* Bike Allocation Dropdown */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Bike Allocation (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Bike Allocation (Yes/No)
+        </label>
         <select
           name="bikeAllocation"
           value={data.bikeAllocation}
@@ -172,7 +201,9 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       </div>
 
       <div className="mb-4">
-        <label className="block font-medium mb-1">Mail Allocation (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Mail Allocation (Yes/No)
+        </label>
         <select
           name="mailAllocation"
           value={data.mailAllocation}
@@ -186,7 +217,9 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       </div>
 
       <div className="mb-4">
-        <label className="block font-medium mb-1">Driving Licence (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Driving Licence (Yes/No)
+        </label>
         <select
           name="drivingLicence"
           value={data.drivingLicence}
@@ -201,7 +234,9 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
       {/* Mobile Allocation Dropdown */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Mobile Allocation (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Mobile Allocation (Yes/No)
+        </label>
         <select
           name="mobileAllocation"
           value={data.mobileAllocation}
