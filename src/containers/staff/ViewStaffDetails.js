@@ -77,6 +77,8 @@ const ViewStaffDetails = () => {
     },
   });
 
+  console.log(formData.employerDetails,"employeers")
+
   const handleEdit = (path, data) => {
     navigate(path, { state: { data } });
   };

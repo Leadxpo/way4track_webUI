@@ -120,6 +120,10 @@ import ProductType from '../product-type';
 import AddProductType from '../product-type/AddProductType';
 import EditProductType from '../product-type/EditProductType';
 import ShowProductType from '../product-type/ShowProductTypes';
+import Dispatch from '../dispatch';
+import AddDispatch from '../dispatch/add-dispatch';
+import DispatchDetails from '../dispatch/more-details.dispatch';
+import EditDispatch from '../dispatch/edit-dispatch';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -343,12 +347,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/branches" element={<Branches />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
-          <Route path="/product-type" element={<ProductType/>} />
-          <Route path="/add-product-type" element={<AddProductType/>} />
-          <Route path="/edit-product-type" element={<EditProductType/>} />
-          <Route path="/show-product-type" element={<ShowProductType/>} />
-          
-          
+          <Route path="/product-type" element={<ProductType />} />
+          <Route path="/add-product-type" element={<AddProductType />} />
+          <Route path="/edit-product-type" element={<EditProductType />} />
+          <Route path="/show-product-type" element={<ShowProductType />} />
+
+
           <Route path="/products" element={<Products />} />
           <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
@@ -357,7 +361,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-asset" element={<EditAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEstimate/>} />
+          <Route path="/add-estimate" element={<AddEstimate />} />
           <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />
@@ -376,6 +380,22 @@ const BodyLayout = ({ children }) => {
           <Route
             path="/product-assign-details"
             element={<ProductAssignDetails />}
+          />
+          <Route
+            path="/dispatch"
+            element={<Dispatch />}
+          />
+          <Route
+            path="/add-dispatch"
+            element={<AddDispatch />}
+          />
+          <Route
+            path="/edit-dispatch"
+            element={<EditDispatch />}
+          />
+          <Route
+            path="/show-dispatch"
+            element={<DispatchDetails />}
           />
           <Route
             path="/add-product-assign"

@@ -41,7 +41,7 @@ export const menuOptions = {
       route: '/vouchers',
     },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
-    
+
     {
       name: 'Work Allocation',
       icon: <img src="./work_allocation.png" />,
@@ -198,6 +198,11 @@ export const menuOptions = {
       name: 'Product Assign',
       icon: <img src="./product_assign.png" />,
       route: '/products_assign',
+    },
+    {
+      name: 'Dispatch',
+      icon: <img src="./dispath.png" />,
+      route: '/dispatch',
     },
     {
       name: 'Vouchers',
