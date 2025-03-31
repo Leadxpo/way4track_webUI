@@ -20,6 +20,33 @@ const Staff = () => {
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
   const [permissions, setPermissions] = useState({});
+
+  const columnNames = [
+    'Branch ID',
+    'Branch Name',
+    'Branch Number',
+    'Branch Address',
+    'Address Line 1',
+    'Address Line 2',
+    'City',
+    'State',
+    'Pincode',
+    'Branch Opening',
+    'Email',
+    'Branch Photo',
+    'Company Code',
+    'Unit Code',
+    'Latitude',
+    'Longitude',
+    'CIN',
+    'GST',
+    'ID',
+    'Branch Name',
+    'Staff ID',
+    'Staff Name',
+    'Designation',
+    'Phone Number',
+  ];
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -225,15 +252,16 @@ const Staff = () => {
           ))}
         </div>
       ) : ( */}
-        <Table
-          columns={columns}
-          onEdit={handleEdit}
-          showDelete={permissions.delete}
-          showEdit={permissions.edit}
-          showDetails={permissions.view}
-          onDetails={handleMoreDetails}
-          data={Array.isArray(profiles) ? profiles : []}
-        />
+      <Table
+        columns={columns}
+        columnNames={columnNames}
+        onEdit={handleEdit}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
+        onDetails={handleMoreDetails}
+        data={Array.isArray(profiles) ? profiles : []}
+      />
       {/* )}{' '} */}
     </div>
   );

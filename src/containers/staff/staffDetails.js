@@ -53,7 +53,7 @@ const StaffDetails = () => {
       accountNumber: '123456789012',
       bankName: 'ABC Bank',
       ifscCode: 'ABC12345',
-      branchName: 'Downtown Branch',
+      accountBranch: 'Downtown Branch',
       accountType: 'savings',
     },
     employerDetails: {
@@ -79,6 +79,9 @@ const StaffDetails = () => {
       description: 'Senior Developer at IT Department',
     },
   });
+
+  
+  console.log(formData.employerDetails,"employeers")
 
   const handleEdit = (path, data) => {
     navigate(path, { state: { data } });
@@ -127,7 +130,7 @@ const StaffDetails = () => {
             accountNumber: staff.accountNumber || '',
             bankName: staff.bankName || '',
             ifscCode: staff.ifscCode || '',
-            branchName: staff.branchName || '',
+            accountBranch: staff.accountBranch || '',
             accountType: staff.accountType || '',
           },
           employerDetails: {

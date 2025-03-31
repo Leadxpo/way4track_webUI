@@ -119,8 +119,9 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
       console.log("ramesh login", response)
 
-      if (response && response.data.status) {
-        const userProfile = response.data.data[0];
+      if (response && response.status) {
+        const userProfile = response.data;
+        console.log("response data", response.data);
 
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
@@ -129,6 +130,7 @@ const Login = ({ handleLoginFlag }) => {
         console.log("=======", userProfile);
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
+        
 
         localStorage.setItem('branchName', branchName);
         localStorage.setItem('branch_id', userProfile.branch_id);
