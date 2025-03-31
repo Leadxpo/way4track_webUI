@@ -13,95 +13,6 @@ const Login = ({ handleLoginFlag }) => {
 
   const navigate = useNavigate();
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-  //   setLoading(true);
-
-  //   try {
-  //     const payload = {
-  //       staffId: userId,
-  //       password: password,
-  //       designation: role,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //     };
-
-  //     const response = await ApiService.post('/login/LoginDetails', payload);
-
-  //     if (response && response.status) {
-  //       // Store login details in localStorage
-  //       localStorage.setItem('userId', userId);
-  //       localStorage.setItem('password', password);
-  //       localStorage.setItem('role', role);
-  //       localStorage.setItem('companyCode', initialAuthState.companyCode);
-  //       localStorage.setItem('unitCode', initialAuthState.unitCode);
-
-  //       await fetchUserPermissions(
-  //         userId,
-  //         initialAuthState.companyCode,
-  //         initialAuthState.unitCode
-  //       );
-
-  //       handleLoginFlag();
-  //     } else {
-  //       setError(response?.internalMessage || 'Invalid login credentials.');
-  //     }
-  //   } catch (err) {
-  //     setError(
-  //       err?.response?.data?.internalMessage ||
-  //         'Failed to login. Please check your credentials.'
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-  //   setLoading(true);
-
-  //   try {
-  //     const payload = {
-  //       staffId: userId,
-  //       password: password,
-  //       designation: role,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //     };
-
-  //     const response = await ApiService.post('/login/LoginDetails', payload);
-
-  //     if (response && response.status) {
-  //       // Store login details and user profile info in localStorage
-  //       const userProfile = response.data.profile;  // Assuming API returns user profile info
-  //       localStorage.setItem('userId', userId);
-  //       localStorage.setItem('password', password);
-  //       localStorage.setItem('role', role);
-  //       localStorage.setItem('userProfile', JSON.stringify(userProfile)); 
-  //       localStorage.setItem('branchName', JSON.stringify(branchName)); // Store user profile
-  //       // Store user profile
-
-  //       await fetchUserPermissions(
-  //         userId,
-  //         initialAuthState.companyCode,
-  //         initialAuthState.unitCode
-  //       );
-
-  //       handleLoginFlag();
-  //     } else {
-  //       setError(response?.internalMessage || 'Invalid login credentials.');
-  //     }
-  //   } catch (err) {
-  //     setError(
-  //       err?.response?.data?.internalMessage ||
-  //       'Failed to login. Please check your credentials.'
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -119,16 +30,17 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
       console.log("ramesh login", response)
 
-      if (response && response.data.status) {
-        const userProfile = response.data.data[0];
+      if (response && response.status) {
+        const userProfile = response.data;
+        console.log("response data", response.data);
 
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(userProfile));
-        console.log("=======", userProfile);
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
+        
 
         localStorage.setItem('branchName', branchName);
         localStorage.setItem('branch_id', userProfile.branch_id);
@@ -272,20 +184,3 @@ const Login = ({ handleLoginFlag }) => {
 };
 
 export default Login;
-// const employeePayroll = async (payslipBody) => {
-//   try {
-//     const response = ApiService.post(
-//       "https://sharontelematics.org/api/PAYROLL/getPayRollStaffDetails",
-//       {
-//         staffId: staffDetails.staffId,
-//         month: payslipBody.payslipMonth,
-//         year: payslipBody.year,
-//       }
-//     );
-//     console.log("API Response:", response.data);
-//     return response.data; // Return the API response data
-//   } catch (error) {
-//     console.error("Error fetching payroll data:", error);
-//     return null; // Return null or handle errors accordingly
-//   }
-// };

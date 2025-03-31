@@ -126,19 +126,30 @@ const AddEstimate = () => {
     
   };
 
+  
+
   const handleProductItemChange = (index, e) => {
-    const { name, value } = e.target;
-    // const selectedProduct1 = products.find((product) => product.productType === value);
-    const selectedProduct = products.find((product) => {
-      return product.productType === e.target.value;
-    });
-    const updatedItems = [...formData.items];
-    updatedItems[index][name] = value;
-    updatedItems[index]['productId'] = selectedProduct.id;
-    updatedItems[index]['rate'] = selectedProduct.price;
-    updatedItems[index]['hsnCode'] = selectedProduct.hsnCode;
-    setFormData((prevData) => ({ ...prevData, items: updatedItems }));
-  };
+  const { name, value } = e.target;
+  console.log(value);
+
+  const selectedProduct = products.find(
+    (product) => product.productType.trim() === value.trim()
+  );
+
+  if (!selectedProduct) {
+    console.error("Selected product not found");
+    return; // Prevents further execution if no product is found
+  }
+
+  const updatedItems = [...formData.items];
+  updatedItems[index][name] = value;
+  updatedItems[index]["productId"] = selectedProduct.id;
+  updatedItems[index]["rate"] = selectedProduct.price;
+  updatedItems[index]["hsnCode"] = selectedProduct.hsnCode;
+
+  setFormData((prevData) => ({ ...prevData, items: updatedItems }));
+};
+
 
 const handleService = (index, e) => {
     const { name, value } = e.target;
@@ -445,7 +456,7 @@ const handleService = (index, e) => {
         >
           <option value="">Select Product</option>
           {products.map((product) => (
-            <option key={product?.id} value={product?.productName}>
+            <option key={product?.id} value={product?.productType}>
               {product?.productType}
             </option>
           ))}
@@ -542,7 +553,17 @@ const handleService = (index, e) => {
         <input
           type="checkbox"
           checked={isGST}
-          onChange={() => setIsGST(!isGST)}
+          onChange={() => {
+            setIsGST(!isGST);
+            setFormData((prevData) => ({
+              ...prevData,
+              cgstPercentage: '',
+              scstPercentage: '',
+              tdsPercentage: '',
+              CGST: '',
+              SCST: '',
+            }));
+          }}
           className="sr-only peer"
         />
         <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">

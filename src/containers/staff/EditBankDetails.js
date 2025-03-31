@@ -7,6 +7,7 @@ const EditBankDetails = () => {
   const navigate = useNavigate();
   console.log("bankkkkkk",location.state)
   const [data, setData] = useState({
+    id:'',
     staffId:'',
     accountNumber: '',
     bankName: '',
@@ -32,8 +33,10 @@ const EditBankDetails = () => {
       const response = await ApiService.post(endpoint,data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
+      console.log(response,"response bank details")
   
-      if (response.data.status) {
+      if (response.status) {
         alert("Bank details updated successfully!");
         return response.data;
       } else {
