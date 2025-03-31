@@ -201,7 +201,7 @@ export const menuOptions = {
     },
     {
       name: 'Dispatch',
-      icon: <img src="./products.png" />,
+      icon: <img src="./dispath.png" />,
       route: '/dispatch',
     },
     {
