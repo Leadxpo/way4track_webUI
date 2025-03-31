@@ -2,15 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AssertCard = ({ asset }) => {
-  const navigate=useNavigate()
+  console.log(asset,"assetCard")
+  const navigate = useNavigate();
   return (
     <div
       className="bg-white rounded-lg shadow-md p-4 flex flex-row items-center"
-      style={{ height: '150px',width: "350px", borderRadius: '22px' }}
+      style={{ height: '150px', width: '350px', borderRadius: '22px' }}
     >
       <img
-        src={asset.image}
-        alt={asset.name}
+        src={asset.assetPhoto}
+        alt={asset.assertsName}
         className="w-24 h-24 object-cover rounded-full"
       />
       <div style={{ marginLeft: '10px' }}>
@@ -18,13 +19,13 @@ const AssertCard = ({ asset }) => {
           className="text-xl font-semibold mt-2"
           style={{ fontSize: '21px', fontWeight: '400', color: '#000000' }}
         >
-          {asset.name}
+          {asset.assertsName}
         </h2>
         <p
           className="text-gray-600"
           style={{ fontSize: '11px', fontWeight: '400', color: '#7A7A7A' }}
         >
-          {asset.location}
+          {asset.branchId ? asset.branchId.branchName : 'Branch not available'}
         </p>
         <p
           className={`mt-1 ${asset.statusColor} font-medium`}
@@ -37,7 +38,7 @@ const AssertCard = ({ asset }) => {
             className="text-lg font-bold mt-2"
             style={{ fontSize: '14px', fontWeight: '700', color: '#000000' }}
           >
-            ₹{asset.price}/-
+            ₹{asset.assertsAmount}/-
           </p>
           <button
             className="mt-2"
@@ -51,9 +52,9 @@ const AssertCard = ({ asset }) => {
               fontSize: '8px',
               color: '#7A7A7A',
               backgroundColor: '#ffffff',
-              marginLeft: "30px"
+              marginLeft: '30px',
             }}
-            onClick={()=> navigate('/asset-details')}
+            onClick={() => navigate('/asset-details',{state: {asset}})}
           >
             More Details
           </button>

@@ -6,6 +6,8 @@ const EditPersonnelDetails = () => {
   const location = useLocation();
   const stateData = location.state?.data || location.state || {}; // Extract data properly
 
+  console.log(stateData,"stateData")
+
   const [data, setData] = useState({
     staffId: "",
     name: "",
@@ -17,7 +19,7 @@ const EditPersonnelDetails = () => {
     email: "",
     aadharNumber: "",
     panCardNumber: "",
-    drivingLicence: "",
+    drivingLicenceNumber: "",
     address: "",
     uanNumber: "",
     esicNumber: "",
@@ -75,7 +77,7 @@ const EditPersonnelDetails = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.data.status) {
+      if (response.status) {
         alert("Personnel details updated successfully!");
       } else {
         alert("Failed to update personnel details.");
