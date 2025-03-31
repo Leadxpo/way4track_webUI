@@ -116,6 +116,10 @@ import AddInhandProduct from '../products/AddInhandProduct';
 import SalesVisit from '../salesVisit';
 import SalesVisitDetails from '../salesVisit/salesVisitDetails';
 import EditAsset from '../asserts/editAssert';
+import ProductType from '../product-type';
+import AddProductType from '../product-type/AddProductType';
+import EditProductType from '../product-type/EditProductType';
+import ShowProductType from '../product-type/ShowProductTypes';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
