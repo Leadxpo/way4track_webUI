@@ -37,7 +37,6 @@ const Login = ({ handleLoginFlag }) => {
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(userProfile));
-        console.log("=======", userProfile);
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
 
@@ -183,20 +182,3 @@ const Login = ({ handleLoginFlag }) => {
 };
 
 export default Login;
-// const employeePayroll = async (payslipBody) => {
-//   try {
-//     const response = ApiService.post(
-//       "https://sharontelematics.org/api/PAYROLL/getPayRollStaffDetails",
-//       {
-//         staffId: staffDetails.staffId,
-//         month: payslipBody.payslipMonth,
-//         year: payslipBody.year,
-//       }
-//     );
-//     console.log("API Response:", response.data);
-//     return response.data; // Return the API response data
-//   } catch (error) {
-//     console.error("Error fetching payroll data:", error);
-//     return null; // Return null or handle errors accordingly
-//   }
-// };
