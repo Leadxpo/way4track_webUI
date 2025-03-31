@@ -114,16 +114,8 @@ import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
 import AddInhandProduct from '../products/AddInhandProduct';
 import SalesVisit from '../salesVisit';
-<<<<<<< HEAD
 import SalesVisitDetails from '../salesVisit/salesVisitDetails';
 import EditAsset from '../asserts/editAssert';
-=======
-import ProductType from '../product-type';
-import AddProductType from '../product-type/AddProductType';
-import EditProductType from '../product-type/EditProductType';
-import ShowProductType from '../product-type/ShowProductTypes';
-
->>>>>>> 3b69d232682f8903974ae368f236c53f6c9604e2
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');

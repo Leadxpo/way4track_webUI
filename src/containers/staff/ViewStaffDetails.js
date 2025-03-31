@@ -1,15 +1,8 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
-=======
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { FaEdit } from "react-icons/fa";
-import ApiService, { initialAuthState } from "../../services/ApiService";
->>>>>>> 3b69d232682f8903974ae368f236c53f6c9604e2
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
