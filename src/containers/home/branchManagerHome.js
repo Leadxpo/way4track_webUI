@@ -855,7 +855,7 @@ const handlePreview = () => {
       {/* Search Bar */}
       <input
         type="text"
-        placeholder="Search product..."
+        placeholder="Search Employee Id..."
         className="border p-2 mb-4 w-96 rounded-md"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
