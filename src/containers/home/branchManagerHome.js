@@ -380,6 +380,47 @@ const filteredPendingAmount = Array.isArray(pendingAmount)
     : [];
 
 
+    const handleProductsPreview = () => {
+      console.log("Total Product Details:", warehouseProducts); // Debugging output
+    
+      const filteredProducts = Array.isArray(warehouseProducts)
+        ? warehouseProducts.filter((product) =>
+            product.productName &&
+            typeof product.productName === "string" &&
+            product.productName.toLowerCase().includes(search.toLowerCase())
+          )
+        : [];
+    
+      console.log("Filtered Data (Preview):", filteredProducts); // Debugging output
+    
+      if (filteredProducts.length === 0) {
+        alert("No product data available to preview.");
+        return;
+      }
+    
+      const formattedData = formatProductExcelData(filteredProducts);
+      setPreviewData(formattedData);
+      setIsPreviewOpen(true);
+    };
+    
+    // Function to format product data for Excel export
+    const formatProductExcelData = (data) => {
+      return data.map((item) => ({
+        "Product ID": item.productId,
+        "Product Name": item.productName,
+        "Total": item.total || "",
+        "In Hand": item.inhand || 0,
+        "Remaining": item.remaining || 0,
+      }));
+    };
+    
+
+
+
+
+
+
+
 
 // Get all staff Data
 
@@ -432,8 +473,8 @@ const toggleTable = (label) => {
 const formatExcelData = (data) => {
   return data.map((item) => ({
     "Emp ID": item.staffId,
-    "Name of the Employee": item.name,
-    "Designation": item.designation,
+    "Name of the Employee": item.staffName,
+    "Designation": item.staffDesignation,
     "Branch": item.branchName || "",
     "Contact Number": item.phoneNumber,
    
@@ -442,21 +483,22 @@ const formatExcelData = (data) => {
 
 
 const handlePreview = () => {
-  const filteredData = totalStaffDetails.filter((row) =>
-    row.name && typeof row.name === "string" // Use 'name' instead of 'product' if filtering by employee name
-      ? row.name.toLowerCase().includes(search.toLowerCase())
+  console.log("Total Staff Details:", totalStaffDetails); // Debugging output
+
+  const filteredStaff = totalStaffDetails.filter((row) =>
+    row.staffName && typeof row.staffName === "string"
+      ? row.staffName.toLowerCase().includes(search.toLowerCase())
       : false
   );
 
-  console.log("Filtered Data:", filteredData); // Debugging output
+  console.log("Filtered Data (Preview):", filteredStaff); // Debugging output
 
-  const formattedData = formatExcelData(filteredData);
-
-  if (formattedData.length === 0) {
+  if (filteredStaff.length === 0) {
     alert("No data available to preview.");
     return;
   }
 
+  const formattedData = formatExcelData(filteredStaff);
   setPreviewData(formattedData);
   setIsPreviewOpen(true);
 };
@@ -744,39 +786,47 @@ const handlePreview = () => {
 
      {/* Preview & Download Button */}
              <button
-               onClick={handlePreview}
+               onClick={handleProductsPreview}
                className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
              >
                <FaFileDownload className="mr-2" /> Preview & Download
              </button>
       </div>
 
-        {/* Table Section */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-blue-700 text-white">
-              <th className="py-3 px-4 text-left">NO.</th>
-              <th className="py-3 px-4 text-left">Product</th>
-              <th className="py-3 px-4 text-left">Total</th>
-              <th className="py-3 px-4 text-left">In hand Products</th>
-              <th className="py-3 px-4 text-left">Remaining Products</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProducts.map((row, index) => (
-              <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
-                <td className="py-3 px-4">{row.id}</td>
-                <td className="py-3 px-4">{row.product}</td>
-                <td className="py-3 px-4">{row.total}</td>
-                <td className="py-3 px-4">{row.inHand}</td>
-                <td className="py-3 px-4">{row.remaining}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    
+       {/* Table Section */}
+<div className="bg-white p-4 rounded-lg shadow-md">
+  <table className="w-full border-collapse">
+    <thead>
+      <tr className="bg-blue-700 text-white">
+        <th className="py-3 px-4 text-left">NO.</th>
+        <th className="py-3 px-4 text-left">Product</th>
+        <th className="py-3 px-4 text-left">Total</th>
+        <th className="py-3 px-4 text-left">In hand Products</th>
+        <th className="py-3 px-4 text-left">Remaining Products</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filteredProducts.length > 0 ? (
+        filteredProducts.map((row, index) => (
+          <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
+            <td className="py-3 px-4">{row.id}</td>
+            <td className="py-3 px-4">{row.product}</td>
+            <td className="py-3 px-4">{row.total}</td>
+            <td className="py-3 px-4">{row.inHand}</td>
+            <td className="py-3 px-4">{row.remaining}</td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="5" className="py-5 px-4 text-center text-gray-500">
+            No data available
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
  
 
 
