@@ -179,11 +179,6 @@ const DetailsCard = ({ title, children, onEdit }) => (
     </div>
     <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
   </div>
-<<<<<<< HEAD
 );
 
 export default ViewStaffDetails;
-=======
-)};
-export default ViewStaffDetails;
->>>>>>> 3b69d232682f8903974ae368f236c53f6c9604e2
