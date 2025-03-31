@@ -251,7 +251,7 @@ const stats = [
   // Filtering payments based on search query
 const filteredTotalPayments = Array.isArray(totalPayments)
 ? totalPayments.filter((payment) =>
-    payment.technicianName.toLowerCase().includes(search.toLowerCase())
+    payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 : [];
 
@@ -291,7 +291,7 @@ useEffect(() => {
 // Filtering received payments based on search query
 const filteredPayments = Array.isArray(receivedPayments)
   ? receivedPayments.filter((payment) =>
-      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   : [];
 
@@ -331,7 +331,7 @@ useEffect(() => {
 // Filtering pending amounts based on search query
 const filteredPendingAmount = Array.isArray(pendingAmount)
   ? pendingAmount.filter((payment) =>
-      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   : [];
 
@@ -374,10 +374,12 @@ const filteredPendingAmount = Array.isArray(pendingAmount)
   };
 
   const filteredProducts = Array.isArray(warehouseProducts)
-    ? warehouseProducts.filter((product) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  ? warehouseProducts.filter((product) => 
+      product?.productName && searchTerm
+        ? product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        : false
+    )
+  : [];
 
 
     const handleProductsPreview = () => {
@@ -585,25 +587,25 @@ const handlePreview = () => {
 
 
       
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-10">
-        {paymentStatus.map((stat, index) => (
-          <div
-            key={index}
-            className={`p-6 rounded-xl shadow-md w-80 text-center cursor-pointer ${stat.color}`}
-            onClick={() => toggleTable(stat.label)}
-          >
-            <button
-              className="mt-5 px-6 py-2  text-black rounded-lg font-bold hover:bg-blue-100"
-              onClick={() => toggleTable(stat.label)}
-            >
-              {stat.label} 
-            </button>
-            {/* <div className="text-lg font-semibold">{stat.label}</div> */}
-            <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
-          </div>
-        ))}
-      </div>
+     {/* Stats Section */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 mt-10">
+  {paymentStatus.map((stat, index) => (
+    <div
+      key={index}
+      className={`p-6 rounded-xl shadow-md w-full sm:w-80 text-center cursor-pointer ${stat.color}`}
+      onClick={() => toggleTable(stat.label)}
+    >
+      <button
+        className="mt-5 px-6 py-2 text-black rounded-lg font-bold hover:bg-blue-100"
+        onClick={() => toggleTable(stat.label)}
+      >
+        {stat.label}
+      </button>
+      <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
+    </div>
+  ))}
+</div>
+
 
 
  {/* Payments Table - Visible only if showTable is true */}
@@ -780,8 +782,8 @@ const handlePreview = () => {
         type="text"
         placeholder="Search product..."
         className="border p-2 mb-4 w-96 rounded-md"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
 
      {/* Preview & Download Button */}
