@@ -50,7 +50,22 @@ const AddEstimate = () => {
   // Populate form state for edit mode
   const [formData, setFormData] = useState(initialFormState);
   const [serveProd, setServeProd] = useState("");
-
+  
+  const changeServeProd = (index, e) => { 
+    setServeProd(e.target.value);
+    
+    setFormData((prevData) => ({
+      ...prevData,
+      items: prevData.items.map((item, i) =>
+        i === index ? { ...item, productId: '',
+        name: '',
+        quantity: '',
+        rate: '',
+        amount: '',
+        hsnCode: '',} : item
+      ),
+    }));
+};
 
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
@@ -63,6 +78,7 @@ const AddEstimate = () => {
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
+      console.log("hi ++++______ ++++++++++=====",res.data);
       setClients(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -107,6 +123,7 @@ const AddEstimate = () => {
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
+    
   };
 
   const handleProductItemChange = (index, e) => {
@@ -123,17 +140,11 @@ const AddEstimate = () => {
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
 
-  const handleService = (index, e) => {
+const handleService = (index, e) => {
     const { name, value } = e.target;
-    // const selectedProduct1 = products.find((product) => product.productType === value);
-    const selectedProduct = products.find((product) => {
-      return product.productType === e.target.value;
-    });
     const updatedItems = [...formData.items];
     updatedItems[index][name] = value;
     updatedItems[index]['productId'] = null;
-    updatedItems[index]['rate'] = selectedProduct.rate;
-    updatedItems[index]['hsnCode'] = selectedProduct.hsnCode;
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
 
@@ -203,7 +214,7 @@ const AddEstimate = () => {
         quantity: parseInt(item.quantity, 10),
         totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.rate),
-        hsnCode: parseFloat(item.hsnCode),
+        hsnCode: item.hsnCode,
       })),
     };
   
@@ -257,8 +268,9 @@ const AddEstimate = () => {
       await ApiService.post("/estimate/handleEstimateDetails", formDataPayload, {
         headers: { "Content-Type": "multipart/form-data" }, // Important for binary data
       });
-  
+       
       console.log("Estimate saved successfully!");
+      navigate("/estimate");
     } catch (err) {
       console.error("Failed to save estimate:", err);
     }
@@ -394,8 +406,9 @@ const AddEstimate = () => {
                 <span className="col-span-1 font-semibold">#</span>
                 <span className="col-span-2 font-semibold">Type</span>
                 <span className="col-span-2 font-semibold">Name</span>
-                <span className="col-span-2 font-semibold">Quantity</span>
+                
                 <span className="col-span-2 font-semibold">Rate</span>
+                <span className="col-span-2 font-semibold">Quantity</span>
                 <span className="col-span-2 font-semibold">Amount</span>
                 <span className="col-span-2 font-semibold">HSN Code</span>
                 <span className="col-span-1 font-semibold"></span>
@@ -414,7 +427,7 @@ const AddEstimate = () => {
       <select
         name="type"
         value={serveProd} // Bind value to state
-        onChange={(e) => setServeProd(e.target.value)} // Update state correctly
+        onChange={(e)=>changeServeProd(index,e)} // Update state correctly
         className="col-span-2 p-2 border rounded-md w-full"
       >
         <option value="">Select Type</option>
@@ -448,15 +461,6 @@ const AddEstimate = () => {
         />
       )}
 
-<input
-          type="text"
-          name="quantity"
-          value={item.quantity}
-          onChange={(e) => handleProductItemQuantityChange(index, e)}
-          placeholder="Quantity"
-          className="col-span-2 p-2 border rounded-md w-full"
-        />
-
       {/* Rate Input */}
       <input
         type="text"
@@ -466,6 +470,17 @@ const AddEstimate = () => {
         placeholder="Rate"
         className="col-span-2 p-2 border rounded-md w-full"
       />
+
+<input
+          type="text"
+          name="quantity"
+          value={item.quantity}
+          onChange={(e) => handleProductItemQuantityChange(index, e)}
+          placeholder="Quantity"
+          className="col-span-2 p-2 border rounded-md w-full"
+        />
+
+      
 
       {/* Amount Input */}
       <input
@@ -512,6 +527,12 @@ const AddEstimate = () => {
           <strong className="col-span-2 font-semibold">
             Total Estimate Amount : {formData.totalAmount}
           </strong>
+    <div>
+          <strong className="col-span-2 font-semibold">
+  Total Estimate Amount (Include Tax) : {formData.totalAmount +
+    (formData.totalAmount * formData.cgstPercentage) / 100 +
+    (formData.totalAmount * formData.scstPercentage) / 100}
+</strong></div>
 
 
 
