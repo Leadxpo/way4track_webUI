@@ -123,6 +123,7 @@ import ShowProductType from '../product-type/ShowProductTypes';
 import Dispatch from '../dispatch';
 import AddDispatch from '../dispatch/add-dispatch';
 import DispatchDetails from '../dispatch/more-details.dispatch';
+import EditDispatch from '../dispatch/edit-dispatch';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -387,6 +388,10 @@ const BodyLayout = ({ children }) => {
           <Route
             path="/add-dispatch"
             element={<AddDispatch />}
+          />
+          <Route
+            path="/edit-dispatch"
+            element={<EditDispatch />}
           />
           <Route
             path="/show-dispatch"

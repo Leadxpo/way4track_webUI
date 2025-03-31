@@ -12,8 +12,16 @@ const Dispatch = () => {
     const [transportId, setTransportId] = useState('');
     const [allDispatches, setAllDispatches] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [dropdownOpen, setDropdownOpen] = useState(null);
+    // const [dropdownOpen, setDropdownOpen] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [dropdownOpen, setDropdownOpen] = useState({});
+
+    const toggleDropdown = (id) => {
+        setDropdownOpen((prev) => ({
+            ...prev,
+            [id]: !prev[id], // Toggle only the clicked row
+        }));
+    };
 
     useEffect(() => {
         fetchDispatches();
@@ -45,9 +53,9 @@ const Dispatch = () => {
         fetchDispatches()
     };
 
-    const toggleDropdown = (id) => {
-        setDropdownOpen(dropdownOpen === id ? null : id);
-    };
+    // const toggleDropdown = (id) => {
+    //     setDropdownOpen(dropdownOpen === id ? null : id);
+    // };
 
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this dispatch?")) {
@@ -128,8 +136,8 @@ const Dispatch = () => {
                         <tbody>
                             {dispatches.length > 0 ? (
                                 dispatches.map((item) => (
-                                    <tr key={item.de_id} className="border-b">
-                                        <td className="px-6 py-4">{item.de_id}</td>
+                                    <tr key={item.id} className="border-b">
+                                        <td className="px-6 py-4">{item.id}</td>
                                         <td className="px-6 py-4">{item.staffName}</td>
                                         <td className="px-6 py-4">{item.clientName}</td>
                                         <td className="px-6 py-4">{item.fromAddress}</td>
@@ -138,17 +146,16 @@ const Dispatch = () => {
                                         <td className="px-6 py-4">{item.status}</td>
                                         <td className="px-6 py-4">{item.transportId}</td>
                                         <td className="px-6 py-4">{item.packageId}</td>
-                                        <td className="px-6 py-4">{item.packageId}</td>
                                         <td className="px-6 py-4 text-center relative">
                                             <button onClick={() => toggleDropdown(item.id)} className="p-2">
                                                 <FaEllipsisV className="cursor-pointer text-gray-700" />
                                             </button>
-                                            {dropdownOpen === item.id && (
+                                            {dropdownOpen[item.id] && ( // Check against the specific row ID
                                                 <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                                                     <ul className="text-left">
                                                         <li
                                                             className="p-2 hover:bg-gray-100 cursor-pointer"
-                                                            onClick={() => navigate("/add-dispatch", { state: { dispatch: item } })}
+                                                            onClick={() => navigate("/edit-dispatch", { state: { dispatch: item } })}
                                                         >
                                                             Edit
                                                         </li>
@@ -167,9 +174,8 @@ const Dispatch = () => {
                                                     </ul>
                                                 </div>
                                             )}
-
-
                                         </td>
+
                                     </tr>
                                 ))
                             ) : (

@@ -4,31 +4,57 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 
-const AddDispatch = () => {
+const EditDispatch = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const appointmentDetails = location.state?.dispatch || null;
 
     const [formData, setFormData] = useState({
-        fromAddress: appointmentDetails?.fromAddress || '',
-        toAddress: appointmentDetails?.toAddress || '',
-        id: appointmentDetails?.id || null,
-        dispatchCompanyName: appointmentDetails?.dispatchCompanyName,
-        dispatchDate: appointmentDetails?.dispatchDate || '',
-        arrivalDate: appointmentDetails?.arrivalDate || '',
-        status: appointmentDetails?.status || '',
-        transportId: appointmentDetails?.transportId || '',
-        packageId: appointmentDetails?.packageId || '',
-        assignedProductsId: appointmentDetails?.assignedProductsId || '',
-        receiverName: appointmentDetails?.receiverName || '',
-        dispatcherName: appointmentDetails?.dispatcherName || '',
-        trackingURL: appointmentDetails?.trackingURL || '',
-        staffId: appointmentDetails?.staffId || '',
-        clientId: appointmentDetails?.clientId || '',
-        subDealerId: appointmentDetails?.subDealerId || '',
+        fromAddress: '',
+        toAddress: '',
+        id: null,
+        dispatchCompanyName: '',
+        dispatchDate: '',
+        arrivalDate: '',
+        status: '',
+        transportId: '',
+        packageId: '',
+        assignedProductsId: '',
+        receiverName: '',
+        dispatcherName: '',
+        trackingURL: '',
+        staffId: '',
+        clientId: '',
+        subDealerId: '',
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
     });
+
+    useEffect(() => {
+        if (appointmentDetails) {
+            setFormData({
+                fromAddress: appointmentDetails.fromAddress || "",
+                toAddress: appointmentDetails.toAddress || "",
+                id: appointmentDetails.id || null,
+                dispatchCompanyName: appointmentDetails.dispatchCompanyName || "",
+                dispatchDate: appointmentDetails.dispatchDate || "",
+                arrivalDate: appointmentDetails.arrivalDate || "",
+                status: appointmentDetails.status || "",
+                transportId: appointmentDetails.transportId || "",
+                packageId: appointmentDetails.packageId || "",
+                assignedProductsId: appointmentDetails.assignedProductsId || "",
+                receiverName: appointmentDetails.receiverName || "",
+                dispatcherName: appointmentDetails.dispatcherName || "",
+                trackingURL: appointmentDetails.trackingURL || "",
+                staffId: appointmentDetails.staffId || "",
+                clientId: appointmentDetails.clientId || "",
+                subDealerId: appointmentDetails.subDealerId || "",
+                companyCode: initialAuthState.companyCode, // Keeping the initial value
+                unitCode: initialAuthState.unitCode, // Keeping the initial value
+            });
+        }
+    }, [appointmentDetails]);
+
 
     const [clients, setClients] = useState([]);
     const [subDealers, setSubDealers] = useState([]);
@@ -66,10 +92,11 @@ const AddDispatch = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const response = await ApiService.post('/dispatch/handleDispatchDetails', formData);
             if (response.data.status) {
-                alert(formData.id ? 'Dispatch updated successfully!' : 'Dispatch created successfully!');
+                alert('Dispatch updated successfully!');
                 navigate('/appointments');
             } else {
                 alert('Failed to save dispatch details. Please try again.');
@@ -79,6 +106,7 @@ const AddDispatch = () => {
             alert('Failed to save dispatch details. Please try again.');
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto p-6 rounded-lg space-y-6">
@@ -290,4 +318,4 @@ const AddDispatch = () => {
     );
 };
 
-export default AddDispatch;
+export default EditDispatch;
