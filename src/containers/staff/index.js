@@ -101,7 +101,7 @@ const Staff = () => {
       {/* Header */}
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Staff Details</h2>
-        <div className="flex items-center space-x-4">
+        {/* <div className="flex items-center space-x-4">
           <button
             className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
             onClick={() => setIsGridView(false)}
@@ -136,7 +136,7 @@ const Staff = () => {
             <FaPlus size={16} />
             <span>show Staff</span>
           </button>
-        </div>
+        </div> */}
       </div>
       <div className="flex space-x-4 my-4">
         <input
@@ -174,7 +174,7 @@ const Staff = () => {
         </button>
       </div>
       {/* Staff Table */}
-      {isGridView ? (
+      {/* {isGridView ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
           {profiles.map((profile, index) => (
             <div
@@ -224,7 +224,7 @@ const Staff = () => {
             </div>
           ))}
         </div>
-      ) : (
+      ) : ( */}
         <Table
           columns={columns}
           onEdit={handleEdit}
@@ -234,7 +234,7 @@ const Staff = () => {
           onDetails={handleMoreDetails}
           data={Array.isArray(profiles) ? profiles : []}
         />
-      )}{' '}
+      {/* )}{' '} */}
     </div>
   );
 };

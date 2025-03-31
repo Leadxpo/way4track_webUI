@@ -184,6 +184,12 @@ export const menuOptions = {
       route: '/requests',
     },
     {
+      name: 'Product Type',
+      icon: <img src="./products.png" />,
+      route: '/product-type',
+    },
+
+    {
       name: 'Products',
       icon: <img src="./products.png" />,
       route: '/products',

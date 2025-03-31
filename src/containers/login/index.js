@@ -117,7 +117,7 @@ const Login = ({ handleLoginFlag }) => {
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log("ramesh login",response )
+      console.log("ramesh login", response)
 
       if (response && response.data.status) {
         const userProfile = response.data.data[0];
@@ -126,11 +126,13 @@ const Login = ({ handleLoginFlag }) => {
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(userProfile));
-console.log("=======",userProfile)
+        console.log("=======", userProfile);
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
 
         localStorage.setItem('branchName', branchName);
+        localStorage.setItem('branch_id', userProfile.branch_id);
+        localStorage.setItem('id', userProfile.id);
 
         await fetchUserPermissions(
           userId,
@@ -140,7 +142,7 @@ console.log("=======",userProfile)
 
         handleLoginFlag();
       } else {
-        alert("Entered Correct Login details");
+        alert("Please enter correct login details");
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {

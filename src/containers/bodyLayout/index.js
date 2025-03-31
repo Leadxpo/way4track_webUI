@@ -112,7 +112,12 @@ import EditBankDetails from '../staff/EditBankDetails';
 import EditEmployerDetails from '../staff/EditEmployerDetails';
 import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
+import AddInhandProduct from '../products/AddInhandProduct';
 import SalesVisit from '../salesVisit';
+import ProductType from '../product-type';
+import AddProductType from '../product-type/AddProductType';
+import EditProductType from '../product-type/EditProductType';
+import ShowProductType from '../product-type/ShowProductTypes';
 
 
 const BodyLayout = ({ children }) => {
@@ -337,13 +342,20 @@ const BodyLayout = ({ children }) => {
           <Route path="/branches" element={<Branches />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
+          <Route path="/product-type" element={<ProductType/>} />
+          <Route path="/add-product-type" element={<AddProductType/>} />
+          <Route path="/edit-product-type" element={<EditProductType/>} />
+          <Route path="/show-product-type" element={<ShowProductType/>} />
+          
+          
           <Route path="/products" element={<Products />} />
+          <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEstimate />} />
+          <Route path="/add-estimate" element={<AddEstimate/>} />
           <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />
@@ -404,15 +416,15 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
           {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
-          <Route path="/add-staff" element={<AddStaffForm/>} />
+          <Route path="/add-staff" element={<AddStaffForm />} />
 
-           <Route path="/edit-staff" element={<ViewStaffDetails/>} />
-          <Route path="/add-staff" element={<AddStaffForm/>} />
-          <Route path="/edit-staff-personnel" element={<EditPersonnelDetails/>} />
-           <Route path="/edit-staff-education" element={<EditEducationDetails/>} />
-          <Route path="/edit-staff-bank" element={<EditBankDetails/>} />
-          <Route path="/edit-staff-employer" element={<EditEmployerDetails/>} /> 
-           
+          <Route path="/edit-staff" element={<ViewStaffDetails />} />
+          <Route path="/add-staff" element={<AddStaffForm />} />
+          <Route path="/edit-staff-personnel" element={<EditPersonnelDetails />} />
+          <Route path="/edit-staff-education" element={<EditEducationDetails />} />
+          <Route path="/edit-staff-bank" element={<EditBankDetails />} />
+          <Route path="/edit-staff-employer" element={<EditEmployerDetails />} />
+
           {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />

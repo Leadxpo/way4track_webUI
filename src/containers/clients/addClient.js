@@ -12,7 +12,7 @@ const AddEditClient = () => {
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
     gstNumber: clientData.gstNumber || '',
-    clientId: clientData.clientId || '',
+    // clientId: clientData.clientId || '',
     branch: clientData.branch || '',
     branchName: clientData.branchName || '', 
     dob: clientData.dob || '',
@@ -78,18 +78,7 @@ const AddEditClient = () => {
         payload.append(key, value);
       }
     });
-  
-    // Ensure both branchId (branch) and branchName are explicitly added
-    if (formData.branch) {
-      payload.append('branchId', formData.branch); // branch is the branchId
-    }
-    
-    if (formData.branchName) {
-      payload.append('branchName', formData.branchName);
-    }
-  
-    console.log([...payload.entries()], "Payload Data Before Sending"); // Debugging
-  
+    console.log(payload, "_____")
     try {
       const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
       const response = await ApiService.post(endpoint, payload, {
