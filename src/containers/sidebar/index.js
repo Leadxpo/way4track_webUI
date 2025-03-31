@@ -82,7 +82,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
   };
 
   return (
-    <div className="h-full w-60 bg-zinc-900 text-white flex flex-col justify-between">
+    <div className="min-h-screen overflow-y-auto w-full bg-zinc-900 text-white flex flex-col justify-between overscroll-contain scrollbar-hide">
       <div>
         <div className="ml-4">
           <img src=".//logo.png" alt="Company Logo" className="h-24 w-44" />

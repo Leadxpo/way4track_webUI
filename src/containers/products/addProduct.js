@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../../services/ApiService';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router';
 
 const AddProductForm = () => {
@@ -39,6 +39,7 @@ const AddProductForm = () => {
     SIM_IMSI: '',
     SIM_NO: '',
     MOBILE_NUMBER: '',
+    productTypeId:null,
     file: null,
     ...employeeData,
   };
@@ -100,7 +101,9 @@ const AddProductForm = () => {
       // Bulk upload logic
       const bulkPayload = new FormData();
       bulkPayload.append('file', bulkFile);
-
+      bulkPayload.append('productTypeId', formData.productTypeId);
+      bulkPayload.append('companyCode', initialAuthState.companyCode);
+      bulkPayload.append('unitCode', initialAuthState.unitCode);
       try {
         const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -172,14 +175,38 @@ const AddProductForm = () => {
     </div>
   );
 
+
+
+  const [productTypes, setProductTypes] = useState([]);
+
+
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post("/productType/getProductTypeDetails");
+      if (response.data) {
+        setProductTypes(response.data);
+        console.log("qazwsxedc",response.data)
+      } else {
+        console.error("Invalid API response");
+      }
+    } catch (error) {
+      console.error("Error fetching product types:", error);
+    } finally {
+      
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8">Add Product</h1>
 
       <form className="space-y-4 w-1/2">
         <div>
-          <label className="font-semibold mb-1 block">Product Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {/* <label className="font-semibold mb-1 block">Product Image</label>
+          <input type="file" accept="image/*" onChange={handleImageChange} /> */}
           {image && (
             <img src={image} alt="Preview" className="mt-4 w-24 h-24 rounded" />
           )}
@@ -206,7 +233,7 @@ const AddProductForm = () => {
           </div>
         )}
 
-        {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
+        {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
         {renderField('Product Name', 'productName')}
         {renderField('Description', 'productDescription')}
         {renderField('IMEI Number', 'imeiNumber')}
@@ -228,12 +255,30 @@ const AddProductForm = () => {
         {renderField('BASKET_NAME', 'BASKET_NAME')}
         {renderField('SIM_IMSI', 'SIM_IMSI')}
         {renderField('SIM_NO', 'SIM_NO')}
-        {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')}
+        {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')} */}
+       
 
+       <div>
+      <label className="font-semibold mb-1 block">Select Product Type</label>
+      <select
+      name="productTypeId"
+        className="border p-2 rounded-md w-full"
+        onChange={handleInputChange}
+        value={formData.productTypeId}
+      >
+        <option value="">Select a product type</option>
+        {productTypes.map((type) => (
+          <option key={type.id} value={type.id}>
+            {type.name}
+          </option>
+        ))}
+      </select>
+     
+    </div>
 
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
-          <input type="file" accept=".csv" onChange={handleBulkFileChange} />
+          <input type="file" accept=".csv, .xlsx, .xls" onChange={handleBulkFileChange} />
         </div>
 
         <div>

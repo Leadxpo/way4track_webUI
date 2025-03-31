@@ -12,6 +12,7 @@ const SubDealers = () => {
     setPermissions(perms);
   }, []);
   const handleVendorEdit = (subDealerDetails) => {
+    console.log("-------------",subDealerDetails)
     navigate('/add-sub-dealer', { state: { subDealerDetails } });
   };
 

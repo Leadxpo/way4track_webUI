@@ -14,13 +14,13 @@ const ClientProfile = () => {
   useEffect(() => {
     const fetchClientDetailsData = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getDetailClientData', {
+        const response = await ApiService.post('/technician/getClientDataForTechniciansTable', {
           clientId: clientDetailsFromState.clientId,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
-        console.log('Client Details Data:', response.data);
-        setClientDetailsData(Array.isArray(response.data) ? response.data : []);
+        console.log('Client Details Data:', response.data.data);
+        setClientDetailsData(Array.isArray(response.data.data) ? response.data.data : []);
       } catch (error) {
         console.error('Error fetching client details data:', error);
         setClientDetailsData([]); // Fallback to an empty array
@@ -48,6 +48,7 @@ const ClientProfile = () => {
             branch: client.branch.branchName,
             dob: client.dob,
             address: client.address,
+            gstNumber: client.gstNumber,
             clientPhoto: client.clientPhoto
           });
         } else {
@@ -66,7 +67,7 @@ const ClientProfile = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
-      <p className="font-bold text-xl">Client ID : {clientDetails.clientId}</p>
+      <p className="font-bold text-xl">Customer ID : {clientDetails.clientId}</p>
       <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
         <img
           src={clientDetails.clientPhoto}
@@ -75,25 +76,26 @@ const ClientProfile = () => {
         />
         <div className="space-y-2">
           <p className="text-gray-800 font-bold text-xl">
-            Client Name : {clientDetails.name}
+            Customer Name : {clientDetails.name}
           </p>
           <p className="text-gray-800">Phone number : {clientDetails.phoneNumber}</p>
           <p className="text-gray-800">Email : {clientDetails.email}</p>
-          <p className="text-gray-800">Client Branch : {clientDetails.branch}</p>
+          <p className="text-gray-800">Customer Branch : {clientDetails.branch}</p>
+          <p className="text-gray-800">GST Number : {clientDetails.gstNumber}</p>
           <p className="text-gray-800">Date of Birth : {clientDetails.dob}</p>
           <p className="text-gray-800">Address : {clientDetails.address}</p>
         </div>
       </div>
 
       {/* Client Pitchers Table */}
-      <p className="font-bold text-xl">Client Pitchers</p>
+      <p className="font-bold text-xl">Customer Pitchers</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-200 text-gray-600">
-              <th className="py-2 px-4">Voucher Id</th>
-              <th className="py-2 px-4">Voucher Name</th>
+              <th className="py-2 px-4">Work Id</th>
               <th className="py-2 px-4">Product Type</th>
+              <th className="py-2 px-4">Vehicle Number</th>
               <th className="py-2 px-4">Quantity</th>
               <th className="py-2 px-4">Amount</th>
               <th className="py-2 px-4">Status</th>
@@ -103,9 +105,9 @@ const ClientProfile = () => {
             {Array.isArray(clientDetailsData) && clientDetailsData.length > 0 ? (
               clientDetailsData.map((pitcher, index) => (
                 <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                  <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
-                  <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.workId}</td>
                   <td className="py-2 px-4 text-center">{pitcher.productType}</td>
+                  <td className="py-2 px-4 text-center">{pitcher.vehicleNumber}</td>
                   <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
                   <td className="py-2 px-4 text-center">{pitcher.amount}</td>
                   <td className="py-2 px-4 text-center">{pitcher.paymentStatus}</td>

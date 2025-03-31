@@ -112,9 +112,18 @@ import EditBankDetails from '../staff/EditBankDetails';
 import EditEmployerDetails from '../staff/EditEmployerDetails';
 import EditPersonnelDetails from '../staff/EditPersonnelDetails';
 import EditEducationDetails from '../staff/EditEducationDetails';
+import AddInhandProduct from '../products/AddInhandProduct';
 import SalesVisit from '../salesVisit';
+<<<<<<< HEAD
 import SalesVisitDetails from '../salesVisit/salesVisitDetails';
 import EditAsset from '../asserts/editAssert';
+=======
+import ProductType from '../product-type';
+import AddProductType from '../product-type/AddProductType';
+import EditProductType from '../product-type/EditProductType';
+import ShowProductType from '../product-type/ShowProductTypes';
+
+>>>>>>> 3b69d232682f8903974ae368f236c53f6c9604e2
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -338,14 +347,21 @@ const BodyLayout = ({ children }) => {
           <Route path="/branches" element={<Branches />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/staff-details" element={<StaffDetails />} />
+          <Route path="/product-type" element={<ProductType/>} />
+          <Route path="/add-product-type" element={<AddProductType/>} />
+          <Route path="/edit-product-type" element={<EditProductType/>} />
+          <Route path="/show-product-type" element={<ShowProductType/>} />
+          
+          
           <Route path="/products" element={<Products />} />
+          <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />
           <Route path="/edit-asset" element={<EditAsset />} />
           <Route path="/asset-details" element={<AssetDetails />} />
           <Route path="/estimate" element={<Estimates />} />
-          <Route path="/add-estimate" element={<AddEstimate />} />
+          <Route path="/add-estimate" element={<AddEstimate/>} />
           <Route path="/edit-estimate" element={<EditEstimate />} />
           <Route path="/estimate-details" element={<EstimateDetails />} />
           <Route path="/invoice" element={<Invoices />} />
@@ -405,7 +421,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
           {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
-          <Route path="/add-staff" element={<AddStaffForm />} />
 
           {/* <Route path="/edit-staff" element={<ViewStaffDetails />} /> */}
           <Route path="/add-staff" element={<AddStaffForm />} />

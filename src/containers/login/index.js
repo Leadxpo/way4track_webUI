@@ -117,20 +117,22 @@ const Login = ({ handleLoginFlag }) => {
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log("ramesh login",response )
+      console.log("ramesh login", response)
 
       if (response && response.data.status) {
-        const userProfile = response.data;
+        const userProfile = response.data.data[0];
 
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(userProfile));
-
+        console.log("=======", userProfile);
         // Fetch branch name separately if needed
         let branchName = userProfile.branchName;
 
         localStorage.setItem('branchName', branchName);
+        localStorage.setItem('branch_id', userProfile.branch_id);
+        localStorage.setItem('id', userProfile.id);
 
         await fetchUserPermissions(
           userId,
@@ -140,7 +142,7 @@ const Login = ({ handleLoginFlag }) => {
 
         handleLoginFlag();
       } else {
-        alert("Entered Correct Login details");
+        alert("Please enter correct login details");
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {
@@ -246,7 +248,7 @@ const Login = ({ handleLoginFlag }) => {
               <option value="HR">HR</option>
               <option value="Accountant">Accountant</option>
               <option value="Operator">Operator</option>
-              <option value="BranchManager">Branch Manager</option>
+              <option value="Branch Manager">Branch Manager</option>
               <option value="Warehouse Manager">Warehouse Manager</option>
               <option value="Sub Dealer">Sub Dealer</option>
               <option value="Technician">Technician</option>

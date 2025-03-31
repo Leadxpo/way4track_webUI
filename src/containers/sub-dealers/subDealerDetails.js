@@ -35,6 +35,7 @@ const SubDealerDetails = () => {
             email: subDealer.emailId,
             alternatePhoneNumber: subDealer.alternatePhoneNumber,
             aadharNumber: subDealer.aadharNumber,
+            gstNumber: subDealer.gstNumber,
             address: subDealer.address,
             subDealerPhoto: subDealer.subDealerPhoto,
             branch: subDealer.branchName,
@@ -105,32 +106,37 @@ const SubDealerDetails = () => {
     <div className="p-6 space-y-8">
       {/* SubDealer Information */}
       <p className="font-bold text-xl">Sub Dealer ID</p>
-      <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
+      <div className="flex items-start space-x-28 bg-white p-6 rounded-lg shadow-md">
         <img
           src={subDealerDetails.subDealerPhoto}
           alt="subDealer"
           className="w-32 h-32 rounded-full object-cover"
         />
-        <div className="space-y-2">
-          <p className="text-gray-800 font-bold text-xl">
-            SubDealer Name : {subDealerDetails.name}
+        <div className="space-y-5">
+          <p className="text-gray-800  font-bold text-xl">
+            Sub Dealer Name : {subDealerDetails.name}
           </p>
-          <p className="text-gray-800">
+          <p className="text-gray-800 font-semibold">
             Phone number : {subDealerDetails.phone}
           </p>
-          <p className="text-gray-800">Email : {subDealerDetails.email}</p>
-          <p className="text-gray-800">
+          <p className="text-gray-800 font-semibold">Email : {subDealerDetails.email}</p>
+          <p className="text-gray-800 font-semibold">
             SubDealer Branch : {subDealerDetails.branch}
           </p>
-          <p className="text-gray-800">
+          <p className="text-gray-800 font-semibold">
             Date of Birth : {subDealerDetails.dob}
           </p>
-          <p className="text-gray-800">Address : {subDealerDetails.address}</p>
+
+          <p className="text-gray-800 font-semibold">
+            Gst Number : {subDealerDetails.gstNumber}
+          </p>
+
+          <p className="text-gray-800 font-semibold">Address : {subDealerDetails.address}</p>
         </div>
       </div>
 
       {/* Product Cards */}
-      <div className="flex space-x-4">
+      {/* <div className="flex space-x-4">
         {photoData.map((product, index) => (
           <div
             key={index}
@@ -146,15 +152,15 @@ const SubDealerDetails = () => {
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* sub dealer subDealerDetailsData Table */}
-      <p className="font-bold text-xl">Dealer Punchers</p>
+      {/* <p className="font-bold text-xl">Dealer Punchers</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-200 text-gray-600">
-              <th className="py-2 px-4">Voucher Id</th>
+              <th className="py-2 px-4">Work Id</th>
               <th className="py-2 px-4">product Type</th>
               <th className="py-2 px-4">voucher Name</th>
               <th className="py-2 px-4">Amount</th>
@@ -169,7 +175,7 @@ const SubDealerDetails = () => {
                 key={index}
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
-                <td className="py-2 px-4 text-center">{pitcher.voucherId}</td>
+                <td className="py-2 px-4 text-center">{pitcher.workId}</td>
                 <td className="py-2 px-4 text-center">{pitcher.productType}</td>
                 <td className="py-2 px-4 text-center">{pitcher.voucherName}</td>
                 <td className="py-2 px-4 text-center">{pitcher.amount}</td>
@@ -186,9 +192,9 @@ const SubDealerDetails = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
-      <p className="font-bold text-xl">Dealer Business</p>
+      {/* <p className="font-bold text-xl">Dealer Business</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
@@ -219,7 +225,7 @@ const SubDealerDetails = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       {/* Save and Cancel Buttons */}
       {/* <div className="flex justify-center space-x-4">
