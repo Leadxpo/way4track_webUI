@@ -1,55 +1,55 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import ApiService from "../../services/ApiService";
-import { useLocation, useNavigate } from "react-router";
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import ApiService from '../../services/ApiService';
+import { useLocation, useNavigate } from 'react-router';
 
 const EditEmployerDetails = () => {
-   const location = useLocation();
-    const navigate = useNavigate();
-    console.log("asdffhgfdsa location rammmmmmmmm",location.state)
+  const location = useLocation();
+  const navigate = useNavigate();
+  console.log('asdffhgfdsa location rammmmmmmmm', location.state);
   const [data, setData] = useState({
-    staffId:'',
-    branch: "",
-    joiningDate: "",
-    designation: "",
-    department: "",
-    monthlySalary: "",
-    officeEmail: "",
-    officePhoneNumber: "",
-    bikeAllocation: "",
-    mobileAllocation: "",
-    terminationDate: "",
-    resignationDate: "",
-    finalSettlementDate: "",
-    insuranceNumber: "",
-    insuranceEligibilityDate: "",
-    insuranceExpiryDate: "",
-    password: "",
-    description: "",
+    id: '',
+    staffId: '',
+    branchName: '',
+    joiningDate: '',
+    designation: '',
+    department: '',
+    monthlySalary: '',
+    officeEmail: '',
+    officePhoneNumber: '',
+    bikeAllocation: '',
+    mobileAllocation: '',
+    terminationDate: '',
+    resignationDate: '',
+    finalSettlementDate: '',
+    insuranceNumber: '',
+    insuranceEligibilityDate: '',
+    insuranceExpiryDate: '',
+    password: '',
+    description: '',
   });
 
-
   useEffect(() => {
-      if (location.state?.data) {
-        setData(location.state.data);
-      }
-    }, [location.state]);
+    if (location.state?.data) {
+      setData(location.state.data);
+    }
+  }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
-
+  console.log(data,'datejh');
 
   // Fetch Branches
   const fetchBranches = async () => {
-    console.log("hiiiiii")
+    console.log('hiiiiii');
     try {
-      const response = await ApiService.post("/branch/getBranchNamesDropDown");
-      console.log("hiiiiii22",response);
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      console.log('hiiiiii22', response);
       // if (response.status && Array.isArray(response.data)) {
       //   setBranches(response.data);
       // } else {
       //   console.error("Failed to fetch branches:", response);
       // }
     } catch (error) {
-      console.error("Error fetching branches:", error);
+      console.error('Error fetching branches:', error);
     }
   };
 
@@ -60,14 +60,14 @@ const EditEmployerDetails = () => {
   // Fetch Designations
   const getDesignations = useCallback(async () => {
     try {
-      const response = await ApiService.post("/designations/getAllDesignation");
+      const response = await ApiService.post('/designations/getAllDesignation');
       if (response.status && Array.isArray(response.data)) {
         setDesignations(response.data);
       } else {
-        console.error("Failed to fetch designation details.");
+        console.error('Failed to fetch designation details.');
       }
     } catch (error) {
-      console.error("Error fetching designation details:", error);
+      console.error('Error fetching designation details:', error);
     }
   }, []);
 
@@ -75,23 +75,34 @@ const EditEmployerDetails = () => {
     getDesignations();
   }, [getDesignations]);
 
-
   const inputFields = useMemo(
     () => [
       // { label: "Staff ID", name: "staffId", type: "text" },
-      { label: "Joining Date", name: "joiningDate", type: "date" },
-      { label: "Department", name: "department", type: "text" },
-      { label: "Monthly Salary", name: "monthlySalary", type: "text" },
-      { label: "Office Email", name: "officeEmail", type: "email" },
-      { label: "Office Phone Number", name: "officePhoneNumber", type: "text" },
-      { label: "Termination Date", name: "terminationDate", type: "date" },
-      { label: "Resignation Date", name: "resignationDate", type: "date" },
-      { label: "Final Settlement Date", name: "finalSettlementDate", type: "date" },
-      { label: "Insurance Number", name: "insuranceNumber", type: "text" },
-      { label: "Insurance Eligibility Date", name: "insuranceEligibilityDate", type: "date" },
-      { label: "Insurance Expiry Date", name: "insuranceExpiryDate", type: "date" },
-      { label: "Password", name: "password", type: "password" },
-      { label: "Description", name: "description", type: "text" },
+      { label: 'Joining Date', name: 'joiningDate', type: 'date' },
+      { label: 'Department', name: 'department', type: 'text' },
+      { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
+      { label: 'Office Email', name: 'officeEmail', type: 'email' },
+      { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
+      { label: 'Termination Date', name: 'terminationDate', type: 'date' },
+      { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
+      {
+        label: 'Final Settlement Date',
+        name: 'finalSettlementDate',
+        type: 'date',
+      },
+      { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
+      {
+        label: 'Insurance Eligibility Date',
+        name: 'insuranceEligibilityDate',
+        type: 'date',
+      },
+      {
+        label: 'Insurance Expiry Date',
+        name: 'insuranceExpiryDate',
+        type: 'date',
+      },
+      { label: 'Password', name: 'password', type: 'password' },
+      { label: 'Description', name: 'description', type: 'text' },
     ],
     []
   );
@@ -99,26 +110,26 @@ const EditEmployerDetails = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
-    console.log("data",data);
+    console.log('data', data);
   };
 
   const handleSubmit = async () => {
     try {
-      const endpoint = "/staff/handleStaffDetails"; 
-      const response = await ApiService.post(endpoint,data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const endpoint = '/staff/handleStaffDetails';
+      const response = await ApiService.post(endpoint, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
-      if (response.data.status) {
-        alert("Employer details updated successfully!");
+
+      if (response.status) {
+        alert('Employer details updated successfully!');
         return response.data;
       } else {
-        alert("Failed to update employer details.");
+        alert('Failed to update employer details.');
         return null;
       }
     } catch (error) {
-      console.error("Error updating employer details:", error);
-      alert("An error occurred while updating employer details.");
+      console.error('Error updating employer details:', error);
+      alert('An error occurred while updating employer details.');
       return null;
     }
   };
@@ -179,7 +190,9 @@ const EditEmployerDetails = () => {
 
       {/* Bike Allocation Dropdown */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Bike Allocation (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Bike Allocation (Yes/No)
+        </label>
         <select
           name="bikeAllocation"
           value={data.bikeAllocation}
@@ -194,7 +207,9 @@ const EditEmployerDetails = () => {
 
       {/* Mobile Allocation Dropdown */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Mobile Allocation (Yes/No)</label>
+        <label className="block font-medium mb-1">
+          Mobile Allocation (Yes/No)
+        </label>
         <select
           name="mobileAllocation"
           value={data.mobileAllocation}

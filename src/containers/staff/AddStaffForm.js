@@ -172,7 +172,7 @@ export default function AddStaffForm() {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      if (response.data.status) {
+      if (response.status) {
         alert('Employee added successfully!');
         navigate('/staff');
       } else {

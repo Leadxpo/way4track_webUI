@@ -6,6 +6,7 @@ import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
 import { FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
+import * as XLSX from 'xlsx';
 
 const data = [
   {
@@ -73,39 +74,88 @@ const SalesVisit = () => {
   const [staff, setStaff] = useState([]);
   const [permissions, setPermissions] = useState({});
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [popupData, setPopupData] = useState(null);
+
+  const [salesDetails, setSalesDetails] = useState([]);
+  //Sales Data fetching
+
+  useEffect(() => {
+    const fetchSalesDetails = async () => {
+      try {
+        const response = await ApiService.post(
+          'sales-works/getSalesSearchDetails',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        setSalesDetails(response.data);
+        console.log(response.data, 'sales details');
+      } catch (error) {
+        console.error('Failed to fetch Sales Details:', error);
+        setSalesDetails([]);
+      }
+    };
+    fetchSalesDetails();
+  }, []);
+
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleActionClick = (event, item) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    setPopupData((prev) =>
+      prev && prev.item.id === item.id
+        ? null
+        : {
+            item,
+            position: {
+              top: rect.top + window.scrollY + 30,
+              left: rect.left + window.scrollX - 50,
+            },
+          }
+    );
+  };
+
+  const handleEdit = () => {
+    alert('Edit action clicked');
+  };
+
+  const handleMoreDetails = () => {
+    navigate('/sales-visit-details');
+    setPopupData(null);
+  };
+
+  // const handleRowClick = (e, person) => {
+  //   const rect = e.currentTarget.getBoundingClientRect();
+
+  //   // Toggle the popup if the same row is clicked
+  //   if (popupData && popupData.id === person.id) {
+  //     setPopupData(null);
+  //   } else {
+  //     setPopupData(person);
+  //     setPopupPosition({ top: rect.top + window.scrollY + 30, left: rect.left + window.scrollX + 100 });
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (popupData && !event.target.closest('.popup-box')) {
+  //       setPopupData(null);
+  //     }
+  //   };
+
+  //   document.addEventListener('click', handleClickOutside);
+  //   return () => document.removeEventListener('click', handleClickOutside);
+  // }, [popupData]);
+
   useEffect(() => {
     const perms = getPermissions('work-allocation');
     setPermissions(perms);
   }, []);
-
-  useEffect(() => {
-    if (workAllocationData.id) {
-      const fetchClientDetails = async () => {
-        try {
-          const response = await ApiService.post(
-            '/work-allocations/getWorkAllocationDetails',
-            {
-              id: workAllocationData.id,
-              companyCode: initialAuthState.companyCode,
-              unitCode: initialAuthState.unitCode,
-            }
-          );
-          if (response.data?.length > 0) {
-            const subDealer = response.data[0];
-            setSelectedWorkAllocation({
-              ...initialFormData,
-              ...subDealer,
-              productDetails: subDealer?.productDetails || [],
-            });
-          }
-        } catch (error) {
-          console.error('Error fetching work allocation details:', error);
-          alert('Failed to fetch work allocation details.');
-        }
-      };
-      fetchClientDetails();
-    }
-  }, [workAllocationData.workAllocationNumber]);
 
   const handleOpenModalForAdd = () => {
     setSelectedWorkAllocation(initialFormData);
@@ -131,12 +181,6 @@ const SalesVisit = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSelectedWorkAllocation({ ...selectedWorkAllocation, [name]: value });
-  };
-
-  const handleEdit = (work) => {
-    navigate('/edit-work-allocation', {
-      state: { workAllocationDetails: { work } },
-    });
   };
 
   useEffect(() => {
@@ -165,16 +209,6 @@ const SalesVisit = () => {
     getVoucherNamesDropDown();
   }, []);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedWorkAllocation(null);
-  };
-
-  const handleOpenMoreDetailsModal = (voucher) => {
-    setSelectedWorkAllocation(voucher);
-    setIsMoreDetailsModalOpen(true);
-  };
-
   useEffect(() => {
     const fetchStaff = async () => {
       try {
@@ -188,350 +222,18 @@ const SalesVisit = () => {
     fetchStaff();
   }, []);
 
-  const handleCloseMoreDetailsModal = () => {
-    setIsMoreDetailsModalOpen(false);
-    setSelectedWorkAllocation(null);
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    const payload = { ...selectedWorkAllocation };
-    try {
-      const endpoint = selectedWorkAllocation.id
-        ? '/work-allocations/handleWorkAllocationDetails'
-        : '/work-allocations/handleWorkAllocationDetails';
-      const response = await ApiService.post(endpoint, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      if (response.data.status) {
-        alert(
-          selectedWorkAllocation.id
-            ? 'Work Allocation updated successfully!'
-            : 'Work Allocation added successfully!'
-        );
-        navigate('/workAllocations');
-      } else {
-        alert('Failed to save work allocation. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error saving work allocation:', error);
-      alert('Failed to save work allocation. Please try again.');
-    }
+  const generateExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(salesDetails);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Visits');
+    XLSX.writeFile(workbook, 'Sales_Visits.xlsx');
   };
 
   return (
     <div className="p-10">
       <div className="flex justify-between mb-4">
         <p className="text-xl font-bold">Sales Visits</p>
-        {/* <button
-          className={`h-12 px-8 text-white font-bold rounded-md hover:cursor-pointer  ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
-          style={{
-            backgroundColor: '#FFF504',
-            borderRadius: '25px',
-            color: '#000000',
-          }}
-          onClick={handleOpenModalForAdd}
-          disabled={!permissions.add}
-        >
-          <span className="text-black mr-2">➕</span>
-          Create Work Allocation
-        </button> */}
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div
-            className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl"
-            style={{ borderRadius: '50px' }}
-          >
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-5 right-5 text-white cursor-pointer rounded-full w-10 h-10 flex items-center justify-center"
-              style={{ backgroundColor: '#FF9900' }}
-            >
-              X
-            </button>
-            <h2 className="text-xl font-bold text-center mb-6">
-              {isEditMode ? 'Edit Work Allocation' : 'Create Work Allocation'}
-            </h2>
-            <form onSubmit={handleSave}>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-                {/* Client Name */}
-                <div>
-                  <label
-                    className="block text-gray-700 font-semibold mb-2"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: '#000000',
-                    }}
-                  >
-                    Client Name
-                  </label>
-                  {/* {client.length > 0 && ( */}
-                  <select
-                    name="clientId"
-                    value={selectedWorkAllocation?.clientId || ''}
-                    onChange={handleDropdownChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
-                  >
-                    <option value="" disabled>
-                      Select Client
-                    </option>
-                    {client.map((clientItem) => (
-                      <option key={clientItem.id} value={clientItem.id}>
-                        {clientItem.name}
-                      </option>
-                    ))}
-                  </select>
-                  {/* )} */}
-                </div>
-
-                {/* Assign To */}
-                {staff.length > 0 && (
-                  <div>
-                    <label
-                      className="block text-gray-700 font-semibold mb-2"
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: '400',
-                        color: '#000000',
-                      }}
-                    >
-                      Client Number
-                    </label>
-                    <select
-                      name="staffId"
-                      value={selectedWorkAllocation?.staffId || ''}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                      style={{
-                        borderRadius: '6px',
-                        backgroundColor: '#FFFFFF',
-                      }}
-                    >
-                      <option value="" disabled>
-                        Allocated to
-                      </option>
-                      {staff.map((staffMember) => (
-                        <option key={staffMember.id} value={staffMember.id}>
-                          {staffMember.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* Voucher ID */}
-                {voucher.length > 0 && (
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      Voucher ID
-                    </label>
-                    <select
-                      name="voucherId"
-                      value={selectedWorkAllocation?.voucherId || ''}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                      style={{
-                        borderRadius: '6px',
-                        backgroundColor: '#FFFFFF',
-                      }}
-                    >
-                      <option value="" disabled>
-                        Select Voucher
-                      </option>
-                      {voucher.map((voucherItem) => (
-                        <option key={voucherItem.id} value={voucherItem.id}>
-                          {voucherItem.voucherId}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* Date */}
-                <div>
-                  <label
-                    className="block text-gray-700 font-semibold mb-2"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: '#000000',
-                    }}
-                  >
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
-                    value={selectedWorkAllocation?.date || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                {/* Service or Product */}
-                <div>
-                  <label
-                    className="block text-gray-700 font-semibold mb-2"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: '#000000',
-                    }}
-                  >
-                    Service/Product
-                  </label>
-                  <input
-                    name="serviceOrProduct"
-                    value={selectedWorkAllocation?.serviceOrProduct || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
-                  />
-                </div>
-
-                {/* Other Information */}
-                <div className="col-span-2">
-                  <label
-                    className="block text-gray-700 font-semibold mb-2"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: '400',
-                      color: '#000000',
-                    }}
-                  >
-                    Address
-                  </label>
-                  <input
-                    name="otherInformation"
-                    className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
-                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
-                    value={selectedWorkAllocation?.otherInformation || ''}
-                    onChange={handleInputChange}
-                    rows="2"
-                  />
-                </div>
-
-                {/* Product Name */}
-
-                {/* Description */}
-                {/* <div className="col-span-2">
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
-                    value={selectedWorkAllocation?.description || ''}
-                    onChange={handleInputChange}
-                    rows="3"
-                  />
-                </div> */}
-              </div>
-              <div>
-                <label
-                  className="block text-gray-700 font-semibold mb-2"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: '400',
-                    color: '#000000',
-                    width: '100vh',
-                  }}
-                >
-                  Other Information
-                </label>
-                <textarea
-                  name="productName"
-                  className="w-full border p-3 rounded-md bg-gray-200 focus:outline-none"
-                  style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
-                  value={selectedWorkAllocation?.productName || ''}
-                  onChange={handleInputChange}
-                  rows="2"
-                />
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                }}
-              >
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white p-3 rounded-md font-semibold hover:bg-blue-600 transition"
-                  style={{
-                    backgroundColor: '#FF9900',
-                    borderRadius: '27px',
-                    height: '54px',
-                    width: '300px',
-                    color: '#000000',
-                    fontSize: '30px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  Send
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {isMoreDetailsModalOpen && selectedWorkAllocation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative w-[550px]">
-            <button
-              onClick={handleCloseMoreDetailsModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
-            >
-              X
-            </button>
-            <h2 className="text-xl font-bold text-center mb-4">
-              Work Allocation Details
-            </h2>
-            <div>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Work Allocation Number : </strong>{' '}
-                {selectedWorkAllocation.workAllocationNumber}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Client Name : </strong>{' '}
-                {selectedWorkAllocation.clientName}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Client Number : </strong>{' '}
-                {selectedWorkAllocation.phoneNumber}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Date : </strong> {selectedWorkAllocation.date}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Service / Product :</strong>{' '}
-                {selectedWorkAllocation.serviceOrProduct}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Allocated to : </strong>{' '}
-                {selectedWorkAllocation.assignedTo}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Address : </strong> {selectedWorkAllocation.address}
-              </p>
-              <p className="shadow-lg rounded-md p-4 my-2 border border-gray-200">
-                <strong>Other Information : </strong>{' '}
-                {selectedWorkAllocation.otherInformation}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="flex mb-4">
         <input
@@ -549,69 +251,88 @@ const SalesVisit = () => {
         <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
           <FaSearch />
         </button>
+        <button
+          className="h-12 px-6 bg-green-600 text-white rounded-md flex items-center ml-2"
+          onClick={generateExcel}
+        >
+          Generate XL
+        </button>
       </div>
 
-      {/* <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-4">Staff Visits</h2>
-        <div className="flex items-center gap-4 mb-4">
-          <input
-            type="text"
-            placeholder="staff ID :"
-            className="border border-gray-300 rounded-lg px-3 py-2 w-1/3"
-          />
-          <input
-            type="text"
-            placeholder="Company name :"
-            className="border border-gray-300 rounded-lg px-3 py-2 w-1/3"
-          />
-          <button className="bg-green-600 p-3 rounded-lg">
-            <FaSearch className="text-white" size={20} />
-          </button>
-        </div> */}
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-          <thead>
-            <tr
-              className="bg-gray-200 text-left"
-              style={{ backgroundColor: '#FFFFFF' }}
-            >
-              <th className="p-3">No.</th>
-              <th className="p-3">Visit ID</th>
-              <th className="p-3">Company</th>
-              <th className="p-3">Contact</th>
-              <th className="p-3">Date of Visit</th>
-              <th className="p-3">Estimate Date</th>
-              <th className="p-3">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
+        {salesDetails.length === 0 ? (
+          <div className="text-center text-gray-500 text-lg p-5">
+            No Data Found
+          </div>
+        ) : (
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
               <tr
-                key={item.id}
-                className={`border-b`}
-                style={{
-                  backgroundColor: index % 2 === 0 ? '#D0D0D0' : '#FFFFFF',
-                }}
+                className="bg-gray-200 text-left"
+                style={{ backgroundColor: '#FFFFFF' }}
               >
-                <td className="p-3 font-semibold">{item.id}</td>
-                <td className="p-3">{item.visitId}</td>
-                <td className="p-3 font-semibold">{item.company}</td>
-                <td className="p-3">{item.contact}</td>
-                <td className="p-3 font-semibold">{item.visitDate}</td>
-                <td className="p-3">{item.estimateDate}</td>
-                <td className="border p-2 relative">
-                  <button
-                    // onClick={(e) => handleOpenPopup(e, group.id)}
-                    className="p-2"
-                  >
-                    <FaEllipsisV />
-                  </button>
-                </td>
+                <th className="p-3">No.</th>
+                <th className="p-3">Visit ID</th>
+                <th className="p-3">Company</th>
+                <th className="p-3">Contact</th>
+                <th className="p-3">Date of Visit</th>
+                <th className="p-3">Estimate Date</th>
+                <th className="p-3">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {salesDetails.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className={`border-b`}
+                  style={{
+                    backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#D0D0D0',
+                  }}
+                >
+                  <td className="p-3 font-semibold">{item.id}</td>
+                  <td className="p-3">{item.visitingNumber}</td>
+                  <td className="p-3 font-semibold">{item.name}</td>
+                  <td className="p-3">{item.phoneNumber}</td>
+                  <td className="p-3 font-semibold">{item.date}</td>
+                  <td className="p-3">{item.estimateDate}</td>
+                  <td className="border p-2 relative">
+                    <button
+                      // onClick={(e) => handleOpenPopup(e, group.id)}
+                      onClick={(e) => handleActionClick(e, item)}
+                      className="p-2"
+                    >
+                      <FaEllipsisV />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
+
+      {popupData && (
+        <div
+          className="popup-menu absolute bg-white border border-gray-300 shadow-md rounded-lg py-2 w-40"
+          style={{
+            top: `${popupData.position.top}px`,
+            left: `${popupData.position.left}px`,
+          }}
+        >
+          <button
+            className="block px-4 py-2 text-left w-full hover:bg-gray-100"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+          <button
+            className="block px-4 py-2 text-left w-full hover:bg-gray-100"
+            onClick={handleMoreDetails}
+          >
+            More Details
+          </button>
+        </div>
+      )}
       {/* </div> */}
 
       {/* <TableWithSearchFilter
