@@ -11,34 +11,34 @@ import * as XLSX from 'xlsx';
 const data = [
   {
     id: '01',
-    visitId: '4376T4RT5TG',
-    company: 'Way4track',
-    contact: '9876543210',
-    visitDate: '09-12-2024',
+    visitingNumber: '4376T4RT5TG',
+    name: 'Way4track',
+    phoneNumber: '9876543210',
+    date: '09-12-2024',
     estimateDate: '09-12-2024',
   },
   {
     id: '02',
-    visitId: '4376T4RT5TG',
-    company: 'Way4track',
-    contact: '9876543210',
-    visitDate: '09-12-2024',
+    visitingNumber: '4376T4RT5TG',
+    name: 'Way4track',
+    phoneNumber: '9876543210',
+    date: '09-12-2024',
     estimateDate: '09-12-2024',
   },
   {
     id: '03',
-    visitId: '4376T4RT5TG',
-    company: 'Way4track',
-    contact: '9876543210',
-    visitDate: '09-12-2024',
+    visitingNumber: '4376T4RT5TG',
+    name: 'Way4track',
+    phoneNumber: '9876543210',
+    date: '09-12-2024',
     estimateDate: '09-12-2024',
   },
   {
     id: '04',
-    visitId: '4376T4RT5TG',
-    company: 'Way4track',
-    contact: '9876543210',
-    visitDate: '09-12-2024',
+    visitingNumber: '4376T4RT5TG',
+    name: 'Way4track',
+    phoneNumber: '9876543210',
+    date: '09-12-2024',
     estimateDate: '09-12-2024',
   },
 ];
@@ -120,12 +120,13 @@ const SalesVisit = () => {
     );
   };
 
-  const handleEdit = () => {
-    alert('Edit action clicked');
+  const handleEdit = (visit) => {
+    navigate('/edit-salesVisit-details', { state: { visit } });
+    setPopupData(null);
   };
 
-  const handleMoreDetails = () => {
-    navigate('/sales-visit-details');
+  const handleMoreDetails = (visit) => {
+    navigate('/sales-visit-details', { state: { visit } });
     setPopupData(null);
   };
 
@@ -260,7 +261,7 @@ const SalesVisit = () => {
       </div>
 
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
-        {salesDetails.length === 0 ? (
+        {data.length === 0 ? (
           <div className="text-center text-gray-500 text-lg p-5">
             No Data Found
           </div>
@@ -281,7 +282,7 @@ const SalesVisit = () => {
               </tr>
             </thead>
             <tbody>
-              {salesDetails.map((item, index) => (
+              {data.map((item, index) => (
                 <tr
                   key={item.id}
                   className={`border-b`}
@@ -321,13 +322,13 @@ const SalesVisit = () => {
         >
           <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
-            onClick={handleEdit}
+            onClick={() => handleEdit(popupData.item)}
           >
             Edit
           </button>
           <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
-            onClick={handleMoreDetails}
+            onClick={() => handleMoreDetails(popupData.item)}
           >
             More Details
           </button>

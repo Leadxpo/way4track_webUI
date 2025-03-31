@@ -58,7 +58,7 @@ const Table = ({
   onEdit,
   onDetails,
   onDelete,
-  showEdit = true,
+  showEdit = false,
   showDelete = true,
   showDetails = true,
   editText = 'Edit',

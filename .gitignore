@@ -53,7 +53,7 @@ test-results.xml
 docker-compose.override.yml
 
 # Static assets (optional)
-public/
+# public/
 
 # Misc
 npm-debug.log

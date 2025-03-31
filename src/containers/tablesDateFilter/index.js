@@ -39,6 +39,7 @@ const TableWithDateFilter = ({
   const vendorData = location.state?.vendorsData || {};
   const subDealerData = location.state?.subDealersData || {};
   const requestData = location.state?.requestData || {};
+  const [columnNames, setColumnNames] = useState([]);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -90,17 +91,26 @@ const TableWithDateFilter = ({
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-  
+
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
-  
-         // Remove null values and format data
-      const formattedData = response.data.map(({ paymentStatus, amount, voucherId, phoneNumber, joiningDate, ...rest }) => ({
-        ...rest,   // Spread remaining properties first (except joiningDate)
-        name: rest.name, // Ensure 'name' comes first
-        phoneNumber, // Place 'phoneNumber' explicitly after 'name'
-        joiningDate, // Place 'joiningDate' after 'phoneNumber'
-      }));
+
+        // Remove null values and format data
+        const formattedData = response.data.map(
+          ({
+            paymentStatus,
+            amount,
+            voucherId,
+            phoneNumber,
+            joiningDate,
+            ...rest
+          }) => ({
+            ...rest, // Spread remaining properties first (except joiningDate)
+            name: rest.name, // Ensure 'name' comes first
+            phoneNumber, // Place 'phoneNumber' explicitly after 'name'
+            joiningDate, // Place 'joiningDate' after 'phoneNumber'
+          })
+        );
 
         setFilteredData(formattedData);
       } else {
@@ -111,7 +121,7 @@ const TableWithDateFilter = ({
       alert('Failed to fetch sub-dealer details.');
     }
   }, [dateFrom, dateTo, subDealerData?.paymentStatus]);
-  
+
   const getEstimateData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getEstimates', {
@@ -276,6 +286,7 @@ const TableWithDateFilter = ({
     }
     setPageTitle(pageTitles[type]);
     setColumns(Object.keys(dataSource[0] || {}));
+    setColumnNames(Object.keys(dataSource[0] || {}));
     setData(dataSource);
     setFilteredData(dataSource);
 
@@ -426,21 +437,21 @@ const TableWithDateFilter = ({
 
       {/* Table Row */}
       <div className="mt-8">
-  <Table
-    columns={columns}
-    data={filteredData}
-    onEdit={onEdit}
-    onDelete={onDelete}
-    onDetails={onDetails}
-    showEdit={true} // Ensure Edit button is always visible
-    showDelete={true} // Ensure Delete button is always visible
-    showDetails={true} // Ensure Details button is always visible
-    editText={editText} // Custom edit button text
-    deleteText={deleteText} // Custom delete button text
-    detailsText={detailsText} // Custom details button text
-  />
-</div>
-
+        <Table
+          columns={columns}
+          columnNames={columnNames}
+          data={filteredData}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onDetails={onDetails}
+          showEdit={true} // Ensure Edit button is always visible
+          showDelete={true} // Ensure Delete button is always visible
+          showDetails={true} // Ensure Details button is always visible
+          editText={editText} // Custom edit button text
+          deleteText={deleteText} // Custom delete button text
+          detailsText={detailsText} // Custom details button text
+        />
+      </div>
     </div>
   );
 };

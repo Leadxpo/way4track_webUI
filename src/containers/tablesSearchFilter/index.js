@@ -38,6 +38,7 @@ const TableWithSearchFilter = ({
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
   const workData = location.state?.workData || {};
+  const [columnNames,setColumnNames]=useState([])
   const [qualifiedCount, setQualifiedCount] = useState(0);
   useEffect(() => {
     const countQualified = filteredData.filter(
@@ -268,6 +269,7 @@ const TableWithSearchFilter = ({
     }
     setPageTitle(pageTitles[type]);
     setColumns(Object.keys(dataSource[0] || {}));
+    setColumnNames(Object.keys(dataSource[0] || {}));
     setData(dataSource);
     setFilteredData(dataSource);
 
@@ -505,6 +507,7 @@ const TableWithSearchFilter = ({
       <div className="mt-8">
         <Table
           columns={columns}
+          columnNames={columnNames}
           data={filteredData}
           onEdit={onEdit}
           onDetails={onDetails}

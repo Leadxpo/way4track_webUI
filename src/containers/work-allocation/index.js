@@ -90,6 +90,7 @@ const WorkAllocation = () => {
   const [popupData, setPopupData] = useState(null);
   const [detailedWorkAllocation, setDetailedWorkAllocation] = useState([]);
   const [searchId, setSearchId] = useState('');
+  const [branches, setBranches] = useState([]);
 
   const productList = ['Product A', 'Product B', 'Product C'];
 
@@ -243,17 +244,41 @@ const WorkAllocation = () => {
   //   }));
   // };
 
+  // const handleDropdownChange = (e) => {
+  //   const selectedClientId = Number(e.target.value); // Convert to number
+  //   const selectedClient = client.find(
+  //     (clientDetails) => clientDetails.clientId === selectedClientId
+  //   );
+
+  //   setSelectedWorkAllocation((prev) => ({
+  //     ...prev,
+  //     clientId: selectedClientId, // Now stored as a number
+  //     // clientName: selectedClient?.name || '',
+  //     // phoneNumber: selectedClient?.phoneNumber || '',
+  //   }));
+  // };
+
+  // const handleBranchDropdownChange = (e) => {
+  //   const selectedBranchId = Number(e.target.value); // Convert to number
+  //   const selectedBranch = branch.find(
+  //     (clientDetails) => clientDetails.clientId === selectedClientId
+  //   );
+
+  //   setSelectedWorkAllocation((prev) => ({
+  //     ...prev,
+  //     clientId: selectedClientId, // Now stored as a number
+  //     // clientName: selectedClient?.name || '',
+  //     // phoneNumber: selectedClient?.phoneNumber || '',
+  //   }));
+  // };
+
   const handleDropdownChange = (e) => {
-    const selectedClientId = Number(e.target.value); // Convert to number
-    const selectedClient = client.find(
-      (clientDetails) => clientDetails.clientId === selectedClientId
-    );
+    const { name, value } = e.target;
+    const numericValue = Number(value); // Ensure value is a number
 
     setSelectedWorkAllocation((prev) => ({
       ...prev,
-      clientId: selectedClientId, // Now stored as a number
-      // clientName: selectedClient?.name || '',
-      // phoneNumber: selectedClient?.phoneNumber || '',
+      [name]: numericValue, // Dynamically update either clientId or branchId
     }));
   };
 
@@ -351,7 +376,7 @@ const WorkAllocation = () => {
             ? 'Work Allocation updated successfully!'
             : 'Work Allocation added successfully!'
         );
-        navigate('/workAllocations');
+        navigate('/work_allocations');
       } else {
         alert('Failed to save work allocation. Please try again.');
       }
@@ -412,6 +437,25 @@ const WorkAllocation = () => {
           }
     );
   };
+
+  const fetchBranches = async () => {
+    console.log('hiiiiii');
+    try {
+      const response = await ApiService.post('/branch/getBranchNamesDropDown');
+      console.log('hiiiiii22', response);
+      if (response.status && Array.isArray(response.data)) {
+        setBranches(response.data);
+      } else {
+        console.error('Failed to fetch branches:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBranches();
+  }, []);
 
   const generateExcel = () => {
     const worksheetData = filteredData.map((item, index) => ({
@@ -707,20 +751,21 @@ const WorkAllocation = () => {
                         Select Product
                       </label>
                       <select
-                        name="productName"
-                        value={selectedWorkAllocation.productName}
+                        name="productId"
+                        value={selectedWorkAllocation.productId || ''} // Ensure value is a number
                         onChange={(e) => {
+                          const selectedProductId = Number(e.target.value);
                           const selectedProduct = productLists.find(
-                            (product) => product.id === Number(e.target.value)
+                            (product) => product.id === selectedProductId
                           );
 
-                          setSelectedWorkAllocation({
-                            ...selectedWorkAllocation,
-                            productId: Number(e.target.value),
+                          setSelectedWorkAllocation((prev) => ({
+                            ...prev,
+                            productId: selectedProductId,
                             productName: selectedProduct
                               ? selectedProduct.productType
                               : '',
-                          });
+                          }));
                         }}
                         className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                         style={{
@@ -731,8 +776,8 @@ const WorkAllocation = () => {
                         <option value="" disabled>
                           Select a product
                         </option>
-                        {productLists.map((product, index) => (
-                          <option key={index} value={product.id}>
+                        {productLists.map((product) => (
+                          <option key={product.id} value={product.id}>
                             {product.productType}
                           </option>
                         ))}
@@ -764,6 +809,39 @@ const WorkAllocation = () => {
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div>
+                <label
+                  className="block text-gray-700 font-semibold mb-2"
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: '400',
+                    color: '#000000',
+                  }}
+                >
+                  Branch Name
+                </label>
+                {/* {client.length > 0 && ( */}
+                <select
+                  name="branchId"
+                  value={selectedWorkAllocation?.branchId || ''}
+                  onChange={handleDropdownChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
+                >
+                  <option value="" disabled>
+                    Select Branch
+                  </option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {' '}
+                      {/* Use branch.id as value */}
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+                {/* )} */}
               </div>
 
               {/* Other Information */}
@@ -847,7 +925,7 @@ const WorkAllocation = () => {
                     }}
                   >
                     <option value="" disabled>
-                      Allocated to
+                      Sales ID
                     </option>
                     {staff
                       .filter(
@@ -1065,7 +1143,7 @@ const WorkAllocation = () => {
           onClick={generateExcel}
           className="h-12 px-6 bg-green-600 text-white rounded-md flex items-center ml-2"
         >
-          Generate Excel
+          Generate XL
         </button>
       </div>
 
