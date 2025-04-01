@@ -7,16 +7,19 @@ const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [branchStock, setBranchStock] = useState({});
-  const [paymentsStock, setPaymentsStock] = useState({});
+  const [pendingAmount, setPendingAmount] = useState({});
+  const [receivedPayments, setReceivedPayments] = useState({});
+  const [branchStockDetails, setBranchStockDetails] = useState([]); // Placeholder for missing variable
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [totalStaffDetails, setTotalStaffDetails] = useState([]); // Placeholder for missing variable
   const [search, setSearch] = useState(""); // Placeholder for missing search term
 
   useEffect(() => {
     fetchBranchStockDetails();
-    fetchPaymentsStockDetails();
+    ReceivedPayments();
+    PendingAmount();
+
+    
   }, []);
 
   const fetchBranchStockDetails = async () => {
@@ -25,31 +28,114 @@ const Reports = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-      const response = await ApiService.post('/dashboards/getBranchStockDetails', payload);
-      
-      if (response.status) {
-        
+      let response = await ApiService.post("/dashboards/getStockSummary", payload);
+  
+      // Ensure response.data is always an array
+      if (response?.status && Array.isArray(response.data)) {
+        setBranchStockDetails(response.data);
+      } else {
+        setBranchStockDetails([]); // Prevent undefined
       }
     } catch (error) {
-      console.error('Error fetching branch stock details:', error);
+      console.error("Error fetching branch stock details:", error);
+      setBranchStockDetails([]); // Handle errors gracefully
     }
   };
-
-  const fetchPaymentsStockDetails = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      };
-      const response = await ApiService.post('/dashboards/getPaymentsStockDetails', payload);
-      
-      if (response.status) {
-  const   data=response.data;
-      }
-    } catch (error) {
-      console.error('Error fetching payments stock details:', error);
-    }
-  };
+  
+  useEffect(() => {
+    fetchBranchStockDetails();
+  }, []);
+  
+  // Filtering branch stock details based on search query
+  const filteredBranchStock = Array.isArray(branchStockDetails)
+    ? branchStockDetails.filter((stock) =>
+        stock?.branchName?.toLowerCase().includes(search.toLowerCase())
+      )
+    : [];
+  
+ 
+ // Received Payments
+ 
+ const ReceivedPayments = async () => {
+   try {
+     const payload = {
+       companyCode: initialAuthState.companyCode,
+       unitCode: initialAuthState.unitCode,
+       role: localStorage.getItem('role'),
+     };
+     if (payload.role === 'Branch Manager') {
+       payload.branchName = localStorage.getItem('branchName');
+     }
+     let response;
+     if (payload.branchName) {
+       response = await ApiService.post("/technician/getSucessPaymentsForTable", payload);
+     }
+     // Ensure response.data is always an array
+     if (response?.status && Array.isArray(response.data)) {
+       setReceivedPayments(response.data);
+     } else {
+       setReceivedPayments([]); // Prevent undefined
+     }
+   } catch (error) {
+     console.error('Error fetching received payments:', error);
+     setReceivedPayments([]); // Handle errors gracefully
+   }
+ };
+ 
+ useEffect(() => {
+   ReceivedPayments();
+ }, []);
+ 
+ // Filtering received payments based on search query
+ const filteredPayments = Array.isArray(receivedPayments)
+   ? receivedPayments.filter((payment) =>
+       payment?.technicianName?.toLowerCase().includes(search.toLowerCase())
+     )
+   : [];
+ 
+ 
+ // Pending Amount
+ 
+ const PendingAmount = async () => {
+   try {
+     const payload = {
+       companyCode: initialAuthState.companyCode,
+       unitCode: initialAuthState.unitCode,
+       role: localStorage.getItem('role'),
+     };
+     if (payload.role === 'Branch Manager') {
+       payload.branchName = localStorage.getItem('branchName');
+     }
+     let response;
+     if (payload.branchName) {
+       response = await ApiService.post("/technician/getPendingPaymentsForTable", payload);
+     }
+     // Ensure response.data is always an array
+     if (response?.status && Array.isArray(response.data)) {
+       setPendingAmount(response.data);
+     } else {
+       setPendingAmount([]); // Prevent undefined
+     }
+   } catch (error) {
+     console.error('Error fetching pending amount data:', error);
+     setPendingAmount([]); // Handle errors gracefully
+   }
+ };
+ 
+ useEffect(() => {
+   PendingAmount();
+ }, []);
+ 
+ // Filtering pending amounts based on search query
+ const filteredPendingAmount = Array.isArray(pendingAmount)
+   ? pendingAmount.filter((payment) =>
+       payment?.technicianName?.toLowerCase().includes(search.toLowerCase())
+     )
+   : [];
+ 
+ 
+ 
+ 
 
   const handleOpenModal = (name) => {
     setSelectedStock(name);
@@ -99,15 +185,15 @@ const Reports = () => {
   };
 
   const handlePreview = () => {
-    console.log("Payments Stock:", paymentsStock);
+    console.log("Payments Stock:", pendingAmount);
   
-    if (!paymentsStock || !Array.isArray(paymentsStock.employees)) {
-      console.error("paymentsStock.employees is not an array:", paymentsStock.employees);
+    if (!pendingAmount || !Array.isArray(pendingAmount.employees)) {
+      console.error("paymentsStock.employees is not an array:", pendingAmount.employees);
       alert("Error: Data is not in the correct format.");
       return;
     }
   
-    const filteredData = paymentsStock.employees.filter((row) =>
+    const filteredData = pendingAmount.employees.filter((row) =>
       row.name && typeof row.name === "string"
         ? row.name.toLowerCase().includes(search.toLowerCase())
         : false
