@@ -16,7 +16,7 @@ const EstimateDetails = () => {
     products: [],
     terms: '',
   });
-  const [estimate, setEstimate] = useState([])
+  const [estimate, setEstimate] = useState([]);
 
   const getEstimateIDData = useCallback(async () => {
     try {
@@ -26,7 +26,7 @@ const EstimateDetails = () => {
         unitCode: initialAuthState?.unitCode,
       });
 
-      console.log("hiiiiiii iiiii",)
+      console.log('hiiiiiii iiiii');
       if (response.status) {
         console.log(response.data, 'Response Data 0000000'); // Log data to verify it
         const estimateData = response.data[0]; // Access the first element of the array
@@ -57,15 +57,14 @@ const EstimateDetails = () => {
             // description: product.description || '',
             amount: product.amount,
             quantity: product.quantity,
-            rate:product.costPerUnit,
+            rate: product.costPerUnit,
             totalAmount: product.totalCost,
             hsnCode: product.hsnCode,
           })),
           terms: estimateData.description,
           estimatePdfUrl: estimateData.estimatePdfUrl,
-          SCST:estimateData.SCST,
-          CGST:estimateData.CGST
-
+          SCST: estimateData.SCST,
+          CGST: estimateData.CGST,
         });
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
@@ -98,7 +97,7 @@ const EstimateDetails = () => {
         }
       );
 
-      console.log("estimation pdf",response.data)
+      console.log('estimation pdf', response.data);
 
       const pdfUrl = response.data.estimate_estimatePdfUrl;
 
@@ -215,37 +214,38 @@ const EstimateDetails = () => {
                 <td className=" px-4 py-2">{product.id}</td>
                 <td className=" px-4 py-2">{product.name}</td>
                 <td className=" px-4 py-2 text-center">{product.quantity}</td>
-                <td className=" px-4 py-2 text-center">{product.rate}</td>                  
-                <td className=" px-4 py-2 text-center">{product.totalAmount}</td>
+                <td className=" px-4 py-2 text-center">{product.rate}</td>
+                <td className=" px-4 py-2 text-center">
+                  {product.totalAmount}
+                </td>
                 <td className="px-4 py-2 text-center">
-                <button
-  className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
-  onClick={() =>
-    navigate("/work-allocation", {
-      state: {
-        logo: "path/to/logo.png", // Replace with actual logo path
-        name: estimateData.name, // Company name
-        address: estimateData.address,
-        gstin: estimateData.gstin,
-        cin: estimateData.cin, // CIN number
-        number: estimateData.estimateId,
-        date: estimateData.estimateDate,
-        expiryDate: estimateData.expireDate,
-        amount: estimateData.totalAmount,
-        clientId: estimateData.clientId,
-        phone: estimateData.phone,
-        email: estimateData.email,
-        terms: estimateData.terms,
-        estimatePdfUrl: estimateData.estimatePdfUrl,
-        product: product, // Ensure 'product' is defined
-      },
-    })
-  }
->
-  Work Allocation
-</button>
-</td>
-                
+                  <button
+                    className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
+                    onClick={() =>
+                      navigate('/work_allocation', {
+                        state: {
+                          logo: 'path/to/logo.png', // Replace with actual logo path
+                          name: estimateData.name, // Company name
+                          address: estimateData.address,
+                          gstin: estimateData.gstin,
+                          cin: estimateData.cin, // CIN number
+                          number: estimateData.estimateId,
+                          date: estimateData.estimateDate,
+                          expiryDate: estimateData.expireDate,
+                          amount: estimateData.totalAmount,
+                          clientId: estimateData.clientId,
+                          phone: estimateData.phone,
+                          email: estimateData.email,
+                          terms: estimateData.terms,
+                          estimatePdfUrl: estimateData.estimatePdfUrl,
+                          product: product, // Ensure 'product' is defined
+                        },
+                      })
+                    }
+                  >
+                    Work Allocation
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -253,17 +253,20 @@ const EstimateDetails = () => {
 
         {/* Terms and Conditions */}
         <div className="text-black-600 mb-6">
-          <p><span className="font-bold">Description: </span>{estimateData.terms}</p>
+          <p>
+            <span className="font-bold">Description: </span>
+            {estimateData.terms}
+          </p>
         </div>
 
         {/* Footer Buttons */}
         <div className="flex items-center justify-center space-x-4">
           <button
-  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-  onClick={() => window.open(estimateData.estimatePdfUrl, "_blank")}
->
-  Download PDF
-</button>
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            onClick={() => window.open(estimateData.estimatePdfUrl, '_blank')}
+          >
+            Download PDF
+          </button>
         </div>
       </div>
     </div>

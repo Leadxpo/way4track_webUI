@@ -4,17 +4,15 @@ import { FaFileCirclePlus } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
 
 const AddEditProductAssign = () => {
-
-
   const navigate = useNavigate();
   const location = useLocation();
 
   // Check if there's product data passed through location.state
   const productAssign = location.state?.productAssignDetails || {};
-  console.log(location.state?.productAssignDetails, ")))))))))))")
+  console.log(location.state?.productAssignDetails, ')))))))))))');
   // Initialize form data with existing product details if available
   const initialFormData = {
-    id: productAssign?.productId || null,
+    // id: productAssign?.productId || null,
     staffId: productAssign.staffId || '',
     assignTo: productAssign.assignTo || '',
     name: productAssign.name || '',
@@ -47,7 +45,9 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const getProductNamesDropDown = async () => {
       try {
-        const response = await ApiService.post('/products/getProductNamesDropDown');
+        const response = await ApiService.post(
+          'productType/getProductTypeNamesDropDown'
+        );
         setProduct(response.data);
       } catch (error) {
         console.error('Failed to fetch product names:', error);
@@ -59,7 +59,9 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
         if (response.status) {
           setBranches(response.data);
         } else {
@@ -103,6 +105,14 @@ const AddEditProductAssign = () => {
     fetchStaff();
   }, []);
 
+  const handleNumberInputChange = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      numberOfProducts: value,
+    });
+  };
+
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
     setFormData({
@@ -123,21 +133,34 @@ const AddEditProductAssign = () => {
   };
 
   const handleProductChange = (e) => {
-    const selectedProductId = parseInt(e.target.value, 10); // Parse the selected ID from the event
-    console.log(selectedProductId, "selectedProductId");
+    const selectedProductId = Number(e.target.value); // Ensure number
+    console.log(selectedProductId, 'selectedProductId');
 
-    // Find the selected product directly
-    const selectedProduct = product.find((pr) => pr.id === selectedProductId);
-    console.log(selectedProduct, "selectedProduct");
+    // Check if product array exists and has items
+    if (!Array.isArray(product) || product.length === 0) {
+      console.error('Product list is empty or not an array');
+      return;
+    }
 
-    // Update the form data state
+    // Find the selected product
+    const selectedProduct = product.find(
+      (pr) => Number(pr.id) === selectedProductId
+    );
+    console.log(selectedProduct, 'selectedProduct');
+
+    if (!selectedProduct) {
+      console.error('No matching product found');
+      return;
+    }
+
+    // Update form data
     setFormData((prev) => ({
       ...prev,
-      productId: selectedProduct?.id || '',
-      productName: selectedProduct?.productName || '',
-      imeiNumberFrom: selectedProduct?.imeiNumber || '',
-      imeiNumberTo: selectedProduct?.imeiNumber || '', // Assuming this is a range scenario
-      productType: selectedProduct?.productType || '', // If `productType` exists
+      productTypeId: selectedProduct.id,
+      // productName: selectedProduct.name || '', // Use `.name` instead of `productName` if needed
+      imeiNumberFrom: selectedProduct.imeiNumber || '',
+      imeiNumberTo: selectedProduct.imeiNumber || '',
+      productType: selectedProduct.name || '',
     }));
   };
 
@@ -163,20 +186,13 @@ const AddEditProductAssign = () => {
   //   }
   // };
 
-
-
   // const switchStatus = (record) => {
   //   getActiveStatus(record.id);
   // }
 
-
   // const switchInHandsStatus = (record) => {
   //   getActiveStatusInHands(record.id);
   // }
-
-
-
-
 
   const handleSave = async () => {
     const payload = new FormData();
@@ -195,9 +211,13 @@ const AddEditProductAssign = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
-        alert(formData.id ? 'Product updated successfully!' : 'Product added successfully!');
-        navigate('/product_assign');
+      if (response.status) {
+        alert(
+          formData.id
+            ? 'Product updated successfully!'
+            : 'Product added successfully!'
+        );
+        navigate('/products_assign');
       } else {
         alert('Failed to save product details. Please try again.');
       }
@@ -210,7 +230,6 @@ const AddEditProductAssign = () => {
   const handleCancel = () => {
     navigate('/product_assign');
   };
-
 
   const renderField = (label, name, type = 'text', placeholder = '') => (
     <div>
@@ -231,7 +250,9 @@ const AddEditProductAssign = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {location.state?.productDetails ? 'Edit Product Assign' : 'Add Product Assign'}
+            {location.state?.productDetails
+              ? 'Edit Product Assign'
+              : 'Add Product Assign'}
           </h1>
         </div>
 
@@ -274,7 +295,9 @@ const AddEditProductAssign = () => {
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select a Branch</option>
+                <option value="" disabled>
+                  Select a Branch
+                </option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.branchName}
@@ -294,7 +317,9 @@ const AddEditProductAssign = () => {
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select Staff</option>
+                <option value="" disabled>
+                  Select Staff
+                </option>
                 {staff.map((staffMember) => (
                   <option key={staffMember.id} value={staffMember.id}>
                     {staffMember.name}
@@ -307,17 +332,19 @@ const AddEditProductAssign = () => {
           {/* Product Selection */}
           {product.length > 0 && (
             <div>
-              <p className="font-semibold mb-1">Product</p>
+              <p className="font-semibold mb-1">Product Type</p>
               <select
                 name="product"
                 value={formData.product}
                 onChange={handleProductChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select a product</option>
+                <option value="" disabled>
+                  Select a product type
+                </option>
                 {product.map((pa) => (
                   <option key={pa.id} value={pa.id}>
-                    {pa.productName}
+                    {pa.name}
                   </option>
                 ))}
               </select>
@@ -334,7 +361,9 @@ const AddEditProductAssign = () => {
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>Select a request</option>
+                <option value="" disabled>
+                  Select a request
+                </option>
                 {request.map((re) => (
                   <option key={re.id} value={re.id}>
                     {re.requestId}
@@ -344,8 +373,20 @@ const AddEditProductAssign = () => {
             </div>
           )}
 
+          <div>
+            <p className="font-semibold mb-1">number of Products</p>
+            <input
+              type="text"
+              name="numberOfProducts"
+              value={formData.numberOfProducts}
+              onChange={handleNumberInputChange}
+              placeholder="Number of products"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+
           {/* Other Input Fields */}
-          {renderField('Product Type', 'productType')}
+          {renderField('Product Name', 'productName')}
           {renderField('Name', 'name')}
           {renderField('IMEI Number From', 'imeiNumberFrom')}
           {renderField('IMEI Number To', 'imeiNumberTo')}
@@ -558,7 +599,6 @@ const AddEditProductAssign = () => {
   //               className="w-full p-2 border rounded-md"
   //             />
   //           </label>
-
 
   //         </div>
   //       </div>
