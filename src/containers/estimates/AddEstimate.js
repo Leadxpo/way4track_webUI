@@ -281,9 +281,11 @@ const handleService = (index, e) => {
       });
        
       console.log("Estimate saved successfully!");
+      alert("Estimate saved successfully!")
       navigate("/estimate");
     } catch (err) {
       console.error("Failed to save estimate:", err);
+      alert("Estimate saved successfully!",err);
     }
   };
   
@@ -303,7 +305,7 @@ const handleService = (index, e) => {
       <div className="bg-white rounded-xl w-11/12 max-w-4xl p-8 shadow-md">
         {/* Title */}
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Create Estimates qq
+          Create Estimates
         </h1>
         {/* Form */}
         <form className="space-y-6">
@@ -538,12 +540,7 @@ const handleService = (index, e) => {
           <strong className="col-span-2 font-semibold">
             Total Estimate Amount : {formData.totalAmount}
           </strong>
-    <div>
-          <strong className="col-span-2 font-semibold">
-  Total Estimate Amount (Include Tax) : {formData.totalAmount +
-    (formData.totalAmount * formData.cgstPercentage) / 100 +
-    (formData.totalAmount * formData.scstPercentage) / 100}
-</strong></div>
+
 
 
 
@@ -617,6 +614,13 @@ const handleService = (index, e) => {
               />
 </div>
             }
+
+<div>
+          <strong className="col-span-2 font-semibold">
+  Total Estimate Amount (Include Tax) : {formData.totalAmount +
+    (formData.totalAmount * formData.cgstPercentage) / 100 +
+    (formData.totalAmount * formData.scstPercentage) / 100}
+</strong></div>
 
           {/* Terms & Conditions */}
           <div>
