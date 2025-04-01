@@ -222,7 +222,7 @@ const EstimateDetails = () => {
                   <button
                     className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
                     onClick={() =>
-                      navigate('/work_allocation', {
+                      navigate('/edit-work-allocation', {
                         state: {
                           logo: 'path/to/logo.png', // Replace with actual logo path
                           name: estimateData.name, // Company name
