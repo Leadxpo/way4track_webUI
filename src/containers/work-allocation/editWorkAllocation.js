@@ -10,8 +10,8 @@ const EditWorkAllocation = () => {
 
   // Check if there's workAllocation data passed through location.state
   const workAllocationData = location.state?.workAllocationDetails;
-  console.log(workAllocationData, ">>>>>>>>>>>>")
-  console.log(workAllocationData.work.id, "+====}}}}}}}}}")
+  console.log(workAllocationData, '>>>>>>>>>>>>');
+  console.log(workAllocationData.work.id, '+====}}}}}}}}}');
 
   const initialFormData = {
     id: workAllocationData.work.id || '',
@@ -64,7 +64,6 @@ const EditWorkAllocation = () => {
     }
   };
 
-
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
@@ -76,7 +75,7 @@ const EditWorkAllocation = () => {
             unitCode: initialAuthState.unitCode,
           }
         );
-        console.log(workAllocationData.id, "+====}}}}}}}}}")
+        console.log(workAllocationData.id, '+====}}}}}}}}}');
 
         if (response.data?.length > 0) {
           const workAllocation = response.data;
@@ -86,7 +85,6 @@ const EditWorkAllocation = () => {
             ...workAllocation, // Merge fetched data
             productDetails: workAllocation.products || [], // Ensure product details are mapped correctly
           });
-
         }
       } catch (error) {
         console.error('Error fetching work allocation details:', error);
@@ -118,10 +116,7 @@ const EditWorkAllocation = () => {
   const addNewItem = () => {
     setSelectedWorkAllocation((prevData) => ({
       ...prevData,
-      productDetails: [
-        ...prevData.productDetails,
-        { productName: '' },
-      ],
+      productDetails: [...prevData.productDetails, { productName: '' }],
     }));
   };
 
@@ -226,7 +221,9 @@ const EditWorkAllocation = () => {
           <form className="bg-white p-4" onSubmit={handleSave}>
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-1">Client Name</label>
+                <label className="block text-gray-700 font-semibold mb-1">
+                  Client Name
+                </label>
                 {client.length > 0 && (
                   <select
                     name="clientId"
@@ -313,7 +310,9 @@ const EditWorkAllocation = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-1">Voucher ID</label>
+                <label className="block text-gray-700 font-semibold mb-1">
+                  Voucher ID
+                </label>
                 {voucher.length > 0 && (
                   <select
                     name="voucherId"
@@ -333,7 +332,9 @@ const EditWorkAllocation = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-1">Service or Product</label>
+                <label className="block text-gray-700 font-semibold mb-1">
+                  Service or Product
+                </label>
                 <input
                   name="serviceOrProduct"
                   value={selectedWorkAllocation?.serviceOrProduct || ''}

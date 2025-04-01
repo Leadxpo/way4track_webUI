@@ -125,6 +125,7 @@ import AddDispatch from '../dispatch/add-dispatch';
 import DispatchDetails from '../dispatch/more-details.dispatch';
 import EditDispatch from '../dispatch/edit-dispatch';
 import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
+import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -419,6 +420,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/sales_visit" element={<SalesVisit />} />
 
           <Route path="/sales-visit-details" element={<SalesVisitDetails />} />
+          <Route path="/create-work-allocation" element={<CreateWorkAllocation />} />
 
 
 
