@@ -256,9 +256,9 @@ const Staff = () => {
         columns={columns}
         columnNames={columnNames}
         onEdit={handleEdit}
-        showDelete={permissions.delete}
-        showEdit={false}
-        showDetails={permissions.view}
+        showDelete={true}
+        showEdit={true}
+        showDetails={true}
         onDetails={handleMoreDetails}
         data={Array.isArray(profiles) ? profiles : []}
       />
