@@ -478,7 +478,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointment-details" element={<AppointmentDetails />} />
           <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
-            path="/bank-details-dashboard"
+            path="/bank-details-dashboard" 
             element={<BankDetailsDashboard />}
           />
           <Route path="/add-bank-account" element={<AddEditBankDetails />} />

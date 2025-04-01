@@ -123,7 +123,7 @@ const AddAsset = () => {
   };
 
   const handleCancel = () => {
-    navigate('/add-assets');
+    navigate('/add-asset');
   };
 
   // Handle file input (photo)

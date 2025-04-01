@@ -128,8 +128,8 @@ const Staff = () => {
       {/* Header */}
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Staff Details</h2>
-        {/* <div className="flex items-center space-x-4">
-          <button
+         <div className="flex items-center space-x-4">
+         {/* <button
             className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
             onClick={() => setIsGridView(false)}
           >
@@ -146,7 +146,7 @@ const Staff = () => {
             onClick={() => navigate('/payroll')}
           >
             <span>Payroll</span>
-          </button>
+          </button>*/}
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
@@ -155,15 +155,15 @@ const Staff = () => {
             <FaPlus size={16} />
             <span>Add Staff</span>
           </button>
-          <button
+          {/* <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/show-staff')}
             disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>show Staff</span>
-          </button>
-        </div> */}
+          </button> */}
+        </div> 
       </div>
       <div className="flex space-x-4 my-4">
         <input

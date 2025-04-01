@@ -197,7 +197,7 @@ const AddEditProductAssign = () => {
 
       if (response.data.status) {
         alert(formData.id ? 'Product updated successfully!' : 'Product added successfully!');
-        navigate('/product_assign');
+        navigate('/products_assign');
       } else {
         alert('Failed to save product details. Please try again.');
       }
@@ -208,7 +208,7 @@ const AddEditProductAssign = () => {
   };
 
   const handleCancel = () => {
-    navigate('/product_assign');
+    navigate('/products_assign');
   };
 
 
