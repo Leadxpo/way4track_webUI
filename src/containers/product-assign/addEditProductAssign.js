@@ -228,7 +228,7 @@ const AddEditProductAssign = () => {
   };
 
   const handleCancel = () => {
-    navigate('/product_assign');
+    navigate('/products_assign');
   };
 
   const renderField = (label, name, type = 'text', placeholder = '') => (

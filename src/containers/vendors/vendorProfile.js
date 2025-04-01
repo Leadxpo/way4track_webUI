@@ -184,14 +184,14 @@ const VendorProfile = () => {
       </div>
 
       {/* Save and Cancel Buttons */}
-      <div className="flex justify-center space-x-4">
+      {/* <div className="flex justify-center space-x-4">
         <button className="px-8 py-2 bg-red-500 text-white rounded-md font-bold hover:bg-red-600">
           Save
         </button>
         <button className="px-8 py-2 bg-gray-300 text-gray-700 rounded-md font-bold hover:bg-gray-400">
           Cancel
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

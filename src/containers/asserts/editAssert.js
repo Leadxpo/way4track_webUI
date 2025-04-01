@@ -124,7 +124,7 @@ const EditAsset = () => {
   };
 
   const handleCancel = () => {
-    navigate('/add-assets');
+    navigate('/add-asset');
   };
 
   // Handle file input (photo)
@@ -374,7 +374,7 @@ const EditAsset = () => {
           Save
         </button>
         <button
-          onClick={handleCancel}
+          onClick={handleCancel} 
           className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
           style={{
             backgroundColor: '#020202',

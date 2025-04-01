@@ -66,7 +66,7 @@ const AddEditBankDetails = () => {
 
 
   const handleCancel = () => {
-    navigate('/bank-details');
+    navigate('/bank-details-dashboard');
   };
 
   return (

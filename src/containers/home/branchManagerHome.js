@@ -243,11 +243,11 @@ const BranchManagerHome = () => {
   }, []);
 
   // Filtering payments based on search query
-  const filteredTotalPayments = Array.isArray(totalPayments)
-    ? totalPayments.filter((payment) =>
-        payment.technicianName.toLowerCase().includes(search.toLowerCase())
-      )
-    : [];
+const filteredTotalPayments = Array.isArray(totalPayments)
+? totalPayments.filter((payment) =>
+    payment.technicianName.toLowerCase().includes(search.toLowerCase())
+  )
+: [];
 
   // Received Payments
 
@@ -284,14 +284,12 @@ const BranchManagerHome = () => {
     ReceivedPayments();
   }, []);
 
-  // Filtering received payments based on search query
-  const filteredPayments = Array.isArray(receivedPayments)
-    ? receivedPayments.filter((payment) =>
-        (payment.technicianName || '')
-          .toLowerCase()
-          .includes(search.toLowerCase())
-      )
-    : [];
+// Filtering received payments based on search query
+const filteredPayments = Array.isArray(receivedPayments)
+  ? receivedPayments.filter((payment) =>
+      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+    )
+  : [];
 
   // Pending Amount
 
@@ -328,12 +326,12 @@ const BranchManagerHome = () => {
     PendingAmount();
   }, []);
 
-  // Filtering pending amounts based on search query
-  const filteredPendingAmount = Array.isArray(pendingAmount)
-    ? pendingAmount.filter((payment) =>
-        payment.technicianName.toLowerCase().includes(search.toLowerCase())
-      )
-    : [];
+// Filtering pending amounts based on search query
+const filteredPendingAmount = Array.isArray(pendingAmount)
+  ? pendingAmount.filter((payment) =>
+      payment.technicianName.toLowerCase().includes(search.toLowerCase())
+    )
+  : [];
 
   // product Details
 
@@ -372,10 +370,12 @@ const BranchManagerHome = () => {
   };
 
   const filteredProducts = Array.isArray(warehouseProducts)
-    ? warehouseProducts.filter((product) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  ? warehouseProducts.filter((product) => 
+      product?.productName && searchTerm
+        ? product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        : false
+    )
+  : [];
 
   const handleProductsPreview = () => {
     console.log('Total Product Details:', warehouseProducts); // Debugging output
@@ -567,6 +567,8 @@ const BranchManagerHome = () => {
         </div>
       </div>
 
+
+      
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-10">
         {paymentStatus.map((stat, index) => (
@@ -579,18 +581,17 @@ const BranchManagerHome = () => {
               className="mt-5 px-6 py-2  text-black rounded-lg font-bold hover:bg-blue-100"
               onClick={() => toggleTable(stat.label)}
             >
-              {stat.label}
+              {stat.label} 
             </button>
             {/* <div className="text-lg font-semibold">{stat.label}</div> */}
-            <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>
-              {stat.value}
-            </div>
+            <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
           </div>
         ))}
       </div>
 
-      {/* Payments Table - Visible only if showTable is true */}
-      {activeTable === 'Total Payment' && (
+
+ {/* Payments Table - Visible only if showTable is true */}
+ {activeTable === "Total Payment" && (
         <div>
           <h2 className="text-2xl font-bold mb-4 text-red-400">
             Total Payments
@@ -780,15 +781,16 @@ const BranchManagerHome = () => {
         </div>
       )}
 
-      <div className=" flex  justify-between mt-10">
-        {/* Search Bar */}
-        <input
-          type="text"
-          placeholder="Search product..."
-          className="border p-2 mb-4 w-96 rounded-md"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
+<div className=' flex  justify-between mt-10'>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search product..."
+        className="border p-2 mb-4 w-96 rounded-md"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
         {/* Preview & Download Button */}
         <button
