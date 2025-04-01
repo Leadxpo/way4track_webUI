@@ -126,6 +126,7 @@ import DispatchDetails from '../dispatch/more-details.dispatch';
 import EditDispatch from '../dispatch/edit-dispatch';
 import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
 import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
+import SelectBranch from '../vouchers/selectBranch';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -354,7 +355,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-product-type" element={<EditProductType />} />
           <Route path="/show-product-type" element={<ShowProductType />} />
 
-
           <Route path="/products" element={<Products />} />
           <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
@@ -379,27 +379,18 @@ const BodyLayout = ({ children }) => {
           <Route path="/delete-client" element={<DeleteClient />} />
           <Route path="/client-details" element={<ClientProfile />} />
           <Route path="/products_assign" element={<ProductAssign />} />
-          <Route path="/edit-salesVisit-details" element={<EditSalesVisitDetails />} />
+          <Route
+            path="/edit-salesVisit-details"
+            element={<EditSalesVisitDetails />}
+          />
           <Route
             path="/product-assign-details"
             element={<ProductAssignDetails />}
           />
-          <Route
-            path="/dispatch"
-            element={<Dispatch />}
-          />
-          <Route
-            path="/add-dispatch"
-            element={<AddDispatch />}
-          />
-          <Route
-            path="/edit-dispatch"
-            element={<EditDispatch />}
-          />
-          <Route
-            path="/show-dispatch"
-            element={<DispatchDetails />}
-          />
+          <Route path="/dispatch" element={<Dispatch />} />
+          <Route path="/add-dispatch" element={<AddDispatch />} />
+          <Route path="/edit-dispatch" element={<EditDispatch />} />
+          <Route path="/show-dispatch" element={<DispatchDetails />} />
           <Route
             path="/add-product-assign"
             element={<AddEditProductAssign />}
@@ -420,10 +411,11 @@ const BodyLayout = ({ children }) => {
           <Route path="/sales_visit" element={<SalesVisit />} />
 
           <Route path="/sales-visit-details" element={<SalesVisitDetails />} />
-          <Route path="/create-work-allocation" element={<CreateWorkAllocation />} />
-
-
-
+          <Route
+            path="/create-work-allocation"
+            element={<CreateWorkAllocation />}
+          />
+          <Route path="/select-branch" element={<SelectBranch />} />
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -480,7 +472,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointment-details" element={<AppointmentDetails />} />
           <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
-            path="/bank-details-dashboard" 
+            path="/bank-details-dashboard"
             element={<BankDetailsDashboard />}
           />
           <Route path="/add-bank-account" element={<AddEditBankDetails />} />
