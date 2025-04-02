@@ -7,23 +7,23 @@ const AddDesignation = () => {
     const location = useLocation();
 
     const [roles, setRoles] = useState([
-        { name: "branch", add: false, edit: false, view: false },
-        { name: "assets", add: false, edit: false, view: false },
-        { name: "appointments", add: false, edit: false, view: false },
-        { name: "staff", add: false, edit: false, view: false },
-        { name: "client", add: false, edit: false, view: false },
-        { name: "vendor", add: false, edit: false, view: false },
-        { name: "subdealer", add: false, edit: false, view: false },
-        { name: "hiring", add: false, edit: false, view: false },
-        { name: "bank", add: false, edit: false, view: false },
-        { name: "product", add: false, edit: false, view: false },
-        { name: "productassign", add: false, edit: false, view: false },
-        { name: "tickets", add: false, edit: false, view: false },
-        { name: "voucher", add: false, edit: false, view: false },
-        { name: "work-allocation", add: false, edit: false, view: false },
-        { name: "estimate", add: false, edit: false, view: false },
-        { name: "attendance", add: false, edit: false, view: false },
-        { name: "requests", add: false, edit: false, view: false },
+        { name: "branch", add: false, edit: false,delete:false, view: false },
+        { name: "assets", add: false, edit: false,delete:false, view: false },
+        { name: "appointments", add: false, edit: false, delete:false, view: false },
+        { name: "staff", add: false, edit: false, delete:false, view: false },
+        { name: "client", add: false, edit: false, delete:false, view: false },
+        { name: "vendor", add: false, edit: false, delete:false, view: false },
+        { name: "subdealer", add: false, edit: false,delete:false, view: false },
+        { name: "hiring", add: false, edit: false,delete:false, view: false },
+        { name: "bank", add: false, edit: false,delete:false, view: false },
+        { name: "product", add: false, edit: false,delete:false, view: false },
+        { name: "productassign", add: false, edit: false,delete:false, view: false },
+        { name: "tickets", add: false, edit: false, delete:false, view: false },
+        { name: "voucher", add: false, edit: false, delete:false, view: false },
+        { name: "work-allocation", add: false, edit: false, delete:false, view: false },
+        { name: "estimate", add: false, edit: false, delete:false, view: false },
+        { name: "attendance", add: false, edit: false, delete:false, view: false },
+        { name: "requests", add: false, edit: false, delete:false, view: false },
     ]);
 
     // Handle permission toggling
@@ -43,6 +43,7 @@ const AddDesignation = () => {
             ...role,
             add: role.add || false,
             edit: role.edit || false,
+            delete: role.delete || false,
             view: role.view || false,
         }));
     
@@ -60,7 +61,7 @@ const AddDesignation = () => {
             if (response.designation===designation) {
                 alert("Designation added successfully!");
                 setDesignation(""); // Clear input field after success
-                setRoles(roles.map(role => ({ ...role, add: false, edit: false, view: false }))); // Reset roles
+                setRoles(roles.map(role => ({ ...role, add: false, edit: false, delete: false, view: false }))); // Reset roles
                 navigate("/designations")
             } else {
                 alert("Failed to update designation. Please try again.");
@@ -93,6 +94,8 @@ const AddDesignation = () => {
                             <th className="p-2 border">View</th>
                             <th className="p-2 border">Add</th>
                             <th className="p-2 border">Edit</th>
+                            <th className="p-2 border">Delete</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -118,6 +121,14 @@ const AddDesignation = () => {
                                         type="checkbox"
                                         checked={role.edit}
                                         onChange={() => handlePermissionChange(index, "edit")}
+                                    />
+                                </td>
+
+                                <td className="p-2 border">
+                                    <input
+                                        type="checkbox"
+                                        checked={role.delete}
+                                        onChange={() => handlePermissionChange(index, "delete")}
                                     />
                                 </td>
                             </tr>

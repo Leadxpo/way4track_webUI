@@ -63,6 +63,7 @@ const DesignationDetails = () => {
                                     <th className="border border-gray-300 px-4 py-2">Role Name</th>
                                     <th className="border border-gray-300 px-4 py-2">Add</th>
                                     <th className="border border-gray-300 px-4 py-2">Edit</th>
+                                    <th className="border border-gray-300 px-4 py-2">Delete</th>
                                     <th className="border border-gray-300 px-4 py-2">View</th>
                                 </tr>
                             </thead>
@@ -78,6 +79,11 @@ const DesignationDetails = () => {
                                         <td className="border border-gray-300 px-4 py-2">
                                             <span className={`px-2 py-1 rounded-md text-white ${role.edit ? "bg-green-500" : "bg-red-500"}`}>
                                                 {role.edit ? "Yes" : "No"}
+                                            </span>
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            <span className={`px-2 py-1 rounded-md text-white ${role.delete ? "bg-green-500" : "bg-red-500"}`}>
+                                                {role.delete ? "Yes" : "No"}
                                             </span>
                                         </td>
                                         <td className="border border-gray-300 px-4 py-2">
