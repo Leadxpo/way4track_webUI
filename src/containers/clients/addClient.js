@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 const AddEditClient = () => {
@@ -28,14 +28,20 @@ const AddEditClient = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState(clientData?.file || '');
+  const [errors, setErrors] = useState({});
 
-
-  console.log(formData, "+++++++++++++++++==")
+if(errors)
+{
+  console.log("==========+++===>",errors)
+}
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value, "++++++++++++++++++")
     setFormData({ ...formData, [name]: value });
+
+    
+    
   };
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -69,6 +75,12 @@ const AddEditClient = () => {
 
 
   const handleSave = async () => {
+
+    if (errors.email || errors.phoneNumber) {
+      alert('Please fix the validation errors before saving.');
+      return;
+    }
+
     const payload = new FormData();
   
     Object.entries(formData).forEach(([key, value]) => {
@@ -85,7 +97,7 @@ const AddEditClient = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
-      if (response.data.status) {
+      if (response.status) {
         alert(formData.id ? 'Client updated successfully!' : 'Client added successfully!');
         navigate('/clients');
       } else {
@@ -101,6 +113,120 @@ const AddEditClient = () => {
   const handleCancel = () => {
     navigate('/clients');
   };
+
+
+
+// Phone number validation with API call
+useEffect(() => {
+  const checkPhoneNumber = async () => {
+    if (!/^\d{10}$/.test(formData.phoneNumber)) return;
+
+    try {
+      const response = await ApiService.post(
+        "/client/getClientVerification",
+        { phoneNumber: formData.phoneNumber },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === false) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phoneNumber: 'Phone number already exists.',
+        }));
+      }
+    } catch (apiError) {
+      console.error('Error checking phone number:', apiError);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phoneNumber: 'Error validating phone number.',
+      }));
+    }
+  };
+
+  if (formData.phoneNumber) {
+    checkPhoneNumber();
+  }
+}, [formData.phoneNumber]);
+
+
+// Email validation with API call
+useEffect(() => {
+  const checkEmail = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) return;
+
+    try {
+      const response = await ApiService.post(
+        "/client/getClientVerification",
+        { email: formData.email },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === false) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: 'Email already exists.',
+        }));
+      }
+    } catch (apiError) {
+      console.error('Error checking email:', apiError);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: 'Error validating email.',
+      }));
+    }
+  };
+
+  if (formData.email) {
+    checkEmail();
+  }
+}, [formData.email]);
+
+
+const validate = (fieldName, value) => {
+  let error = '';
+  
+
+  // General required field validation
+  if (value.trim() === '') {
+    error = `${fieldName} is required.`;
+  }
+
+  // Email validation
+  if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+    error = 'Please enter a valid email.';
+  }
+
+  // Phone number validation (10 digits)
+  if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
+    error = 'Phone number must be 10 digits.';
+  }
+
+
+
+  return error;
+};
+
+
+
+const handleChange = useCallback(
+  (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+      // setPersonnelDetails(updatedData);
+      return updatedData;
+    });
+
+    // Validate the field and set the error if needed
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validate(name, value),
+    }));
+  },
+  []
+);
+
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -158,10 +284,13 @@ const AddEditClient = () => {
               type="text"
               name="phoneNumber"
               value={formData.phoneNumber}
-              onChange={handleInputChange}
+              onChange={handleChange}
               placeholder="Enter Phone Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
+            {errors && (
+                <span className="text-red-500 text-sm mt-2">{errors.phoneNumber}</span>
+              )}
           </div>
 
 
@@ -179,7 +308,6 @@ const AddEditClient = () => {
           </div>
 
 
-          {/* Client ID */}
           {/* Branch */}
           {branches.length > 0 && (
             <div className="space-y-4">
@@ -219,10 +347,13 @@ const AddEditClient = () => {
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleInputChange}
+              onChange={handleChange}
               placeholder="Enter Email ID"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
+             {errors && (
+                <span className="text-red-500 text-sm mt-2">{errors.email}</span>
+              )}
           </div>
           {/* Address */}
           <div>

@@ -26,6 +26,31 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
+  const [errors, setErrors] = useState({});
+
+    const validate = (fieldName, value) => {
+      let error = '';
+      
+  
+      // General required field validation
+      if (value.trim() === '') {
+        error = `${fieldName} is required.`;
+      }
+  
+      // Email validation
+      if (fieldName === 'officeEmail' && value && !/\S+@\S+\.\S+/.test(value)) {
+        error = 'Please enter a valid email.';
+      }
+  
+      // Phone number validation (10 digits)
+      if (fieldName === 'officePhoneNumber' && value && !/^\d{10}$/.test(value)) {
+        error = 'Phone number must be 10 digits.';
+      }
+
+  
+      return error;
+    };
+
 
   // Fetch Branches
   const fetchBranches = async () => {
@@ -76,7 +101,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   const inputFields = useMemo(
     () => [
-      { label: 'Staff ID', name: 'staffId', type: 'text' },
+      // { label: 'Staff ID', name: 'staffId', type: 'text' },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'number' },
@@ -89,13 +114,13 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       },
       { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
       { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
-      { label: 'Termination Date', name: 'terminationDate', type: 'date' },
-      { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
-      {
-        label: 'Final Settlement Date',
-        name: 'finalSettlementDate',
-        type: 'date',
-      },
+      // { label: 'Termination Date', name: 'terminationDate', type: 'date' },
+      // { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
+      // {
+      //   label: 'Final Settlement Date',
+      //   name: 'finalSettlementDate',
+      //   type: 'date',
+      // },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',
@@ -116,6 +141,10 @@ const EmployerDetails = ({ setEmployerDetails }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validate(name, value),
+    }));
   };
 
   return (
@@ -180,6 +209,9 @@ const EmployerDetails = ({ setEmployerDetails }) => {
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-lg"
           />
+           {(name === "officeEmail" || name === "officePhoneNumber") && errors[name] && (
+      <span className="text-red-500 text-sm mt-2">{errors[name]}</span>
+    )}
         </div>
       ))}
 

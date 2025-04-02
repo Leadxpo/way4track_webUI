@@ -31,7 +31,6 @@ const BranchManagerHome = () => {
   const [searchTotal, setSearchTotal] = useState("");
   const [searchReceved, setSearchReceved] = useState("");
   const [searchPending, setSearchPending] = useState("");
-
   const [activeTable, setActiveTable] = useState(null);
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -163,7 +162,7 @@ const BranchManagerHome = () => {
     }
     let response;
     if (payload.branch) {
-      response = await ApiService.post("/dashboards/getWareHouseProductDetailsByBranch", payload);
+      response = await ApiService.post("/dashboards/assertsCardData", payload);
     }
     if (response.status) {
       setAssertsData(response.data || []);
@@ -174,6 +173,20 @@ const BranchManagerHome = () => {
     console.error("Error fetching asserts data:", error);
   }
 };
+
+
+const response = {
+  data: {
+    groupedBranches: [],
+    officeAsserts: 0,
+    transportAsserts: 0,
+    totalAsserts: 0,
+  },
+};
+
+
+
+
 
 // Fetch Staff Data
 const fetchStaffData = async () => {
@@ -191,7 +204,8 @@ const fetchStaffData = async () => {
       response = await ApiService.post("/dashboards/getTotalStaffDetails", payload);
     }
     if (response?.status) {
-      setStaffData(Array.isArray(response.data.result[0]) ? response.data.result[0] : []);
+      setStaffData(Array.isArray(response.data.result) ? response.data.result : []);
+      console.log("total staff Card Details",response.data.result)
     } else {
       alert(response.data.message || "Failed to fetch staff details.");
     }
@@ -205,23 +219,7 @@ useEffect(() => {
   fetchStaffData();
 }, []);
 
-// Format Data for Display
-const stats = [
-  {
-    title: "Asserts",
-    total: assertsData.reduce((sum, item) => sum + item.value, 0),
-    details: assertsData,
-    color: "bg-green-600",
-    borderColor: "border-green-400",
-  },
-  {
-    title: "Staff",
-    total: staffData.reduce((sum, item) => sum + item.value, 0),
-    details: staffData,
-    color: "bg-red-600",
-    borderColor: "border-red-400",
-  },
-];
+
 
 
 
@@ -678,6 +676,9 @@ const handleMoreDetails = (branchDetails) => {
       </div>
 
 
+
+     
+
       
      {/* Stats Section */}
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 mt-10">
@@ -925,8 +926,66 @@ const handleMoreDetails = (branchDetails) => {
  
 
 
+<div className="flex justify-between gap-6 p-6 mt-10 bg-white shadow-lg rounded-lg ">
+  
+  {/* Asserts Card */}
+  <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
+    {/* Card Header - Total Asserts */}
+    <h2 className="text-xl font-bold text-center text-green-600 border-b pb-2">
+      Total Asserts: {response.data.totalAsserts}
+    </h2>
+
+    {/* Card Body - Office & Transport Asserts */}
+    <div className="mt-4 space-y-4">
+      <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
+        <span className="text-blue-600 font-semibold">Office Asserts</span>
+        <span className="text-blue-600 font-bold text-lg">{response.data.officeAsserts}</span>
+      </div>
+
+      <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
+        <span className="text-yellow-600 font-semibold">Transport Asserts</span>
+        <span className="text-yellow-600 font-bold text-lg">{response.data.transportAsserts}</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Staff Card */}
+  <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
+    {/* Card Header - Total Staff */}
+    <h2 className="text-xl font-bold text-center text-red-600 border-b pb-2">
+      Total Staff: {staffData.totalStaff}
+    </h2>
+
+    {/* Card Body - Staff Categories */}
+    <div className="mt-4 space-y-4">
+      <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
+        <span className="text-blue-600 font-semibold">Technicians</span>
+        <span className="text-blue-600 font-bold text-lg">{staffData.totalTechnicians}</span>
+      </div>
+
+      <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
+        <span className="text-yellow-600 font-semibold">Non Technicians</span>
+        <span className="text-yellow-600 font-bold text-lg">{staffData.totalNonTechnicians}</span>
+      </div>
+
+      <div className="flex justify-between items-center bg-green-100 p-4 rounded-md border border-green-400">
+        <span className="text-green-600 font-semibold">Sales Staff</span>
+        <span className="text-green-600 font-bold text-lg">{staffData.salesStaff}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
 {/* Stat Cards */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-10">
+{/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-10">
         {stats.map((stat, index) => (
           <div key={index} className={`rounded-lg shadow-md p-5 border ${stat.borderColor}`}>
             <div className={`text-white p-3 rounded-t-lg font-semibold text-xl ${stat.color}`}>
@@ -941,7 +1000,7 @@ const handleMoreDetails = (branchDetails) => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
 
 

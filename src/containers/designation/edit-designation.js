@@ -104,6 +104,8 @@ const EditDesignation = () => {
                             <th className="p-2 border">View</th>
                             <th className="p-2 border">Add</th>
                             <th className="p-2 border">Edit</th>
+                            <th className="p-2 border">Delete</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -131,6 +133,16 @@ const EditDesignation = () => {
                                         onChange={() => handlePermissionChange(index, "edit")}
                                     />
                                 </td>
+
+
+                                <td className="p-2 border">
+                                    <input
+                                        type="checkbox"
+                                        checked={role.delete}
+                                        onChange={() => handlePermissionChange(index, "delete")}
+                                    />
+                                </td>
+
                             </tr>
                         ))}
                     </tbody>

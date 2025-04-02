@@ -218,7 +218,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <input
                 type="text"
@@ -232,7 +232,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <input
                 type="file"
@@ -282,7 +282,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <input
                 type="text"
@@ -296,7 +296,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <input
                 type="text"
@@ -310,7 +310,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <input
                 type="text"
@@ -324,7 +324,7 @@ export default function EditEducationDetails() {
                     e.target.value
                   )
                 }
-                required
+                // required
               />
               <select
                 className="p-2 border rounded"
