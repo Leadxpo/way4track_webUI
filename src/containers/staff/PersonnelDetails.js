@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { initialAuthState } from '../../services/ApiService';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const PersonnelDetails = ({ setPersonnelDetails }) => {
   const [formData, setFormData] = useState({
@@ -26,6 +26,7 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
 
   const validate = (fieldName, value) => {
     let error = '';
+    
 
     // General required field validation
     if (value.trim() === '') {
@@ -141,6 +142,63 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
       return updatedData;
     });
   }, [setPersonnelDetails]);
+
+
+
+  const validateField = async (field, value, regex, errorMessage) => {
+  if (!regex.test(value)) return;
+
+  try {
+    const response = await ApiService.post(
+      "/staff/getStaffVerification",
+      { [field]: value },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    if (response.status === true) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [field]: errorMessage,
+      }));
+    }
+  } catch (apiError) {
+    console.error(`Error validating ${field}:`, apiError);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: `Error validating ${field}.`,
+    }));
+  }
+};
+
+useEffect(() => {
+  if (formData.phoneNumber) {
+    validateField("phoneNumber", formData.phoneNumber, /^\d{10}$/, "Phone number already exists.");
+  }
+}, [formData.phoneNumber]);
+
+useEffect(() => {
+  if (formData.aadharNumber) {
+    validateField("aadharNumber", formData.aadharNumber, /^\d{12}$/, "Aadhar number already exists.");
+  }
+}, [formData.aadharNumber]);
+
+useEffect(() => {
+  if (formData.email) {
+    validateField("email", formData.email, /\S+@\S+\.\S+/, "Email already exists.");
+  }
+}, [formData.email]);
+
+useEffect(() => {
+  if (formData.panCardNumber) {
+    validateField(
+      "panCardNumber",
+      formData.panCardNumber,
+      /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 
+      "PAN Card number already exists."
+    );
+  }
+}, [formData.panCardNumber]);
+
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
