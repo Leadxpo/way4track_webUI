@@ -5,7 +5,7 @@ import { MyPDF } from '../../common/commonUtils';
 import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import EstimatePDF from './EstimatePDF';
+import {EstimatePDF} from './EstimatePDF';
 
 const AddEstimate = () => {
   const navigate = useNavigate();
