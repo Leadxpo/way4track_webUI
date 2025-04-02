@@ -127,6 +127,7 @@ import EditDispatch from '../dispatch/edit-dispatch';
 import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
 import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 import SelectBranch from '../vouchers/selectBranch';
+import ReceiptForm from '../vouchers/receiptForm';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -416,6 +417,7 @@ const BodyLayout = ({ children }) => {
             element={<CreateWorkAllocation />}
           />
           <Route path="/select-branch" element={<SelectBranch />} />
+          <Route path="/receipt-form" element={<ReceiptForm />} />
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />

@@ -20,6 +20,7 @@ const Staff = () => {
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
   const [permissions, setPermissions] = useState({});
+  console.log(profiles, 'profiles');
 
   const columnNames = [
     'Branch ID',
@@ -123,13 +124,44 @@ const Staff = () => {
     navigate('/staff-details', { state: { staffDetails: profile } });
   };
 
+  const handleDelete = async (row) => {
+    const id = row.id;
+    console.log(id, 'iddddsds');
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this record?'
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await ApiService.post('/staff/deletestaffDetails', {
+        id,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+
+      if (response.status) {
+        alert('Staff deleted successfully');
+
+        // Update profiles state to remove the deleted staff
+        setProfiles((prevProfiles) =>
+          prevProfiles.filter((staff) => staff.id !== id)
+        );
+      } else {
+        alert('Failed to delete staff');
+      }
+    } catch (error) {
+      console.error('Error deleting staff:', error);
+      alert('An error occurred while deleting the staff.');
+    }
+  };
+
   return (
     <div className="m-2">
       {/* Header */}
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Staff Details</h2>
-         <div className="flex items-center space-x-4">
-         {/* <button
+        <div className="flex items-center space-x-4">
+          {/* <button
             className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
             onClick={() => setIsGridView(false)}
           >
@@ -163,7 +195,7 @@ const Staff = () => {
             <FaPlus size={16} />
             <span>show Staff</span>
           </button> */}
-        </div> 
+        </div>
       </div>
       <div className="flex space-x-4 my-4">
         <input
@@ -255,6 +287,7 @@ const Staff = () => {
       <Table
         columns={columns}
         columnNames={columnNames}
+        onDelete={handleDelete}
         onEdit={handleEdit}
         showDelete={true}
         showEdit={true}

@@ -51,7 +51,7 @@ const Vouchers = () => {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate("/select-branch");
+    navigate('/select-branch');
   };
 
   const handleEdit = (item) => {
