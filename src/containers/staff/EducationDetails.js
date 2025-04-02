@@ -135,7 +135,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              required
+              // required
             />
             <input
               type="text"
@@ -145,7 +145,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleQualificationChange(index, 'marksOrCgpa', e.target.value)
               }
-              required
+              // required
             />
             <input
               type="file"
@@ -191,7 +191,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleExperienceChange(index, 'previousCompany', e.target.value)
               }
-              required
+              // required
             />
             <input
               type="text"
@@ -205,7 +205,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              required
+              // required
             />
             <input
               type="text"
@@ -219,7 +219,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              required
+              // required
             />
             <input
               type="text"
@@ -229,7 +229,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleExperienceChange(index, 'previous_salary', e.target.value)
               }
-              required
+              // required
             />
             <select
               className="p-2 border rounded"
