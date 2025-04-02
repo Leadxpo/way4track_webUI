@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { useNavigate } from 'react-router';
+
 import { BsThreeDotsVertical } from "react-icons/bs";
 import * as XLSX from "xlsx";
 import { FaFileDownload } from "react-icons/fa";
@@ -9,6 +11,8 @@ import { FaFileDownload } from "react-icons/fa";
 
 
 const BranchManagerHome = () => {
+    const navigate = useNavigate();
+  
 
   const [workStatus, setWorkStatus] = useState({
     installedPercentage: 0,
@@ -22,8 +26,12 @@ const BranchManagerHome = () => {
 
   const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   const [totalStaffDetails, setTotalStaffDetails] = useState([]);
-  const [search, setSearch] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchTotal, setSearchTotal] = useState("");
+  const [searchReceved, setSearchReceved] = useState("");
+  const [searchPending, setSearchPending] = useState("");
+
   const [activeTable, setActiveTable] = useState(null);
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -33,6 +41,8 @@ const BranchManagerHome = () => {
   const [pendingAmount, setPendingAmount] = useState([]);
   const [assertsData, setAssertsData] = useState([]);
   const [staffData, setStaffData] = useState([]);
+    const [branches, setBranches] = useState([]);
+  
 
 
 
@@ -405,21 +415,18 @@ const filteredPendingAmount = Array.isArray(pendingAmount)
       setIsPreviewOpen(true);
     };
     
-    // Function to format product data for Excel export
-    const formatProductExcelData = (data) => {
-      return data.map((item) => ({
-        "Product ID": item.productId,
-        "Product Name": item.productName,
-        "Total": item.total || "",
-        "In Hand": item.inhand || 0,
-        "Remaining": item.remaining || 0,
-      }));
-    };
+   // Function to format product data for Excel export
+const formatProductExcelData = (data) => {
+  return data.map((item) => ({
+    "Product ID": item.productId,
+    "Product Name": item.productName,
+    "Total": (item.inHandStock + item.presentStock) || 0,
+    "In Hand": item.inHandStock || 0,
+    "Remaining": item.presentStock || 0,
+  }));
+};
+
     
-
-
-
-
 
 
 
@@ -483,7 +490,6 @@ const formatExcelData = (data) => {
   }));
 };
 
-
 const handlePreview = () => {
   console.log("Total Staff Details:", totalStaffDetails); // Debugging output
 
@@ -527,6 +533,86 @@ const handlePreview = () => {
   };
 
 
+// privews payments
+
+// Total Payments Data Export
+const formatPaymentsExcelData = (data) => {
+  return data.map((item) => ({
+    "Payment ID": item.paymentId,
+    "Employee ID": item.staffId,
+    "Employee Name": item.staffName,
+    "Total Payments": item.totalPayments || 0,
+  }));
+};
+
+// Received Amount Data Export
+const formatReceivedExcelData = (data) => {
+  return data.map((item) => ({
+    "Receipt ID": item.receiptId,
+    "Employee ID": item.staffId,
+    "Employee Name": item.staffName,
+    "Received Amount": item.receivedAmount || 0,
+  }));
+};
+
+// Pending Amount Data Export
+const formatPendingExcelData = (data) => {
+  return data.map((item) => ({
+    "Employee ID": item.staffId,
+    "Employee Name": item.staffName,
+    "Pending Amount": (item.totalPayments - item.receivedAmount) || 0, // Calculated field
+  }));
+};
+
+
+// Handle Payments Preview
+const handlePaymentsPreview = () => {
+  if (filteredTotalPayments.length === 0) {
+    alert("No payment data available to preview.");
+    return;
+  }
+
+  const formattedData = formatPaymentsExcelData(filteredTotalPayments);
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+// Handle Received Amount Preview
+const handleReceivedPreview = () => {
+  if (filteredPayments.length === 0) {
+    alert("No received amount data available to preview.");
+    return;
+  }
+
+  const formattedData = formatReceivedExcelData(filteredPayments);
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+// Handle Pending Amount Preview
+const handlePendingPreview = () => {
+  if (filteredPendingAmount.length === 0) {
+    alert("No pending amount data available to preview.");
+    return;
+  }
+
+  const formattedData = formatPendingExcelData(filteredPendingAmount);
+  setPreviewData(formattedData);
+  setIsPreviewOpen(true);
+};
+
+
+
+const handleEdit = (branchDetails) => {
+  navigate('/edit-branch', { state: { branchDetails } });
+};
+
+
+
+const handleMoreDetails = (branchDetails) => {
+  console.log(branchDetails, "Navigating with this asset data");
+  navigate('/branch-details', { state: { branchDetails } });
+};
 
 
   return (
@@ -574,11 +660,17 @@ const handlePreview = () => {
         </div>
 
         <div className="mt-6 flex justify-center space-x-4">
-          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200">
+          
+          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200"
+           onClick={() => handleEdit(branches)}
+          >
             Edit
           </button>
 
-          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200">
+          <button className="text-gray-600 rounded-md px-3 py-2 border border-gray-300 hover:bg-gray-200"
+            onClick={() => handleMoreDetails(branches)}
+          >
+           
             More Details
           </button>
         </div>
@@ -617,12 +709,12 @@ const handlePreview = () => {
               type="text"
               placeholder="Search..."
               className="border p-2 rounded w-1/3"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTotal}
+              onChange={(e) => setSearchTotal(e.target.value)}
             />
            {/* Preview & Download Button */}
                    <button
-                     onClick={handlePreview}
+                     onClick={handlePaymentsPreview}
                      className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
                    >
                      <FaFileDownload className="mr-2" /> Preview & Download
@@ -631,10 +723,10 @@ const handlePreview = () => {
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-red-300 text-white">
-                <th className="p-2 border">Transaction ID</th>
-                <th className="p-2 border">Title</th>
-                <th className="p-2 border">Date of Payment</th>
-                <th className="p-2 border">Invoice ID</th>
+                <th className="p-2 border">Staff Id</th>
+                <th className="p-2 border">Staff Name</th>
+                {/* <th className="p-2 border">Date of Payment</th>
+                <th className="p-2 border">Invoice ID</th> */}
                 <th className="p-2 border">Amount</th>
                 <th className="p-2 border">Status</th>
               </tr>
@@ -642,17 +734,17 @@ const handlePreview = () => {
             <tbody>
               {filteredTotalPayments.map((payment, index) => (
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-                  <td className="p-2 border text-center">{payment.id}</td>
-                  <td className="p-2 border text-center">{payment.title}</td>
-                  <td className="p-2 border text-center">{payment.date}</td>
-                  <td className="p-2 border text-center">{payment.invoice}</td>
-                  <td className="p-2 border text-center">{payment.amount}</td>
+                  <td className="p-2 border text-center">{payment.staffId}</td>
+                  <td className="p-2 border text-center">{payment.staffName}</td>
+                  {/* <td className="p-2 border text-center">{payment.date}</td>
+                  <td className="p-2 border text-center">{payment.invoice}</td> */}
+                  <td className="p-2 border text-center">{payment.totalPayment}</td>
                   <td className="p-2 border text-center">
                     <span
                       className={`px-2 py-1 rounded text-white ${
-                        payment.status === "Successful"
+                        payment.status === "COMPLETE"
                           ? "bg-green-500"
-                          : payment.status === "Pending"
+                          : payment.status === "PENDING"
                           ? "bg-yellow-500"
                           : "bg-red-500"
                       }`}
@@ -677,12 +769,12 @@ const handlePreview = () => {
           type="text"
           placeholder="Search..."
           className="border p-2 rounded w-1/3"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchReceved}
+          onChange={(e) => setSearchReceved(e.target.value)}
         />
        {/* Preview & Download Button */}
                <button
-                 onClick={handlePreview}
+                 onClick={handleReceivedPreview}
                  className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
                >
                  <FaFileDownload className="mr-2" /> Preview & Download
@@ -691,10 +783,10 @@ const handlePreview = () => {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-green-400 text-white">
-            <th className="p-2 border">Transaction ID</th>
-            <th className="p-2 border">Title</th>
-            <th className="p-2 border">Date of Payment</th>
-            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Staff Id</th>
+            <th className="p-2 border">Staff Name</th>
+            {/* <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th> */}
             <th className="p-2 border">Amount</th>
             <th className="p-2 border">Status</th>
           </tr>
@@ -702,15 +794,15 @@ const handlePreview = () => {
         <tbody>
           {filteredPayments.map((payment, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-              <td className="p-2 border text-center">{payment.id}</td>
-              <td className="p-2 border text-center">{payment.title}</td>
-              <td className="p-2 border text-center">{payment.date}</td>
-              <td className="p-2 border text-center">{payment.invoice}</td>
-              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">{payment.staffId}</td>
+              <td className="p-2 border text-center">{payment.staffName}</td>
+              {/* <td className="p-2 border text-center">{payment.date}</td>
+              <td className="p-2 border text-center">{payment.invoice}</td> */}
+              <td className="p-2 border text-center">{payment.totalPayment}</td>
               <td className="p-2 border text-center">
                 <span className={`px-2 py-1 rounded text-white ${
-                  payment.status === "Successful" ? "bg-green-500" :
-                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                  payment.status === "COMPLETE" ? "bg-green-500" :
+                  payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
                 }`}>
                   {payment.status}
                 </span>
@@ -730,12 +822,12 @@ const handlePreview = () => {
           type="text"
           placeholder="Search..."
           className="border p-2 rounded w-1/3"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchPending}
+          onChange={(e) => setSearchPending(e.target.value)}
         />
        {/* Preview & Download Button */}
                <button
-                 onClick={handlePreview}
+                 onClick={handlePendingPreview}
                  className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
                >
                  <FaFileDownload className="mr-2" /> Preview & Download
@@ -744,10 +836,10 @@ const handlePreview = () => {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-violet-500 text-white">
-            <th className="p-2 border">Transaction ID</th>
-            <th className="p-2 border">Title</th>
-            <th className="p-2 border">Date of Payment</th>
-            <th className="p-2 border">Invoice ID</th>
+            <th className="p-2 border">Staff Id</th>
+            <th className="p-2 border">Staff Name</th>
+            {/* <th className="p-2 border">Date of Payment</th>
+            <th className="p-2 border">Invoice ID</th> */}
             <th className="p-2 border">Amount</th>
             <th className="p-2 border">Status</th>
           </tr>
@@ -755,19 +847,19 @@ const handlePreview = () => {
         <tbody>
           {filteredPendingAmount.map((payment, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-              <td className="p-2 border text-center">{payment.id}</td>
-              <td className="p-2 border text-center">{payment.title}</td>
-              <td className="p-2 border text-center">{payment.date}</td>
-              <td className="p-2 border text-center">{payment.invoice}</td>
-              <td className="p-2 border text-center">{payment.amount}</td>
+              <td className="p-2 border text-center">{payment.staffId}</td>
+              <td className="p-2 border text-center">{payment.staffName}</td>
+              {/* <td className="p-2 border text-center">{payment.invoice}</td> */}
+              <td className="p-2 border text-center">{payment.totalPayment}</td>
+              {/* <td className="p-2 border text-center">{payment.paymentStatus}</td> */}
               <td className="p-2 border text-center">
                 <span className={`px-2 py-1 rounded text-white ${
-                  payment.status === "Successful" ? "bg-green-500" :
-                  payment.status === "Pending" ? "bg-yellow-500" : "bg-red-500"
+                  payment.status === "COMPLETED" ? "bg-green-500" :
+                  payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
                 }`}>
-                  {payment.status}
                 </span>
               </td>
+                  {payment.status}
             </tr>
           ))}
         </tbody>
@@ -811,12 +903,13 @@ const handlePreview = () => {
       {filteredProducts.length > 0 ? (
         filteredProducts.map((row, index) => (
           <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
-            <td className="py-3 px-4">{row.id}</td>
-            <td className="py-3 px-4">{row.product}</td>
-            <td className="py-3 px-4">{row.total}</td>
-            <td className="py-3 px-4">{row.inHand}</td>
-            <td className="py-3 px-4">{row.remaining}</td>
-          </tr>
+          <td className="py-3 px-4">{row.productId}</td>
+          <td className="py-3 px-4">{row.productName}</td>
+          <td className="py-3 px-4">{row.inHandStock + row.presentStock}</td>
+          <td className="py-3 px-4">{row.inHandStock}</td>
+          <td className="py-3 px-4">{row.presentStock}</td>
+        </tr>
+        
         ))
       ) : (
         <tr>

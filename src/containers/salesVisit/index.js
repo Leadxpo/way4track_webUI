@@ -261,7 +261,7 @@ const SalesVisit = () => {
       </div>
 
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
-        {data.length === 0 ? (
+        {salesDetails.length === 0 ? (
           <div className="text-center text-gray-500 text-lg p-5">
             No Data Found
           </div>

@@ -10,6 +10,7 @@ import { initialAuthState } from '../../services/ApiService';
 export default function AddStaffForm() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [error, setError] = useState('');
 
   const [formData, setFormData] = useState(() => ({
     personnelDetails: {},
@@ -19,6 +20,75 @@ export default function AddStaffForm() {
   }));
 
   console.log('Current Form Data:', formData.educationDetails);
+
+  const validateStep = useCallback(() => {
+    let errorMessage = '';
+
+    switch (currentStep) {
+      case 1: // Personnel Details validation
+        const requiredFields = [
+          'name',
+          'dob',
+          'gender',
+          'location',
+          'phoneNumber',
+          'alternateNumber',
+          'email',
+          'aadharNumber',
+          'panCardNumber',
+          'drivingLicence',
+          'address',
+          'uanNumber',
+          'esicNumber',
+          'bloodGroup',
+        ];
+
+        // Loop through the required fields and check for emptiness
+        for (let field of requiredFields) {
+          if (!formData.personnelDetails?.[field]?.trim()) {
+            errorMessage = `Please enter your ${field.replace(/([a-z])([A-Z])/g, '$1 $2')}.`;
+            break;
+          }
+        }
+        break;
+
+      case 2: // Education Details validation
+        if (!formData.educationDetails?.qualifications?.length) {
+          errorMessage = 'Please add at least one qualification.';
+        }
+        break;
+
+      case 3: // Bank Details validation
+        const requiredBankFields = [
+          'accountNumber',
+          'bankName',
+          'ifscCode',
+          'accountBranch',
+          'accountType',
+        ];
+
+        // Loop through the required fields and check for emptiness
+        for (let field of requiredBankFields) {
+          if (!formData.bankDetails?.[field]?.trim()) {
+            errorMessage = `Please enter your ${field.replace(/([a-z])([A-Z])/g, '$1 $2')}.`;
+            break;
+          }
+        }
+        break;
+
+      case 4: // Employer Details validation
+        if (!formData.employerDetails?.companyName?.trim()) {
+          errorMessage = 'Please enter your employer company name.';
+        }
+        break;
+
+      default:
+        errorMessage = 'Invalid step';
+    }
+
+    setError(errorMessage);
+    return !errorMessage; // If there's an error message, return false; otherwise, true
+  }, [currentStep, formData]);
 
   const handleTempDataUpdate = useCallback((newData, section) => {
     setFormData((prevData) => {
@@ -80,6 +150,8 @@ export default function AddStaffForm() {
   }, [currentStep, handleTempDataUpdate]);
 
   const handleSubmit = useCallback(async () => {
+    if (!validateStep()) return;
+
     try {
       const combinedFormData = new FormData();
 
@@ -184,10 +256,19 @@ export default function AddStaffForm() {
     }
   }, [formData, navigate]);
 
+  const handleNext = () => {
+    if (validateStep()) {
+      setCurrentStep((prev) => prev + 1);
+      setError('');
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Complete the Form</h1>
+
       {renderForm}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mt-4 flex justify-between">
         {currentStep > 1 && (
           <button
@@ -199,7 +280,8 @@ export default function AddStaffForm() {
         )}
         {currentStep < 4 ? (
           <button
-            onClick={() => setCurrentStep((prev) => prev + 1)}
+            // onClick={() => setCurrentStep((prev) => prev + 1)}
+            onClick={handleNext}
             className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
           >
             Next

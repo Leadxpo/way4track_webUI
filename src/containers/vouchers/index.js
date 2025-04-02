@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaPlus, FaEllipsisV } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Vouchers = () => {
   // Sample Data
@@ -46,12 +47,54 @@ const Vouchers = () => {
     },
   ];
 
+  const [popupData, setPopupData] = useState(null);
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate('/select-branch');
+  };
+
+  const handleEdit = (item) => {
+    navigate('/edit-salesVisit-details', { state: { item } });
+    setPopupData(null);
+  };
+
+  const handleMoreDetails = (item) => {
+    navigate('/sales-visit-details', { state: { item } });
+    setPopupData(null);
+  };
+
+  const handleActionClick = (event, item) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    setPopupData((prev) =>
+      prev && prev.item.id === item.id
+        ? null
+        : {
+            item,
+            position: {
+              top: rect.top + window.scrollY + 30,
+              left: rect.left + window.scrollX - 50,
+            },
+          }
+    );
+  };
+
   return (
     <div className="p-6">
       {/* Top Section */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Vouchers</h2>
-        <button className="bg-yellow-300 text-black font-semibold px-4 py-2 rounded-lg flex items-center gap-2 shadow">
+        <button
+          className="bg-yellow-300 text-black font-semibold px-4 py-2 rounded-lg flex items-center gap-2 shadow"
+          style={{
+            backgroundColor: '#FFF504',
+            borderRadius: '25px',
+            color: '#000000',
+            fontWeight: '500',
+          }}
+          onClick={handleNavigation}
+        >
           <FaPlus /> Create Vouchers
         </button>
       </div>
@@ -67,35 +110,106 @@ const Vouchers = () => {
             type="text"
             placeholder="Vouchers ID"
             className="w-full px-4 py-2 border rounded-lg bg-gray-50"
+            style={{
+              height: '55px',
+              backgroundColor: '#FFFFFF',
+              borderColor: '#8D8D8D',
+              borderWidth: '1px',
+              borderRadius: '10px',
+            }}
           />
           <input
             type="text"
             placeholder="Vouchers Name"
             className="w-full px-4 py-2 border rounded-lg bg-gray-50"
+            style={{
+              height: '55px',
+              backgroundColor: '#FFFFFF',
+              borderColor: '#8D8D8D',
+              borderWidth: '1px',
+              borderRadius: '10px',
+            }}
           />
         </div>
 
         {/* Second Row - Select & Search Button */}
         <div className="flex gap-4">
-          <select className="w-full px-4 py-2 border rounded-lg bg-gray-50">
+          <select
+            className="w-full px-4 py-2 border rounded-lg bg-gray-50"
+            style={{
+              height: '55px',
+              backgroundColor: '#FFFFFF',
+              borderColor: '#8D8D8D',
+              borderWidth: '1px',
+              borderRadius: '10px',
+            }}
+          >
             <option>Select Vouchers</option>
             <option>Voucher 1</option>
             <option>Voucher 2</option>
           </select>
           <button
             className="w-full px-4 py-2 border rounded-lg bg-gray-50"
-            style={{ backgroundClip: '#15A753' }}
+            style={{
+              height: '55px',
+              backgroundColor: '#15A753',
+              borderColor: '#8D8D8D',
+              borderWidth: '1px',
+              borderRadius: '10px',
+              color: '#FFFFFF',
+              fontSize: '25px',
+              fontWeight: '600',
+            }}
           >
             SEARCH
           </button>
         </div>
       </div>
 
+      {popupData && (
+        <div
+          className="popup-menu absolute bg-white border border-gray-300 shadow-md rounded-lg py-2 w-40"
+          style={{
+            top: `${popupData.position.top}px`,
+            left: `${popupData.position.left}px`,
+            height: '82px',
+            width: '105px',
+            borderRadius: '5px',
+            backgroundColor: '#F1F1F1',
+          }}
+        >
+          <button
+            className="block px-4 py-1 text-left w-full hover:bg-gray-100"
+            style={{ fontSize: '13px', color: '#000000', fontWeight: '400' }}
+            onClick={() => handleEdit(popupData.item)}
+          >
+            Edit
+          </button>
+
+          {/* Horizontal Line */}
+          <hr className="border-gray-300 my-1" />
+
+          <button
+            className="block px-4 py-1 text-left w-full hover:bg-gray-100"
+            onClick={() => handleMoreDetails(popupData.item)}
+            style={{ fontSize: '12px', color: '#000000', fontWeight: '400' }}
+          >
+            Fore Details
+          </button>
+        </div>
+      )}
+
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-        <table className="w-full border-collapse">
+      <div className="overflow-x-auto bg-white shadow-md">
+        <table
+          className="w-full border-collapse"
+          style={{ borderColor: '#D0D0D0', borderWidth: '1px' }}
+        >
           <thead>
-            <tr className="bg-gray-200 text-left">
+            <tr
+              className="bg-gray-200 text-left"
+              style={{ backgroundColor: '#FFFFFF', height: '55px' }}
+            >
               <th className="px-4 py-2">NO.</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Purpose</th>
@@ -111,7 +225,10 @@ const Vouchers = () => {
             {vouchers.map((voucher, index) => (
               <tr
                 key={index}
-                className={`border-t ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+                style={{
+                  backgroundColor: index % 2 === 0 ? '#DFDFDF' : '#FFFFFF',
+                  height: '55px',
+                }}
               >
                 <td className="px-4 py-2">{voucher.id}</td>
                 <td className="px-4 py-2">{voucher.name}</td>
@@ -121,7 +238,10 @@ const Vouchers = () => {
                 <td className="px-4 py-2">{voucher.amount}</td>
                 <td className="px-4 py-2">{voucher.paymentMode}</td>
                 <td className="px-4 py-2">{voucher.status}</td>
-                <td className="px-4 py-2 text-center">
+                <td
+                  className="px-4 py-2 text-center"
+                  onClick={(e) => handleActionClick(e, voucher)}
+                >
                   <FaEllipsisV className="cursor-pointer" />
                 </td>
               </tr>

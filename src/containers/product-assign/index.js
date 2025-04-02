@@ -27,6 +27,7 @@ const ProductAssign = () => {
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [product, setproduct] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
+  const [columnNames, setColumnNames] = useState([]);
 
   const productAssignDetails = async (branchName = 'All') => {
     try {
@@ -107,7 +108,8 @@ const ProductAssign = () => {
 
       <div className="mt-8">
         <Table
-          columns={product.length > 0 ? Object.keys(product[0]) : []} // Ensure product is not empty
+          columns={product.length > 0 ? Object.keys(product[0]) : []}
+          columnNames={product.length > 0 ? Object.keys(product[0]) : []}
           data={product}
           onEdit={onEdit}
           onDetails={onDetails}

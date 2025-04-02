@@ -8,11 +8,11 @@ const ReceiptForm = ({ branches, bankOptions }) => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('Cash');
   const PAYMENT_MODES = ['Cash', 'UPI', 'Bank', 'Cheque', 'Card', 'EMI'];
   const productTypes = [
-    { value: "service", label: "Service" },
-    { value: "product", label: "Product" },
-    { value: "sales", label: "Sales" },
-    { value: "expanses", label: "Expanses" },
-    { value: "salaries", label: "Salaries" },
+    { value: 'service', label: 'Service' },
+    { value: 'product', label: 'Product' },
+    { value: 'sales', label: 'Sales' },
+    { value: 'expanses', label: 'Expanses' },
+    { value: 'salaries', label: 'Salaries' },
   ];
 
   const dropdownOptions = {
@@ -280,7 +280,6 @@ const ReceiptForm = ({ branches, bankOptions }) => {
           )}
         />
       </div>
-
 
       <button
         type="submit"

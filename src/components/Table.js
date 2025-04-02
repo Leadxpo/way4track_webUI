@@ -75,7 +75,7 @@ const Table = ({
       {columns.length === 0 || data.length === 0 ? (
         <div className="p-4 text-center text-gray-500">No data found</div>
       ) : (
-        <div className="overflow-y-auto" style={{ maxHeight: '300px' }}>
+        <div className="overflow-y-auto">
           <table className="min-w-full border-collapse border border-gray-200">
             <thead className="bg-gray-100 sticky top-0">
               <tr className="bg-blue-500 text-white text-left">

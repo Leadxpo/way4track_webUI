@@ -18,36 +18,120 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     esicNumber: '',
     bloodGroup: '',
     photo: null,
-  
   });
 
+  const [errors, setErrors] = useState({});
   const [photoPreview, setPhotoPreview] = useState('');
   const fileInputRef = useRef(null);
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      if (prevData[name] === value) return prevData;
-      const updatedData = { ...prevData, [name]: value };
-      setPersonnelDetails(updatedData);
-      return updatedData;
-    });
-  }, [setPersonnelDetails]);
+  const validate = (fieldName, value) => {
+    let error = '';
 
-  const handlePhotoChange = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPhotoPreview(URL.createObjectURL(file));
-      // const fileObject = { name: file.name, file: file };
+    // General required field validation
+    if (value.trim() === '') {
+      error = `${fieldName} is required.`;
+    }
+
+    // Email validation
+    if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Please enter a valid email.';
+    }
+
+    // Phone number validation (10 digits)
+    if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
+      error = 'Phone number must be 10 digits.';
+    }
+
+    // Alternate phone number validation (10 digits)
+    if (fieldName === 'alternateNumber' && value && !/^\d{10}$/.test(value)) {
+      error = 'Alternate phone number must be 10 digits.';
+    }
+
+    // Aadhar Number validation (12 digits)
+    if (fieldName === 'aadharNumber' && value && !/^\d{12}$/.test(value)) {
+      error = 'Aadhar number must be 12 digits.';
+    }
+
+    // PAN Card Number validation (format: ABCDE1234F)
+    if (
+      fieldName === 'panCardNumber' &&
+      value &&
+      !/[A-Z]{5}[0-9]{4}[A-Z]{1}/.test(value)
+    ) {
+      error = 'Please enter a valid PAN Card number.';
+    }
+
+    // UAN Number validation (12 digits)
+    if (fieldName === 'uanNumber' && value && !/^\d{12}$/.test(value)) {
+      error = 'UAN number must be 12 digits.';
+    }
+
+    // ESIC Number validation (17 digits)
+    if (fieldName === 'esicNumber' && value && !/^\d{17}$/.test(value)) {
+      error = 'ESIC number must be 17 digits.';
+    }
+
+    // Blood group validation (e.g., A+, B-, AB+)
+    if (
+      fieldName === 'bloodGroup' &&
+      value &&
+      !/^(A|B|AB|O)[+-]$/.test(value)
+    ) {
+      error = 'Please enter a valid blood group (e.g., A+, B-, AB+).';
+    }
+
+    // DOB validation (date format check)
+    if (fieldName === 'dob' && value) {
+      const dobDate = new Date(value);
+      if (dobDate >= new Date()) {
+        error = 'Date of birth cannot be in the future.';
+      }
+    }
+
+    // Gender validation (must be either 'Male' or 'Female')
+    if (
+      fieldName === 'gender' &&
+      value &&
+      !['Male', 'Female'].includes(value)
+    ) {
+      error = 'Please select a valid gender.';
+    }
+
+    return error;
+  };
+
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
       setFormData((prevData) => {
-        const updatedData = { ...prevData, photo: file };
+        const updatedData = { ...prevData, [name]: value };
         setPersonnelDetails(updatedData);
         return updatedData;
       });
-    }
-  }, [setPersonnelDetails]);
 
+      // Validate the field and set the error if needed
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: validate(name, value),
+      }));
+    },
+    [setPersonnelDetails]
+  );
 
+  const handlePhotoChange = useCallback(
+    (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setPhotoPreview(URL.createObjectURL(file));
+        setFormData((prevData) => {
+          const updatedData = { ...prevData, photo: file };
+          setPersonnelDetails(updatedData);
+          return updatedData;
+        });
+      }
+    },
+    [setPersonnelDetails]
+  );
 
   const handleRemovePhoto = useCallback(() => {
     setPhotoPreview(null);
@@ -66,7 +150,11 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
           <label className="cursor-pointer">
             <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
               {photoPreview ? (
-                <img src={photoPreview} alt="Uploaded" className="w-full h-full object-cover" />
+                <img
+                  src={photoPreview}
+                  alt="Uploaded"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <span className="text-gray-500 text-lg">+</span>
               )}
@@ -89,7 +177,10 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
             {photoPreview ? 'Change Photo' : 'Add Photo'}
           </button>
           {photoPreview && (
-            <button className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={handleRemovePhoto}>
+            <button
+              className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg"
+              onClick={handleRemovePhoto}
+            >
               Remove
             </button>
           )}
@@ -97,7 +188,9 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
       </div>
 
       {/* Form Fields */}
-      <h3 className="text-3xl font-semibold mb-6 text-center">Add Personal Details</h3>
+      <h3 className="text-3xl font-semibold mb-6 text-center">
+        Add Personal Details
+      </h3>
       <div className="space-y-6">
         {Object.keys(formData)
           .filter((key) => key !== 'photo')
@@ -126,6 +219,9 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
                   placeholder="Enter"
                   className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none text-gray-700"
                 />
+              )}
+              {errors[key] && (
+                <span className="text-red-500 text-sm mt-2">{errors[key]}</span>
               )}
             </div>
           ))}
