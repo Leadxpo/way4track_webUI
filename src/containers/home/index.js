@@ -13,8 +13,8 @@ import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
 import IndiaMap from '../../common/indiaMap';
-import { FaFileDownload } from "react-icons/fa";
-import GoogleMapComponent from "../../components/googleMap";
+import { FaFileDownload } from 'react-icons/fa';
+import GoogleMapComponent from '../../components/googleMap';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -115,20 +115,15 @@ const Home = () => {
       ],
     },
   ]);
-  
- 
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
       try {
-        const response = await ApiService.post(
-          'tickets/getTicketDetailsById',
-          {
-            id: ticketData.id,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
+        const response = await ApiService.post('tickets/getTicketDetailsById', {
+          id: ticketData.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        });
         if (response.status) {
           const staff = response.data?.[0];
           setTicketDetails({
@@ -152,7 +147,6 @@ const Home = () => {
     fetchTicketDetails();
   }, [ticketData.id]);
 
-  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -582,8 +576,6 @@ const Home = () => {
     }
   };
 
-  
-
   // Function to get a background color based on index
   const getBackgroundColor = (index) => {
     const colors = [
@@ -645,55 +637,61 @@ const Home = () => {
           />
         </div>
 
-
-
         <div className="flex mt-4">
-  <div className="w-full">
-    {branches.map((branch, index) => (
-      <div key={index} className="grid grid-cols-6  py-1">
-        <div className="flex items-center ">
-          <img
-            src="logo-name-square.png"
-            alt="Branch Logo"
-            className="w-16 h-16 object-cover"
-          />
-          <div className="text-xs">
-            <p className="text-gray-800 font-semibold">Branch</p>
-            <p className="text-green-700 font-semibold">{branch.branchName}</p>
+          <div className="w-full">
+            {branches.map((branch, index) => (
+              <div key={index} className="grid grid-cols-6  py-1">
+                <div className="flex items-center ">
+                  <img
+                    src="logo-name-square.png"
+                    alt="Branch Logo"
+                    className="w-16 h-16 object-cover"
+                  />
+                  <div className="text-xs">
+                    <p className="text-gray-800 font-semibold">Branch</p>
+                    <p className="text-green-700 font-semibold">
+                      {branch.branchName}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-left text-xs">
+                  <p className="text-gray-600 font-bold">Rectifications</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.serviceSales}
+                  </p>
+                </div>
+                <div className="text-left text-xs ">
+                  <p className="text-gray-600 font-bold">Renewals</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.productSales}
+                  </p>
+                </div>
+                <div className="text-left text-xs">
+                  <p className="text-gray-600 font-bold">Replacement</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.productSales}
+                  </p>
+                </div>
+                <div className="text-left text-xs">
+                  <p className="text-gray-600 font-bold">Products Sales</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.productSales}
+                  </p>
+                </div>
+                <div className="text-left text-xs">
+                  <p className="text-gray-600 font-bold">Total Sales</p>
+                  <p className="text-gray-800 font-bold">{branch.totalSales}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="w-1/2 flex justify-center items-center">
+            <GoogleMapComponent />
           </div>
         </div>
-        <div className="text-left text-xs">
-          <p className="text-gray-600 font-bold">Rectifications</p>
-          <p className="text-gray-800 font-bold">{branch.serviceSales}</p>
-        </div>
-        <div className="text-left text-xs ">
-          <p className="text-gray-600 font-bold">Renewals</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
-        </div>
-        <div className="text-left text-xs">
-          <p className="text-gray-600 font-bold">Replacement</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
-        </div>
-        <div className="text-left text-xs">
-          <p className="text-gray-600 font-bold">Products Sales</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
-        </div>
-        <div className="text-left text-xs">
-          <p className="text-gray-600 font-bold">Total Sales</p>
-          <p className="text-gray-800 font-bold">{branch.totalSales}</p>
-        </div>
       </div>
-    ))}
-  </div>
 
-
-  <div className="w-1/2 flex justify-center items-center">
-  <GoogleMapComponent />
-  </div>
-</div>
-</div>
-      
-    
       <div className="flex items-center justify-center space-x-10">
         <CashCard
           title="Solid Cash"
@@ -772,10 +770,9 @@ const Home = () => {
               <FaSearch className="mr-2" /> Search
             </button>
 
- <button   className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
-          <FaFileDownload className="mr-2" /> Download Excel
-        </button>
-
+            <button className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
+              <FaFileDownload className="mr-2" /> Download Excel
+            </button>
           </div>
         ) : null}
         <div className="mt-8">

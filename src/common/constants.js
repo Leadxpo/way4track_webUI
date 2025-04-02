@@ -368,6 +368,18 @@ export const menuOptions = {
       route: '/performance',
     },
   ],
+  'backend support': [
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/backend-support-home',
+    },
+    {
+      name: 'Works',
+      icon: <img src="./performance.png" />,
+      route: '/backend-support-works',
+    },
+  ],
   hr: [
     {
       name: 'Home',

@@ -266,6 +266,7 @@ const AddEditEmployeeForm = () => {
             <option value="Sales Man">Sales Man</option>
             <option value="Call Center">Call Center</option>
             <option value="Warehouse Manager">Warehouse Manager</option>
+            <option value="Backend Support">Backend Support</option>
           </select>
         </div>
         {/* Form Fields */}

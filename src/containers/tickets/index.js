@@ -404,6 +404,7 @@ const Tickets = () => {
                     <option value="HR">HR</option>
                     <option value="Accountant">Accountant</option>
                     <option value="Branch Manager">Branch Manager</option>
+                    <option value="Backend Support">Backend Support</option>
                     <option value="Sub Dealer">Sub Dealer</option>
                     <option value="Technician">Technician</option>
                     <option value="Sales Man">Sales Man</option>
