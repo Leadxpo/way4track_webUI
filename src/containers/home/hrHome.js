@@ -282,22 +282,21 @@ const HrHome = () => {
 
       <div className="p-6 space-y-6">
         <div className="flex space-x-4">
-        {branches
-  .filter(branch => branch.name !== 'Unknown') // Remove branches with 'Unknown' name
-  .map((branch, index) => (
-    <button
-      key={index}
-      onClick={() => setSelectedBranch(branch)}
-      className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
-        selectedBranch?.name === branch.name
-          ? 'bg-green-600 text-white'
-          : 'bg-gray-300 text-gray-700'
-      }`}
-    >
-      {branch.name}
-    </button>
-  ))}
-
+          {branches
+            .filter((branch) => branch.name !== 'Unknown') // Remove branches with 'Unknown' name
+            .map((branch, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedBranch(branch)}
+                className={`px-4 py-2 rounded-lg shadow-md font-semibold ${
+                  selectedBranch?.name === branch.name
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-300 text-gray-700'
+                }`}
+              >
+                {branch.name}
+              </button>
+            ))}
         </div>
 
         {selectedBranch && (
@@ -349,42 +348,45 @@ const HrHome = () => {
           rowKey="key"
         /> */}
 
-<div className="overflow-hidden rounded-lg shadow">
-  {filteredData?.length > 0 ? (
-    <div className="overflow-y-auto" style={{ maxHeight: '300px' }}>
-      <table className="min-w-full border-collapse border border-gray-200">
-        <thead className="bg-gray-100 sticky top-0">
-          <tr>
-            {Object.keys(filteredData[0]).map((column, index) => (
-              <th
-                key={index}
-                className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700"
-                style={{ textTransform: 'capitalize' }}
-              >
-                {formatString(column)}
-              </th>
-            ))}
-            {/* <th className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">
+        <div className="overflow-hidden rounded-lg shadow">
+          {filteredData?.length > 0 ? (
+            <div className="overflow-y-auto" style={{ maxHeight: '300px' }}>
+              <table className="min-w-full border-collapse border border-gray-200">
+                <thead className="bg-gray-100 sticky top-0">
+                  <tr>
+                    {Object.keys(filteredData[0]).map((column, index) => (
+                      <th
+                        key={index}
+                        className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700"
+                        style={{ textTransform: 'capitalize' }}
+                      >
+                        {formatString(column)}
+                      </th>
+                    ))}
+                    {/* <th className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">
               Action
             </th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row, rowIndex) => (
-            <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-              {Object.keys(filteredData[0]).map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${
-                    checkColumn(column)
-                      ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
-                      : ''
-                  }`}
-                >
-                  {row[column] || '-'}
-                </td>
-              ))}
-              {/* <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.map((row, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                    >
+                      {Object.keys(filteredData[0]).map((column, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${
+                            checkColumn(column)
+                              ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
+                              : ''
+                          }`}
+                        >
+                          {row[column] || '-'}
+                        </td>
+                      ))}
+                      {/* <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
                 <span onClick={() => handleActionClick(rowIndex)} className="cursor-pointer">
                   <FaEllipsisVertical />
                 </span>
@@ -426,18 +428,15 @@ const HrHome = () => {
                   </div>
                 )}
               </td> */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  ) : (
-    <div className="p-4 text-center text-gray-500">No data found</div>
-  )}
-</div>
-
-
-
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-4 text-center text-gray-500">No data found</div>
+          )}
+        </div>
       </div>
     </div>
   );
