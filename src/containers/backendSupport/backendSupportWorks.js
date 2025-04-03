@@ -82,16 +82,22 @@ const BackendSupportWorks = () => {
   };
 
   const filteredRecords = workRecords.filter((item) => {
+    console.log(item, 'Itemmmm');
     const matchesSearch = Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      value
+        ? value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        : false
     );
+
     const matchesDate =
       (!startDate || new Date(item.date) >= new Date(startDate)) &&
       (!endDate || new Date(item.date) <= new Date(endDate));
+
     const matchesTab =
       activeTab === 'all' ||
       (activeTab === 'activated' && item.workStatus === 'activated') ||
       (activeTab === 'accepted' && item.workStatus === 'accept');
+
     return matchesSearch && matchesDate && matchesTab;
   });
 

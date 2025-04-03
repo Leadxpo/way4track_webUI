@@ -23,7 +23,11 @@ const Staff = () => {
   console.log(profiles, 'profiles');
 
   const columnNames = [
-    'Branch ID',
+    'Staff ID',
+    'Staff Name',
+    'Designation',
+    'Phone Number',
+    'Email',
     'Branch Name',
     'Branch Number',
     'Branch Address',
@@ -33,20 +37,15 @@ const Staff = () => {
     'State',
     'Pincode',
     'Branch Opening',
-    'Email',
-    'Branch Photo',
-    'Company Code',
-    'Unit Code',
-    'Latitude',
-    'Longitude',
+    // 'Branch Photo',
+    // 'Company Code',
+    // 'Unit Code',
+    // 'Latitude',
+    // 'Longitude',
     'CIN',
     'GST',
     'ID',
-    'Branch Name',
-    'Staff ID',
-    'Staff Name',
-    'Designation',
-    'Phone Number',
+    // 'Branch Name',
   ];
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
