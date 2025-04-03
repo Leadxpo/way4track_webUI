@@ -144,6 +144,8 @@ export default function EditEducationDetails() {
   
       formData.append('qualifications', JSON.stringify(qualifications));
       formData.append('experienceDetails', JSON.stringify(experienceDetails));
+
+      
   
       if (staffId) {
         formData.append('id', staffId);
@@ -157,9 +159,12 @@ export default function EditEducationDetails() {
   
       experience.forEach((exp) => {
         if (exp.uploadLetters) {
-          formData.append('experienceFiles', exp.uploadLetters);
+          formData.append('experience', exp.uploadLetters);
         }
       });
+
+
+      
   
       const response = await ApiService.post(
         '/staff/handleStaffDetails',
