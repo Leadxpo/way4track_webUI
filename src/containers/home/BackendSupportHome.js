@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaEye } from 'react-icons/fa';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import * as XLSX from 'xlsx';
 
 const BackendSupportHome = () => {
   const [popupData, setPopupData] = useState(null);
@@ -60,30 +61,58 @@ const BackendSupportHome = () => {
     },
   ]);
 
+  const cardData = [
+    {
+      title: 'Total works Install',
+      key: 'totalInstallWork',
+      color: 'bg-blue-100',
+    },
+    {
+      title: 'Total works Accept',
+      key: 'totalAcceptWork',
+      color: 'bg-green-100',
+    },
+    {
+      title: 'Total works Activated',
+      key: 'totalActivateWork',
+      color: 'bg-yellow-100',
+    },
+  ];
+
+  const userId = localStorage.getItem('id');
+
   const [workRecords, setWorkRecords] = useState([]);
   const [workRecordsCount, setWorkRecordsCount] = useState([]);
 
+  console.log(workRecordsCount, 'useState');
+
   // Fetch records from an API
+
+  const fetchRecords = async () => {
+    try {
+      const response = await ApiService.post(
+        '/technician/getBackendSupportWorkAllocation',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      setWorkRecords(response.data || []);
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setWorkRecords([]);
+    }
+  };
+
   useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const response = await ApiService.post(
-          '/technician/getBackendSupportWorkAllocation',
-          {
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-
-        console.log(response.data, 'setWorkRecords');
-        setWorkRecords(response.data || []);
-      } catch (err) {
-        console.error('Failed to fetch data:', err);
-        setWorkRecords([]);
-      }
-    };
-
     fetchRecords();
+
+    const interval = setInterval(() => {
+      fetchRecords();
+    }, 180000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -108,167 +137,303 @@ const BackendSupportHome = () => {
     fetchRecords();
   }, []);
 
-  const handleStatusChange = (id, newStatus) => {
-    setRecords((prevRecords) =>
-      prevRecords.map((record) =>
-        record.id === id ? { ...record, status: newStatus } : record
-      )
-    );
+  const handleStatusChange = async (item, newStatus) => {
+
+    console.log(item,"item")
+    try {
+      setRecords((prevRecords) =>
+        prevRecords.map((record) =>
+          record.id === item.id ? { ...record, workStatus: newStatus } : record
+        )
+      );
+
+      const response = await ApiService.post(
+        '/technician/handleTechnicianDetails',
+        {
+          id: item.id,
+          workStatus: newStatus,
+          staffId: item.staffId,
+          backEndStaffRelation: Number(userId),
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      console.log('Status updated successfully:', response.data);
+
+      await fetchRecords();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
+  const exportToExcel = (data, fileName) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
   return (
     <div className="p-6">
-      {['Install'].map((status) => (
-        <div key={status} className="mb-6">
-          <h3 className="text-lg font-bold mb-2">{status}</h3>
-          <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-200 whitespace-nowrap">
-                  <th className="px-4 py-2">ID</th>
-                  <th className="px-4 py-2">Product Name</th>
-                  <th className="px-4 py-2">Service Name</th>
-                  <th className="px-4 py-2">Staff Name</th>
-                  <th className="px-4 py-2">Branch Name</th>
-                  <th className="px-4 py-2">Client Name</th>
-                  <th className="px-4 py-2">Phone Number</th>
-                  <th className="px-4 py-2">Sim Number</th>
-                  <th className="px-4 py-2">Vehicle Type</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records
-                  .filter((item) => item.status === status)
-                  .map((item) => (
-                    <tr key={item.id} className="bg-white border-b">
-                      <td className="px-4 py-2">{item.id}</td>
-                      <td className="px-4 py-2">{item.productName}</td>
-                      <td className="px-4 py-2">{item.serviceName}</td>
-                      <td className="px-4 py-2">{item.staffName}</td>
-                      <td className="px-4 py-2">{item.branchName}</td>
-                      <td className="px-4 py-2">{item.clientName}</td>
-                      <td className="px-4 py-2">{item.phoneNumber}</td>
-                      <td className="px-4 py-2">{item.simNumber}</td>
-                      <td className="px-4 py-2">{item.vehicleType}</td>
-                      <td className="px-4 py-2">{item.date}</td>
-                      <td className="px-4 py-2">
-                        <select
-                          value={item.status}
-                          onChange={(e) =>
-                            handleStatusChange(item.id, e.target.value)
-                          }
-                          className="border rounded p-1"
-                        >
-                          <option value="Install">Install</option>
-                          <option value="Accepted">Accepted</option>
-                        </select>
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <FaEye
-                          className="cursor-pointer text-blue-500"
-                          onClick={() => setPopupData(item)}
-                        />
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Work Records</h2>
+        <button
+          onClick={fetchRecords}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {['accept'].map((workStatus) => {
+        const filteredRecords = workRecords.filter(
+          (item) => item.workStatus === workStatus
+        );
+
+        return (
+          <div key={workStatus} className="mb-6">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <h3 className="text-lg font-bold mb-2">Accepted Works</h3>
+              <button
+                onClick={() => exportToExcel(filteredRecords, 'Accepted_Works')}
+                className="bg-green-500 text-white px-4 py-2 mb-2 rounded-lg shadow-md hover:bg-green-600 transition"
+              >
+                Generate XL
+              </button>
+            </div>
+            <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-200 whitespace-nowrap">
+                    <th className="px-4 py-2">ID</th>
+                    <th className="px-4 py-2">Product Name</th>
+                    <th className="px-4 py-2">Service Name</th>
+                    <th className="px-4 py-2">Staff Name</th>
+                    <th className="px-4 py-2">Branch Name</th>
+                    <th className="px-4 py-2">Client Name</th>
+                    <th className="px-4 py-2">Phone Number</th>
+                    <th className="px-4 py-2">IMEI Number</th>
+                    <th className="px-4 py-2">Sim Number</th>
+                    <th className="px-4 py-2">Vehicle Type</th>
+                    <th className="px-4 py-2">Date</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRecords.length > 0 ? (
+                    filteredRecords.map((item) => (
+                      <tr key={item.id} className="bg-white border-b">
+                        <td className="px-4 py-2">{item.id}</td>
+                        <td className="px-4 py-2">{item.productName}</td>
+                        <td className="px-4 py-2">{item.service}</td>
+                        <td className="px-4 py-2">{item.staffName}</td>
+                        <td className="px-4 py-2">{item.branchName}</td>
+                        <td className="px-4 py-2">{item.clientName}</td>
+                        <td className="px-4 py-2">{item.phoneNumber}</td>
+                        <td className="px-4 py-2">{item.imeiNumber}</td>
+                        <td className="px-4 py-2">{item.simNumber}</td>
+                        <td className="px-4 py-2">{item.vehicleType}</td>
+                        <td className="px-4 py-2">{item.date}</td>
+                        <td className="px-4 py-2">
+                          <select
+                            value={item.workStatus}
+                            onChange={(e) =>
+                              handleStatusChange(item, e.target.value)
+                            }
+                            className="border rounded p-1"
+                          >
+                            {/* <option value="install">Install</option> */}
+                            <option value="accept">Accepted</option>
+                            <option value="activate">Activated</option>
+                          </select>
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          <FaEye
+                            className="cursor-pointer text-blue-500"
+                            onClick={() => setPopupData(item)}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="13"
+                        className="text-center py-4 text-gray-500"
+                      >
+                        No data found
                       </td>
                     </tr>
-                  ))}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
-      {/* Horizontal Cards Section */}
       <div className="flex justify-between gap-4 my-6">
-        {[
-          'Total works Install',
-          'Total works Accept',
-          'Total works Activated',
-        ].map((title, index) => (
+        {cardData.map((item, index) => (
           <div
             key={index}
-            className="flex-1 bg-white shadow-md rounded-lg p-4 text-left border border-gray-300"
+            className={`flex-1 ${item.color} shadow-md rounded-lg p-4 text-left border border-gray-300`}
             style={{ height: '150px' }}
           >
             <h4
               className="text-lg font-semibold text-gray-700"
               style={{ fontSize: '25px' }}
             >
-              {title}
+              {item.title}
             </h4>
             <p
               className="text-xl font-bold text-blue-600"
               style={{ fontSize: '45px', marginTop: '25px' }}
             >
-              {Math.floor(Math.random() * 100)}
+              {workRecordsCount?.[item.key] || 0}
             </p>
           </div>
         ))}
       </div>
 
-      {['Accepted'].map((status) => (
-        <div key={status} className="mb-6">
-          <h3 className="text-lg font-bold mb-2">{status}</h3>
-          <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-200 whitespace-nowrap">
-                  <th className="px-4 py-2">ID</th>
-                  <th className="px-4 py-2">Product Name</th>
-                  <th className="px-4 py-2">Service Name</th>
-                  <th className="px-4 py-2">Staff Name</th>
-                  <th className="px-4 py-2">Branch Name</th>
-                  <th className="px-4 py-2">Client Name</th>
-                  <th className="px-4 py-2">Phone Number</th>
-                  <th className="px-4 py-2">Sim Number</th>
-                  <th className="px-4 py-2">Vehicle Type</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records
-                  .filter((item) => item.status === status)
-                  .map((item) => (
-                    <tr key={item.id} className="bg-white border-b">
-                      <td className="px-4 py-2">{item.id}</td>
-                      <td className="px-4 py-2">{item.productName}</td>
-                      <td className="px-4 py-2">{item.serviceName}</td>
-                      <td className="px-4 py-2">{item.staffName}</td>
-                      <td className="px-4 py-2">{item.branchName}</td>
-                      <td className="px-4 py-2">{item.clientName}</td>
-                      <td className="px-4 py-2">{item.phoneNumber}</td>
-                      <td className="px-4 py-2">{item.simNumber}</td>
-                      <td className="px-4 py-2">{item.vehicleType}</td>
-                      <td className="px-4 py-2">{item.date}</td>
-                      <td className="px-4 py-2">
-                        <select
-                          value={item.status}
-                          onChange={(e) =>
-                            handleStatusChange(item.id, e.target.value)
-                          }
-                          className="border rounded p-1"
-                        >
-                          <option value="Accepted">Accepted</option>
-                          <option value="Activated">Activated</option>
-                        </select>
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <FaEye
-                          className="cursor-pointer text-blue-500"
-                          onClick={() => setPopupData(item)}
-                        />
+      {['install'].map((workStatus) => {
+        const filteredRecords = workRecords.filter(
+          (item) => item.workStatus === workStatus
+        );
+
+        return (
+          <div key={workStatus} className="mb-6 mt-6">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <h3 className="text-lg font-bold mb-2">Installed Works</h3>
+              <button
+                onClick={() =>
+                  exportToExcel(filteredRecords, 'Installed_Works')
+                }
+                className="bg-green-500 text-white px-4 py-2 mb-2 rounded-lg shadow-md hover:bg-green-600 transition"
+              >
+                Generate XL
+              </button>
+            </div>
+            <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-200 whitespace-nowrap">
+                    <th className="px-4 py-2">ID</th>
+                    <th className="px-4 py-2">Product Name</th>
+                    <th className="px-4 py-2">Service Name</th>
+                    <th className="px-4 py-2">Staff Name</th>
+                    <th className="px-4 py-2">Branch Name</th>
+                    <th className="px-4 py-2">Client Name</th>
+                    <th className="px-4 py-2">Phone Number</th>
+                    <th className="px-4 py-2">IMEI Number</th>
+                    <th className="px-4 py-2">Sim Number</th>
+                    <th className="px-4 py-2">Vehicle Type</th>
+                    <th className="px-4 py-2">Date</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRecords.length > 0 ? (
+                    filteredRecords.map((item) => (
+                      <tr key={item.id} className="bg-white border-b">
+                        <td className="px-4 py-2">{item.id}</td>
+                        <td className="px-4 py-2">{item.productName}</td>
+                        <td className="px-4 py-2">{item.service}</td>
+                        <td className="px-4 py-2">{item.staffName}</td>
+                        <td className="px-4 py-2">{item.branchName}</td>
+                        <td className="px-4 py-2">{item.clientName}</td>
+                        <td className="px-4 py-2">{item.phoneNumber}</td>
+                        <td className="px-4 py-2">{item.imeiNumber}</td>
+                        <td className="px-4 py-2">{item.simNumber}</td>
+                        <td className="px-4 py-2">{item.vehicleType}</td>
+                        <td className="px-4 py-2">{item.date}</td>
+                        <td className="px-4 py-2">
+                          <select
+                            value={item.workStatus}
+                            onChange={(e) =>
+                              handleStatusChange(item, e.target.value)
+                            }
+                            className="border rounded p-1"
+                          >
+                            <option value="install">Install</option>
+                            <option value="accept">Accepted</option>
+                            {/* <option value="activate">Activated</option> */}
+                          </select>
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          <FaEye
+                            className="cursor-pointer text-blue-500"
+                            onClick={() => setPopupData(item)}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="13"
+                        className="text-center py-4 text-gray-500"
+                      >
+                        No data found
                       </td>
                     </tr>
-                  ))}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+
+      {popupData && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Work Details</h2>
+            <p>
+              <strong>ID:</strong> {popupData.id}
+            </p>
+            <p>
+              <strong>Product Name:</strong> {popupData.productName}
+            </p>
+            <p>
+              <strong>Service Name:</strong> {popupData.service}
+            </p>
+            <p>
+              <strong>Staff Name:</strong> {popupData.staffName}
+            </p>
+            <p>
+              <strong>Branch Name:</strong> {popupData.branchName}
+            </p>
+            <p>
+              <strong>Client Name:</strong> {popupData.clientName}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {popupData.phoneNumber}
+            </p>
+            <p>
+              <strong>Sim Number:</strong> {popupData.simNumber}
+            </p>
+            <p>
+              <strong>Vehicle Type:</strong> {popupData.vehicleType}
+            </p>
+            <p>
+              <strong>Date:</strong> {popupData.date}
+            </p>
+            <p>
+              <strong>Status:</strong> {popupData.status}
+            </p>
+
+            <button
+              onClick={() => setPopupData(null)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };

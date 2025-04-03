@@ -129,6 +129,7 @@ import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 import SelectBranch from '../vouchers/selectBranch';
 import ReceiptForm from '../vouchers/receiptForm';
 import BackendSupportHome from '../home/BackendSupportHome';
+import BackendSupportWorks from '../backendSupport/backendSupportWorks';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -503,6 +504,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/designations" element={<Designation />} />
           <Route path="/designation-details" element={<DesignationDetails />} />
           <Route path="/backend-support-home" element={<BackendSupportHome />} />
+          <Route path="/backend-support-works" element={<BackendSupportWorks />} />
 
           <Route path="/add-designation" element={<AddDesignation />} />
 
