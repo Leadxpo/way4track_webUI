@@ -95,7 +95,7 @@ const StaffDetails = () => {
         unitCode: initialAuthState.unitCode,
       });
 
-      console.log('API Response:', response);
+      console.log('API Response:staff photo++', response);
 
       if (response.errorCode === 200) {
         const staff = response.data;
@@ -104,6 +104,7 @@ const StaffDetails = () => {
           personnelDetails: {
             id: staff.id,
             staffId: staff.staffId || '',
+            staffPhoto:staff?.staffPhoto,
             name: staff.name || '',
             dob: staff.dob || '',
             gender: staff.gender || '',
