@@ -130,6 +130,9 @@ import SelectBranch from '../vouchers/selectBranch';
 import ReceiptForm from '../vouchers/receiptForm';
 import BackendSupportHome from '../home/BackendSupportHome';
 import BackendSupportWorks from '../backendSupport/backendSupportWorks';
+import ViewBackendWorkDetails from '../backendSupport/viewBackendWorkDetails';
+import CeoBackendSupportHome from '../ceoBackendSupport';
+import FilteredWorkStatusDetails from '../ceoBackendSupport/filteredWorkStatusDetails';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -503,8 +506,25 @@ const BodyLayout = ({ children }) => {
           <Route path="/receipt-details" element={<ReceiptDetails />} />
           <Route path="/designations" element={<Designation />} />
           <Route path="/designation-details" element={<DesignationDetails />} />
-          <Route path="/backend-support-home" element={<BackendSupportHome />} />
-          <Route path="/backend-support-works" element={<BackendSupportWorks />} />
+          <Route
+            path="/backend-support-home"
+            element={<BackendSupportHome />}
+          />
+          <Route
+            path="/backend-support-works"
+            element={<BackendSupportWorks />}
+          />
+          <Route
+            path="/work-view-details"
+            element={<ViewBackendWorkDetails />}
+          />
+          <Route path="/backend-support" element={<CeoBackendSupportHome />} />
+          <Route
+            path="/backend-work-details/:id"
+            element={<FilteredWorkStatusDetails />}
+          />
+
+          
 
           <Route path="/add-designation" element={<AddDesignation />} />
 

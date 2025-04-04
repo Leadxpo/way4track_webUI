@@ -82,6 +82,11 @@ export const menuOptions = {
       icon: <img src="./purchase.png" />,
       route: '/purchase',
     },
+    {
+      name: 'Backend Support',
+      icon: <img src="./purchase.png" />,
+      route: '/backend-support',
+    },
   ],
   'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
