@@ -161,7 +161,7 @@ const Staff = () => {
   };
 
   const handleDelete = async (row) => {
-    const id = row.id;
+    const id = row.staffId;
     console.log(id, 'iddddsds');
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this record?'
@@ -170,7 +170,7 @@ const Staff = () => {
 
     try {
       const response = await ApiService.post('/staff/deletestaffDetails', {
-        id,
+        staffId:id,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });

@@ -86,6 +86,14 @@ export const menuOptions = {
       name: 'Backend Support',
       icon: <img src="./purchase.png" />,
       route: '/backend-support',
+      name: 'Service',
+      icon: <img src="./products.png" />,
+      route: '/service',
+    },
+    {
+      name: 'Vehicle',
+      icon: <img src="./products.png" />,
+      route: '/vehicle',
     },
   ],
   'sub dealer': [
