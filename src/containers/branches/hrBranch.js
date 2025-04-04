@@ -366,7 +366,7 @@ const BranchList = () => {
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              {["NO.", "Employ Id", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
+              {[ "Employ Id", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
                 <th key={index} className="p-3 text-left">{head}</th>
               ))}
             </tr>
@@ -375,12 +375,13 @@ const BranchList = () => {
             {filteredStaff.length > 0 ? (
               filteredStaff.map((staff, index) => (
                 <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
-                  <td className="p-3">{index + 1}</td>
+                  {/* <td className="p-3">{index + 1}</td> */}
                   <td className="p-3">{staff.staffId}</td>
                   <td className="p-3">{staff.name}</td>
                   <td className="p-3">{staff.designation}</td>
                   <td className="p-3">{staff.branchName}</td>
                   <td className="p-3">{staff.phoneNumber}</td>
+                  <td className="p-3">{staff.joiningDate}</td>
                   <td className="p-3">{staff.monthlySalary}</td>
                   <td className="px-4 py-2 border">
                     <FaFileDownload

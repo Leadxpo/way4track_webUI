@@ -12,7 +12,6 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
-import IndiaMap from '../../common/indiaMap';
 import { FaFileDownload } from "react-icons/fa";
 import GoogleMapComponent from "../../components/googleMap";
 
@@ -25,27 +24,25 @@ const Home = () => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [branchFilter, setBranchFilter] = useState('');
-  const [ticketDetails, setTicketDetails] = useState([]);
   const location = useLocation();
-  const ticketData = location.state?.ticketsData || {};
   const [branches, setBranches] = useState([]);
-  const [totalTicketDetails, setTotalTicketDetails] = useState({});
-  const [totalProductDetails, setTotalProductDetails] = useState({});
   const [solidLiquidData, setSolidLiquidData] = useState({});
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
+  const [totalProductDetails, setTotalProductDetails] = useState({});
   const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState(
     []
   );
+  const [totalReceivables, setTotalReceivables] = useState({});
   const [totalProducts, setTotalProducts] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState([]);
   const [totalPurchases, setTotalPurchases] = useState([]);
-  const [branch_details, setBranchDetails] = useState([]);
+  const [branchdetails, setBranchDetails] = useState([]);
   const [cardData, setCardData] = useState([
     {
       id: 1,
       icon: <img src="./products_box.png" />,
       title: 'Total Sales',
-      count: 120,
+      count: 1200,
       growth: '+55%',
       bgColor: '#151515',
     },
@@ -53,7 +50,7 @@ const Home = () => {
       id: 2,
       icon: <img src="./ticket.png" />,
       title: 'Payables',
-      count: 75,
+      count: 7500,
       growth: '+40%',
       bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
     },
@@ -118,49 +115,17 @@ const Home = () => {
   
  
 
-  useEffect(() => {
-    const fetchTicketDetails = async () => {
-      try {
-        const response = await ApiService.post(
-          'tickets/getTicketDetailsById',
-          {
-            id: ticketData.id,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-        if (response.status) {
-          const staff = response.data?.[0];
-          setTicketDetails({
-            staffName: staff.staffName,
-            addressingDepartment: staff.addressingDepartment,
-            ticketNumber: staff.ticketNumber,
-            branchId: staff.branchId,
-            date: staff.date,
-            problem: staff.problem,
-            branchName: staff.branchName,
-            staffNumber: staff.staffNumber,
-            staffId: staff.staffId,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching staff details:', error);
-        //alert('Failed to fetch staff details.');
-      }
-    };
-
-    fetchTicketDetails();
-  }, [ticketData.id]);
 
   
   useEffect(() => {
     const fetchBranches = async () => {
       try {
         const response = await ApiService.post(
-          '/branch/getBranchNamesDropDown'
+          '/dashboards/getSalesBreakdown'
         );
         if (response.status) {
           setBranches(response.data); // Set branches to state
+
         } else {
           console.error('Failed to fetch branches');
         }
@@ -171,29 +136,44 @@ const Home = () => {
 
     fetchBranches();
   }, []);
+
+
+
   const handleCardClick = (cardType) => {
-    let dataSource;
-    switch (cardType) {
-      case 'Total Products':
-        dataSource = totalProducts;
-        break;
-      case 'Total Tickets':
-        dataSource = ticketDetails;
-        break;
-      case 'Expenses':
-        dataSource = totalExpenses;
-        break;
-      case 'Total Purchases':
-        dataSource = totalPurchases;
-        break;
-      default:
-        dataSource = [];
-    }
-    setSelectedCard(cardType);
-    setTableData(dataSource);
-    setFilteredData(dataSource);
-    setTableColumns(Object.keys(dataSource[0] || []));
-  };
+  let dataSource;
+  switch (cardType) {
+    case 'Total Sales':
+      dataSource = totalProducts;
+      break;
+    case 'Payables':
+      dataSource = totalExpenses;
+      break;
+    case 'Receivables':
+      dataSource = totalReceivables;
+      break;
+    case 'Total Purchases':
+      dataSource = totalPurchases;
+      break;
+    default:
+      dataSource = [];
+  }
+
+  setSelectedCard(cardType);
+  setTableData(dataSource);
+  setFilteredData(dataSource);
+  setTableColumns(
+    Object.keys(dataSource[0] || {}));
+  
+
+  // setColumns(Object.keys(dataSource[0] || {}));
+  // setColumnNames(Object.keys(dataSource[0] || {}));
+  console.log("data source.......>",dataSource)
+};
+
+if(tableData){
+  console.log("data source data ram.......>",tableData)
+}
+console.log("data source data ram.......>",tableData)
 
   // Handle status filter change
   const handleStatusChange = (e) => {
@@ -211,32 +191,7 @@ const Home = () => {
     console.log('Filtering with:', { dateFrom, dateTo });
   };
 
-  const fetchTotalTickets = async () => {
-    try {
-      const response = await ApiService.post('/dashboards/totalTickets', {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        userId: initialAuthState.userId,
-        userName: initialAuthState.userName,
-      });
-      console.log(response.data);
-      setTotalTicketDetails(response.data);
-      setCardData((prevData) =>
-        prevData.map((item) =>
-          item.id === 2
-            ? {
-                ...item,
-                count: response.data.last30DaysTickets,
-                growth: response.data.percentageChange,
-              }
-            : item
-        )
-      );
-    } catch (error) {
-      console.error('Error fetching total tickets:', error);
-      alert('Failed to fetch total tickets.');
-    }
-  };
+  
 
   const fetchTotalProducts = async () => {
     try {
@@ -317,38 +272,10 @@ const Home = () => {
       alert('Failed to fetch total tickets.');
     }
   };
-  const fetchTicketsData = async () => {
-    const payload = {
-      ticketId: '',
-      clientName: '',
-      companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode,
-      role: localStorage.getItem('role'),
-    };
 
-    // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-    if (payload.role === 'Technician' || payload.role === 'Sales Man') {
-      payload.staffId = localStorage.getItem('userId');
-    }
 
-    try {
-      const response = await ApiService.post(
-        '/dashboards/getTicketDetailsAgainstSearch',
-        payload
-      );
-
-      if (response.status) {
-        setTicketDetails(response.data);
-      } else {
-        alert(response.data.message || 'Failed to fetch ticket details.');
-      }
-    } catch (error) {
-      console.error('Error fetching tickets data:', error);
-      //alert('Failed to fetch tickets data.');
-    }
-  };
-
-  const fetchProductsData = async () => {
+ 
+  const fetchSalesData = async () => {
     try {
       const payload = {
         ticketId: '',
@@ -364,7 +291,7 @@ const Home = () => {
       }
 
       const response = await ApiService.post(
-        '/products/getAllProductDetails',
+        '/dashboards/getSalesForTable',
         payload
       );
 
@@ -387,7 +314,7 @@ const Home = () => {
     }
   };
 
-  const fetchExpensesData = async () => {
+  const fetchPayableData = async () => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
@@ -400,7 +327,7 @@ const Home = () => {
         payload.staffId = localStorage.getItem('userId');
       }
       const response = await ApiService.post(
-        '/dashboards/getExpenseData',
+        '/dashboards/getPayableAmountForTable',
         payload
       );
 
@@ -414,6 +341,38 @@ const Home = () => {
       alert('Failed to fetch tickets data.');
     }
   };
+
+  const fetchReceivableDate = async () => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        role: localStorage.getItem('role'),
+      };
+  
+      // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
+        payload.staffId = localStorage.getItem('userId');
+      }
+  
+      const response = await ApiService.post(
+        '/dashboards/getReceivableAmountForTable', // Assuming this is the correct endpoint
+        payload
+      );
+  
+      if (response.status) {
+        setTotalReceivables(response.data); // Replace this with your state handler
+      } else {
+        alert(response.data.message || 'Failed to fetch receivable data.');
+      }
+    } catch (error) {
+      console.error('Error fetching receivable data:', error);
+      alert('Failed to fetch receivable data.');
+    }
+  };
+  
+
+
 
   const fetchPurchaseData = async () => {
     try {
@@ -618,7 +577,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchTotalTickets();
     fetchTotalProducts();
     fetchPurchaseCount();
     fetchExpenseCount();
@@ -627,9 +585,10 @@ const Home = () => {
     getAnalysis();
     getTotalProductAndServiceSales();
     getProductTypeCreditAndDebitPercentages();
-    fetchTicketsData();
-    fetchProductsData();
-    //fetchExpensesData();
+    // fetchTicketsData();
+    fetchSalesData();
+    fetchPayableData();
+    fetchReceivableDate();
     fetchPurchaseData();
   }, []);
 
@@ -664,23 +623,23 @@ const Home = () => {
         </div>
         <div className="text-left text-xs">
           <p className="text-gray-600 font-bold">Rectifications</p>
-          <p className="text-gray-800 font-bold">{branch.serviceSales}</p>
+          <p className="text-gray-800 font-bold">{branch.rectificationsAmount}</p>
         </div>
         <div className="text-left text-xs ">
           <p className="text-gray-600 font-bold">Renewals</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+          <p className="text-gray-800 font-bold">{branch.renewablesAmount}</p>
         </div>
         <div className="text-left text-xs">
           <p className="text-gray-600 font-bold">Replacement</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+          <p className="text-gray-800 font-bold">{branch.replacementsAmount}</p>
         </div>
         <div className="text-left text-xs">
           <p className="text-gray-600 font-bold">Products Sales</p>
-          <p className="text-gray-800 font-bold">{branch.productSales}</p>
+          <p className="text-gray-800 font-bold">{branch.productSalesAmount}</p>
         </div>
         <div className="text-left text-xs">
           <p className="text-gray-600 font-bold">Total Sales</p>
-          <p className="text-gray-800 font-bold">{branch.totalSales}</p>
+          <p className="text-gray-800 font-bold">{branch.totalSalesAmount}</p>
         </div>
       </div>
     ))}
@@ -709,6 +668,8 @@ const Home = () => {
         />
       </div>
 
+
+
       {/* third section - profits graphs */}
       <div className="flex space-x-4 mt-10 overflow-x-auto">
         {branchesData.map((branchData, index) => (
@@ -727,7 +688,7 @@ const Home = () => {
 
       {/* fifth section - analysis card*/}
       <div className="mt-6">
-        {selectedCard === 'Expenses' || selectedCard === 'Total Purchases' ? (
+        {selectedCard === 'Payables' || selectedCard === 'Total Purchases'  || selectedCard === 'Receivables'  || selectedCard === 'Total Sales'? (
           <div className="flex mb-4">
             <div className="flex-grow mr-2">
               <input
@@ -779,7 +740,17 @@ const Home = () => {
           </div>
         ) : null}
         <div className="mt-8">
-          <Table columns={tableColumns} data={tableData} />
+          {/* <Table columns={tableColumns} data={tableData} /> */}
+          {/* <Table
+                  data={tableData}
+                  columns={Object.keys(tableData[0])}
+                  showDelete={false}
+                  showDetails={false}
+                  editText="Assign"
+                   onEdit={handleEditClick}
+                /> */}
+                
+                <Table columns={Object.keys(tableData[0] || {})} data={tableData} />
         </div>
       </div>
       {/* sixth section - table */}
