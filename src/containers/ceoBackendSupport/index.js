@@ -66,7 +66,7 @@ const CeoBackendSupportHome = () => {
   const cardData = [
     {
       title: 'Total works Install',
-      key: 'totalInstall0Work',
+      key: 'totalInstallWork',
       color: 'bg-blue-10',
       id: 'install',
     },

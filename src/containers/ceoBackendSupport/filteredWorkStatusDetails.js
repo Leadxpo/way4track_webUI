@@ -181,10 +181,20 @@ const FilteredWorkStatusDetails = () => {
                         value={item.workStatus}
                         className="border rounded p-1"
                       >
-                        <option value="accept">Accepted</option>
-                        <option value="activate">Activated</option>
+                        {id === 'install' ? (
+                          <>
+                            <option value="install">Install</option>
+                            <option value="accept">Accepted</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="accept">Accepted</option>
+                            <option value="activate">Activated</option>
+                          </>
+                        )}
                       </select>
                     </td>
+
                     <td className="px-4 py-2 text-center">
                       <FaEye
                         className="cursor-pointer text-blue-500"
