@@ -165,6 +165,7 @@ const Login = ({ handleLoginFlag }) => {
               <option value="Technician">Technician</option>
               <option value="Sales Man">Sales Man</option>
               <option value="Call Center">Call Center</option>
+              <option value="Backend Support">Backend Support</option>
             </select>
           </div>
 

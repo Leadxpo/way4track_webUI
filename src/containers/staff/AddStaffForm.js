@@ -77,8 +77,8 @@ export default function AddStaffForm() {
         break;
 
       case 4: // Employer Details validation
-        if (!formData.employerDetails?.companyName?.trim()) {
-          errorMessage = 'Please enter your employer company name.';
+        if (!formData.employerDetails?.staffId?.trim()) {
+          errorMessage = 'Please enter your employer staff id.';
         }
         break;
 

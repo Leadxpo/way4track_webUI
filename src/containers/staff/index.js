@@ -20,33 +20,32 @@ const Staff = () => {
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
   const [permissions, setPermissions] = useState({});
-  console.log(profiles, 'profiles');
+  console.log(columns, 'columns');
 
   const columnNames = [
-    'Branch ID',
-    'Branch Name',
-    'Branch Number',
-    'Branch Address',
-    'Address Line 1',
-    'Address Line 2',
-    'City',
-    'State',
-    'Pincode',
-    'Branch Opening',
-    'Email',
-    'Branch Photo',
-    'Company Code',
-    'Unit Code',
-    'Latitude',
-    'Longitude',
-    'CIN',
-    'GST',
-    'ID',
-    'Branch Name',
     'Staff ID',
     'Staff Name',
     'Designation',
     'Phone Number',
+    'Email',
+    'Branch Name',
+    'Branch Number',
+    'Branch Address',
+    // 'Address Line 1',
+    // 'Address Line 2',
+    'City',
+    'State',
+    'Pincode',
+    'Branch Opening',
+    // 'Branch Photo',
+    // 'Company Code',
+    // 'Unit Code',
+    // 'Latitude',
+    // 'Longitude',
+    'CIN',
+    'GST',
+    // 'ID',
+    // 'Branch Name',
   ];
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
@@ -63,8 +62,45 @@ const Staff = () => {
       );
 
       if (response.status) {
-        setProfiles(response.data || []);
-        setColumns(response.data.length ? Object.keys(response.data[0]) : []);
+        const rawData = response.data || [];
+
+        // Define a mapping from your API response keys to the column names
+        const columnMapping = {
+          staffId: 'Staff ID',
+          staffName: 'Staff Name',
+          designation: 'Designation',
+          phoneNumber: 'Phone Number',
+          branch_email: 'Email',
+          branch_name: 'Branch Name',
+          branch_branch_number: 'Branch Number',
+          branch_branch_address: 'Branch Address',
+          // branch_address_line1: 'Address Line 1',
+          // branch_address_line2: 'Address Line 2',
+          branch_city: 'City',
+          branch_state: 'State',
+          branch_pincode: 'Pincode',
+          branch_branch_opening: 'Branch Opening',
+          branch_CIN: 'CIN',
+          branch_GST: 'GST',
+          // id: 'ID',
+        };
+
+        // Reorder the columns based on `columnNames`
+        const formattedData = rawData.map((item) => {
+          let reorderedItem = {};
+          columnNames.forEach((column) => {
+            const key = Object.keys(columnMapping).find(
+              (k) => columnMapping[k] === column
+            );
+            if (key && item.hasOwnProperty(key)) {
+              reorderedItem[column] = item[key];
+            }
+          });
+          return reorderedItem;
+        });
+
+        setProfiles(formattedData);
+        setColumns(columnNames);
       } else {
         alert(
           response.data.internalMessage || 'Failed to fetch staff details.'
@@ -125,7 +161,7 @@ const Staff = () => {
   };
 
   const handleDelete = async (row) => {
-    const id = row.id;
+    const id = row.staffId;
     console.log(id, 'iddddsds');
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this record?'
@@ -134,7 +170,7 @@ const Staff = () => {
 
     try {
       const response = await ApiService.post('/staff/deletestaffDetails', {
-        id,
+        staffId:id,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });

@@ -128,6 +128,17 @@ import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
 import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 import SelectBranch from '../vouchers/selectBranch';
 import ReceiptForm from '../vouchers/receiptForm';
+import BackendSupportHome from '../home/BackendSupportHome';
+import BackendSupportWorks from '../backendSupport/backendSupportWorks';
+import ViewBackendWorkDetails from '../backendSupport/viewBackendWorkDetails';
+import CeoBackendSupportHome from '../ceoBackendSupport';
+import FilteredWorkStatusDetails from '../ceoBackendSupport/filteredWorkStatusDetails';
+import Service from '../service';
+import Vehicle from '../vehicle';
+import AddService from '../service/AddService';
+import EditService from '../service/EditService';
+import EditVehicle from '../vehicle/EditVehicle';
+import AddVehicle from '../vehicle/AddVehicle';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -465,6 +476,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/day-book" element={<DayBook />} />
           <Route path="/ledger-details" element={<LedgerDetails />} />
           <Route path="/purchase" element={<Purchase />} />
+          <Route path="/service" element={<Service/>} />
+          <Route path="/add-service" element={<AddService/>} />
+          <Route path="/edit-service" element={<EditService/>} />
+          <Route path="/vehicle" element={<Vehicle/>} />
+          <Route path="/add-vehicle" element={<AddVehicle/>} />
+          <Route path="/edit-vehicle" element={<EditVehicle/>} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
@@ -501,6 +518,25 @@ const BodyLayout = ({ children }) => {
           <Route path="/receipt-details" element={<ReceiptDetails />} />
           <Route path="/designations" element={<Designation />} />
           <Route path="/designation-details" element={<DesignationDetails />} />
+          <Route
+            path="/backend-support-home"
+            element={<BackendSupportHome />}
+          />
+          <Route
+            path="/backend-support-works"
+            element={<BackendSupportWorks />}
+          />
+          <Route
+            path="/work-view-details"
+            element={<ViewBackendWorkDetails />}
+          />
+          <Route path="/backend-support" element={<CeoBackendSupportHome />} />
+          <Route
+            path="/backend-work-details/:id"
+            element={<FilteredWorkStatusDetails />}
+          />
+
+          
 
           <Route path="/add-designation" element={<AddDesignation />} />
 

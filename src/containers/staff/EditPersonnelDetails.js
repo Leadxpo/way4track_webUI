@@ -7,7 +7,7 @@ const EditPersonnelDetails = () => {
   const location = useLocation();
   const stateData = location.state?.data || location.state || {}; // Extract data properly
 
-  console.log(stateData,"stateData")
+  console.log(stateData,"stateData11111")
 
   const [data, setData] = useState({
     staffId: "",
@@ -67,28 +67,71 @@ const EditPersonnelDetails = () => {
     }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
+  // const handleSubmit = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     Object.keys(data).forEach((key) => {
+  //       formData.append(key, data[key]);
+  //     });
 
-      const response = await ApiService.post("/staff/handleStaffDetails", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  //     const response = await ApiService.post("/staff/handleStaffDetails", formData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
 
-      if (response.status) {
-        alert("Personnel details updated successfully!");
-      } else {
-        alert("Failed to update personnel details.");
+  //     if (response.status) {
+  //       alert("Personnel details updated successfully!");
+  //     } else {
+  //       alert("Failed to update personnel details.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating personnel details:", error);
+  //     alert("An error occurred while updating personnel details.");
+  //   }
+  // };
+
+
+    const handleSubmit = async () => {
+      try {
+        const payload = new FormData();
+        payload.append("staffId", data.staffId);
+        payload.append("name", data.name);
+        payload.append("dob", data.dob);
+        payload.append("gender",data.gender);
+        payload.append("location", data.location);
+        payload.append("phoneNumber", data.phoneNumber);
+        payload.append("alternateNumber", data.alternateNumber);
+        payload.append("email", data.email);
+        payload.append("aadharNumber", data.aadharNumber);
+        payload.append("panCardNumber", data.panCardNumber);
+      
+        payload.append("drivingLicenceNumber",data.drivingLicenceNumber);
+        payload.append("address", data.address);
+        payload.append("uanNumber",data.uanNumber);
+        payload.append("esicNumber",data.esicNumber);
+        payload.append("bloodGroup",data.bloodGroup);
+        payload.append("id", data.id);
+        
+        // Handling staffPhoto if it's a file
+        if (data.staffPhoto instanceof File) {
+          payload.append("photo", data.staffPhoto);
+        } else {
+          payload.append("photo", ""); // Send empty if no file
+        }
+  
+        const response = await ApiService.post("/staff/handleStaffDetails", payload, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        if (response.status) {
+          alert("Personnel details updated successfully!");
+        } else {
+          alert("Failed to update personnel details.");
+        }
+      } catch (error) {
+        console.error("Error updating personnel details:", error);
+        alert("An error occurred while updating personnel details.");
       }
-    } catch (error) {
-      console.error("Error updating personnel details:", error);
-      alert("An error occurred while updating personnel details.");
-    }
-  };
-
+    };
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
       <h3 className="text-3xl font-semibold mb-6 text-center">Edit Personal Details</h3>

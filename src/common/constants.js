@@ -82,6 +82,17 @@ export const menuOptions = {
       icon: <img src="./purchase.png" />,
       route: '/purchase',
     },
+    {
+      name: 'Backend Support',
+      icon: <img src="./purchase.png" />,
+      route: '/backend-support',
+    },
+    { name: 'Service', icon: <img src="./products.png" />, route: '/service' },
+    {
+      name: 'Vehicle',
+      icon: <img src="./products.png" />,
+      route: '/vehicle',
+    },
   ],
   'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
@@ -366,6 +377,18 @@ export const menuOptions = {
       name: 'Performance',
       icon: <img src="./performance.png" />,
       route: '/performance',
+    },
+  ],
+  'backend support': [
+    {
+      name: 'Home',
+      icon: <img src="./home.png" />,
+      route: '/backend-support-home',
+    },
+    {
+      name: 'Works',
+      icon: <img src="./performance.png" />,
+      route: '/backend-support-works',
     },
   ],
   hr: [
