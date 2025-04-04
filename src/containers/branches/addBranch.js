@@ -21,12 +21,16 @@ const AddBranchForm = () => {
     pincode: branchData?.pincode || '',
     branchOpening: branchData?.branchOpening || '',
     email: branchData?.email || '',
-    photo: branchData?.photo || null,
+    photo: branchData?.branchPhoto|| null,
+    image: branchData?.qrPhoto || null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
+    latitude:branchData?.latitude,
+    longitude:branchData?.longitude
   });
 
   const [image, setImage] = useState(branchData?.photo || '');
+  const [qrImage, setQrImage] = useState(branchData?.image || '');
   const [branchList, setBranchList] = useState([]);
 
   const handleChange = (e) => {
@@ -64,6 +68,9 @@ const AddBranchForm = () => {
               : '',
             email: matchedBranch.email || '',
             photo: matchedBranch.branchPhoto || null,
+            image: matchedBranch.qrPhoto || null,
+            latitude:matchedBranch.latitude,
+           longitude:matchedBranch.longitude,
             companyCode:
               matchedBranch.companyCode || initialAuthState.companyCode,
             unitCode: matchedBranch.unitCode || initialAuthState.unitCode,
@@ -71,6 +78,7 @@ const AddBranchForm = () => {
 
           setFormData(updatedFormData);
           setImage(matchedBranch.branchPhoto || '');
+          setQrImage(matchedBranch.qrPhoto || '');
         }
       } else {
         alert(response.data.message || 'Failed to fetch branch list.');
@@ -93,7 +101,19 @@ const AddBranchForm = () => {
       setImage(URL.createObjectURL(selectedFile));
       setFormData((prev) => ({
         ...prev,
-        photo: selectedFile, // Save the file object directly in `formData`
+        photo: selectedFile,
+      }));
+    }
+  };
+
+   // Handle file change (image)
+   const handleImageFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setQrImage(URL.createObjectURL(selectedFile));
+      setFormData((prev) => ({
+        ...prev,
+        image: selectedFile,
       }));
     }
   };
@@ -101,7 +121,7 @@ const AddBranchForm = () => {
   const handleSubmit = async () => {
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'photo' && value instanceof File) {
+      if (key === 'photo'||key === 'image' && value instanceof File) {
         payload.append(key, value);
       } else {
         payload.append(key, value);
@@ -147,7 +167,21 @@ const AddBranchForm = () => {
           </h1>
         </div>
         <div className="space-y-6">
+        <div>
+            <label className="block font-bold mb-1">Upload Branch Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              name="photo"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              onChange={handleFileChange}
+            />
+            {image && (
+              <img src={image} alt="Branch" className="w-32 h-32 mt-4" />
+            )}
+          </div>
           <div className="flex space-x-4">
+          
             <div className="flex-1">
               <label className="block font-bold mb-1">Branch Name</label>
               <input
@@ -280,18 +314,41 @@ const AddBranchForm = () => {
               onChange={handleChange}
             />
           </div>
+          <div className="flex space-x-4">
+          
+            <div className="flex-1">
+              <label className="block font-bold mb-1">Latitude</label>
+              <input
+                type="text"
+                name="latitude"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                value={formData.latitude}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block font-bold mb-1">Longitude</label>
+              <input
+                type="text"
+                name="longitude"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                value={formData.longitude} 
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
           <div>
-            <label className="block font-bold mb-1">Upload Branch Photo</label>
+            <label className="block font-bold mb-1">Upload QR Code Photo</label>
             <input
               type="file"
               accept="image/*"
-              name="photo"
+              name="image"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              onChange={handleFileChange}
+              onChange={handleImageFileChange}
             />
-            {image && (
-              <img src={image} alt="Branch" className="w-32 h-32 mt-4" />
+            {qrImage && (
+              <img src={qrImage} alt="QR code" className="w-32 h-32 mt-4" />
             )}
           </div>
         </div>
