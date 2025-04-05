@@ -39,11 +39,11 @@ const Login = ({ handleLoginFlag }) => {
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(userProfile));
         // Fetch branch name separately if needed
-        console.log("===========",userProfile.data[0])
-        let branchName = userProfile.data[0].branch?.branchName;
+        console.log("===========",userProfile.data)
+        let branchName = userProfile.data.branch?.branchName;
         localStorage.setItem('branchName', branchName);
-        localStorage.setItem('branch_id', userProfile.data[0].branch?.id);
-        localStorage.setItem('id', userProfile.data[0]?.id);
+        localStorage.setItem('branch_id', userProfile.data.branch?.id);
+        localStorage.setItem('id', userProfile.data?.id);
 
         await fetchUserPermissions(
           userId,
