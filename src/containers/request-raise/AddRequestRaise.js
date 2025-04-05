@@ -61,6 +61,7 @@ const AddRequestRaise = () => {
       console.error('Error fetching sub dealers', e);
     }
   };
+
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post(
@@ -104,8 +105,6 @@ if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
 
     try {
       const payload = {
-
-
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),

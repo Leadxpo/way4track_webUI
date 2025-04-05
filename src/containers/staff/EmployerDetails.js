@@ -30,8 +30,7 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
     const validate = (fieldName, value) => {
       let error = '';
-      
-  
+
       // General required field validation
       if (value.trim() === '') {
         error = `${fieldName} is required.`;
@@ -46,8 +45,6 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       if (fieldName === 'officePhoneNumber' && value && !/^\d{10}$/.test(value)) {
         error = 'Phone number must be 10 digits.';
       }
-
-  
       return error;
     };
 
