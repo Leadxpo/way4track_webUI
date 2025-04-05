@@ -5,7 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 
-const BackendSupportHome = () => {
+const CeoBackendSupportHome = () => {
   const navigate = useNavigate();
   const [popupData, setPopupData] = useState(null);
   const [records, setRecords] = useState([
@@ -67,26 +67,27 @@ const BackendSupportHome = () => {
     {
       title: 'Total works Install',
       key: 'totalInstallWork',
-      color: 'bg-blue-100',
+      color: 'bg-blue-10',
+      id: 'install',
     },
     {
       title: 'Total works Accept',
       key: 'totalAcceptWork',
       color: 'bg-green-100',
+      id: 'accept',
     },
     {
       title: 'Total works Activated',
       key: 'totalActivateWork',
       color: 'bg-yellow-100',
+      id: 'activate',
     },
   ];
 
   const userId = localStorage.getItem('id');
-  const userStaffId = localStorage.getItem('userId');
 
   const [workRecords, setWorkRecords] = useState([]);
   const [workRecordsCount, setWorkRecordsCount] = useState([]);
-  const [workRecordsById, setWorkRecordsById] = useState([]);
 
   console.log(workRecordsCount, 'useState');
 
@@ -103,23 +104,6 @@ const BackendSupportHome = () => {
       );
 
       setWorkRecords(response.data || []);
-    } catch (err) {
-      console.error('Failed to fetch data:', err);
-      setWorkRecords([]);
-    }
-  };
-
-  const fetchRecordsById = async () => {
-    try {
-      const response = await ApiService.post(
-        '/technician/getBackendSupportWorkAllocation',
-        {
-          supporterId: userStaffId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
-      setWorkRecordsById(response.data || []);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -144,7 +128,6 @@ const BackendSupportHome = () => {
   useEffect(() => {
     fetchRecords();
     fetchCardRecords();
-    fetchRecordsById();
 
     const interval = setInterval(() => {
       fetchRecords();
@@ -157,7 +140,6 @@ const BackendSupportHome = () => {
   const onClickRefresh = () => {
     fetchRecords();
     fetchCardRecords();
-    fetchRecordsById();
   };
 
   //   useEffect(() => {
@@ -347,6 +329,11 @@ const BackendSupportHome = () => {
             key={index}
             className={`flex-1 ${item.color} shadow-md rounded-lg p-4 text-left border border-gray-300`}
             style={{ height: '150px' }}
+            onClick={() =>
+              navigate(`/backend-work-details/${item.id}`, {
+                state: { data: workRecords },
+              })
+            }
           >
             <h4
               className="text-lg font-semibold text-gray-700"
@@ -417,7 +404,6 @@ const BackendSupportHome = () => {
                         <td className="px-4 py-2">{item.phoneNumber}</td>
                         <td className="px-4 py-2">{item.imeiNumber}</td>
                         <td className="px-4 py-2">{item.simNumber}</td>
-
                         <td className="px-4 py-2">
                           {convertToIST(item.startDate)}
                         </td>
@@ -529,4 +515,4 @@ const BackendSupportHome = () => {
   );
 };
 
-export default BackendSupportHome;
+export default CeoBackendSupportHome;

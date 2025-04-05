@@ -3,6 +3,7 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
 import { FaEye, FaFilePdf } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import {
   Document,
   Page,
@@ -17,29 +18,70 @@ const styles = StyleSheet.create({
   section: { marginBottom: 10 },
 });
 
-// const PDFFile = ({ data }) => (
-//   <Document>
-//     <Page size="A4" style={styles.page}>
-//       <View>
-//         <Text style={styles.section}>ID: {data.id}</Text>
-//         <Text style={styles.section}>Product Name: {data.productName}</Text>
-//         <Text style={styles.section}>Service Name: {data.service}</Text>
-//         <Text style={styles.section}>Staff Name: {data.staffName}</Text>
-//         <Text style={styles.section}>Branch Name: {data.branchName}</Text>
-//         <Text style={styles.section}>Client Name: {data.clientName}</Text>
-//         <Text style={styles.section}>Phone Number: {data.phoneNumber}</Text>
-//         <Text style={styles.section}>Sim Number: {data.simNumber}</Text>
-//         <Text style={styles.section}>Vehicle Type: {data.vehicleType}</Text>
-//         <Text style={styles.section}>Date: {data.date}</Text>
-//         <Text style={styles.section}>
-//           Status: {data.workStatus === 'accept' ? 'Accepted' : 'Activated'}
-//         </Text>
-//       </View>
-//     </Page>
-//   </Document>
-// );
+const PDFFile = ({ data }) => (
+  <Document>
+    <Page
+      size="A4"
+      style={{
+        padding: 20,
+        fontSize: 12,
+        fontFamily: 'Helvetica',
+        backgroundColor: '#f9f9f9',
+      }}
+    >
+      {/* Header */}
+      <View
+        style={{
+          borderBottom: '2px solid black',
+          marginBottom: 10,
+          paddingBottom: 5,
+        }}
+      >
+        <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: 'center' }}>
+          Work Details Record
+        </Text>
+      </View>
+
+      {/* Data Rows */}
+      <View>
+        {[
+          { label: 'ID', value: data.id },
+          { label: 'Product Name', value: data.productName },
+          { label: 'Service Name', value: data.service },
+          { label: 'Staff Name', value: data.staffName },
+          { label: 'Branch Name', value: data.branchName },
+          { label: 'Client Name', value: data.clientName },
+          { label: 'Phone Number', value: data.phoneNumber },
+          { label: 'Sim Number', value: data.simNumber },
+          { label: 'Vehicle Type', value: data.vehicleType },
+          { label: 'Date', value: data.date },
+          {
+            label: 'Status',
+            value: data.workStatus === 'accept' ? 'Accepted' : 'Activated',
+          },
+        ].map((item, index) => (
+          <View
+            key={index}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 5,
+              borderBottom: '1px solid black',
+            }}
+          >
+            <Text style={{ fontWeight: 'bold', width: '40%' }}>
+              {item.label}:
+            </Text>
+            <Text style={{ width: '60%' }}>{item.value}</Text>
+          </View>
+        ))}
+      </View>
+    </Page>
+  </Document>
+);
 
 const BackendSupportWorks = () => {
+  const navigate = useNavigate();
   const [workRecords, setWorkRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -95,7 +137,7 @@ const BackendSupportWorks = () => {
 
     const matchesTab =
       activeTab === 'all' ||
-      (activeTab === 'activated' && item.workStatus === 'activated') ||
+      (activeTab === 'activated' && item.workStatus === 'activate') ||
       (activeTab === 'accepted' && item.workStatus === 'accept');
 
     return matchesSearch && matchesDate && matchesTab;
@@ -122,6 +164,23 @@ const BackendSupportWorks = () => {
 
   //   setFilteredRecords(filtered);
   // };
+
+  const convertToIST = (utcDate) => {
+    if (!utcDate) return null;
+    const date = new Date(utcDate);
+    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }); // Convert to IST
+  };
+
+  const calculateDuration = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = endDate ? new Date(endDate) : new Date(); // Use current time if endDate is missing
+    const diffMs = end - start; // Difference in milliseconds
+
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}h ${minutes}m`;
+  };
 
   return (
     <div className="p-6">
@@ -168,7 +227,14 @@ const BackendSupportWorks = () => {
         </button>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '10px',
+          marginBottom: '10px',
+        }}
+      >
         <div>
           <select
             className="border p-2 mr-2 rounded"
@@ -203,12 +269,12 @@ const BackendSupportWorks = () => {
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
-          <button
+          {/* <button
             // onClick={applyFilters}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition mr-2"
           >
             Filter
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -223,7 +289,11 @@ const BackendSupportWorks = () => {
               <th className="px-4 py-2">Branch Name</th>
               <th className="px-4 py-2">Client Name</th>
               <th className="px-4 py-2">Phone Number</th>
+              <th className="px-4 py-2">IMEI Number</th>
               <th className="px-4 py-2">Sim Number</th>
+              <th className="px-4 py-2">Start Time</th>
+              <th className="px-4 py-2">End Time</th>
+              <th className="px-4 py-2">Duration</th>
               <th className="px-4 py-2">Vehicle Type</th>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Status</th>
@@ -241,7 +311,22 @@ const BackendSupportWorks = () => {
                   <td className="px-4 py-2">{item.branchName}</td>
                   <td className="px-4 py-2">{item.clientName}</td>
                   <td className="px-4 py-2">{item.phoneNumber}</td>
+                  <td className="px-4 py-2">{item.imeiNumber}</td>
                   <td className="px-4 py-2">{item.simNumber}</td>
+                  <td className="px-4 py-2">{convertToIST(item.startDate)}</td>
+                  <td
+                    className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
+                  >
+                    {item.endDate ? convertToIST(item.endDate) : '-'}
+                  </td>
+                  <td
+                    className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
+                  >
+                    {item.startDate
+                      ? `${calculateDuration(item.startDate, item.endDate)}`
+                      : ''}
+                  </td>
+
                   <td className="px-4 py-2">{item.vehicleType}</td>
                   <td className="px-4 py-2">{item.date}</td>
                   <td
@@ -249,17 +334,28 @@ const BackendSupportWorks = () => {
                   >
                     {item.workStatus === 'accept' ? 'Accepted' : 'Activated'}
                   </td>
-                  <td className="px-4 py-2 text-center">
+                  <td
+                    className="px-4 py-2 text-center mt-4"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
                     <FaEye
                       className="cursor-pointer text-blue-500"
-                      onClick={() => setPopupData(item)}
+                      onClick={() =>
+                        navigate('/work-view-details', {
+                          state: { data: item },
+                        })
+                      }
                     />
-                    {/* <PDFDownloadLink
-                      document={<PDFFile record={item} />}
+                    <PDFDownloadLink
+                      document={<PDFFile data={item} />}
                       fileName={`WorkRecord_${item.id}.pdf`}
                     >
                       <FaFilePdf className="cursor-pointer text-red-500" />
-                    </PDFDownloadLink> */}
+                    </PDFDownloadLink>
                   </td>
                 </tr>
               ))
@@ -283,6 +379,9 @@ const BackendSupportWorks = () => {
             </p>
             <p>
               <strong>Product Name:</strong> {popupData.productName}
+            </p>
+            <p>
+              <strong>Product Amount:</strong> {popupData.amount}
             </p>
             <p>
               <strong>Service Name:</strong> {popupData.service}
