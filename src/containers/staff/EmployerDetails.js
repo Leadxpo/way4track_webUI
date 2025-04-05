@@ -114,13 +114,13 @@ const EmployerDetails = ({ setEmployerDetails }) => {
       },
       { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
       { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
-      // { label: 'Termination Date', name: 'terminationDate', type: 'date' },
-      // { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
-      // {
-      //   label: 'Final Settlement Date',
-      //   name: 'finalSettlementDate',
-      //   type: 'date',
-      // },
+      { label: 'Termination Date', name: 'terminationDate', type: 'date' },
+      { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
+      {
+        label: 'Final Settlement Date',
+        name: 'finalSettlementDate',
+        type: 'date',
+      },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',
