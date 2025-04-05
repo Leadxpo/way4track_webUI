@@ -51,10 +51,10 @@ const EmployerDetails = ({ setEmployerDetails }) => {
 
   // Fetch Branches
   const fetchBranches = async () => {
-    console.log('hiiiiii');
+
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
-      console.log('hiiiiii22', response);
+
       if (response.status && Array.isArray(response.data)) {
         setBranches(response.data);
       } else {
