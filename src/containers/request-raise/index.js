@@ -22,7 +22,7 @@ const RequestRaise = () => {
       onEdit={handleVendorEdit}
       onDelete={handleDelete}
       onDetails={handleDetails}
-      showDateFilters={false}
+      showDateFilters={true}
     />
   );
 };

@@ -10,11 +10,18 @@ const EditRequestRaise = () => {
   const [staffData, setStaffData] = useState([]);
   const [subDealer, setSubDealer] = useState([]);
   const [branch, setBranch] = useState([]);
+  // const [branchId, setBranchId] = useState("");
+  // const [staffId, setStaffId] = useState("");
   
     const requestData = location.state?.requestDetails || {};
     console.log("requestData ramesh", requestData)
 
+    console.log("requestData ramesh staffData", staffData)
+    console.log("requestData ramesh branch", branch)
+
   const [formData, setFormData] = useState({
+    branchId:'',
+    staffId:'',
     requestType:'',
     requestFrom:'',
     requestTo:'',    branch: '',
@@ -93,6 +100,53 @@ const EditRequestRaise = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleBranchChange = (e) => {
+    const { name, value } = e.target;
+  
+    const selectedStaff = branch.find(
+      (staff) => String(staff.id) === value
+    );
+  
+    console.log("Selected ID:", value);
+    console.log("Selected Staff:", selectedStaff);
+  
+    if (selectedStaff) {
+      setFormData({
+        ...formData,
+        [name]: selectedStaff.name,
+        branchId: selectedStaff.id,
+      });
+    } else {
+      console.warn("No matching staff found!");
+    }
+  };
+
+  const handleRequestToChange = (e) => {
+    const { name, value } = e.target;
+  
+    const selectedStaff = staffData.find(
+      (staff) => String(staff.id) === value
+    );
+  
+    console.log("Selected ID:", value);
+    console.log("Selected Staff:", selectedStaff);
+  
+    if (selectedStaff) {
+      setFormData({
+        ...formData,
+        [name]: selectedStaff.name,
+        staffId: selectedStaff.id,
+      });
+    } else {
+      console.warn("No matching staff found!");
+    }
+  };
+  
+
+  
+
+  
+
   const handleSave = async () => {
   const userProfile = JSON.parse(localStorage.getItem('userProfile'));
 
@@ -107,12 +161,12 @@ if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
     try {
       const payload = {
 
-
+       id: requestData.requestId,
         requestType: formData.requestType,
-        requestTo: Number(formData.requestTo),
+        requestTo: Number(formData.staffId),
         // requestFrom: Number(formData.requestFrom),
         requestFrom:Number(9),
-        branch: formData.branch,
+        branch: Number(formData.branchId),
         description: formData.description,
         status: "pending",
         products:formData.requestType==="products"?formData.products:null,
@@ -204,8 +258,8 @@ const fetchRequestRaiseById = async () => {
         requestType: data.requestType || '',
         description: data.description || '',
         requestFor: data.requestFor || '',
-        fromDate: data.fromDate || '',
-        toDate: data.toDate || '',
+        fromDate: data?.fromDate || '',
+        toDate: data?.toDate || '',
         requestTo: requestData?.RequestTo,
         branch: requestData?.branchName,
         
@@ -229,7 +283,7 @@ products:data.products || '',
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            Add Request
+            Edit Request
           </h1>
         </div>
 
@@ -241,7 +295,7 @@ products:data.products || '',
             <select
         name="requestType"
         value={formData.requestType}
-        onChange={handleInputChange}
+        // onChange={handleInputChange}
         className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
       >
         <option value="">Select Request Type</option>
@@ -278,7 +332,7 @@ products:data.products || '',
               <select
                 name="requestTo"
                 value={formData.requestTo}
-                onChange={handleInputChange}
+                onChange={handleRequestToChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
@@ -324,7 +378,7 @@ products:data.products || '',
               <select
                 name="branch"
                 value={formData.branch}
-                onChange={handleInputChange}
+                onChange={handleBranchChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
                 <option value="" disabled>
@@ -416,12 +470,12 @@ products:data.products || '',
   </div>
 )}
 
-{formData.requestType === "leaveRequest"&&(<><div className="mt-4">
+{formData?.requestType === "leaveRequest"&&(<><div className="mt-4">
     <p className="font-semibold mb-1">Leave From Date</p>
     <input
       type="date"
       name="fromDate"
-      value={formData.fromDate || ""}
+      value={formData.fromDate.slice(0, 10) || ""}
       onChange={handleInputChange}
       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
     />
@@ -432,7 +486,7 @@ products:data.products || '',
     <input
       type="date"
       name="toDate"
-      value={formData.toDate || ""}
+      value={formData.toDate.slice(0, 10) || ""}
       onChange={handleInputChange}
       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
     />
