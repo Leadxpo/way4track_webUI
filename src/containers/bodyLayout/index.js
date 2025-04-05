@@ -58,7 +58,6 @@ import InHandProductsForm from '../products/inHandProductForm';
 import Tracker from '../tracker';
 import RequestRaise from '../request-raise';
 import DeleteRequest from '../request-raise/deleteRequest';
-import AddEditRequestForm from '../request-raise/addEdit';
 import RequestDetails from '../request-raise/requestDetails';
 import Appointments from '../appointment';
 import AddEditAppointmentForm from '../appointment/addEditAppointment';
@@ -136,6 +135,8 @@ import AddService from '../service/AddService';
 import EditService from '../service/EditService';
 import EditVehicle from '../vehicle/EditVehicle';
 import AddVehicle from '../vehicle/AddVehicle';
+import AddRequestRaise from '../request-raise/AddRequestRaise';
+import EditRequestRaise from '../request-raise/EditRequestRaise';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -381,7 +382,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/payments" element={<Payments />} />
           <Route path="/requests" element={<RequestRaise />} />
           <Route path="/delete-request" element={<DeleteRequest />} />
-          <Route path="/add-request" element={<AddEditRequestForm />} />
+          <Route path="/add-request" element={<AddRequestRaise/>} />
+          <Route path="/edit-request" element={<EditRequestRaise/>} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/add-client" element={<AddEditClient />} />

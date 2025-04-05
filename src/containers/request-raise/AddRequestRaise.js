@@ -4,32 +4,27 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
-const AddEditRequestForm = () => {
+const AddRequestRaise = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [staffData, setStaffData] = useState([]);
   const [subDealer, setSubDealer] = useState([]);
-
-  console.log("Hi subDealer",subDealer);
-  const [branch, setBranches] = useState([]);
-  // Check if data is available from the location state
-  const requestData = location.state?.requestDetails || {};
+  const [branch, setBranch] = useState([]);
 
   const [formData, setFormData] = useState({
-    id: requestData.requestId || null,
-    requestType: requestData.requestType || '',
-    requestFrom: Number(requestData.requestFrom) || null,
-    requestTo: Number(requestData.requestTo) || null,
-    branch: Number(requestData.branch) || null,
-    requestFor: requestData.requestFor || '',
-    description: requestData.description || '',
-    products: requestData.products?.length > 0 
-      ? requestData.products  // Use existing products in edit mode
-      : [{ product: '', amount: '' }], // Default for add mode
-    createdDate: requestData.createdDate || '',
-    status: requestData.status || '',
-    subDealerId: Number(requestData.subDealerId) || null,
-    requestId: requestData.requestNumber || '',
+    requestType:'',
+    requestFrom:'',
+    requestTo:'',
+    branch: '',
+    requestFor:'',
+    description:'',
+    products:[{ product: '', amount: '' }],
+    createdDate:'',
+    status:'',
+    fromDate:"",
+    toDate:"",
+    // subDealerId: Number(requestData.subDealerId) || '',
+    requestId:'',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
@@ -40,6 +35,8 @@ const AddEditRequestForm = () => {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
       if (response.status) {
         setStaffData(response.data);
+
+        console.log("fetchStaffData fetchStaffData",response.data)
       } else {
         console.error('Error fetching staff data');
       }
@@ -70,7 +67,7 @@ const AddEditRequestForm = () => {
         '/branch/getBranchNamesDropDown'
       );
       if (response.status) {
-        setBranches(response.data); // Set branches to state
+        setBranch(response.data); // Set branches to state
       } else {
         console.error('Failed to fetch branches');
       }
@@ -95,40 +92,38 @@ const AddEditRequestForm = () => {
   };
 
   const handleSave = async () => {
-  
+  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+
+if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
+    const { id, name } = userProfile?.Data[0];
+    console.log("ID:", id);
+    console.log("Name:", name);
+} else {
+    console.log("User profile data not found.");
+}
 
     try {
       const payload = {
 
-        // requestType: RequestType;
-        // // staffID: number;
-        // requestTo?: number;
-        // requestFrom?: number;
-        // branch: number;
-        // description: string;
-        // requestFor: string;
-    
-        // createdDate: Date;
-        // status: ClientStatusEnum
-        // subDealerId: number
-        // companyCode: string;
-        // unitCode: string;
-
 
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
-        requestFrom: Number(formData.requestFrom),
-        branch: Number(formData.branch),
+        // requestFrom: Number(formData.requestFrom),
+        requestFrom:Number(9),
+        branch: formData.branch,
         description: formData.description,
         status: "pending",
         products:formData.requestType==="products"?formData.products:null,
         subDealerId: formData.subDealerId || 1,
         companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode
+        unitCode: initialAuthState.unitCode,
+        requestFor:formData.requestFor,
+        fromDate:formData.fromDate,
+        toDate:formData.toDate,
       };
 
 
-      console.log("qwert",payload);
+      console.log("payload request 1234",payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -171,8 +166,7 @@ const removeRow = (index) => {
   });
 };
 
-  // Handle input change
-// Function to handle input change in product rows
+
 const handleInputProductChange = (index, field, value) => {
   setFormData((prevData) => {
     const updatedProducts = [...prevData.products];
@@ -190,7 +184,7 @@ const handleInputProductChange = (index, field, value) => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {requestData.requestNumber ? 'Edit Request' : 'Add Request'}
+            Add Request
           </h1>
         </div>
 
@@ -209,9 +203,11 @@ const handleInputProductChange = (index, field, value) => {
         <option value="assets">Asserts</option>
         <option value="money">Money</option>
         <option value="products">Product</option>
+        <option value="personal">Personal</option>
+        <option value="leaveRequest">Leave Request</option>
       </select>
           </div>
-          <div>
+          {/* <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request By:</label>
               <select
@@ -230,7 +226,7 @@ const handleInputProductChange = (index, field, value) => {
                 ))}
               </select>
             </div>
-          </div>
+          </div> */}
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -253,7 +249,7 @@ const handleInputProductChange = (index, field, value) => {
           </div>
           <div>
             {/* {subDealer.length > 0 && ( */}
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label className="font-semibold mb-2">
                   Request To subDealer:
                 </label>
@@ -272,34 +268,31 @@ const handleInputProductChange = (index, field, value) => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
             {/* )} */}
           </div>
 
 
-               {/* Branch */}
-               {branch.length > 0 && (
-            <div className="space-y-4">
-              <div>
-                <p className="font-semibold mb-1">Branch</p>
-                <select
-                  name="branch"
-                  value={formData.branchName}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Select a Branch
+          <div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-2">Branch</label>
+              <select
+                name="branch"
+                value={formData.branch}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select Branch
+                </option>
+                {branch.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
                   </option>
-                  {branch.map((br) => (
-                    <option key={br.id} value={br.id}>
-                      {br.branchName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                ))}
+              </select>
             </div>
-          )}
+          </div>
 
           {/* Address */}
           <div>
@@ -314,7 +307,7 @@ const handleInputProductChange = (index, field, value) => {
             />
           </div>
 
-          
+
           {formData.requestType === "products" ? (
   <>
    {formData.products.map((row, index) => (
@@ -363,7 +356,8 @@ const handleInputProductChange = (index, field, value) => {
 ))}
 
   </>
-) : (
+) :
+ (
   <div>
     <p className="font-semibold mb-1">Request For</p>
     <input
@@ -376,6 +370,28 @@ const handleInputProductChange = (index, field, value) => {
     />
   </div>
 )}
+
+{formData.requestType === "leaveRequest"&&(<><div className="mt-4">
+    <p className="font-semibold mb-1">Leave From Date</p>
+    <input
+      type="date"
+      name="fromDate"
+      value={formData.fromDate || ""}
+      onChange={handleInputChange}
+      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+    />
+</div>
+
+<div className="mt-4">
+    <p className="font-semibold mb-1">Leave To Date</p>
+    <input
+      type="date"
+      name="toDate"
+      value={formData.toDate || ""}
+      onChange={handleInputChange}
+      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+    />
+</div></>)}
 
         </div>
         {/* Buttons */}
@@ -398,4 +414,4 @@ const handleInputProductChange = (index, field, value) => {
   );
 };
 
-export default AddEditRequestForm;
+export default AddRequestRaise;
