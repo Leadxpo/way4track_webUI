@@ -10,8 +10,6 @@ const EditRequestRaise = () => {
   const [staffData, setStaffData] = useState([]);
   const [subDealer, setSubDealer] = useState([]);
   const [branch, setBranch] = useState([]);
-  // const [branchId, setBranchId] = useState("");
-  // const [staffId, setStaffId] = useState("");
   
     const requestData = location.state?.requestDetails || {};
     console.log("requestData ramesh", requestData)
@@ -20,8 +18,6 @@ const EditRequestRaise = () => {
     console.log("requestData ramesh branch", branch)
 
   const [formData, setFormData] = useState({
-    branchId:'',
-    staffId:'',
     requestType:'',
     requestFrom:'',
     requestTo:'',    branch: '',
@@ -102,44 +98,12 @@ const EditRequestRaise = () => {
 
   const handleBranchChange = (e) => {
     const { name, value } = e.target;
-  
-    const selectedStaff = branch.find(
-      (staff) => String(staff.id) === value
-    );
-  
-    console.log("Selected ID:", value);
-    console.log("Selected Staff:", selectedStaff);
-  
-    if (selectedStaff) {
-      setFormData({
-        ...formData,
-        [name]: selectedStaff.name,
-        branchId: selectedStaff.id,
-      });
-    } else {
-      console.warn("No matching staff found!");
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleRequestToChange = (e) => {
     const { name, value } = e.target;
-  
-    const selectedStaff = staffData.find(
-      (staff) => String(staff.id) === value
-    );
-  
-    console.log("Selected ID:", value);
-    console.log("Selected Staff:", selectedStaff);
-  
-    if (selectedStaff) {
-      setFormData({
-        ...formData,
-        [name]: selectedStaff.name,
-        staffId: selectedStaff.id,
-      });
-    } else {
-      console.warn("No matching staff found!");
-    }
+    setFormData({ ...formData, [name]: value });
   };
   
 
@@ -163,10 +127,10 @@ if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
 
        id: requestData.requestId,
         requestType: formData.requestType,
-        requestTo: Number(formData.staffId),
+        requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),
         requestFrom:Number(9),
-        branch: Number(formData.branchId),
+        branch: Number(formData.branch),
         description: formData.description,
         status: "pending",
         products:formData.requestType==="products"?formData.products:null,
@@ -260,8 +224,8 @@ const fetchRequestRaiseById = async () => {
         requestFor: data.requestFor || '',
         fromDate: data?.fromDate || '',
         toDate: data?.toDate || '',
-        requestTo: requestData?.RequestTo,
-        branch: requestData?.branchName,
+        requestTo: "",
+        branch: "",
         
 products:data.products || '',
 
@@ -298,12 +262,12 @@ products:data.products || '',
         // onChange={handleInputChange}
         className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
       >
-        <option value="">Select Request Type</option>
+        {/* <option value="">Select Request Type</option>
         <option value="assets">Asserts</option>
         <option value="money">Money</option>
         <option value="products">Product</option>
         <option value="personal">Personal</option>
-        <option value="leaveRequest">Leave Request</option>
+        <option value="leaveRequest">Leave Request</option> */}
       </select>
           </div>
           {/* <div>
