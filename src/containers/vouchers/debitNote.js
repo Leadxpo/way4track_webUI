@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
-const JournalForm = () => {
+const DebitNoteForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -153,7 +153,7 @@ const JournalForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Journal
+          Debit
         </h2>
       </div>
 
@@ -255,32 +255,9 @@ const JournalForm = () => {
           }}
         />
 
-        <div className="flex rounded-lg overflow-hidden w-max shadow-md">
-          <button
-            onClick={() => setSelected('Debit')}
-            className={`px-6 py-2 font-bold transition ${
-              selected === 'Debit'
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            Debit
-          </button>
-          <button
-            onClick={() => setSelected('Credit')}
-            className={`px-6 py-2 font-bold transition ${
-              selected === 'Credit'
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            Credit
-          </button>
-        </div>
-
         <input
           type="text"
-          placeholder="Bank Account:"
+          placeholder="Party Name"
           value={partyName}
           onChange={(e) => setPartyName(e.target.value)}
           className="w-full border rounded p-2"
@@ -298,9 +275,99 @@ const JournalForm = () => {
 
         <input
           type="text"
-          placeholder="Party Name:"
+          placeholder="Ledger Account"
           value={partyName}
           onChange={(e) => setPartyName(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Purchase ID:"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Name of the item:"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Quantity:"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Rate:"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Amount:"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -327,14 +394,14 @@ const JournalForm = () => {
       </div>
 
       {/* Payment Mode */}
-      <div
+      {/* <div
         className="mt-2 font-bold cursor-pointer flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-100"
         onClick={() => setShowPaymentPopup(!showPaymentPopup)}
         style={{ marginBottom: '30px', height: '50px' }}
       >
         Payment Mode :
         <span className="text-xs ml-2">{showPaymentPopup ? '▾' : '▸'}</span>
-      </div>
+      </div> */}
 
       {/* Payment Popup */}
       {showPaymentPopup && (
@@ -422,4 +489,4 @@ const JournalForm = () => {
   );
 };
 
-export default JournalForm;
+export default DebitNoteForm;

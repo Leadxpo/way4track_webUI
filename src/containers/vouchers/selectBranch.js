@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SelectBranch = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const branches = [
     { id: 1, branchName: 'Visakhapatnam' },
@@ -32,13 +32,11 @@ const SelectBranch = () => {
     'Contra',
     'DebitNote',
     'CreditNote',
-    'SalesOrder',
-    'PurchaseOrder',
   ];
 
   const handleItemClick = (item) => {
-    // navigate(`/form/${item}`); 
-    navigate('/receipt-form')
+    navigate(`/forms/${item}`);
+    // navigate('/receipt-form')
   };
 
   return (
