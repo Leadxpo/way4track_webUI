@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ApiService from '../../services/ApiService';
 
-const EmployerDetails = ({ setEmployerDetails }) => {
+const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
   const [data, setData] = useState({
     branch: '',
     staffId: '',
@@ -89,6 +89,13 @@ const EmployerDetails = ({ setEmployerDetails }) => {
   useEffect(() => {
     getDesignations();
   }, []);
+
+    useEffect(() => {
+      if (employerDetails && Object.keys(employerDetails).length > 0) {
+        setData(employerDetails);
+      }
+    }, [employerDetails]);
+  
 
   // Debounced state update to prevent infinite loops
   useEffect(() => {
