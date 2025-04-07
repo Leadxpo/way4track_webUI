@@ -55,12 +55,12 @@ const Vouchers = () => {
   };
 
   const handleEdit = (item) => {
-    navigate('/edit-salesVisit-details', { state: { item } });
+    navigate('/edit-voucher', { state: { item } });
     setPopupData(null);
   };
 
   const handleMoreDetails = (item) => {
-    navigate('/sales-visit-details', { state: { item } });
+    navigate('/voucher-details', { state: { item } });
     setPopupData(null);
   };
 

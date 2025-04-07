@@ -12,7 +12,7 @@ const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
     email: '',
     aadharNumber: '',
     panCardNumber: '',
-    drivingLicence: '',
+    // drivingLicence: '',
     address: '',
     uanNumber: '',
     esicNumber: '',

@@ -5,59 +5,56 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
   const [data, setData] = useState({
     branch: '',
     staffId: '',
-    joiningDate: '',
+    joiningDate: null,
     designation_id: '',
     department: '',
     monthlySalary: '',
     officeEmail: '',
     officePhoneNumber: '',
-    bikeAllocation: '',
-    mobileAllocation: '',
-    terminationDate: '',
-    resignationDate: '',
-    finalSettlementDate: '',
+    bikeAllocation: 'No',
+    mobileAllocation: 'No',
+    // terminationDate: null,
+    // resignationDate: null,
+    // finalSettlementDate: null,
     insuranceNumber: '',
-    insuranceEligibilityDate: '',
-    insuranceExpiryDate: '',
+    insuranceEligibilityDate: null,
+    insuranceExpiryDate: null,
     password: '',
     description: '',
-    mailAllocation: '',
+    mailAllocation: 'No',
   });
 
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
   const [errors, setErrors] = useState({});
 
-    const validate = (fieldName, value) => {
-      let error = '';
-      
-  
-      // General required field validation
-      if (value.trim() === '') {
-        error = `${fieldName} is required.`;
-      }
-  
-      // Email validation
-      if (fieldName === 'officeEmail' && value && !/\S+@\S+\.\S+/.test(value)) {
-        error = 'Please enter a valid email.';
-      }
-  
-      // Phone number validation (10 digits)
-      if (fieldName === 'officePhoneNumber' && value && !/^\d{10}$/.test(value)) {
-        error = 'Phone number must be 10 digits.';
-      }
+  const validate = (fieldName, value) => {
+    let error = '';
 
-  
-      return error;
-    };
+    // General required field validation
+    if (value.trim() === '') {
+      error = `${fieldName} is required.`;
+    }
+
+    // Email validation
+    if (fieldName === 'officeEmail' && value && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Please enter a valid email.';
+    }
+
+    // Phone number validation (10 digits)
+    if (fieldName === 'officePhoneNumber' && value && !/^\d{10}$/.test(value)) {
+      error = 'Phone number must be 10 digits.';
+    }
+    return error;
+  };
 
 
   // Fetch Branches
   const fetchBranches = async () => {
-    console.log('hiiiiii');
+
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
-      console.log('hiiiiii22', response);
+
       if (response.status && Array.isArray(response.data)) {
         setBranches(response.data);
       } else {
@@ -109,25 +106,26 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
   const inputFields = useMemo(
     () => [
       { label: 'Staff ID', name: 'staffId', type: 'text' },
+      { label: 'Password', name: 'password', type: 'password' },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'number' },
-      { label: 'Office Email', name: 'officeEmail', type: 'email' },
-      { label: 'Bike Number', name: 'bikeNumber', type: 'text' },
-      {
-        label: 'Driving Licence Number',
-        name: 'drivingLicenceNumber',
-        type: 'text',
-      },
-      { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
-      { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
-      { label: 'Termination Date', name: 'terminationDate', type: 'date' },
-      { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
-      {
-        label: 'Final Settlement Date',
-        name: 'finalSettlementDate',
-        type: 'date',
-      },
+      // { label: 'Office Email', name: 'officeEmail', type: 'email' },
+      // { label: 'Bike Number', name: 'bikeNumber', type: 'text' },
+      // {
+      //   label: 'Driving Licence Number',
+      //   name: 'drivingLicenceNumber',
+      //   type: 'text',
+      // },
+      // { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
+      // { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
+      // { label: 'Termination Date', name: 'terminationDate', type: 'date' },
+      // { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
+      // {
+      //   label: 'Final Settlement Date',
+      //   name: 'finalSettlementDate',
+      //   type: 'date',
+      // },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',
@@ -139,7 +137,6 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         name: 'insuranceExpiryDate',
         type: 'date',
       },
-      { label: 'Password', name: 'password', type: 'password' },
       { label: 'Description', name: 'description', type: 'text' },
     ],
     []
@@ -216,17 +213,15 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-lg"
           />
-           {(name === "officeEmail" || name === "officePhoneNumber") && errors[name] && (
-      <span className="text-red-500 text-sm mt-2">{errors[name]}</span>
-    )}
+          {(name === "officeEmail" || name === "officePhoneNumber") && errors[name] && (
+            <span className="text-red-500 text-sm mt-2">{errors[name]}</span>
+          )}
         </div>
       ))}
 
-      {/* Bike Allocation Dropdown */}
+      {/* Allocation Fields First */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">
-          Bike Allocation (Yes/No)
-        </label>
+        <label className="block font-medium mb-1">Bike Allocation (Yes/No)</label>
         <select
           name="bikeAllocation"
           value={data.bikeAllocation}
@@ -239,10 +234,21 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         </select>
       </div>
 
+      {data.bikeAllocation === 'Yes' && (
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Bike Number</label>
+          <input
+            type="text"
+            name="bikeNumber"
+            value={data.bikeNumber || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+      )}
+
       <div className="mb-4">
-        <label className="block font-medium mb-1">
-          Mail Allocation (Yes/No)
-        </label>
+        <label className="block font-medium mb-1">Mail Allocation (Yes/No)</label>
         <select
           name="mailAllocation"
           value={data.mailAllocation}
@@ -255,10 +261,21 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         </select>
       </div>
 
+      {data.mailAllocation === 'Yes' && (
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Office Email</label>
+          <input
+            type="email"
+            name="officeEmail"
+            value={data.officeEmail || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+      )}
+
       <div className="mb-4">
-        <label className="block font-medium mb-1">
-          Driving Licence (Yes/No)
-        </label>
+        <label className="block font-medium mb-1">Driving Licence (Yes/No)</label>
         <select
           name="drivingLicence"
           value={data.drivingLicence}
@@ -271,11 +288,21 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         </select>
       </div>
 
-      {/* Mobile Allocation Dropdown */}
+      {data.drivingLicence === 'Yes' && (
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Driving Licence Number</label>
+          <input
+            type="text"
+            name="drivingLicenceNumber"
+            value={data.drivingLicenceNumber || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+      )}
+
       <div className="mb-4">
-        <label className="block font-medium mb-1">
-          Mobile Allocation (Yes/No)
-        </label>
+        <label className="block font-medium mb-1">Mobile Allocation (Yes/No)</label>
         <select
           name="mobileAllocation"
           value={data.mobileAllocation}
@@ -287,6 +314,33 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
           <option value="No">No</option>
         </select>
       </div>
+
+      {data.mobileAllocation === 'Yes' && (
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Office Phone Number</label>
+          <input
+            type="text"
+            name="officePhoneNumber"
+            value={data.officePhoneNumber || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+      )}
+
+      {data.mobileAllocation === 'Yes' && (
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Mobile Brand</label>
+          <input
+            type="text"
+            name="mobileBrand"
+            value={data.mobileBrand || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+      )}
+
     </div>
   );
 };

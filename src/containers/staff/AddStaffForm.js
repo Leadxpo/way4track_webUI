@@ -35,12 +35,12 @@ export default function AddStaffForm() {
           'alternateNumber',
           'email',
           'aadharNumber',
-          'panCardNumber',
-          'drivingLicence',
+          // 'panCardNumber',
+          // 'drivingLicence',
           'address',
-          'uanNumber',
-          'esicNumber',
-          'bloodGroup',
+          // 'uanNumber',
+          // 'esicNumber',
+          // 'bloodGroup',
         ];
 
         // Loop through the required fields and check for emptiness

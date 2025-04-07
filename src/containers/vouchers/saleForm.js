@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
-const JournalForm = () => {
+const SaleForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -51,7 +51,6 @@ const JournalForm = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
-  const [selected, setSelected] = useState('Debit');
 
   const filteredTaxData = taxData.filter((tax) => {
     if (selectedTaxType === 'CGST') {
@@ -153,7 +152,7 @@ const JournalForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Journal
+          Sale
         </h2>
       </div>
 
@@ -255,47 +254,6 @@ const JournalForm = () => {
           }}
         />
 
-        <div className="flex rounded-lg overflow-hidden w-max shadow-md">
-          <button
-            onClick={() => setSelected('Debit')}
-            className={`px-6 py-2 font-bold transition ${
-              selected === 'Debit'
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            Debit
-          </button>
-          <button
-            onClick={() => setSelected('Credit')}
-            className={`px-6 py-2 font-bold transition ${
-              selected === 'Credit'
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            Credit
-          </button>
-        </div>
-
-        <input
-          type="text"
-          placeholder="Bank Account:"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
-
         <input
           type="text"
           placeholder="Party Name:"
@@ -313,7 +271,238 @@ const JournalForm = () => {
             fontWeight: '500',
           }}
         />
+
+        <input
+          type="text"
+          placeholder="Sale Ledger:"
+          value={partyName}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Supplier Invoice Number:"
+          value={partyName}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Supplier Location:"
+          value={partyName}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Sale GST:"
+          value={partyName}
+          onChange={(e) => setDay(e.target.value)}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
       </div>
+
+      {/* Entries */}
+      <div
+        className="mt-4"
+        style={{
+          backgroundColor: '#FFFFFF',
+          padding: '20px',
+          borderColor: '#A2A2A2',
+          borderRadius: '8px',
+          borderWidth: '2px',
+        }}
+      >
+        <button
+          className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
+          style={{ borderRadius: '8px', marginBottom: '10px' }}
+          onClick={handleAddEntry}
+        >
+          +
+        </button>
+
+        {entries.map((entry, index) => (
+          <div
+            key={index}
+            className="flex items-center mb-2"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {/* Input Fields */}
+            <div
+              className="flex flex-1 gap-2"
+              style={{
+                backgroundColor: '#D9D9D9',
+                padding: '20px',
+                borderRadius: '6px',
+              }}
+            >
+              <input
+                placeholder="Type: Others"
+                value={entry.invoice}
+                onChange={(e) =>
+                  handleEntryChange(index, 'invoice', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
+              <input
+                placeholder="Name"
+                value={entry.amount}
+                onChange={(e) =>
+                  handleEntryChange(index, 'amount', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
+              <input
+                placeholder="Quantity"
+                value={entry.paid}
+                onChange={(e) =>
+                  handleEntryChange(index, 'paid', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
+              <input
+                placeholder="Rate"
+                value={entry.remaining}
+                onChange={(e) =>
+                  handleEntryChange(index, 'remaining', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
+            </div>
+
+            {/* Button - always reserve space */}
+            <div
+              className="w-[30px] flex justify-center items-center ml-2"
+              style={{
+                backgroundColor: '#D9D9D9',
+                borderRadius: '6px',
+              }}
+            >
+              {index !== 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveEntry(index)}
+                  className="text-red-600 font-bold text-xl px-2"
+                  style={{
+                    color: '#000000',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  −
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Invoices */}
+      <div className="space-y-4">
+        {/* Dropdown at the top */}
+        <div className="mb-4">
+          <label className="mr-2 font-semibold">Select Tax Type:</label>
+          <select
+            value={selectedTaxType}
+            onChange={(e) => setSelectedTaxType(e.target.value)}
+            className="px-3 py-1 border rounded-md"
+          >
+            <option value="CGST">CGST</option>
+            <option value="IGST">IGST</option>
+            <option value="TDS">TDS</option>
+          </select>
+        </div>
+
+        {/* Tax cards */}
+        {filteredTaxData.map((tax, index) => (
+          <div
+            key={tax.name}
+            className="bg-gray-200 rounded-md px-4 py-3 flex justify-between items-center"
+          >
+            <div className="flex flex-col w-full">
+              <div className="flex justify-between items-center">
+                <span className="font-bold">{tax.name}</span>
+                <span className="font-semibold">{tax.percent}</span>
+                <span className="font-semibold">Amount: {tax.amount}</span>
+                <button
+                  onClick={() => toggleDropdown(index)}
+                  className="ml-4 text-gray-700"
+                >
+                  {openIndex === index ? '▲' : '▼'}
+                </button>
+              </div>
+
+              {openIndex === index && (
+                <div className="mt-3 text-sm text-gray-600 border-t pt-2">
+                  {/* Dropdown content */}
+                  <p>More details about {tax.name}...</p>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Amount Section */}
+      {/* <div className="mt-4">
+        <label className="block">Amount:</label>
+        <input
+          type="text"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full border rounded p-2"
+        />
+        <div className="text-blue-600 mt-1">
+          Balance Amount: ₹{balanceAmount.toLocaleString()}/-
+        </div>
+      </div> */}
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
@@ -422,4 +611,4 @@ const JournalForm = () => {
   );
 };
 
-export default JournalForm;
+export default SaleForm;

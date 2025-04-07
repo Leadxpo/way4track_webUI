@@ -212,6 +212,34 @@ const CeoBackendSupportHome = () => {
         </button>
       </div>
 
+      <div className="flex justify-between gap-4 my-6">
+        {cardData.map((item, index) => (
+          <div
+            key={index}
+            className={`flex-1 ${item.color} shadow-md rounded-lg p-4 text-left border border-gray-300`}
+            style={{ height: '150px' }}
+            onClick={() =>
+              navigate(`/backend-work-details/${item.id}`, {
+                state: { data: workRecords },
+              })
+            }
+          >
+            <h4
+              className="text-lg font-semibold text-gray-700"
+              style={{ fontSize: '25px' }}
+            >
+              {item.title}
+            </h4>
+            <p
+              className="text-xl font-bold text-blue-600"
+              style={{ fontSize: '45px', marginTop: '25px' }}
+            >
+              {workRecordsCount?.[item.key] || 0}
+            </p>
+          </div>
+        ))}
+      </div>
+
       {['accept'].map((workStatus) => {
         const filteredRecords = workRecords.filter(
           (item) => item.workStatus === workStatus
@@ -322,34 +350,6 @@ const CeoBackendSupportHome = () => {
           </div>
         );
       })}
-
-      <div className="flex justify-between gap-4 my-6">
-        {cardData.map((item, index) => (
-          <div
-            key={index}
-            className={`flex-1 ${item.color} shadow-md rounded-lg p-4 text-left border border-gray-300`}
-            style={{ height: '150px' }}
-            onClick={() =>
-              navigate(`/backend-work-details/${item.id}`, {
-                state: { data: workRecords },
-              })
-            }
-          >
-            <h4
-              className="text-lg font-semibold text-gray-700"
-              style={{ fontSize: '25px' }}
-            >
-              {item.title}
-            </h4>
-            <p
-              className="text-xl font-bold text-blue-600"
-              style={{ fontSize: '45px', marginTop: '25px' }}
-            >
-              {workRecordsCount?.[item.key] || 0}
-            </p>
-          </div>
-        ))}
-      </div>
 
       {['install'].map((workStatus) => {
         const filteredRecords = workRecords.filter(

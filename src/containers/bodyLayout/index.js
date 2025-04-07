@@ -126,7 +126,6 @@ import EditDispatch from '../dispatch/edit-dispatch';
 import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
 import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 import SelectBranch from '../vouchers/selectBranch';
-import ReceiptForm from '../vouchers/receiptForm';
 import BackendSupportHome from '../home/BackendSupportHome';
 import BackendSupportWorks from '../backendSupport/backendSupportWorks';
 import ViewBackendWorkDetails from '../backendSupport/viewBackendWorkDetails';
@@ -140,6 +139,16 @@ import EditVehicle from '../vehicle/EditVehicle';
 import AddVehicle from '../vehicle/AddVehicle';
 import AddRequestRaise from '../request-raise/AddRequestRaise';
 import EditRequestRaise from '../request-raise/EditRequestRaise';
+
+import PurchaseForm from '../vouchers/purchaseForm';
+import PaymentForm from '../vouchers/paymentForm';
+import SaleForm from '../vouchers/saleForm';
+import ReceiptForm from '../vouchers/receiptForm';
+import ContraForm from '../vouchers/contraForm';
+import JournalForm from '../vouchers/journalForm';
+import DebitNoteForm from '../vouchers/debitNote';
+import CreditNoteForm from '../vouchers/creditNote';
+
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -430,7 +439,14 @@ const BodyLayout = ({ children }) => {
             element={<CreateWorkAllocation />}
           />
           <Route path="/select-branch" element={<SelectBranch />} />
-          <Route path="/receipt-form" element={<ReceiptForm />} />
+          <Route path="/forms/Purchase" element={<PurchaseForm />} />
+          <Route path="/forms/Payments" element={<PaymentForm />} />
+          <Route path="/forms/Sale" element={<SaleForm />} />
+          <Route path="/forms/Receipts" element={<ReceiptForm />} />
+          <Route path="/forms/Journals" element={<JournalForm />} />
+          <Route path="/forms/Contra" element={<ContraForm />} />
+          <Route path="/forms/DebitNote" element={<DebitNoteForm />} />
+          <Route path="/forms/CreditNote" element={<CreditNoteForm />} />
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -478,12 +494,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/day-book" element={<DayBook />} />
           <Route path="/ledger-details" element={<LedgerDetails />} />
           <Route path="/purchase" element={<Purchase />} />
-          <Route path="/service" element={<Service/>} />
-          <Route path="/add-service" element={<AddService/>} />
-          <Route path="/edit-service" element={<EditService/>} />
-          <Route path="/vehicle" element={<Vehicle/>} />
-          <Route path="/add-vehicle" element={<AddVehicle/>} />
-          <Route path="/edit-vehicle" element={<EditVehicle/>} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/add-service" element={<AddService />} />
+          <Route path="/edit-service" element={<EditService />} />
+          <Route path="/vehicle" element={<Vehicle />} />
+          <Route path="/add-vehicle" element={<AddVehicle />} />
+          <Route path="/edit-vehicle" element={<EditVehicle />} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
@@ -537,8 +553,6 @@ const BodyLayout = ({ children }) => {
             path="/backend-work-details/:id"
             element={<FilteredWorkStatusDetails />}
           />
-
-          
 
           <Route path="/add-designation" element={<AddDesignation />} />
 

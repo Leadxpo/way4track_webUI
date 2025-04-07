@@ -202,7 +202,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.qualifications[index] &&
               errors.qualifications[index].includes(
@@ -220,7 +220,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
               onChange={(e) =>
                 handleQualificationChange(index, 'marksOrCgpa', e.target.value)
               }
-              // required
+            // required
             />
             {errors.qualifications[index] &&
               errors.qualifications[index].includes(
@@ -282,7 +282,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
               onChange={(e) =>
                 handleExperienceChange(index, 'previousCompany', e.target.value)
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -304,7 +304,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -326,7 +326,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -344,7 +344,7 @@ export default function EducationDetails({ setEducationDetails,educationDetails 
               onChange={(e) =>
                 handleExperienceChange(index, 'previous_salary', e.target.value)
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
