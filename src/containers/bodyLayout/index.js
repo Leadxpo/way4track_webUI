@@ -139,6 +139,14 @@ import AddService from '../service/AddService';
 import EditService from '../service/EditService';
 import EditVehicle from '../vehicle/EditVehicle';
 import AddVehicle from '../vehicle/AddVehicle';
+import ReportAccount from '../reports/accountent';
+import Groups from '../groups/index';
+import AddGroups from '../groups/addGroup';
+import AddLedger from '../ledger/addLedger';
+
+
+
+
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -429,6 +437,8 @@ const BodyLayout = ({ children }) => {
           />
           <Route path="/select-branch" element={<SelectBranch />} />
           <Route path="/receipt-form" element={<ReceiptForm />} />
+          <Route path="/report-account" element={<ReportAccount />} />
+
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -536,9 +546,15 @@ const BodyLayout = ({ children }) => {
             element={<FilteredWorkStatusDetails />}
           />
 
+<Route path="/groups" element={<Groups />} />
+<Route path="/add-groups" element={<AddGroups />} />
+<Route path="/more-details-groups" element={<moreDetailsGroups />} />
+
           
 
           <Route path="/add-designation" element={<AddDesignation />} />
+          <Route path="/add-ledger" element={<AddLedger />} />
+
 
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />

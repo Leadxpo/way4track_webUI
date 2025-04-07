@@ -1,5 +1,6 @@
 import ProfitsGraph from '../../components/ProfitsGraph';
 import TotalCountCard from '../../components/TotalCountCard';
+import AnalysisCard from '../../components/AnalysisCard'
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
@@ -34,7 +35,7 @@ const Home = () => {
   );
   const [totalReceivables, setTotalReceivables] = useState({});
   const [totalProducts, setTotalProducts] = useState([]);
-  const [totalExpenses, setTotalExpenses] = useState([]);
+  const [totalPayable, setTotalPayable] = useState([]);
   const [totalPurchases, setTotalPurchases] = useState([]);
   const [branchdetails, setBranchDetails] = useState([]);
   const [cardData, setCardData] = useState([
@@ -43,7 +44,7 @@ const Home = () => {
       icon: <img src="./products_box.png" />,
       title: 'Total Sales',
       count: 1200,
-      growth: '+55%',
+      // growth: '+55%',
       bgColor: '#151515',
     },
     {
@@ -51,7 +52,7 @@ const Home = () => {
       icon: <img src="./ticket.png" />,
       title: 'Payables',
       count: 7500,
-      growth: '+40%',
+      // growth: '+40%',
       bgColor: 'linear-gradient(180deg, #012FBB 0%, #012288 50%, #001555 100%)',
     },
     {
@@ -59,7 +60,7 @@ const Home = () => {
       icon: <img src="./expenses.png" />,
       title: 'Receivables',
       count: 5000,
-      growth: '+20%',
+      // growth: '+20%',
       bgColor: '#CF0101',
     },
     {
@@ -67,7 +68,7 @@ const Home = () => {
       icon: <img src="./sale.png" />,
       title: 'Total Purchases',
       count: 80,
-      growth: '+30%',
+      // growth: '+30%',
       bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
     },
   ]);
@@ -143,7 +144,7 @@ const Home = () => {
       dataSource = totalProducts;
       break;
     case 'Payables':
-      dataSource = totalExpenses;
+      dataSource = totalPayable;
       break;
     case 'Receivables':
       dataSource = totalReceivables;
@@ -162,15 +163,10 @@ const Home = () => {
     Object.keys(dataSource[0] || {}));
   
 
-  // setColumns(Object.keys(dataSource[0] || {}));
-  // setColumnNames(Object.keys(dataSource[0] || {}));
-  console.log("data source.......>",dataSource)
+
 };
 
-if(tableData){
-  console.log("data source data ram.......>",tableData)
-}
-console.log("data source data ram.......>",tableData)
+
 
   // Handle status filter change
   const handleStatusChange = (e) => {
@@ -190,9 +186,9 @@ console.log("data source data ram.......>",tableData)
 
   
 
-  const fetchTotalProducts = async () => {
+  const fetchTotalSalesCount = async () => {
     try {
-      const response = await ApiService.post('/dashboards/totalProducts', {
+      const response = await ApiService.post('/dashboards/getAmountDetails', {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         userId: initialAuthState.userId,
@@ -205,18 +201,17 @@ console.log("data source data ram.......>",tableData)
           item.id === 1
             ? {
                 ...item,
-                count: response.data.last30DaysProducts,
-                growth: response.data.percentageChange,
+                count: response.data.SalesAmount ?? 0, // assuming it's a number
               }
             : item
         )
       );
     } catch (error) {
-      console.error('Error fetching total tickets:', error);
-      alert('Failed to fetch total tickets.');
+      console.error('Error fetching total Sales:', error);
+      alert('Failed to fetch total Sales count.');
     }
   };
-
+  
   const fetchPurchaseCount = async () => {
     try {
       const response = await ApiService.post('/dashboards/getPurchaseCount', {
@@ -226,50 +221,74 @@ console.log("data source data ram.......>",tableData)
         userName: initialAuthState.userName,
       });
       console.log(response.data);
-      setTotalProductDetails(response.data);
+      const count = typeof response.data === 'object' ? response.data.last30DaysPurchases : response.data;
+  
       setCardData((prevData) =>
         prevData.map((item) =>
           item.id === 4
             ? {
                 ...item,
-                count: response.data.last30DaysPurchases,
-                growth: response.data.percentageChange,
+                count: count ?? 0,
               }
             : item
         )
       );
     } catch (error) {
-      console.error('Error fetching total tickets:', error);
-      alert('Failed to fetch total tickets.');
+      console.error('Error fetching total Purchases:', error);
+      alert('Failed to fetch total Purchase.');
     }
   };
-  const fetchExpenseCount = async () => {
+  
+  const fetchPayableCount = async () => {
     try {
-      const response = await ApiService.post('/dashboards/getExpenseData', {
+      const response = await ApiService.post('/dashboards/getAmountDetails', {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
       console.log(response.data);
-      setTotalProductDetails(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
-          item.id === 3
+          item.id === 2
             ? {
                 ...item,
-                count: response.data.last30DaysExpenses,
-                growth: response.data.percentageChange,
+                count: response.data.PayableAmount ?? 0,
               }
             : item
         )
       );
     } catch (error) {
-      console.error('Error fetching total tickets:', error);
-      alert('Failed to fetch total tickets.');
+      console.error('Error fetching total Payable:', error);
+      alert('Failed to fetch total Payable.');
     }
   };
-
+  
+  const fetchRecievableCount = async () => {
+    try {
+      const response = await ApiService.post('/dashboards/getAmountDetails', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+        userId: initialAuthState.userId,
+        userName: initialAuthState.userName,
+      });
+      console.log(response.data);
+      setCardData((prevData) =>
+        prevData.map((item) =>
+          item.id === 3
+            ? {
+                ...item,
+                count: response.data.ReceivableAmount ?? 0,
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching total Receivable:', error);
+      alert('Failed to fetch total Receivable count.');
+    }
+  };
+  
 
  
   const fetchSalesData = async () => {
@@ -307,7 +326,7 @@ console.log("data source data ram.......>",tableData)
       }
     } catch (error) {
       console.error('Error fetching tickets data:', error);
-      alert('Failed to fetch tickets data.');
+      alert('Failed to fetch Sales data.');
     }
   };
 
@@ -329,13 +348,13 @@ console.log("data source data ram.......>",tableData)
       );
 
       if (response.status) {
-        setTotalExpenses(response.data);
+        setTotalPayable(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
       }
     } catch (error) {
       console.error('Error fetching tickets data:', error);
-      alert('Failed to fetch tickets data.');
+      alert('Failed to fetch Payable data.');
     }
   };
 
@@ -396,7 +415,7 @@ console.log("data source data ram.......>",tableData)
       }
     } catch (error) {
       console.error('Error fetching tickets data:', error);
-      alert('Failed to fetch tickets data.');
+      alert('Failed to fetch Purchese  data.');
     }
   };
 
@@ -459,13 +478,16 @@ console.log("data source data ram.......>",tableData)
       console.error('error in fetching total sales details');
     }
   };
+
+
+
   const getAnalysis = async () => {
     try {
       const date = new Date();
       const formattedYear = date.getFullYear(); // Extract the year
 
       const response = await ApiService.post(
-        '/dashboards/getMonthWiseBalance',
+        '/dashboards/getBranchWiseMonthlySales',
         {
           date: formattedYear, // Send only the year
           companyCode: initialAuthState?.companyCode,
@@ -554,7 +576,7 @@ console.log("data source data ram.......>",tableData)
       const date = new Date();
       const formattedYear = date.getFullYear();
       const response = await ApiService.post(
-        '/dashboards/getProductTypeCreditAndDebitPercentages',
+        '/dashboards/getBranchWiseYearlySales',
         {
           date: formattedYear,
           companyCode: initialAuthState?.companyCode,
@@ -572,9 +594,10 @@ console.log("data source data ram.......>",tableData)
   };
 
   useEffect(() => {
-    fetchTotalProducts();
+    fetchTotalSalesCount();
     fetchPurchaseCount();
-    fetchExpenseCount();
+    fetchPayableCount();
+    fetchRecievableCount();
     getSolidLiquidCash();
     getBranchWiseSolidLiquidCash();
     getAnalysis();
@@ -672,11 +695,12 @@ console.log("data source data ram.......>",tableData)
 
 
       {/* third section - profits graphs */}
-      <div className="flex space-x-4 mt-10 overflow-x-auto">
-        {branchesData.map((branchData, index) => (
-          <ProfitsGraph key={index} branchData={branchData} index={index} />
-        ))}
-      </div>
+      <div className="flex space-x-4 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
+  {branchesData.map((branchData, index) => (
+    <ProfitsGraph key={index} branchData={branchData} />
+  ))}
+</div>
+
 
       {/* fourth section */}
       <div className="flex justify-between space-x-4 mt-12">
@@ -740,17 +764,11 @@ console.log("data source data ram.......>",tableData)
           </div>
         ) : null}
         <div className="mt-8">
-          {/* <Table columns={tableColumns} data={tableData} /> */}
-          {/* <Table
-                  data={tableData}
-                  columns={Object.keys(tableData[0])}
-                  showDelete={false}
-                  showDetails={false}
-                  editText="Assign"
-                   onEdit={handleEditClick}
-                /> */}
-                
-                <Table columns={Object.keys(tableData[0] || {})} data={tableData} />
+          <Table columns={tableColumns} data={tableData} />
+         
+
+
+         
         </div>
       </div>
       {/* sixth section - table */}

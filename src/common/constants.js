@@ -146,7 +146,7 @@ export const menuOptions = {
       icon: <img src="./vouchers.png" />,
       route: '/vouchers',
     },
-    { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+    { name: 'Reports', icon: <img src="./reports.png" />, route: '/report-account' },
     {
       name: 'Work Allocation',
       icon: <img src="./work_allocation.png" />,
@@ -163,11 +163,20 @@ export const menuOptions = {
       icon: <img src="./day_book.png" />,
       route: '/day-book',
     },
+    
+    // {
+    //   name: 'Analysis',
+    //   icon: <img src="./analysis.png" />,
+    //   route: '/analysis',
+    // },
+
     {
-      name: 'Analysis',
+      name: 'Groups',
       icon: <img src="./analysis.png" />,
-      route: '/analysis',
+      route: '/groups',
     },
+
+
     { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
     {
       name: 'Payments',
