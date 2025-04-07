@@ -35,9 +35,9 @@ const BranchDetails = () => {
     
       try {
         const response = await ApiService.post("/branch/getBranchDetailsById", {
-          // id: branchDetailsFromState.id,
-          // companyCode: initialAuthState.companyCode,
-          // unitCode: initialAuthState.unitCode,
+          id: branchDetailsFromState.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
         });
     
         if (response?.status) {
@@ -134,7 +134,7 @@ const BranchDetails = () => {
         <img
           src={branchDetails.branchPhoto || "default-branch.png"}
           alt="Branch Logo"
-          className="w-50 h-50 py-4"
+          className="w-40 h-30 py-4"
         />
        
       </div>

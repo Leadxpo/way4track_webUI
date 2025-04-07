@@ -29,7 +29,7 @@ export default function ShowProductType() {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Product Type</h2>
+      <h2 className="text-xl font-bold mb-4">Product Type Details</h2>
         <div>
           <label className="block text-sm font-medium">Name</label>
           <input
@@ -52,7 +52,6 @@ export default function ShowProductType() {
   {formData.photo && typeof formData.photo === "string" && (
     <img src={formData.photo} alt="photo" className="w-20 h-20 object-cover mb-2" />
   )}
-  <input type="file" name="photo" accept="image/*" className="w-full" />
 </div>
 
 <div>
@@ -60,7 +59,6 @@ export default function ShowProductType() {
   {formData.image && typeof formData.image === "string" && (
     <img src={formData.image} alt="Blog" className="w-20 h-20 object-cover mb-2" />
   )}
-  <input type="file" name="image" accept="image/*" className="w-full" />
 </div>
 
     </div>

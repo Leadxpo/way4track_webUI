@@ -5,13 +5,12 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 const DeleteRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const requestNumber = location.state?.requestDetails?.id;
-
+  const requestNumber = location.state?.requestDetails?.requestId;
   const handleDelete = async () => {
     console.log(location.state?.requestDetails?.requestId);
     try {
       const response = await ApiService.post('/requests/deleteRequestDetails', {
-        id: location.state?.requestDetails?.id,
+        id:location.state?.requestDetails?.requestId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });

@@ -19,6 +19,7 @@ const ProductType = () => {
     try {
       const response = await ApiService.post("/productType/getProductTypeDetails");
       if (response.data) {
+        console.log("+++++====== respons",)
         setProductTypes(response.data || []);
         setAllProductTypes(response.data || []); // Store original data
       } else {
@@ -73,11 +74,13 @@ const ProductType = () => {
     data.append("unitCode", initialAuthState.unitCode);
   
     try {
-      await ApiService.post(`/productType/deleteProductTypeDetails`,data
+      const res=await ApiService.post(`/productType/deleteProductTypeDetails`,data
         );
-      alert("Product type deleted successfully!");
-      fetchProductTypes();
-      // Refresh or update the UI after deletion
+
+      if(res.status){
+        alert("Product type deleted successfully!");
+        fetchProductTypes();
+      }
     } catch (error) {
       console.error("Error deleting product type:", error);
       alert("Failed to delete product type.");
