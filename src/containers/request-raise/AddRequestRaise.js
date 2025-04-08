@@ -93,26 +93,26 @@ const AddRequestRaise = () => {
   };
 
   const handleSave = async () => {
-  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+  const id = JSON.parse(localStorage.getItem('id'));
 
-if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
-    const { id, name } = userProfile?.Data[0];
-    console.log("ID:", id);
-    console.log("Name:", name);
-} else {
-    console.log("User profile data not found.");
-}
+// if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
+//     const { id, name } = userProfile?.Data[0];
+//     console.log("ID:", id);
+//     console.log("Name:", name);
+// } else {
+//     console.log("User profile data not found.");
+// }
 
     try {
       const payload = {
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
-        requestFrom:Number(9),
-        branch: formData.branch,
-        description: formData.description,
+        requestFrom:id,
+        branch: Number(formData.branch),
+        requestFor: formData.description,
         status: "pending",
         products:formData.requestType==="products"?formData.products:null,
-        subDealerId: formData.subDealerId || 1,
+        // subDealerId: formData.subDealerId || 1,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor:formData.requestFor,
@@ -122,15 +122,15 @@ if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
 
 
       console.log("payload request 1234",payload);
-      const response = await ApiService.post(
-        '/requests/handleRequestDetails',
-        payload
-      );
-      if (response.status) {
-        navigate('/requests');
-      } else {
-        alert('failed to raise request');
-      }
+      // const response = await ApiService.post(
+      //   '/requests/handleRequestDetails',
+      //   payload
+      // );
+      // if (response.status) {
+      //   navigate('/requests');
+      // } else {
+      //   alert('failed to raise request');
+      // }
     } catch (error) {
       console.error(error);
       alert('failed to raise request');
