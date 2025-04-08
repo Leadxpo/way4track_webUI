@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -10,6 +10,7 @@ const Login = ({ handleLoginFlag }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [designations, setDesignations] = useState([]);
 
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const Login = ({ handleLoginFlag }) => {
       const response = await ApiService.post('/login/LoginDetails', payload);
       console.log("ramesh login", response)
 
-      if (response && response.status) {
+      if (response.data.status) {
         const userProfile = response.data;
         console.log("response data", response.data);
 
@@ -87,6 +88,22 @@ const Login = ({ handleLoginFlag }) => {
     }
   };
 
+
+  const fetchDesignations = async () => {
+    try {
+      const response = await ApiService.post("/designations/getAllDesignation");
+      setDesignations(response.data || []);
+    } catch (error) {
+      console.error("Error fetching designations:", error);
+      setDesignations([]);
+    }
+  };
+  
+  useEffect(() => {
+    fetchDesignations();
+  }, []);
+
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="p-8 rounded-lg w-96 space-y-12 bg-white shadow-md">
@@ -139,35 +156,25 @@ const Login = ({ handleLoginFlag }) => {
             </div>
           </div>
 
-          {/* Role Selection */}
           <div className="mb-6">
-            <label
-              htmlFor="role"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Role
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            //required
-            >
-              <option value="">Select Role</option>
-              <option value="CEO">CEO</option>
-              <option value="HR">HR</option>
-              <option value="Accountant">Accountant</option>
-              <option value="Operator">Operator</option>
-              <option value="Branch Manager">Branch Manager</option>
-              <option value="Warehouse Manager">Warehouse Manager</option>
-              <option value="Sub Dealer">Sub Dealer</option>
-              <option value="Technician">Technician</option>
-              <option value="Sales Man">Sales Man</option>
-              <option value="Call Center">Call Center</option>
-              <option value="Backend Support">Backend Support</option>
-            </select>
-          </div>
+  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+    Role
+  </label>
+  <select
+    id="role"
+    value={role}
+    onChange={(e) => setRole(e.target.value)}
+    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  >
+    <option value="">Select Role</option>
+    {designations.map((item, index) => (
+      <option key={index} value={item.designation}>
+        {item.designation}
+      </option>
+    ))}
+  </select>
+</div>
+
 
           {/* Login Button */}
           <button
