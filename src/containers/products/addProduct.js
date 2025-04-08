@@ -108,7 +108,7 @@ const AddProductForm = () => {
         const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        if (response.data.status) {
+        if (response.status) {
           alert('Bulk upload successful!');
           navigate('/products');
         } else {

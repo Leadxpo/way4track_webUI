@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const BankDetails = ({ setBankDetails }) => {
+const BankDetails = ({ setBankDetails,bankDetails  }) => {
   const [data, setData] = useState({
     accountNumber: '',
     bankName: '',
@@ -45,6 +45,13 @@ const BankDetails = ({ setBankDetails }) => {
       [name]: validate(name, value),
     }));
   };
+
+  
+      useEffect(() => {
+        if (bankDetails && Object.keys(bankDetails).length > 0) {
+          setData(bankDetails);
+        }
+      }, [bankDetails]);
 
   useEffect(() => setBankDetails(data), [data, setBankDetails]);
 

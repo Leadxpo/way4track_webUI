@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ApiService from '../../services/ApiService';
+import { initialAuthState } from '../../services/ApiService';
 
 const SelectBranch = () => {
   const navigate = useNavigate();
 
-  const branches = [
-    { id: 1, branchName: 'Visakhapatnam' },
-    { id: 2, branchName: 'Hyderabad' },
-    { id: 3, branchName: 'Vijayawada' },
-    { id: 4, branchName: 'Kakinada' },
-  ];
+  const [branches,setBranches]=useState([]);
 
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleBranchClick = (branchName) => {
-    setSelectedBranch(branchName);
+  const handleBranchClick = (Id,Name) => {
+    setSelectedBranch({branchId:Id,branchName:Name});
     setIsPopupOpen(true);
   };
 
@@ -35,16 +32,43 @@ const SelectBranch = () => {
   ];
 
   const handleItemClick = (item) => {
-    navigate(`/forms/${item}`);
-    // navigate('/receipt-form')
-  };
+    navigate(`/forms/${item}`, {
+        state: {
+            selectedBranch: selectedBranch  
+        }
+    });
+    console.log("1234567", item);
+};
+
+    // Fetch branch data from API
+    useEffect(() => {
+      const fetchBranches = async () => {
+        try {
+          const response = await ApiService.post(
+            '/branch/getBranchNamesDropDown', {
+                      companyCode: initialAuthState?.companyCode,
+                      unitCode: initialAuthState?.unitCode,
+                    }
+          );
+          if (response.status) {
+            setBranches(response.data); // Set branches to state
+          } else {
+            console.error('Failed to fetch branches');
+          }
+        } catch (error) {
+          console.error('Error fetching branches:', error);
+        }
+      };
+  
+      fetchBranches();
+    }, []);
 
   return (
     <div className="p-10">
-      {branches.map((branch) => (
+      {branches?.map((branch) => (
         <div key={branch.id}>
           <p
-            onClick={() => handleBranchClick(branch.branchName)}
+            onClick={() => handleBranchClick(branch.id,branch.branchName)}
             style={{
               backgroundColor: '#12A651',
               color: '#FFFFFF',

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function EducationDetails({ setEducationDetails }) {
+export default function EducationDetails({ setEducationDetails,educationDetails }) {
   const [qualifications, setQualification] = useState([
     {
       qualificationName: '',
@@ -154,6 +154,13 @@ export default function EducationDetails({ setEducationDetails }) {
       experienceErrors.every((err) => err.length === 0)
     );
   };
+
+  useEffect(() => {
+    if (educationDetails && Object.keys(educationDetails).length > 0) {
+      setQualification(educationDetails.qualifications || []);
+      setExperience(educationDetails.experience || []);
+    }
+  }, [educationDetails]);
 
   // Send Data to Parent on Change
   useEffect(() => {
