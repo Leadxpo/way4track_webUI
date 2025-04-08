@@ -6,7 +6,18 @@ import { useNavigate, useLocation } from 'react-router';
 const AddEditProductAssign = () => {
   const navigate = useNavigate();
   const location = useLocation();
+ 
+  // const [imeiList, setImeiList] = useState([]);
+  // const [showDropdown1, setShowDropdown1] = useState(false);
+  // const [showDropdown2, setShowDropdown2] = useState(false);
 
+  const [imeiList, setImeiList] = useState([]);
+const [showDropdown, setShowDropdown] = useState({
+  from: false,
+  to: false
+});
+
+  console.log("imei number imeiListimeiListimeiList",imeiList)
   // Check if there's product data passed through location.state
   const productAssign = location.state?.productAssignDetails || {};
   console.log(location.state?.productAssignDetails, ')))))))))))');
@@ -231,6 +242,37 @@ const AddEditProductAssign = () => {
     navigate('/products_assign');
   };
 
+
+
+
+    // Handle Focus
+const handleFocus = async (field) => {
+  setShowDropdown(prev => ({ ...prev, [field]: true }));
+
+  if (imeiList.length === 0) {
+    const res = await ApiService.post("/products/getAllproductDetails", {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode
+    });
+    const list = res.data
+      ?.filter(i => i.imeiNumber)
+      .map(i => ({ id: i.id, imeiNumber: i.imeiNumber })) || [];
+    setImeiList(list);
+  }
+};
+
+// Handle Change
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({ ...prev, [name]: value }));
+  setShowDropdown(prev => ({ ...prev, [name === 'imeiNumberFrom' ? 'from' : 'to']: true }));
+};
+
+// Handle Select
+const handleSelect = (field, imei) => {
+  setFormData(prev => ({ ...prev, [field]: imei }));
+  setShowDropdown(prev => ({ ...prev, [field === 'imeiNumberFrom' ? 'from' : 'to']: false }));
+};
   const renderField = (label, name, type = 'text', placeholder = '') => (
     <div>
       <p className="font-semibold mb-1">{label}</p>
@@ -388,8 +430,67 @@ const AddEditProductAssign = () => {
           {/* Other Input Fields */}
           {renderField('Product Name', 'productName')}
           {renderField('Name', 'name')}
-          {renderField('IMEI Number From', 'imeiNumberFrom')}
-          {renderField('IMEI Number To', 'imeiNumberTo')}
+
+        
+
+
+{/* IMEI From */}
+<div className="relative">
+  <p className="font-semibold mb-1">IMEI Number From</p>
+  <input
+    type="text"
+    name="imeiNumberFrom"
+    value={formData.imeiNumberFrom}
+    onChange={handleChange}
+    onFocus={() => handleFocus('from')}
+    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  />
+  {showDropdown.from && formData.imeiNumberFrom && (
+    <ul className="absolute w-full max-h-60 overflow-y-auto bg-white border rounded-md shadow z-10">
+      {imeiList
+        .filter(item => item.imeiNumber.includes(formData.imeiNumberFrom))
+        .map(item => (
+          <li
+            key={item.id}
+            onClick={() => handleSelect('imeiNumberFrom', item.imeiNumber)}
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          >
+            {item.imeiNumber}
+          </li>
+        ))}
+    </ul>
+  )}
+</div>
+
+{/* IMEI To */}
+<div className="relative">
+  <p className="font-semibold mb-1">IMEI Number To</p>
+  <input
+    type="text"
+    name="imeiNumberTo"
+    value={formData.imeiNumberTo}
+    onChange={handleChange}
+    onFocus={() => handleFocus('to')}
+    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  />
+  {showDropdown.to && formData.imeiNumberTo && (
+    <ul className="absolute w-full max-h-60 overflow-y-auto bg-white border rounded-md shadow z-10">
+      {imeiList
+        .filter(item => item.imeiNumber.includes(formData.imeiNumberTo))
+        .map(item => (
+          <li
+            key={item.id}
+            onClick={() => handleSelect('imeiNumberTo', item.imeiNumber)}
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          >
+            {item.imeiNumber}
+          </li>
+        ))}
+    </ul>
+  )}
+</div>
+          {/* {renderField('IMEI Number From', 'imeiNumberFrom')}
+          {renderField('IMEI Number To', 'imeiNumberTo')} */}
           {renderField('Assign Time', 'assignTime', 'date')}
 
           {/* Boolean Fields */}

@@ -35,12 +35,12 @@ export default function AddStaffForm() {
           'alternateNumber',
           'email',
           'aadharNumber',
-          'panCardNumber',
-          'drivingLicence',
+          // 'panCardNumber',
+          // 'drivingLicence',
           'address',
-          'uanNumber',
-          'esicNumber',
-          'bloodGroup',
+          // 'uanNumber',
+          // 'esicNumber',
+          // 'bloodGroup',
         ];
 
         // Loop through the required fields and check for emptiness
@@ -120,6 +120,8 @@ export default function AddStaffForm() {
             setPersonnelDetails={(data) =>
               handleTempDataUpdate(data, 'personnelDetails')
             }
+
+            personnelDetails={formData.personnelDetails}
           />
         );
       case 2:
@@ -128,12 +130,15 @@ export default function AddStaffForm() {
             setEducationDetails={(data) =>
               handleTempDataUpdate(data, 'educationDetails')
             }
+
+            educationDetails={formData.educationDetails}
           />
         );
       case 3:
         return (
           <BankDetails
             setBankDetails={(data) => handleTempDataUpdate(data, 'bankDetails')}
+            bankDetails={formData.bankDetails}
           />
         );
       case 4:
@@ -142,6 +147,7 @@ export default function AddStaffForm() {
             setEmployerDetails={(data) =>
               handleTempDataUpdate(data, 'employerDetails')
             }
+            employerDetails={formData.employerDetails}
           />
         );
       default:

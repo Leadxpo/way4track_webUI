@@ -17,10 +17,10 @@ export default function EditProductType() {
   useEffect(() => {
     if (productType) {
       setFormData({
-        name: productType.name || "",
-        description: productType.description || "",
-        photo: productType.productPhoto || null,
-        image: productType.blogImage || null,
+        name: productType?.name || "",
+        description: productType?.description || "",
+        photo: productType?.productPhoto || null,
+        image: productType?.blogImage || null,
       });
     }
   }, [productType]);
@@ -48,8 +48,8 @@ export default function EditProductType() {
     data.append("description", formData.description);
     data.append("id", productType.id);
 
-    if (formData.photo) data.append("photo", formData.photo);
-    if (formData.image) data.append("image", formData.image);
+   data.append("photo", formData.photo);
+    data.append("image", formData.image);
 
     try {
       await ApiService.post("/productType/handleProductTypeDetails", data, {
@@ -102,18 +102,16 @@ export default function EditProductType() {
 
 <div>
   <label className="block text-sm font-medium">Product Photo</label>
-  {formData.photo && typeof formData.photo === "string" && (
-    <img src={formData.photo} alt="Uploaded" className="w-20 h-20 object-cover mb-2" />
-  )}
+  
   <input type="file" name="photo" onChange={handleFileChange} accept="image/*" className="w-full" />
+
 </div>
 
 <div>
   <label className="block text-sm font-medium">Blog Image</label>
-  {formData.image && typeof formData.image === "string" && (
-    <img src={formData.image} alt="Uploaded" className="w-20 h-20 object-cover mb-2" />
-  )}
+
   <input type="file" name="image" onChange={handleFileChange} accept="image/*" className="w-full" />
+
 </div>
 
 

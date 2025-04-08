@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function EducationDetails({ setEducationDetails }) {
+export default function EducationDetails({ setEducationDetails,educationDetails }) {
   const [qualifications, setQualification] = useState([
     {
       qualificationName: '',
@@ -155,6 +155,13 @@ export default function EducationDetails({ setEducationDetails }) {
     );
   };
 
+  useEffect(() => {
+    if (educationDetails && Object.keys(educationDetails).length > 0) {
+      setQualification(educationDetails.qualifications || []);
+      setExperience(educationDetails.experience || []);
+    }
+  }, [educationDetails]);
+
   // Send Data to Parent on Change
   useEffect(() => {
     setEducationDetails({
@@ -195,7 +202,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.qualifications[index] &&
               errors.qualifications[index].includes(
@@ -213,7 +220,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleQualificationChange(index, 'marksOrCgpa', e.target.value)
               }
-              // required
+            // required
             />
             {errors.qualifications[index] &&
               errors.qualifications[index].includes(
@@ -275,7 +282,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleExperienceChange(index, 'previousCompany', e.target.value)
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -297,7 +304,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -319,7 +326,7 @@ export default function EducationDetails({ setEducationDetails }) {
                   e.target.value
                 )
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(
@@ -337,7 +344,7 @@ export default function EducationDetails({ setEducationDetails }) {
               onChange={(e) =>
                 handleExperienceChange(index, 'previous_salary', e.target.value)
               }
-              // required
+            // required
             />
             {errors.experience[index] &&
               errors.experience[index].includes(

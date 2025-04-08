@@ -34,6 +34,8 @@ import VendorProfile from '../vendors/vendorProfile';
 import SubDealers from '../sub-dealers';
 import DeleteSubDealer from '../sub-dealers/deleteSubDealer';
 import SubDealerDetails from '../sub-dealers/subDealerDetails';
+// import SubDealerStaff from '../sub-dealers/subDelarStaff';
+
 import DayBook from '../day-book';
 import Ledger from '../ledger';
 import LedgerDetails from '../ledger/ledgerDetails';
@@ -58,7 +60,6 @@ import InHandProductsForm from '../products/inHandProductForm';
 import Tracker from '../tracker';
 import RequestRaise from '../request-raise';
 import DeleteRequest from '../request-raise/deleteRequest';
-import AddEditRequestForm from '../request-raise/addEdit';
 import RequestDetails from '../request-raise/requestDetails';
 import Appointments from '../appointment';
 import AddEditAppointmentForm from '../appointment/addEditAppointment';
@@ -127,7 +128,6 @@ import EditDispatch from '../dispatch/edit-dispatch';
 import EditSalesVisitDetails from '../salesVisit/editSalesVisitDetails';
 import CreateWorkAllocation from '../work-allocation/createWorkAllocation';
 import SelectBranch from '../vouchers/selectBranch';
-import ReceiptForm from '../vouchers/receiptForm';
 import BackendSupportHome from '../home/BackendSupportHome';
 import BackendSupportWorks from '../backendSupport/backendSupportWorks';
 import ViewBackendWorkDetails from '../backendSupport/viewBackendWorkDetails';
@@ -143,8 +143,18 @@ import ReportAccount from '../reports/accountent';
 import Groups from '../groups/index';
 import AddGroups from '../groups/addGroup';
 import AddLedger from '../ledger/addLedger';
-
-
+import AddRequestRaise from '../request-raise/AddRequestRaise';
+import EditRequestRaise from '../request-raise/EditRequestRaise';
+import PurchaseForm from '../vouchers/purchaseForm';
+import PaymentForm from '../vouchers/paymentForm';
+import SaleForm from '../vouchers/saleForm';
+import ReceiptForm from '../vouchers/receiptForm';
+import ContraForm from '../vouchers/contraForm';
+import JournalForm from '../vouchers/journalForm';
+import DebitNoteForm from '../vouchers/debitNote';
+import CreditNoteForm from '../vouchers/creditNote';
+import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
+import SubDelarStaff from '../sub-dealers/subDelarStaff';
 
 
 
@@ -392,7 +402,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/payments" element={<Payments />} />
           <Route path="/requests" element={<RequestRaise />} />
           <Route path="/delete-request" element={<DeleteRequest />} />
-          <Route path="/add-request" element={<AddEditRequestForm />} />
+          <Route path="/add-request" element={<AddRequestRaise/>} />
+          <Route path="/edit-request" element={<EditRequestRaise/>} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/add-client" element={<AddEditClient />} />
@@ -439,6 +450,14 @@ const BodyLayout = ({ children }) => {
           <Route path="/receipt-form" element={<ReceiptForm />} />
           <Route path="/report-account" element={<ReportAccount />} />
 
+          <Route path="/forms/Purchase" element={<PurchaseForm />} />
+          <Route path="/forms/Payments" element={<PaymentForm />} />
+          <Route path="/forms/Sale" element={<SaleForm />} />
+          <Route path="/forms/Receipts" element={<ReceiptForm />} />
+          <Route path="/forms/Journals" element={<JournalForm />} />
+          <Route path="/forms/Contra" element={<ContraForm />} />
+          <Route path="/forms/DebitNote" element={<DebitNoteForm />} />
+          <Route path="/forms/CreditNote" element={<CreditNoteForm />} />
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
@@ -486,12 +505,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/day-book" element={<DayBook />} />
           <Route path="/ledger-details" element={<LedgerDetails />} />
           <Route path="/purchase" element={<Purchase />} />
-          <Route path="/service" element={<Service/>} />
-          <Route path="/add-service" element={<AddService/>} />
-          <Route path="/edit-service" element={<EditService/>} />
-          <Route path="/vehicle" element={<Vehicle/>} />
-          <Route path="/add-vehicle" element={<AddVehicle/>} />
-          <Route path="/edit-vehicle" element={<EditVehicle/>} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/add-service" element={<AddService />} />
+          <Route path="/edit-service" element={<EditService />} />
+          <Route path="/vehicle" element={<Vehicle />} />
+          <Route path="/add-vehicle" element={<AddVehicle />} />
+          <Route path="/edit-vehicle" element={<EditVehicle />} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
@@ -549,6 +568,8 @@ const BodyLayout = ({ children }) => {
 <Route path="/groups" element={<Groups />} />
 <Route path="/add-groups" element={<AddGroups />} />
 <Route path="/more-details-groups" element={<moreDetailsGroups />} />
+<Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
+
 
           
 

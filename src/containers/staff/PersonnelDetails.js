@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const PersonnelDetails = ({ setPersonnelDetails }) => {
+const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
   const [formData, setFormData] = useState({
     name: '',
     dob: '',
@@ -12,7 +12,7 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     email: '',
     aadharNumber: '',
     panCardNumber: '',
-    drivingLicence: '',
+    // drivingLicence: '',
     address: '',
     uanNumber: '',
     esicNumber: '',
@@ -143,6 +143,12 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     });
   }, [setPersonnelDetails]);
 
+   useEffect(() => {
+          if (personnelDetails && Object.keys(personnelDetails).length > 0) {
+            setFormData(personnelDetails);
+          }
+        }, [personnelDetails]);
+
 
 
   const validateField = async (field, value, regex, errorMessage) => {
@@ -163,10 +169,10 @@ const PersonnelDetails = ({ setPersonnelDetails }) => {
     }
   } catch (apiError) {
     console.error(`Error validating ${field}:`, apiError);
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [field]: `Error validating ${field}.`,
-    }));
+    // setErrors((prevErrors) => ({
+    //   ...prevErrors,
+    //   [field]: `Error validating ${field}.`,
+    // }));
   }
 };
 
