@@ -313,6 +313,36 @@ const ViewBackendWorkDetails = () => {
               />
             )} */}
           </Section>
+
+          <div className="mt-6 max-w-[1000px] min-h-[300px] border rounded-md p-4 bg-white shadow-md">
+            <h1 className="text-xl font-bold mb-4">Remarks</h1>
+
+            {/* Scrollable Chat Area */}
+            <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
+              {remarks.map((remark, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col ${
+                    remark.by === 'admin' ? 'items-end' : 'items-start'
+                  }`}
+                >
+                  <div
+                    className={`rounded-lg p-3 max-w-[75%] shadow ${
+                      remark.by === 'admin'
+                        ? 'bg-blue-100 text-blue-900'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    <p className="text-sm">{remark.message}</p>
+                  </div>
+                  <span className="text-xs text-gray-500 mt-1">
+                    {remark.by} • {remark.timestamp}
+                    {/* {remark.timestamp} */}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <p className="text-red-500 text-center">
@@ -342,6 +372,34 @@ const ViewBackendWorkDetails = () => {
 //       console.error('Download failed:', err);
 //     }
 //   };
+
+const remarks = [
+  {
+    by: 'admin',
+    message: 'Installation has been scheduled for tomorrow morning.',
+    timestamp: '2025-04-06 09:15 AM',
+  },
+  {
+    by: 'user',
+    message: 'Okay, I will be available at the venue by 9:00 AM.',
+    timestamp: '2025-04-06 09:20 AM',
+  },
+  {
+    by: 'admin',
+    message: 'Please ensure the power supply is ready.',
+    timestamp: '2025-04-06 09:22 AM',
+  },
+  {
+    by: 'user',
+    message: 'Yes, everything will be arranged beforehand.',
+    timestamp: '2025-04-06 09:25 AM',
+  },
+  {
+    by: 'admin',
+    message: 'Great. Let me know once it’s done.',
+    timestamp: '2025-04-06 09:30 AM',
+  },
+];
 
 const Section = ({ title, children }) => (
   <div className="mb-6 p-4 bg-white rounded-lg shadow-md border">
