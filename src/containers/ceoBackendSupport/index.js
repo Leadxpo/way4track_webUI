@@ -405,11 +405,11 @@ const CeoBackendSupportHome = () => {
           {/* Jobs Grid */}
           {selectedLocation && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {workDetails
+              {workRecords
                 .filter(
                   (card) =>
-                    card.location === selectedLocation &&
-                    card.status === selectedCardId
+                    card.branchName === selectedLocation &&
+                    card.workStatus === selectedCardId
                 )
                 .map((card, i) => {
                   // Dynamic card background color based on status
@@ -438,7 +438,7 @@ const CeoBackendSupportHome = () => {
                       className={`border rounded-md p-4 shadow min-h-[120px] ${cardBgColor}`}
                       style={{ width: '100%' }}
                     >
-                      {card.name ? (
+                      {card.staffName ? (
                         <div className="flex flex-col h-full justify-between">
                           {/* Header */}
                           <div className="flex justify-between items-center mb-2">
@@ -455,10 +455,10 @@ const CeoBackendSupportHome = () => {
                           {/* Main Info */}
                           <div className="mb-2">
                             <p className="text-lg font-bold text-gray-800">
-                              {card.name}
+                              {card.staffName}
                             </p>
                             <p className="text-sm text-gray-600">
-                              {card.phone}
+                              {card.phoneNumber}
                             </p>
                           </div>
 
