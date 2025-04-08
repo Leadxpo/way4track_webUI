@@ -8,7 +8,7 @@ import StaffDetailsPDF from './StaffDetailsPDF';
 const StaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log('staff details');
+  console.log('staff details',state);
 
   const [formData, setFormData] = useState({
     personnelDetails: {
@@ -90,7 +90,7 @@ const StaffDetails = () => {
   const fetchStaffDetails = async () => {
     try {
       const response = await ApiService.post('/staff/getStaffDetailsById', {
-        staffId: state.staffDetails.staffId,
+        staffId: state.staffDetails["Staff ID"],
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
