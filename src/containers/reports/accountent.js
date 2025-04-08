@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { FaDownload, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as XLSX from "xlsx";
+import ConvertPDF from '../../components/convertPDF';
+
 
 
 const Reports = () => {
