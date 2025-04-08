@@ -17,6 +17,9 @@ const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
     uanNumber: '',
     esicNumber: '',
     bloodGroup: '',
+    staffId: '',
+    password: '',
+
     photo: null,
   });
 
@@ -206,9 +209,6 @@ useEffect(() => {
 }, [formData.panCardNumber]);
 
 
-
-
-
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
       {/* Photo Upload Section */}
@@ -292,12 +292,6 @@ useEffect(() => {
               )}
             </div>
           ))}
-      <button
-      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition duration-300"
-    >
-      ADD
-    </button>
-          
       </div>
     </div>
   );
