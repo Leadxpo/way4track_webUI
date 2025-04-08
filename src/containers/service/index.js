@@ -62,19 +62,20 @@ const Service = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (serviceId) => {
     if (!window.confirm("Are you sure you want to delete this Service?")) {
       return;
     }
 
-    const data = new FormData();
-    data.append("id", id);
-    data.append("companyCode", initialAuthState.companyCode);
-    data.append("unitCode", initialAuthState.unitCode);
+
+
+    const payload={id:serviceId,companyCode:initialAuthState.companyCode,unitCode:initialAuthState.unitCode}
   
     try {
-      const res=await ApiService.post(`/ServiceType/deleteServiceTypeDetails`,data
-        );
+      const res = await ApiService.post(
+        `/ServiceType/deleteServiceTypeDetails`,
+        payload
+      );
 
       if(res.status){
         alert("Service deleted successfully!");
@@ -125,6 +126,7 @@ const Service = () => {
           <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr className="border-b bg-blue-500 text-white text-left">
+              <th className="px-6 py-3 text-left text-sm font-bold">Id</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Name</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Duration</th>
     
@@ -136,6 +138,7 @@ const Service = () => {
               {service.length > 0 ? (
                 service.map((item, index) => (
                   <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
+                    <td className="px-6 py-4">{item.id}</td>
                     <td className="px-6 py-4">{item.name}</td>
                     <td className="px-6 py-4">{item.duration}</td>
                     <td className="px-6 py-4">{item.description}</td>

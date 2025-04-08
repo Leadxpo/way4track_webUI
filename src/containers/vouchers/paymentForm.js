@@ -1,11 +1,64 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const PaymentForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
+    const { selectedBranch } = location.state || {};
 
+    console.log("Selected Branch Object:jjj", selectedBranch);
+const [ledger,setLedger] =useState([
+   
+  ]);
+
+  const handleDateChange = (e) => {
+    const value = e.target.value;
+  
+    const dayName = new Date(value).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+  
+    setFormData((prev) => ({
+      ...prev,
+      date: value,
+      day: dayName, 
+    }));
+  };
+
+    const [formData, setFormData] = useState(
+      {date:"",
+        day:"",
+        partyName: "", //clientId
+        voucherType:"PURCHASE",
+        supplierInvoiceNumber:"",
+        supplierLocation:"",
+        purchaseGst:"",
+        productDetails:[{productName: "",
+          quantity: null,
+          rate: null,
+          totalCost: null,
+         }],
+         purpose:""
+        // invoices,
+        // entries,
+        // amount,
+        // balanceAmount,
+        // description,
+        // paymentMode,
+  
+      }
+    );
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
   const taxData = [
     { name: 'CGST', percent: '9%', amount: '10,5000' },
     { name: 'SGST', percent: '9%', amount: '10,5000' },
@@ -79,16 +132,20 @@ const PaymentForm = () => {
   };
 
   const handleAddEntry = () => {
-    setEntries([
-      ...entries,
-      { invoice: '', amount: '', paid: '', remaining: '' },
-    ]);
+    setFormData((prevData) => ({
+      ...prevData,
+      productDetails: [
+        ...prevData.productDetails,
+        { productName: "", quantity: null, rate: null, totalCost: null }
+      ]
+    }));
   };
 
   const handleRemoveEntry = (indexToRemove) => {
-    setEntries((prevEntries) =>
-      prevEntries.filter((_, index) => index !== indexToRemove)
-    );
+    setFormData((prevData) => ({
+      ...prevData,
+      productDetails: prevData.productDetails.filter((_, index) => index !== indexToRemove),
+    }));
   };
 
   const handleEntryChange = (index, field, value) => {
@@ -120,16 +177,31 @@ const PaymentForm = () => {
 
     console.log('Form Data to Submit:', formData);
 
-    // Here you can POST the data to an API:
-    // fetch('/api/submit-purchase', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // })
-    // .then(res => res.json())
-    // .then(data => console.log(data))
-    // .catch(err => console.error(err));
+ 
   };
+
+        useEffect(() => {
+          const fetchLedgers = async () => {
+            try {
+              const response = await ApiService.post(
+                '/ledger/getLedgerDetails', {
+                          companyCode: initialAuthState?.companyCode,
+                          unitCode: initialAuthState?.unitCode,
+                        }
+              );
+              console.log("fedgrfdtrgxfsdf",response)
+              if (response.status) {
+                setLedger(response.data); // Set branches to state
+              } else {
+                console.error('Failed to fetch branches');
+              }
+            } catch (error) {
+              console.error('Error fetching branches:', error);
+            }
+          };
+      
+          fetchLedgers();
+        }, []);
 
   return (
     <form
@@ -220,8 +292,10 @@ const PaymentForm = () => {
         <input
           type="date"
           placeholder="Date:"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={formData.date}
+          name="date"
+
+          onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -239,8 +313,10 @@ const PaymentForm = () => {
         <input
           type="text"
           placeholder="Day:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+
+
+          name="day"
+          value={formData.day}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -272,23 +348,29 @@ const PaymentForm = () => {
           }}
         />
 
-        <input
-          type="text"
-          placeholder="Party Name:"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
+<select
+        value={formData.partyName}
+        onChange={handleInputChange}
+        name="partyName"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.clientId} value={party.name}>
+            {party.name}
+          </option>
+        ))}
+      </select>
       </div>
 
       {/* Entries */}

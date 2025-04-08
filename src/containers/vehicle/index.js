@@ -62,19 +62,19 @@ const Vehicle = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (vehicleId) => {
     if (!window.confirm("Are you sure you want to delete this vehicle?")) {
       return;
     }
 
-    const data = new FormData();
-    data.append("id", id);
-    data.append("companyCode", initialAuthState.companyCode);
-    data.append("unitCode", initialAuthState.unitCode);
+    const payload={id:vehicleId,companyCode:initialAuthState.companyCode,unitCode:initialAuthState.unitCode}
+  
   
     try {
-      const res=await ApiService.post(`/VehicleType/deleteVehicleTypeDetails`,data
-        );
+      const res = await ApiService.post(
+        `/VehicleType/deleteVehicleTypeDetails`,
+        payload
+      );
         if(res.status){
           alert("Vehicle deleted successfully!");
       fetchVehicles();
