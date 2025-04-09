@@ -304,18 +304,19 @@ const CeoBackendSupportHome = () => {
 
   const [workDetailsState, setWorkDetailsState] = useState(workDetails);
 
-  const handleStatusClick = (index) => {
-    setWorkDetailsState((prev) =>
-      prev.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              status: item.status === 'install' ? 'accept' : item.status,
-            }
-          : item
-      )
-    );
-  };
+  // const handleStatusClick = (index) => {
+  //   setWorkDetailsState((prev) =>
+  //     prev.map((item, i) =>
+  //       i === index
+  //         ? {
+  //             ...item,
+  //             workStatus:
+  //               item.workStatus === 'install' ? 'accept' : item.status,
+  //           }
+  //         : item
+  //     )
+  //   );
+  // };
 
   return (
     <div className="p-6">
@@ -420,7 +421,7 @@ const CeoBackendSupportHome = () => {
                       activate: 'bg-white-50 border-green-300',
                       pending: 'bg-white-50 border-orange-300',
                       completed: 'bg-white-100 border-gray-300',
-                    }[card.status] || 'bg-white border-gray-200';
+                    }[card.workStatus] || 'bg-white border-gray-200';
 
                   // Dynamic status button color
                   const statusButtonColor =
@@ -430,7 +431,7 @@ const CeoBackendSupportHome = () => {
                       activate: 'bg-green-100 text-green-800',
                       pending: 'bg-orange-100 text-orange-800',
                       completed: 'bg-gray-300 text-gray-700',
-                    }[card.status] || 'bg-gray-100 text-gray-700';
+                    }[card.workStatus] || 'bg-gray-100 text-gray-700';
 
                   return (
                     <div
@@ -443,10 +444,13 @@ const CeoBackendSupportHome = () => {
                           {/* Header */}
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-sm font-semibold text-gray-700">
-                              ID: {card.id}
+                              ID: {card.technicianNumber}
                             </span>
                             <span className="text-sm text-gray-500">
-                              Duration: 2h 34m
+                              Duration
+                              {card.startDate
+                                ? `${calculateDuration(card.startDate, card.endDate)}`
+                                : ''}
                             </span>
                           </div>
 
@@ -465,23 +469,38 @@ const CeoBackendSupportHome = () => {
                           {/* Status Button */}
                           <div className="mb-2">
                             <button
-                              onClick={() => handleStatusClick(i)}
+                              onClick={() => {
+                                let nextStatus;
+                                if (card.workStatus === 'install')
+                                  nextStatus = 'accept';
+                                else if (card.workStatus === 'accept')
+                                  nextStatus = 'activate';
+                                else nextStatus = card.workStatus;
+
+                                // handleStatusChange(card, nextStatus);
+                              }}
                               className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
                             >
-                              {card.status === 'install'
+                              {card?.workStatus === 'install'
                                 ? 'In Progress'
-                                : card.status === 'accept'
+                                : card?.workStatus === 'accept'
                                   ? 'Activate'
-                                  : card.status === 'activate'
+                                  : card?.workStatus === 'activate'
                                     ? 'Activated'
-                                    : card.status.charAt(0).toUpperCase() +
-                                      card.status.slice(1)}
+                                    : card?.workStatus
+                                      ? card.workStatus
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                        card.workStatus.slice(1)
+                                      : 'Unknown'}
                             </button>
                           </div>
 
                           {/* Footer */}
                           <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                            <p>{card.date}</p>
+                            {card.startDate
+                              ? convertToIST(card.startDate)
+                              : '-'}
                             <button
                               onClick={() =>
                                 navigate('/work-view-details', {

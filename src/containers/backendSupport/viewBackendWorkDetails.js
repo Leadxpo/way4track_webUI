@@ -9,6 +9,16 @@ const ViewBackendWorkDetails = () => {
   const [workRecord, setWorkRecord] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedRecord, setEditedRecord] = useState(null);
+  const [newRemark, setNewRemark] = useState('');
+
+  const [remarks, setRemarks] = useState(null);
+
+  const userId = localStorage.getItem('userId');
+  const userProfile = localStorage.getItem('userProfile');
+
+  const parsedProfile = JSON.parse(userProfile);
+  const userName = parsedProfile?.data?.name;
+  console.log(remarks, 'remarks');
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -32,6 +42,7 @@ const ViewBackendWorkDetails = () => {
           console.log('API Response:', response.data);
           setWorkRecord(response.data);
           setEditedRecord(response.data);
+          setRemarks(response.data.remark);
         } else {
           console.error('API responded with no data');
           setWorkRecord(null);
@@ -126,6 +137,54 @@ const ViewBackendWorkDetails = () => {
         workRecord.vehiclePhoto4,
       ].filter(Boolean)
     : [];
+
+  const handleSend = async () => {
+    if (newRemark.trim() === '') return;
+
+    // const remarkData = {
+    //   message: newRemark,
+    //   by: 'admin',
+    //   timestamp: new Date().toLocaleString(),
+    // };
+
+    try {
+      console.log('Fetching work details for ID:', workRecord.id);
+
+      // Combine previous remarks with the new one
+      const updatedRemarks = [
+        ...(remarks || []), // existing remarks (fallback to empty array if null)
+        {
+          staffId: userId,
+          name: userName,
+          date: new Date(),
+          desc: newRemark,
+        },
+      ];
+
+      const response = await ApiService.post(
+        '/technician/handleTechnicianDetails',
+        {
+          id: workRecord.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          remark: updatedRemarks, // send combined remarks
+        }
+      );
+
+      if (response?.data) {
+        alert('Sent successfully');
+        setRemarks(updatedRemarks); // update the state after sending
+      } else {
+        console.error('API responded with error');
+      }
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setWorkRecord(null);
+    }
+
+    // onSendRemark(remarkData); // Call parent function or update state
+    setNewRemark('');
+  };
 
   return (
     <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg">
@@ -319,28 +378,46 @@ const ViewBackendWorkDetails = () => {
 
             {/* Scrollable Chat Area */}
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
-              {remarks.map((remark, index) => (
-                <div
-                  key={index}
-                  className={`flex flex-col ${
-                    remark.by === 'admin' ? 'items-end' : 'items-start'
-                  }`}
-                >
+              {remarks.map((remark, index) => {
+                const isLoggedInUser = remark.name === userName;
+
+                return (
                   <div
-                    className={`rounded-lg p-3 max-w-[75%] shadow ${
-                      remark.by === 'admin'
-                        ? 'bg-blue-100 text-blue-900'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
+                    key={index}
+                    className={`flex flex-col ${isLoggedInUser ? 'items-end' : 'items-start'}`}
                   >
-                    <p className="text-sm">{remark.message}</p>
+                    <div
+                      className={`rounded-lg p-3 max-w-[75%] shadow ${
+                        isLoggedInUser
+                          ? 'bg-blue-100 text-blue-900'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      <p className="text-sm">{remark.desc}</p>
+                    </div>
+                    <span className="text-xs text-gray-500 mt-1">
+                      {remark.name} • {new Date(remark.date).toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-xs text-gray-500 mt-1">
-                    {remark.by} • {remark.timestamp}
-                    {/* {remark.timestamp} */}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
+            </div>
+
+            {/* Input and Send Button */}
+            <div className="flex items-center gap-3 mt-4">
+              <input
+                type="text"
+                className="border rounded w-full p-2 text-sm"
+                placeholder="Enter your remark..."
+                value={newRemark}
+                onChange={(e) => setNewRemark(e.target.value)}
+              />
+              <button
+                onClick={handleSend}
+                className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
@@ -373,33 +450,33 @@ const ViewBackendWorkDetails = () => {
 //     }
 //   };
 
-const remarks = [
-  {
-    by: 'admin',
-    message: 'Installation has been scheduled for tomorrow morning.',
-    timestamp: '2025-04-06 09:15 AM',
-  },
-  {
-    by: 'user',
-    message: 'Okay, I will be available at the venue by 9:00 AM.',
-    timestamp: '2025-04-06 09:20 AM',
-  },
-  {
-    by: 'admin',
-    message: 'Please ensure the power supply is ready.',
-    timestamp: '2025-04-06 09:22 AM',
-  },
-  {
-    by: 'user',
-    message: 'Yes, everything will be arranged beforehand.',
-    timestamp: '2025-04-06 09:25 AM',
-  },
-  {
-    by: 'admin',
-    message: 'Great. Let me know once it’s done.',
-    timestamp: '2025-04-06 09:30 AM',
-  },
-];
+// const remarks = [
+//   {
+//     by: 'admin',
+//     message: 'Installation has been scheduled for tomorrow morning.',
+//     timestamp: '2025-04-06 09:15 AM',
+//   },
+//   {
+//     by: 'user',
+//     message: 'Okay, I will be available at the venue by 9:00 AM.',
+//     timestamp: '2025-04-06 09:20 AM',
+//   },
+//   {
+//     by: 'admin',
+//     message: 'Please ensure the power supply is ready.',
+//     timestamp: '2025-04-06 09:22 AM',
+//   },
+//   {
+//     by: 'user',
+//     message: 'Yes, everything will be arranged beforehand.',
+//     timestamp: '2025-04-06 09:25 AM',
+//   },
+//   {
+//     by: 'admin',
+//     message: 'Great. Let me know once it’s done.',
+//     timestamp: '2025-04-06 09:30 AM',
+//   },
+// ];
 
 const Section = ({ title, children }) => (
   <div className="mb-6 p-4 bg-white rounded-lg shadow-md border">
