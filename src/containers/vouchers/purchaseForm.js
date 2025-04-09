@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 const PurchaseForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [ledger,setLedger] =useState([
-   
-  ]);
-  
-  
-  
-
+  const location = useLocation();
+  const { selectedBranch } = location?.state || {};
+  console.log("+++++===== selectedBranch purchase",selectedBranch)
+  const [ledger,setLedger] =useState([]);
+  console.log("ledger leadger",ledger)
   const [formData, setFormData] = useState(
     {date:"",
       day:"",
-      partyName: "", //clientId
+      partyName: "", 
+      ledgerId:"",
       voucherType:"PURCHASE",
       supplierInvoiceNumber:"",
       supplierLocation:"",
@@ -26,17 +25,11 @@ const PurchaseForm = () => {
         totalCost: null,
        }],
        purpose:""
-      // invoices,
-      // entries,
-      // amount,
-      // balanceAmount,
-      // description,
-      // paymentMode,
 
     }
   );
  
-  console.log("++++++====ramesh",formData);
+console.log("formDataformDataformDataformDataformData",formData)
 
   const taxData = [
     { name: 'CGST', percent: '9%' },
@@ -53,6 +46,22 @@ const PurchaseForm = () => {
       [name]: value,
     }));
   };
+
+  const handleLedgerChange = (e) => {
+  const selectedId = Number(e.target.value); // Convert string to number
+
+  const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+
+  if (selectedLedger) {
+    setFormData((prev) => ({
+      ...prev,
+      partyName: selectedLedger.name,
+      ledgerId: selectedLedger.id
+    }));
+  }
+};
+
+  
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -164,9 +173,6 @@ const PurchaseForm = () => {
     }));
   };
 
-  
-
-
   const totalAmount = formData.productDetails.reduce((acc, item) => {
     return acc + (parseFloat(item.totalCost) || 0);
   }, 0);
@@ -208,11 +214,13 @@ const PurchaseForm = () => {
 
     payload.append('date', formData.date);
     payload.append('day', formData.day);
-    payload.append('partyName', formData.partyName);
+    // payload.append('branchId', Number(selectedBranch?.branchId));
+    payload.append('ledgerId', Number(formData?.ledgerId));
     payload.append('voucherType', formData.voucherType);
     payload.append('supplierInvoiceNumber', formData.supplierInvoiceNumber);
     payload.append('supplierLocation', formData.supplierLocation);
     payload.append('purchaseGst', formData.purchaseGst);
+    payload.append('productDetails', formData.productDetails);
     payload.append('purpose', formData.purpose);
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
@@ -348,8 +356,6 @@ const PurchaseForm = () => {
         <input
           type="text"
           placeholder="Day:"
-
-
           name="day"
           value={formData.day}
           className="w-full border rounded p-2"
@@ -368,7 +374,7 @@ const PurchaseForm = () => {
 
       <select
         value={formData.partyName}
-        onChange={handleInputChange}
+        onChange={handleLedgerChange}
         name="partyName"
         className="w-full border rounded p-2"
         style={{
@@ -384,7 +390,7 @@ const PurchaseForm = () => {
       >
         <option value="">Select Party Name</option>
         {ledger?.map((party) => (
-          <option key={party.clientId} value={party.name}>
+          <option key={party.clientId} value={party.id}>
             {party.name}
           </option>
         ))}

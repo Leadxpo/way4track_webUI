@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const DebitNoteForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
-
+  const [bankAccount,setBankAccount] =useState([
+     
+    ]);
+  const { selectedBranch } = location?.state || {};
+  console.log("+++++===== selectedBranch purchase",selectedBranch)
   const taxData = [
     { name: 'CGST', percent: '9%', amount: '10,5000' },
     { name: 'SGST', percent: '9%', amount: '10,5000' },
@@ -35,6 +41,19 @@ const DebitNoteForm = () => {
     { invoice: '', amount: '', paid: '', remaining: '' },
   ]);
 
+    const [formData, setFormData] = useState(
+      {date:"",
+        day:"",
+        partyName: "", 
+        bankAccountNumber:"",
+        saleId:"",
+        amount:"",
+        voucherType:"DEBITNOTE",
+        purpose:""
+  
+      }
+    );
+
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [bank, setBank] = useState('');
@@ -42,10 +61,7 @@ const DebitNoteForm = () => {
   const [date, setDate] = useState('');
   const [day, setDay] = useState('');
   const [partyName, setPartyName] = useState('');
-  const [purchaseLedger, setPurchaseLedger] = useState('');
-  const [supplierInvoice, setSupplierInvoice] = useState('');
-  const [supplierLocation, setSupplierLocation] = useState('');
-  const [purchaseGST, setPurchaseGST] = useState('');
+
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [paymentType, setPaymentType] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -79,23 +95,27 @@ const DebitNoteForm = () => {
     setIsPopupOpen(false);
   };
 
-  const handleAddEntry = () => {
-    setEntries([
-      ...entries,
-      { invoice: '', amount: '', paid: '', remaining: '' },
-    ]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleRemoveEntry = (indexToRemove) => {
-    setEntries((prevEntries) =>
-      prevEntries.filter((_, index) => index !== indexToRemove)
-    );
-  };
-
-  const handleEntryChange = (index, field, value) => {
-    const updatedEntries = [...entries];
-    updatedEntries[index][field] = value;
-    setEntries(updatedEntries);
+  const handleDateChange = (e) => {
+    const value = e.target.value;
+  
+    const dayName = new Date(value).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+  
+    setFormData((prev) => ({
+      ...prev,
+      date: value,
+      day: dayName, 
+    }));
   };
 
   const handleItemClick = (item) => {
@@ -103,34 +123,66 @@ const DebitNoteForm = () => {
     // navigate('/receipt-form')
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const formData = {
-      date,
-      day,
-      bank,
-      partyName: 'Customer',
-      invoices,
-      entries,
-      amount,
-      balanceAmount,
-      description,
-      paymentMode,
+  useEffect(() => {
+    const fetchBankAccounts = async () => {
+      try {
+        const response = await ApiService.post(
+          '/account/getAccountsDetails'
+                    
+                  
+        );
+        console.log("setBankAccount222",response)
+        if (response.status) {
+          
+          setBankAccount(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch accounts');
+        }
+      } catch (error) {
+        console.error('Error fetching accounts:', error);
+      }
     };
 
-    console.log('Form Data to Submit:', formData);
+    fetchBankAccounts();
+  }, []);
 
-    // Here you can POST the data to an API:
-    // fetch('/api/submit-purchase', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // })
-    // .then(res => res.json())
-    // .then(data => console.log(data))
-    // .catch(err => console.error(err));
-  };
+   const handleSubmit = async (e) => {
+     e.preventDefault(); 
+     const payload = new FormData();
+ 
+     payload.append('date', formData.date);
+     payload.append('day', formData.day);
+     payload.append('partyName', formData.partyName);
+  
+     payload.append('bankAccountNumber', formData.bankAccountNumber);
+     payload.append('saleId', formData.saleId);
+     payload.append('amount', formData.amount);
+     payload.append('voucherType', formData.voucherType);
+     payload.append('purpose', formData.purpose);
+
+     payload.append('companyCode', initialAuthState.companyCode);
+     payload.append('unitCode', initialAuthState.unitCode);
+     
+ 
+     try {
+       const endpoint = '/voucher/saveVoucher';
+       const response = await ApiService.post(endpoint, payload, {
+         headers: { 'Content-Type': 'multipart/form-data' },
+       });
+ 
+       if (response.status) {
+         alert('Debit note voucher created successfully!');
+         return response.data;
+       } else {
+         alert('Failed to create Debit note voucher details.');
+         return null;
+       }
+     } catch (error) {
+       console.error('Error create Debit note voucher details:', error);
+       alert('An error occurred while create Debit note voucher details.');
+       return null;
+     }
+   };
 
   return (
     <form
@@ -221,8 +273,10 @@ const DebitNoteForm = () => {
         <input
           type="date"
           placeholder="Date:"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={formData.date}
+          name="date"
+
+          onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -235,13 +289,12 @@ const DebitNoteForm = () => {
             fontWeight: '500',
           }}
         />
-
         {/* <label className="block">Day:</label> */}
         <input
           type="text"
           placeholder="Day:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          name="day"
+          value={formData.day}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -257,9 +310,10 @@ const DebitNoteForm = () => {
 
         <input
           type="text"
+          name="partyName"
           placeholder="Party Name"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
+          value={formData.partyName}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -272,12 +326,37 @@ const DebitNoteForm = () => {
             fontWeight: '500',
           }}
         />
+
+<select
+        value={formData.bankAccountNumber}
+        onChange={handleInputChange}
+        name="bankAccountNumber"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Bank Name</option>
+        {bankAccount?.map((account) => (
+          <option key={account.id} value={account.accountNumber}>
+            {`${account.name} (${account.accountNumber})`}
+          </option>
+        ))}
+      </select>
 
         <input
           type="text"
-          placeholder="Ledger Account"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
+          name="saleId"
+          placeholder="Sale ID:"
+          value={formData.saleId}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -291,11 +370,12 @@ const DebitNoteForm = () => {
           }}
         />
 
-        <input
+        {/* <input
           type="text"
-          placeholder="Purchase ID:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          placeholder="Name of the Product:"
+          name="productName"
+          value={formData.productName}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -307,31 +387,14 @@ const DebitNoteForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
 
-        <input
-          type="text"
-          placeholder="Name of the item:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
-
-        <input
+        {/* <input
           type="text"
           placeholder="Quantity:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          name="quantity"
+          value={formData.quantity}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -343,13 +406,14 @@ const DebitNoteForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
 
-        <input
+        {/* <input
           type="text"
           placeholder="Rate:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          name="rate"
+          value={formData.rate}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -361,13 +425,14 @@ const DebitNoteForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
 
         <input
           type="text"
           placeholder="Amount:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          name="amount"
+          value={formData.amount}
+          onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -384,31 +449,22 @@ const DebitNoteForm = () => {
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
-        <label className="block">Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className=""
-          rows="3"
-        />
-      </div>
+  <label className="block mb-1 font-medium">Description:</label>
+  <textarea
+  name="purpose"
+    value={formData.purpose}
+    onChange={handleInputChange}
+    className="w-full border rounded p-2"
+    rows="3"
+    placeholder="Enter description or notes..."
+  />
+</div>
 
-      {/* Payment Mode */}
-      {/* <div
-        className="mt-2 font-bold cursor-pointer flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-100"
-        onClick={() => setShowPaymentPopup(!showPaymentPopup)}
-        style={{ marginBottom: '30px', height: '50px' }}
-      >
-        Payment Mode :
-        <span className="text-xs ml-2">{showPaymentPopup ? '▾' : '▸'}</span>
-      </div> */}
 
-      {/* Payment Popup */}
-      {showPaymentPopup && (
+
+      {/* {showPaymentPopup && (
         <div className="border border-gray-300 rounded-lg p-4 mt-2 bg-white">
-          <p className="font-bold mb-2">Select Payment Type</p>
 
-          {/* Payment Options */}
           <div className="flex gap-2 mb-4">
             {['Cash', 'UPI', 'Check', 'Card'].map((type) => (
               <button
@@ -425,8 +481,6 @@ const DebitNoteForm = () => {
               </button>
             ))}
           </div>
-
-          {/* Conditional Fields */}
           <div
             className="space-y-3"
             style={{
@@ -442,13 +496,7 @@ const DebitNoteForm = () => {
                 className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
                 style={{ marginLeft: '0px' }}
               >
-                {/* <label className="block mb-1">
-                  {paymentType === 'UPI'
-                    ? 'UPI ID'
-                    : paymentType === 'Check'
-                      ? 'Check ID'
-                      : 'Card ID'}
-                </label> */}
+                
                 <input
                   type="text"
                   placeholder={`${
@@ -464,7 +512,6 @@ const DebitNoteForm = () => {
               </div>
             )}
 
-            {/* Amount Field (visible for all) */}
             <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">
               <input
                 type="text"
@@ -473,7 +520,13 @@ const DebitNoteForm = () => {
               />
             </div>
           </div>
-          <div className="mt-6 text-center">
+          
+        </div>
+      )} */}
+
+      {/* Submit Button */}
+
+      <div className="mt-6 text-center">
             <button
               type="submit"
               className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
@@ -481,10 +534,6 @@ const DebitNoteForm = () => {
               Submit
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Submit Button */}
     </form>
   );
 };
