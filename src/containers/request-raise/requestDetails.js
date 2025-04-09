@@ -7,7 +7,7 @@ const RequestDetails = () => {
   const navigate = useNavigate();
 
   const requestData = location.state?.requestDetails || {};
-  console.log("requestData ramesh", requestData)
+
 
 
   const [formData, setFormData] = useState({
