@@ -10,4 +10,7 @@ module.exports = {
   corePlugins: {
     scrollbar: false, // Disable default scrollbars
   },
+
+
+  
 };

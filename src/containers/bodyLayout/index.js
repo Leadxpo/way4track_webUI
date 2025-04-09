@@ -34,6 +34,8 @@ import VendorProfile from '../vendors/vendorProfile';
 import SubDealers from '../sub-dealers';
 import DeleteSubDealer from '../sub-dealers/deleteSubDealer';
 import SubDealerDetails from '../sub-dealers/subDealerDetails';
+// import SubDealerStaff from '../sub-dealers/subDelarStaff';
+
 import DayBook from '../day-book';
 import Ledger from '../ledger';
 import LedgerDetails from '../ledger/ledgerDetails';
@@ -137,9 +139,12 @@ import AddService from '../service/AddService';
 import EditService from '../service/EditService';
 import EditVehicle from '../vehicle/EditVehicle';
 import AddVehicle from '../vehicle/AddVehicle';
+import ReportAccount from '../reports/accountent';
+import Groups from '../groups/index';
+import AddGroups from '../groups/addGroup';
+import AddLedger from '../ledger/addLedger';
 import AddRequestRaise from '../request-raise/AddRequestRaise';
 import EditRequestRaise from '../request-raise/EditRequestRaise';
-
 import PurchaseForm from '../vouchers/purchaseForm';
 import PaymentForm from '../vouchers/paymentForm';
 import SaleForm from '../vouchers/saleForm';
@@ -148,6 +153,9 @@ import ContraForm from '../vouchers/contraForm';
 import JournalForm from '../vouchers/journalForm';
 import DebitNoteForm from '../vouchers/debitNote';
 import CreditNoteForm from '../vouchers/creditNote';
+import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
+import SubDelarStaff from '../sub-dealers/subDelarStaff';
+
 
 
 const BodyLayout = ({ children }) => {
@@ -439,6 +447,9 @@ const BodyLayout = ({ children }) => {
             element={<CreateWorkAllocation />}
           />
           <Route path="/select-branch" element={<SelectBranch />} />
+          <Route path="/receipt-form" element={<ReceiptForm />} />
+          <Route path="/report-account" element={<ReportAccount />} />
+
           <Route path="/forms/Purchase" element={<PurchaseForm />} />
           <Route path="/forms/Payments" element={<PaymentForm />} />
           <Route path="/forms/Sale" element={<SaleForm />} />
@@ -554,7 +565,17 @@ const BodyLayout = ({ children }) => {
             element={<FilteredWorkStatusDetails />}
           />
 
+<Route path="/groups" element={<Groups />} />
+<Route path="/add-groups" element={<AddGroups />} />
+<Route path="/more-details-groups" element={<moreDetailsGroups />} />
+<Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
+
+
+          
+
           <Route path="/add-designation" element={<AddDesignation />} />
+          <Route path="/add-ledger" element={<AddLedger />} />
+
 
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />

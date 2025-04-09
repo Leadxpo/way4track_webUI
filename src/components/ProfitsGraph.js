@@ -78,11 +78,8 @@ import {
 } from 'recharts';
 
 const ProfitsGraph = ({ branchData }) => {
-  console.log(branchData);
-  // Calculate average profit safely
   const averageProfit = () => {
-    if (!branchData?.data?.length) return '0.00'; // Handle empty data safely
-
+    if (!branchData?.data?.length) return '0.00';
     return (
       branchData.data.reduce(
         (acc, item) => acc + Number(item.profitorLoss),
@@ -92,52 +89,70 @@ const ProfitsGraph = ({ branchData }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg w-full transition-transform duration-300 transform hover:-translate-y-1 mt-6 gap-4 p-4">
-      {/* Graph Section with Scroll */}
+    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 w-[340px] min-w-[320px] max-w-[400px] p-4">
+      {/* Chart with Gradient Background */}
       <div
-        className="rounded-xl flex justify-center items-center p-2"
-        style={{ background: branchData.background }}
+        className="rounded-xl p-4"
+        style={{
+          background: branchData.background,
+        }}
       >
-        <div className="overflow-x-auto w-full">
-          <ResponsiveContainer width={branchData.data.length * 60} height={220}>
+        <div className="overflow-x-auto">
+          <ResponsiveContainer width="100%" height={220}>
             <LineChart data={branchData.data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="white" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
               <XAxis
                 dataKey="month"
-                tick={{ fill: 'white', fontSize: 12 }}
+                tick={{ fill: '#fff', fontSize: 12 }}
                 axisLine={{ stroke: 'white' }}
                 tickLine={false}
-                angle={-45} // Rotates month labels
-                dy={10} // Adjusts label position
+                angle={-35}
+                dy={10}
               />
               <YAxis
-                tick={{ fill: 'white', fontSize: 12 }}
+                tick={{ fill: '#fff', fontSize: 12 }}
                 axisLine={{ stroke: 'white' }}
-                tickFormatter={(value) => `${value}%`} // Adds % to Y-axis values
+                tickLine={false}
+                tickFormatter={(value) => `${value}%`}
               />
               <Tooltip
                 contentStyle={{
                   backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  color: 'white',
+                  borderRadius: '8px',
+                  border: 'none',
                 }}
-                formatter={(value) => [`${value}%`, 'Profit/Loss']} // Shows profit/loss % in tooltip
+                labelStyle={{ color: 'white' }}
+                itemStyle={{ color: 'white' }}
+                formatter={(value) => [`${value}%`, 'Profit/Loss']}
               />
               <Line
                 type="monotone"
                 dataKey="profitorLoss"
-                stroke="white"
-                strokeWidth={2}
-                dot={{ r: 4 }}
+                stroke="#ffffff"
+                strokeWidth={3}
+                dot={{ r: 4, stroke: '#fff', strokeWidth: 2, fill: '#ffffff' }}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Location and Profit Section */}
-      <div className="text-left mt-4">
-        <h3 className="text-lg font-semibold">{branchData.branch}</h3>
-        <p className="text-gray-500">Average Profit/Loss: {averageProfit()}%</p>
+      {/* Info Below Graph */}
+      <div className="mt-4 px-2">
+        <h3 className="text-lg font-bold text-gray-800">{branchData.branch}</h3>
+        <p className="text-sm text-gray-500">
+          Average Profit/Loss:{' '}
+          <span
+            className={
+              Number(averageProfit()) >= 0
+                ? 'text-green-600 font-semibold'
+                : 'text-red-600 font-semibold'
+            }
+          >
+            {averageProfit()}%
+          </span>
+        </p>
       </div>
     </div>
   );

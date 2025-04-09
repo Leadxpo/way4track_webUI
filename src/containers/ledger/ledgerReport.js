@@ -13,7 +13,7 @@ const LedgerReport = () => {
     useEffect(() => {
         const getLedgerReportDataForReport = async () => {
             try {
-                const response = await ApiService.post('/dashboards/getLedgerDataForReport', {
+                const response = await ApiService.post('ledger/getLedgerDetailsById', {
                     fromDate: ledger?.generationDate,
                     toDate: ledger?.generationDate,
                     clientName: ledger?.clientName,

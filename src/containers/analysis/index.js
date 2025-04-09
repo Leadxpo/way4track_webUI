@@ -17,7 +17,7 @@ const Analysis = () => {
   const getProductTypeCreditAndDebitPercentages = async () => {
     try {
       const response = await ApiService.post(
-        '/dashboards/getProductTypeCreditAndDebitPercentages',
+        '/dashboards/getBranchWiseYearlySales',
         {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,

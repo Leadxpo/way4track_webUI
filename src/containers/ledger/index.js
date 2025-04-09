@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaPlus ,FaFileExcel} from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
+import * as XLSX from "xlsx";
+import { data } from 'autoprefixer';
+
 
 const Ledger = () => {
   const navigate = useNavigate();
@@ -18,6 +21,10 @@ const Ledger = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [client, setClient] = useState([]);
+ const [previewData, setPreviewData] = useState([]);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
@@ -44,6 +51,12 @@ const Ledger = () => {
     fetchClients();
   }, []);
 
+
+
+  const handleExcelDownload = () => {
+    console.log('Downloading Excel...');
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchData((prev) => ({
@@ -61,7 +74,7 @@ const Ledger = () => {
         clientId: Number(searchData.client),
         clientName: searchData.clientName,
       };
-      const response = await ApiService.post('/dashboards/getLedgerDataTable', {
+      const response = await ApiService.post('ledger/getLedgerDataTable', {
         ...payload,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -99,6 +112,58 @@ const Ledger = () => {
     });
   };
 
+const handlePreview = () => {
+    if (columns.length === 0) {
+      alert("No group data available to preview.");
+      return;
+    }
+
+    const formattedData = formatProductExcelData(columns);
+    setPreviewData(formattedData);
+    setIsPreviewOpen(true);
+  };
+
+  const formatProductExcelData = (columns) => {
+    return columns.map((item) => ({
+      "Ledger Group": item.group,
+      "Ledger Name": item.name,
+      "State": item.state,
+      "Contry": item.country,
+      "PAN Number": item.panNumber,
+      "Id": item.clientId,
+      "Registration Type": item.registrationType,
+      "GST UIN Number": item.gstUinNumber,
+
+
+    }));
+  };
+
+  const handleDownload = () => {
+    if (!previewData || previewData.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(previewData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Group_Data");
+      XLSX.writeFile(workbook, "Filtered_Groups.xlsx");
+
+      setIsPreviewOpen(false);
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
+  };
+
+
+
+
+
+
+
+
   useEffect(() => {
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,60 +171,29 @@ const Ledger = () => {
 
   return (
     <div className="p-8 space-y-6">
+       <div className="flex justify-between mb-4">
       <h1 className="text-2xl font-bold">Ledger</h1>
-
-      {/* Search Section */}
-      <div className="flex mb-4">
-        <div className="flex-grow mr-2">
-          <input
-            type="text"
-            name="clientId"
-            placeholder="Search with ID"
-            value={searchData.clientId}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        <div className="flex-grow mx-2">
-          <input
-            type="text"
-            name="clientName"
-            placeholder="Search with Name"
-            value={searchData.clientName}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        {client.length > 0 && (
-          <div className="space-y-4">
-            <div>
-              <select
-                name="client"
-                value={searchData.client}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select a Client
-                </option>
-                {client.map((cl) => (
-                  <option key={cl.id} value={cl.id}>
-                    {cl.clientId}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
         <button
-          onClick={handleSearch}
-          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          className="bg-yellow-400 text-black px-5 py-2 rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
+          onClick={() => navigate('/add-ledger')}
         >
-          <FaSearch className="mr-2" /> Search
+          <FaPlus /> Create Ledger
         </button>
-      </div>
+        </div>
+      {/* Search Section */}
+     
+       
+        <div className=" flex justify-end ">
+        <button
+                  className="w-52 text-left p-2 bg-green-600 text-white hover:bg-green-700 cursor-pointer flex items-center gap-2 rounded"
+                  onClick={handlePreview}
+                >
+                  <FaFileExcel className="text-white" /> Excel Download
+                </button>
+        </div>
+   
+
+           
 
       {/* Loading and Error Messages */}
       {loading && <p className="text-blue-500">Loading...</p>}
@@ -208,6 +242,54 @@ const Ledger = () => {
           )
         )}
       </div>
+
+
+
+      {isPreviewOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+            <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
+            <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
+              <table className="min-w-full border">
+                <thead className="bg-gray-200 text-gray-700">
+                  <tr>
+                    {Object.keys(previewData[0]).map((key, index) => (
+                      <th key={index} className="p-2 text-left border">{key}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewData.map((row, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                      {Object.values(row).map((value, i) => (
+                        <td key={i} className="p-2 border">{value}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Download Excel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+
     </div>
   );
 };
