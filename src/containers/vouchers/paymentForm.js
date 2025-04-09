@@ -8,11 +8,24 @@ const PaymentForm = () => {
   const { id } = useParams();
   const location = useLocation();
     const { selectedBranch } = location.state || {};
-
-    console.log("Selected Branch Object:jjj", selectedBranch);
 const [ledger,setLedger] =useState([
    
   ]);
+  const [bankAccount,setBankAccount] =useState([
+   
+  ]);
+
+  const handleIdChange = (e) => {
+    const value = e.target.value;
+  
+    if (paymentType === 'UPI') {
+      setFormData((prev) => ({ ...prev, upiId: value }));
+    } else if (paymentType === 'Cheque') {
+      setFormData((prev) => ({ ...prev, checkNumber: value }));
+    } else if (paymentType === 'Card') {
+      setFormData((prev) => ({ ...prev, cardNumber: value }));
+    }
+  };
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -31,24 +44,17 @@ const [ledger,setLedger] =useState([
     const [formData, setFormData] = useState(
       {date:"",
         day:"",
-        partyName: "", //clientId
-        voucherType:"PURCHASE",
-        supplierInvoiceNumber:"",
-        supplierLocation:"",
-        purchaseGst:"",
-        productDetails:[{productName: "",
-          quantity: null,
-          rate: null,
-          totalCost: null,
-         }],
-         purpose:""
-        // invoices,
-        // entries,
-        // amount,
-        // balanceAmount,
-        // description,
-        // paymentMode,
-  
+        bankAccountNumber:"",
+        voucherType:"PAYMENT",
+         purpose:"",
+         pendingInvoices:[{invoiceId:"",
+          paidAmount: null,
+          amount: null,
+          reminigAmount: null}],
+          upiId:"",
+        checkNumber:"",
+        cardNumber:"",
+        amountPaid:null
       }
     );
 
@@ -134,9 +140,13 @@ const [ledger,setLedger] =useState([
   const handleAddEntry = () => {
     setFormData((prevData) => ({
       ...prevData,
-      productDetails: [
-        ...prevData.productDetails,
-        { productName: "", quantity: null, rate: null, totalCost: null }
+      
+      pendingInvoices: [
+        ...prevData.pendingInvoices,
+        {invoiceId:"",
+          paidAmount: null,
+          amount: null,
+          reminigAmount: null}
       ]
     }));
   };
@@ -144,41 +154,72 @@ const [ledger,setLedger] =useState([
   const handleRemoveEntry = (indexToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
-      productDetails: prevData.productDetails.filter((_, index) => index !== indexToRemove),
+      pendingInvoices: prevData.pendingInvoices.filter((_, index) => index !== indexToRemove),
     }));
   };
 
   const handleEntryChange = (index, field, value) => {
-    const updatedEntries = [...entries];
-    updatedEntries[index][field] = value;
-    setEntries(updatedEntries);
+    const updatedInvoices = [...formData.pendingInvoices];
+    updatedInvoices[index][field] = value;
+  
+    const amount = parseFloat(updatedInvoices[index].amount) || 0;
+    const paidAmount = parseFloat(updatedInvoices[index].paidAmount) || 0;
+  
+    updatedInvoices[index].reminigAmount = (amount - paidAmount).toFixed(2);
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      pendingInvoices: updatedInvoices,
+    }));
   };
+  
 
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`);
-    // navigate('/receipt-form')
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    const formData = {
-      date,
-      day,
-      bank,
-      partyName: 'Customer',
-      invoices,
-      entries,
-      amount,
-      balanceAmount,
-      description,
-      paymentMode,
+    const handleSubmit = async (e) => {
+      e.preventDefault(); 
+      console.log("qqqqqqqq",formData)
+      const payload = new FormData();
+  
+      payload.append('date', formData.date);
+      payload.append('day', formData.day);
+      payload.append('bankAccountNumber', formData.bankAccountNumber);
+      payload.append('pendingInvoices', formData.pendingInvoices);
+      payload.append('purpose', formData.purpose);
+
+      // payload.append('branchId', Number(selectedBranch?.branchId));
+      payload.append('voucherType', formData.voucherType);
+      payload.append('paymentType', paymentType.toLowerCase());
+    payload.append('upiId', formData.upiId);
+    payload.append('checkNumber', formData.checkNumber);
+    payload.append('cardNumber', formData.cardNumber);
+    payload.append('amountPaid', Number(formData.amountPaid));
+      payload.append('companyCode', initialAuthState.companyCode);
+      payload.append('unitCode', initialAuthState.unitCode);
+      console.log("qqqqqqqqpayload",payload)
+  
+      try {
+        const endpoint = '/voucher/saveVoucher';
+        const response = await ApiService.post(endpoint, payload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+  
+        if (response.status) {
+          alert('Payment voucher created successfully!');
+          return response.data;
+        } else {
+          alert('Failed to create Payment voucher details.');
+          return null;
+        }
+      } catch (error) {
+        console.error('Error create Payment voucher details:', error);
+        alert('An error occurred while create Payment voucher details.');
+        return null;
+      }
     };
-
-    console.log('Form Data to Submit:', formData);
-
- 
-  };
 
         useEffect(() => {
           const fetchLedgers = async () => {
@@ -201,6 +242,28 @@ const [ledger,setLedger] =useState([
           };
       
           fetchLedgers();
+        }, []);
+        useEffect(() => {
+          const fetchBankAccounts = async () => {
+            try {
+              const response = await ApiService.post(
+                '/account/getAccountsDetails'
+                          
+                        
+              );
+              console.log("setBankAccount222",response)
+              if (response.status) {
+                
+                setBankAccount(response.data); // Set branches to state
+              } else {
+                console.error('Failed to fetch accounts');
+              }
+            } catch (error) {
+              console.error('Error fetching accounts:', error);
+            }
+          };
+      
+          fetchBankAccounts();
         }, []);
 
   return (
@@ -330,23 +393,29 @@ const [ledger,setLedger] =useState([
           }}
         />
 
-        <input
-          type="text"
-          placeholder="Bank Account:"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
+<select
+        value={formData.bankAccountNumber}
+        onChange={handleInputChange}
+        name="bankAccountNumber"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Bank Name</option>
+        {bankAccount?.map((account) => (
+          <option key={account.id} value={account.accountNumber}>
+            {`${account.name} (${account.accountNumber})`}
+          </option>
+        ))}
+      </select>
 
 <select
         value={formData.partyName}
@@ -366,7 +435,7 @@ const [ledger,setLedger] =useState([
       >
         <option value="">Select Party Name</option>
         {ledger?.map((party) => (
-          <option key={party.clientId} value={party.name}>
+          <option key={party.clientId} value={party.id}>
             {party.name}
           </option>
         ))}
@@ -392,7 +461,7 @@ const [ledger,setLedger] =useState([
           +
         </button>
 
-        {entries.map((entry, index) => (
+        {formData?.pendingInvoices?.map((entry, index) => (
           <div
             key={index}
             className="flex items-center mb-2"
@@ -412,9 +481,9 @@ const [ledger,setLedger] =useState([
             >
               <input
                 placeholder="Invoice ID"
-                value={entry.invoice}
+                value={entry.invoiceId}
                 onChange={(e) =>
-                  handleEntryChange(index, 'invoice', e.target.value)
+                  handleEntryChange(index, 'invoiceId', e.target.value)
                 }
                 className="w-1/4 border rounded p-2"
               />
@@ -428,17 +497,17 @@ const [ledger,setLedger] =useState([
               />
               <input
                 placeholder="Paid Amount"
-                value={entry.paid}
+                value={entry.paidAmount}
                 onChange={(e) =>
-                  handleEntryChange(index, 'paid', e.target.value)
+                  handleEntryChange(index, 'paidAmount', e.target.value)
                 }
                 className="w-1/4 border rounded p-2"
               />
               <input
                 placeholder="Remaining Amount"
-                value={entry.remaining}
+                value={entry.reminigAmount}
                 onChange={(e) =>
-                  handleEntryChange(index, 'remaining', e.target.value)
+                  handleEntryChange(index, 'reminigAmount', e.target.value)
                 }
                 className="w-1/4 border rounded p-2"
               />
@@ -475,77 +544,20 @@ const [ledger,setLedger] =useState([
         ))}
       </div>
 
-      {/* Invoices */}
-      <div className="space-y-4">
-        {/* Dropdown at the top */}
-        <div className="mb-4">
-          <label className="mr-2 font-semibold">Select Tax Type:</label>
-          <select
-            value={selectedTaxType}
-            onChange={(e) => setSelectedTaxType(e.target.value)}
-            className="px-3 py-1 border rounded-md"
-          >
-            <option value="CGST">CGST</option>
-            <option value="IGST">IGST</option>
-            <option value="TDS">TDS</option>
-          </select>
-        </div>
 
-        {/* Tax cards */}
-        {filteredTaxData.map((tax, index) => (
-          <div
-            key={tax.name}
-            className="bg-gray-200 rounded-md px-4 py-3 flex justify-between items-center"
-          >
-            <div className="flex flex-col w-full">
-              <div className="flex justify-between items-center">
-                <span className="font-bold">{tax.name}</span>
-                <span className="font-semibold">{tax.percent}</span>
-                <span className="font-semibold">Amount: {tax.amount}</span>
-                <button
-                  onClick={() => toggleDropdown(index)}
-                  className="ml-4 text-gray-700"
-                >
-                  {openIndex === index ? '▲' : '▼'}
-                </button>
-              </div>
-
-              {openIndex === index && (
-                <div className="mt-3 text-sm text-gray-600 border-t pt-2">
-                  {/* Dropdown content */}
-                  <p>More details about {tax.name}...</p>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Amount Section */}
-      {/* <div className="mt-4">
-        <label className="block">Amount:</label>
-        <input
-          type="text"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full border rounded p-2"
-        />
-        <div className="text-blue-600 mt-1">
-          Balance Amount: ₹{balanceAmount.toLocaleString()}/-
-        </div>
-      </div> */}
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
-        <label className="block">Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className=""
-          rows="3"
-        />
-      </div>
-
+  <label className="block mb-1 font-medium">Description:</label>
+  <textarea
+  name="purpose"
+    value={formData.purpose}
+    onChange={handleInputChange}
+    className="w-full border rounded p-2"
+    rows="3"
+    placeholder="Enter description or notes..."
+  />
+</div>
       {/* Payment Mode */}
       <div
         className="mt-2 font-bold cursor-pointer flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-100"
@@ -563,7 +575,7 @@ const [ledger,setLedger] =useState([
 
           {/* Payment Options */}
           <div className="flex gap-2 mb-4">
-            {['Cash', 'UPI', 'Check', 'Card'].map((type) => (
+            {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${
@@ -611,6 +623,7 @@ const [ledger,setLedger] =useState([
                         ? 'Check ID'
                         : 'Card ID'
                   }`}
+                  onChange={handleIdChange}
                   className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
                   style={{ marginTop: '20px' }}
                 />
@@ -620,7 +633,9 @@ const [ledger,setLedger] =useState([
             {/* Amount Field (visible for all) */}
             <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">
               <input
-                type="text"
+                type="number"
+                onChange={handleInputChange}
+                name="amountPaid"
                 placeholder="Enter Amount"
                 className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
               />
