@@ -18,7 +18,7 @@ const ViewBackendWorkDetails = () => {
 
   const parsedProfile = JSON.parse(userProfile);
   const userName = parsedProfile?.data?.name;
-  console.log(remarks, 'remarks');
+  console.log(data, 'remarks');
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -75,6 +75,9 @@ const ViewBackendWorkDetails = () => {
         '/technician/handleTechnicianDetails',
         {
           id: editedRecord.id,
+          staffId: data.staffId,
+          branchId: data.branchId,
+          backSupporterId: data.backSupporterId,
           service: editedRecord.service,
           workStatus: editedRecord.workStatus,
           paymentStatus: editedRecord.paymentStatus,
@@ -378,7 +381,7 @@ const ViewBackendWorkDetails = () => {
 
             {/* Scrollable Chat Area */}
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
-              {remarks.map((remark, index) => {
+              {remarks?.map((remark, index) => {
                 const isLoggedInUser = remark.name === userName;
 
                 return (
