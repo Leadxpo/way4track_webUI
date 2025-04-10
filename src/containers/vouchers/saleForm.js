@@ -6,10 +6,7 @@ const SaleForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const { selectedBranch } = location?.state || {};
-  console.log("+++++===== selectedBranch purchase",selectedBranch)
   const [ledger,setLedger] =useState([]);
-  console.log("ledger leadger",ledger)
   const [formData, setFormData] = useState(
     {date:null,
       day:"",
@@ -252,15 +249,15 @@ const SaleForm = () => {
       });
 
       if (response.status) {
-        alert('Sales voucher created successfully!');
+        alert('Sale voucher created successfully!');
         return response.data;
       } else {
-        alert('Failed to create sales voucher details.');
+        alert('Failed to create sale voucher details.');
         return null;
       }
     } catch (error) {
-      console.error('Error create sales voucher details:', error);
-      alert('An error occurred while create sales voucher details.');
+      console.error('Error create sale voucher details:', error);
+      alert('An error occurred while create sale voucher details.');
       return null;
     }
   };
@@ -286,7 +283,7 @@ const SaleForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Sales
+        Sales
         </h2>
       </div>
 
@@ -630,9 +627,17 @@ const SaleForm = () => {
             <div className="flex flex-col w-full">
               <div className="flex justify-between items-center">
                 <span className="font-bold">{tax.name}</span>
-                <span className="font-semibold">{tax.percent}</span>
+                {/* <span className="font-semibold">{tax.percent}</span> */}
+                <input
+                type="number"
+                placeholder={`${tax.name} Percentage:`}
+                value={formData[tax.name]}
+                name={tax.name}
+                onChange={handleInputChange}
+                className="w-1/4 border rounded p-2"
+              />
                 <span className="font-semibold">
-  Amount: ₹{(totalAmount * (1 + parseFloat(tax.percent || 0) / 100)).toFixed(2)}
+  Amount: ₹{(totalAmount * (1 + parseFloat(formData[tax.name] || 0) / 100)).toFixed(2)}
 </span>       
               </div>
 
@@ -643,7 +648,24 @@ const SaleForm = () => {
       </div>
       <div>
               </div>
-
+              <div>
+              <p>Total Amount (Including Tax) :{
+  selectedTaxType==="CGST" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
+    ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
+  ) : selectedTaxType==="IGST" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
+  ) : selectedTaxType==="TDS" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
+    ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
+  ) : (
+    totalAmount
+  )
+}</p>
+              </div>
       <div className="mt-4 w-full border rounded p-2">
   <label className="block mb-1 font-medium">Description:</label>
   <textarea

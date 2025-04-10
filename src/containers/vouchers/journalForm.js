@@ -8,8 +8,6 @@ const JournalForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [ledger,setLedger] =useState([]);
-  const { selectedBranch } = location?.state || {};
-  console.log("+++++===== selectedBranch purchase",selectedBranch)
  const [bankAccount,setBankAccount] =useState([
    
   ]);
@@ -152,7 +150,7 @@ const JournalForm = () => {
   const [supplierLocation, setSupplierLocation] = useState('');
   const [purchaseGST, setPurchaseGST] = useState('');
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  const [paymentType, setPaymentType] = useState('cash');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
@@ -201,6 +199,39 @@ const JournalForm = () => {
       setFormData((prev) => ({ ...prev, checkNumber: value }));
     } else if (paymentType === 'Card') {
       setFormData((prev) => ({ ...prev, cardNumber: value }));
+    }
+  };
+
+  const handleBankChange = (e) => {
+    const selectedAccountNumber = e.target.value;
+  
+    // If "Cash" is selected, reset bankAmount or treat as special case
+    if (selectedAccountNumber === "cash") {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "cash"
+      }));
+      return;
+    }
+  
+    // Find the selected bank account from list
+    const selectedBank = bankAccount?.find(
+      (bank) => bank.accountNumber === selectedAccountNumber
+    );
+  
+    // Update formData with bankAmount if found
+    if (selectedBank) {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: selectedAccountNumber,
+      }));
+    } else {
+      // If not found, reset values
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "",
+        bankAmount: "0.00",
+      }));
     }
   };
   
@@ -426,28 +457,29 @@ const JournalForm = () => {
       </div>
 
       <select
-        value={formData.bankAccountNumber}
-        onChange={handleInputChange}
-        name="bankAccountNumber"
-        className="w-full border rounded p-2"
-        style={{
-          height: '45px',
-          backgroundColor: '#FFFFFF',
-          color: '#000000',
-          borderRadius: '8px',
-          borderWidth: '1px',
-          borderColor: '#A2A2A2',
-          fontSize: '20px',
-          fontWeight: '500',
-        }}
-      >
-        <option value="">Select Bank Name</option>
-        {bankAccount?.map((account) => (
-          <option key={account.id} value={account.accountNumber}>
-            {`${account.name} (${account.accountNumber})`}
-          </option>
-        ))}
-      </select>
+          value={formData.bankAccountNumber}
+          onChange={handleBankChange}
+          name="bankAccountNumber"
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <option value="">Select Bank Name</option>
+          <option value="cash">Cash</option>
+          {bankAccount?.map((account) => (
+            <option key={account.id} value={account.accountNumber}>
+              {`${account.name} (${account.accountNumber})`}
+            </option>
+          ))}
+        </select>
 
 
       </div>
