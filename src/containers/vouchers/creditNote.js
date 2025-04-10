@@ -154,6 +154,7 @@ const CreditNoteForm = () => {
      payload.append('day', formData.day);
      payload.append('partyName', formData.partyName);
      payload.append('bankAccountNumber', formData.bankAccountNumber);
+     payload.append('branchId', Number(localStorage.getItem("branchId")));
      payload.append('saleId', formData.saleId);
      payload.append('amount', formData.amount);
      payload.append('voucherType', formData.voucherType);

@@ -106,11 +106,10 @@ const ContraForm = () => {
     const [formData, setFormData] = useState(
       {date:"",
         day:"",
-        // partyName: "",
+        partyName: "",
         bankAccountNumber:"",
         purpose:""
         ,
-        particular:"",
         ledgerId:"",
         voucherType:"CONTRA",
         upiId:"",
@@ -212,15 +211,11 @@ const ContraForm = () => {
 
     payload.append('date', formData.date);
     payload.append('day', formData.day);
-    // payload.append('branchId', Number(selectedBranch?.branchId));
+    payload.append('branchId',  Number(localStorage.getItem("branchId")));
+    payload.append('ledgerId', Number(formData?.ledgerId));
     payload.append('bankAccountNumber',formData.bankAccountNumber);
-    // payload.append('ledgerId', Number(formData?.ledgerId));
-    
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
-    payload.append('particular', formData.particular);
-    
-
     payload.append('journalType',selected);
     payload.append('paymentType', paymentType.toLowerCase());
     payload.append('upiId', formData.upiId);
@@ -273,7 +268,7 @@ const ContraForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Journal
+          Contra
         </h2>
       </div>
 
@@ -378,6 +373,54 @@ const ContraForm = () => {
             fontWeight: '500',
           }}
         />
+               <div className="flex rounded-lg overflow-hidden w-max shadow-md">
+          <button
+            onClick={() => setSelected('Debit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Debit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Debit
+          </button>
+          <button
+            onClick={() => setSelected('Credit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Credit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Credit
+          </button>
+        </div>
+
+
+<select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
+        name="partyName"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.id} value={party.id}>
+            {party.name}
+          </option>
+        ))}
+      </select>
+
 
 
       </div>
@@ -406,26 +449,8 @@ const ContraForm = () => {
         ))}
       </select>
 
-      <input
-          type="text"
-          placeholder="Particular"
-          name="particular"
-          value={formData.particular}
-          onChange={handleInputChange}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
-      </div>
 
+      </div>
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">

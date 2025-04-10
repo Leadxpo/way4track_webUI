@@ -211,7 +211,7 @@ const JournalForm = () => {
 
     payload.append('date', formData.date);
     payload.append('day', formData.day);
-    // payload.append('branchId', Number(selectedBranch?.branchId));
+    payload.append('branchId',  Number(localStorage.getItem("branchId")));
     payload.append('ledgerId', Number(formData?.ledgerId));
     payload.append('bankAccountNumber',formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
@@ -398,7 +398,7 @@ const JournalForm = () => {
 
 
 <select
-        value={formData.partyName}
+        value={formData.ledgerId}
         onChange={handleLedgerChange}
         name="partyName"
         className="w-full border rounded p-2"
@@ -415,7 +415,7 @@ const JournalForm = () => {
       >
         <option value="">Select Party Name</option>
         {ledger?.map((party) => (
-          <option key={party.clientId} value={party.id}>
+          <option key={party.id} value={party.id}>
             {party.name}
           </option>
         ))}

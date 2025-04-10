@@ -153,7 +153,7 @@ const DebitNoteForm = () => {
      payload.append('date', formData.date);
      payload.append('day', formData.day);
      payload.append('partyName', formData.partyName);
-  
+     payload.append('branchId', Number(localStorage.getItem("branchId")));
      payload.append('bankAccountNumber', formData.bankAccountNumber);
      payload.append('saleId', formData.saleId);
      payload.append('amount', formData.amount);

@@ -11,10 +11,10 @@ const SelectBranch = () => {
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleBranchClick = (Id,Name) => {
-    setSelectedBranch({branchId:Id,branchName:Name});
+  const handleBranchClick = (Id, Name) => {
+    localStorage.setItem("branchId", Id);
     setIsPopupOpen(true);
-  };
+};
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);

@@ -11,9 +11,12 @@ const PaymentForm = () => {
 const [ledger,setLedger] =useState([
    
   ]);
-  const [bankAccount,setBankAccount] =useState([
-   
+
+  const [pendingVouchers,setPendingVouchers] =useState([
   ]);
+  
+  const [bankAccount,setBankAccount] =useState([
+   ]);
 
   const handleIdChange = (e) => {
     const value = e.target.value;
@@ -46,6 +49,8 @@ const [ledger,setLedger] =useState([
         day:"",
         bankAccountNumber:"",
         voucherType:"PAYMENT",
+        partyName: "",
+          ledgerId: "",
          purpose:"",
          pendingInvoices:[{invoiceId:"",
           paidAmount: null,
@@ -126,9 +131,7 @@ const [ledger,setLedger] =useState([
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const totalAmount = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-  const balanceAmount = 20000;
-
+ 
   const handleBranchClick = () => {
     setIsPopupOpen(true);
   };
@@ -158,6 +161,16 @@ const [ledger,setLedger] =useState([
     }));
   };
 
+  const totalPayableAmount = pendingVouchers?.reduce(
+    (acc, cur) => acc + parseFloat(cur.amount || 0),
+    0
+  );
+
+  const totalPaidAmount = formData.pendingInvoices.reduce((acc, item) => {
+    return acc + (parseFloat(item.paidAmount) || 0);
+  }, 0);
+
+
   const handleEntryChange = (index, field, value) => {
     const updatedInvoices = [...formData.pendingInvoices];
     updatedInvoices[index][field] = value;
@@ -181,30 +194,53 @@ const [ledger,setLedger] =useState([
 
     const handleSubmit = async (e) => {
       e.preventDefault(); 
-      console.log("qqqqqqqq",formData)
-      const payload = new FormData();
+    //   console.log("qqqqqqqq",formData)
+    //   const payload = new FormData();
   
-      payload.append('date', formData.date);
-      payload.append('day', formData.day);
-      payload.append('bankAccountNumber', formData.bankAccountNumber);
-      payload.append('pendingInvoices', formData.pendingInvoices);
-      payload.append('purpose', formData.purpose);
+    //   payload.append('date', formData.date);
+    //   payload.append('day', formData.day);
+    //   payload.append('bankAccountNumber', formData.bankAccountNumber);
+    //   payload.append('pendingInvoices', formData.pendingInvoices);
+    //   payload.append('purpose', formData.purpose);
 
-      // payload.append('branchId', Number(selectedBranch?.branchId));
-      payload.append('voucherType', formData.voucherType);
-      payload.append('paymentType', paymentType.toLowerCase());
-    payload.append('upiId', formData.upiId);
-    payload.append('checkNumber', formData.checkNumber);
-    payload.append('cardNumber', formData.cardNumber);
-    payload.append('amountPaid', Number(formData.amountPaid));
-      payload.append('companyCode', initialAuthState.companyCode);
-      payload.append('unitCode', initialAuthState.unitCode);
-      console.log("qqqqqqqqpayload",payload)
+    //   payload.append('branchId',Number(localStorage.getItem("branchId")));
+    //   payload.append('voucherType', formData.voucherType);
+    //   payload.append('paymentType', paymentType.toLowerCase());
+    // payload.append('upiId', formData.upiId);
+    // payload.append('checkNumber', formData.checkNumber);
+    // payload.append('cardNumber', formData.cardNumber);
+    // payload.append('amountPaid', Number(formData.amountPaid));
+    //   payload.append('companyCode', initialAuthState.companyCode);
+    //   payload.append('unitCode', initialAuthState.unitCode);
+    //   console.log("qqqqqqqqpayload",payload)
+
+    const payloadObj = {
+      date: formData.date,
+      day: formData.day,
+      bankAccountNumber: formData.bankAccountNumber,
+      pendingInvoices: formData.pendingInvoices.map((item) => ({
+        ...item,
+        invoiceId:item.invoiceId,
+        paidAmount: Number(item.paidAmount),
+        amount: Number(item.amount),
+        reminigAmount: Number(item.reminigAmount),
+      })),
+      purpose: formData.purpose,
+      branchId: Number(localStorage.getItem("branchId")),
+      voucherType: formData.voucherType,
+      paymentType: paymentType.toLowerCase(),
+      upiId: formData.upiId,
+      checkNumber: formData.checkNumber,
+      cardNumber: formData.cardNumber,
+      amountPaid: Number(formData.amountPaid),
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    };
   
       try {
         const endpoint = '/voucher/saveVoucher';
-        const response = await ApiService.post(endpoint, payload, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        const response = await ApiService.post(endpoint, payloadObj, {
+          headers: { 'Content-Type': 'application/json' },
         });
   
         if (response.status) {
@@ -220,6 +256,42 @@ const [ledger,setLedger] =useState([
         return null;
       }
     };
+    const handleLedgerChange = (e) => {
+      const selectedId = Number(e.target.value); // Convert string to number
+      const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+      if (selectedLedger) {
+        setFormData((prev) => ({
+          ...prev,
+          partyName: selectedLedger.name,
+          ledgerId: selectedLedger.id
+        }));
+      }
+      console.log("formdata",formData)
+      getPendingVouchers(selectedId); 
+    
+    };
+    
+
+    const getPendingVouchers = async (selectedPartyName) => {
+      try {
+        const response = await ApiService.post('/voucher/getPendingVouchers', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+          ledgerId: selectedPartyName, // Add this only if your API expects it
+        });
+    
+        console.log("setPendingVouchers+++++++++", response);
+    
+        if (response.status) {
+          setPendingVouchers(response.data);
+        } else {
+          console.error('Failed to fetch ledger data');
+        }
+      } catch (error) {
+        console.error('Error fetching ledger data:', error);
+      }
+    };
+    
 
         useEffect(() => {
           const fetchLedgers = async () => {
@@ -417,9 +489,9 @@ const [ledger,setLedger] =useState([
         ))}
       </select>
 
-<select
-        value={formData.partyName}
-        onChange={handleInputChange}
+      <select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
         name="partyName"
         className="w-full border rounded p-2"
         style={{
@@ -435,12 +507,36 @@ const [ledger,setLedger] =useState([
       >
         <option value="">Select Party Name</option>
         {ledger?.map((party) => (
-          <option key={party.clientId} value={party.id}>
+          <option key={party.id} value={party.id}>
             {party.name}
           </option>
         ))}
       </select>
       </div>
+      <div className="border rounded-lg p-4">
+  {pendingVouchers?.map((entry, index) => (
+    <div
+      key={index}
+      className="flex justify-between items-center bg-[#f2f2f2] rounded-md px-4 py-3 mb-2"
+    >
+      <p className="font-semibold text-lg">
+        Invoice ID : {entry.invoiceId}
+      </p>
+      <p className="font-semibold text-lg">
+        Payable Amount : {parseFloat(entry.amount).toLocaleString('en-IN')}
+      </p>
+    </div>
+  ))}
+
+  {/* Total Amount Section */}
+  <div className="flex justify-end mt-4">
+      <p className="font-bold text-xl">
+  Total Payable Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
+</p>
+  </div>
+</div>
+
+
 
       {/* Entries */}
       <div
@@ -506,16 +602,10 @@ const [ledger,setLedger] =useState([
               <input
                 placeholder="Remaining Amount"
                 value={entry.reminigAmount}
-                onChange={(e) =>
-                  handleEntryChange(index, 'reminigAmount', e.target.value)
-                }
                 className="w-1/4 border rounded p-2"
               />
             </div>
-            <div>
-              <p>Balance Amount: 20000/-</p>
-            </div>
-
+           
             {/* Button - always reserve space */}
             <div
               className="w-[30px] flex justify-center items-center ml-2"
@@ -544,7 +634,15 @@ const [ledger,setLedger] =useState([
         ))}
       </div>
 
-
+      <div className="mt-4 w-full border rounded p-2">
+      <p className="mt-3 text-green-700 font-semibold italic text-lg">
+        Total Paid Amount:{totalPaidAmount}/-
+      </p>
+      {/* Balance Text */}
+      <p className="mt-3 text-green-700 font-semibold italic text-lg">
+        Balance Amount : {totalPayableAmount - totalPaidAmount}/-
+      </p>
+    </div>
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
