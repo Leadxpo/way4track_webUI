@@ -224,7 +224,23 @@ const PurchaseForm = () => {
       voucherType: formData.voucherType,
       invoiceId: formData.supplierInvoiceNumber,
       supplierLocation: formData.supplierLocation,
-      // voucherGST: formData.purchaseGst,
+      voucherGST: formData.purchaseGst,
+      amount:Number(
+        selectedTaxType==="CGST" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
+          ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
+        ) : selectedTaxType==="IGST" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
+        ) : selectedTaxType==="TDS" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
+          ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
+        ) : (
+          totalAmount
+        ))
+      ,
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
@@ -414,10 +430,7 @@ const PurchaseForm = () => {
 
         <input
           type="text"
-          // placeholder="Purchase Ledger:"
           value={formData?.voucherType}
-          // onChange={(e) => setDay(e.target.value)}
-          // onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -436,8 +449,6 @@ const PurchaseForm = () => {
           placeholder="Supplier Invoice Number:"
           value={formData.supplierInvoiceNumber}
           name="supplierInvoiceNumber"
-          // value={partyName}
-          // onChange={(e) => setDay(e.target.value)}
           onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
@@ -477,7 +488,6 @@ const PurchaseForm = () => {
           placeholder="Purchase GST:"
           value={formData.purchaseGst}
           name="purchaseGst"
-          // onChange={(e) => setDay(e.target.value)}
           onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{

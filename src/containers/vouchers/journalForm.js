@@ -344,6 +344,7 @@ const JournalForm = () => {
               ))}
             </ul>
             <button
+            type="button"
               onClick={handleClosePopup}
               style={{
                 backgroundColor: '#12A651',
@@ -406,6 +407,7 @@ const JournalForm = () => {
         />
                <div className="flex rounded-lg overflow-hidden w-max shadow-md">
           <button
+          type="button"
             onClick={() => setSelected('Debit')}
             className={`px-6 py-2 font-bold transition ${
               selected === 'Debit'
@@ -416,6 +418,7 @@ const JournalForm = () => {
             Debit
           </button>
           <button
+          type="button"
             onClick={() => setSelected('Credit')}
             className={`px-6 py-2 font-bold transition ${
               selected === 'Credit'
@@ -516,6 +519,7 @@ const JournalForm = () => {
           <div className="flex gap-2 mb-4">
             {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
+              type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${
                   paymentType === type

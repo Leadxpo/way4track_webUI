@@ -197,7 +197,7 @@ const PaymentForm = () => {
   const handleEntryChange = (index, field, value) => {
     const updatedInvoices = [...formData.pendingInvoices];
     updatedInvoices[index][field] = value;
-  
+
     // If user is entering invoiceId, auto-fill the amount
     if (field === "invoiceId") {
       const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
@@ -207,17 +207,17 @@ const PaymentForm = () => {
         updatedInvoices[index].amount = ""; // reset if not found
       }
     }
-  
+
     const amount = parseFloat(updatedInvoices[index].amount) || 0;
     const paidAmount = parseFloat(updatedInvoices[index].paidAmount) || 0;
     updatedInvoices[index].reminigAmount = (amount - paidAmount).toFixed(2);
-  
+
     setFormData(prevData => ({
       ...prevData,
       pendingInvoices: updatedInvoices,
     }));
   };
-  
+
 
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`);
@@ -259,6 +259,7 @@ const PaymentForm = () => {
       })),
       purpose: formData.purpose,
       branchId: Number(localStorage.getItem("branchId")),
+      ledgerId:Number(formData.ledgerId),
       voucherType: formData.voucherType,
       paymentType: paymentType.toLowerCase(),
       upiId: formData.upiId,
@@ -323,7 +324,7 @@ const PaymentForm = () => {
 
   const handleBankChange = (e) => {
     const selectedAccountNumber = e.target.value;
-  
+
     // If "Cash" is selected, reset bankAmount or treat as special case
     if (selectedAccountNumber === "cash") {
       setFormData((prev) => ({
@@ -332,12 +333,12 @@ const PaymentForm = () => {
       }));
       return;
     }
-  
+
     // Find the selected bank account from list
     const selectedBank = bankAccount?.find(
       (bank) => bank.accountNumber === selectedAccountNumber
     );
-  
+
     // Update formData with bankAmount if found
     if (selectedBank) {
       setFormData((prev) => ({
@@ -354,7 +355,7 @@ const PaymentForm = () => {
       }));
     }
   };
-  
+
 
 
 
@@ -766,10 +767,11 @@ const PaymentForm = () => {
           <div className="flex gap-2 mb-4">
             {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
+                type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${paymentType === type
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-300 text-gray-800'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-300 text-gray-800'
                   }`}
                 style={{ height: '60px', width: '180px' }}
                 onClick={() => setPaymentType(type)}
@@ -805,10 +807,10 @@ const PaymentForm = () => {
                   <input
                     type="text"
                     placeholder={`${paymentType === 'UPI'
-                        ? 'UPI ID'
-                        : paymentType === 'Check'
-                          ? 'Check ID'
-                          : 'Card ID'
+                      ? 'UPI ID'
+                      : paymentType === 'Check'
+                        ? 'Check ID'
+                        : 'Card ID'
                       }`}
                     onChange={handleIdChange}
                     className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
