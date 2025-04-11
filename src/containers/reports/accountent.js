@@ -9,7 +9,7 @@ import ConvertPDF from '../../components/convertPDF';
 
 const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStock, setSelectedStock] = useState('');
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [data, setData] = useState([]);
   const [previewData, setPreviewData] = useState([]);
@@ -17,9 +17,12 @@ const Reports = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedReport, setSelectedReport] = useState("Select Branch");
-
-
-
+  const [selectedStock, setSelectedStock] = useState('');
+  const [tdsReport, setTdsReport] = useState([]);
+  const [trialBalance, setTrialBalance] = useState([]);
+ if(tdsReport){
+  console.log("---====+++",tdsReport)
+ }
 
     const fetchBranchDropDown = async () => {
       try {
@@ -57,12 +60,112 @@ const Reports = () => {
 
   const handleOpenModal = (name) => {
     setSelectedStock(name);
+    console.log("name111111repeort name",name)
     setIsModalOpen(true);
   };
 
+useEffect(() => {
+    const fetchTdsReport = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getTDSReport', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          fromDate: fromDate,
+          toDate: toDate,
+          branchName: selectedReport
+        });
+        if (response.status) {
+          setTdsReport(response.data);
+        } else {
+          console.error('Failed to fetch tds report');
+        }
+      } catch (error) {
+        console.error('Error fetching tds report:', error);
+      }
+    };
+
+    fetchTdsReport();
+  }, [fromDate, toDate, selectedReport]);
+
+  useEffect(() => {
+    const fetchTrialBalance = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getTrialBalance', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          fromDate,
+          toDate,
+          branchName: selectedReport,
+        });
+  
+        const {
+          assets = [],
+          liabilities = [],
+          expenses = [],
+          income = [],
+          suspenseAccount = [],
+        } = response.data || {};
+  
+        const sum = (arr, field) =>
+          arr?.reduce((acc, cur) => acc + Number(cur[field] || 0), 0);
+  
+        const formatted = [
+          {
+            head: 'Assets',
+            debit: sum(assets, 'debitAmount'),
+            credit: sum(assets, 'creditAmount'),
+          },
+          {
+            head: 'Liabilities',
+            debit: sum(liabilities, 'debitAmount'),
+            credit: sum(liabilities, 'creditAmount'),
+          },
+          {
+            head: 'Expenses',
+            debit: sum(expenses, 'debitAmount'),
+            credit: sum(expenses, 'creditAmount'),
+          },
+          {
+            head: 'Direct Incomes',
+            debit: sum(
+              income.filter((item) => item.groupName === 'direct_incomes'),
+              'debitAmount'
+            ),
+            credit: sum(
+              income.filter((item) => item.groupName === 'direct_incomes'),
+              'creditAmount'
+            ),
+          },
+          {
+            head: 'Suspense Account',
+            debit: sum(suspenseAccount, 'debitAmount'),
+            credit: sum(suspenseAccount, 'creditAmount'),
+          },
+        ];
+  
+        const totalDebit = formatted.reduce((acc, row) => acc + row.debit, 0);
+        const totalCredit = formatted.reduce((acc, row) => acc + row.credit, 0);
+  
+        formatted.push({
+          head: 'Total',
+          debit: totalDebit,
+          credit: totalCredit,
+        });
+  
+        setTrialBalance(formatted);
+      } catch (error) {
+        console.error('Failed to fetch Trial Balance', error);
+      }
+    };
+  
+    fetchTrialBalance();
+  }, [fromDate, toDate, selectedReport]);
+  
+  
 
   const handleSelect = (branchName) => {
     setSelectedReport(branchName);
+    console.log("branchName",branchName);
     setIsDropdownOpen(false);
   };
   
@@ -72,7 +175,16 @@ const Reports = () => {
       alert("No data available to preview.");
       return;
     }
-    setPreviewData(data);
+
+    if(selectedStock==="tds"){
+      setPreviewData(tdsReport);
+    }
+
+    
+    if(selectedStock==="trialbalance"){
+      setPreviewData(trialBalance);
+    }
+    // setPreviewData(data);
     setIsPreviewOpen(true);
   };
 
@@ -99,7 +211,7 @@ const Reports = () => {
     <div>
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Trial Balence</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Branch Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("trialbalance")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
@@ -134,7 +246,7 @@ const Reports = () => {
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">TDS Reports</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("tds")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">

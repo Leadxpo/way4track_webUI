@@ -249,7 +249,7 @@ export const getPermissions = (roleName) => {
     localStorage.getItem('userPermissions') || '[]'
   );
 
-  const rolePermissions = permissions.find((perm) => perm.name === roleName);
+  const rolePermissions = permissions?.find((perm) => perm.name === roleName);
 
   if (rolePermissions) {
     return {
