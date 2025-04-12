@@ -67,7 +67,7 @@ export const menuOptions = {
     {
       name: 'Payments',
       icon: <img src="./payments.png" />,
-      route: '/payments',
+      route: '/work-view-payments',
     },
     { name: 'Receipt', icon: <img src="./receipt.png" />, route: '/receipts' },
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
@@ -146,7 +146,11 @@ export const menuOptions = {
       icon: <img src="./vouchers.png" />,
       route: '/vouchers',
     },
-    { name: 'Reports', icon: <img src="./reports.png" />, route: '/report-account' },
+    {
+      name: 'Reports',
+      icon: <img src="./reports.png" />,
+      route: '/report-account',
+    },
     {
       name: 'Work Allocation',
       icon: <img src="./work_allocation.png" />,
@@ -163,7 +167,7 @@ export const menuOptions = {
       icon: <img src="./day_book.png" />,
       route: '/day-book',
     },
-    
+
     // {
     //   name: 'Analysis',
     //   icon: <img src="./analysis.png" />,
@@ -175,7 +179,6 @@ export const menuOptions = {
       icon: <img src="./analysis.png" />,
       route: '/groups',
     },
-
 
     { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
     {
@@ -398,6 +401,11 @@ export const menuOptions = {
       name: 'Works',
       icon: <img src="./performance.png" />,
       route: '/backend-support-works',
+    },
+    {
+      name: 'Payments',
+      icon: <img src="./performance.png" />,
+      route: '/backend-support-payments',
     },
   ],
   hr: [

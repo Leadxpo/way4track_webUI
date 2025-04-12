@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 import { TfiTimer } from 'react-icons/tfi';
 
-const BackendSupportHome = () => {
+const BackendSupportPayments = () => {
   const navigate = useNavigate();
   const [popupData, setPopupData] = useState(null);
   const [records, setRecords] = useState([
@@ -66,28 +66,28 @@ const BackendSupportHome = () => {
 
   const cardData = [
     {
-      title: 'Total works',
-      key: 'totalInstallWork',
+      title: 'Pending Payments',
+      key: 'totalPendingPayments',
       color: 'bg-yellow-10',
-      id: 'install',
+      id: 'PENDING',
     },
     {
-      title: 'Work in process',
-      key: 'totalAcceptWork',
+      title: 'Partial Payments',
+      key: 'totalPartialPayments',
       color: 'bg-blue-100',
-      id: 'accept',
+      id: 'PARTIALLY_PAID',
     },
     {
-      title: 'Pending Works',
-      key: 'totalPendingWork',
+      title: 'Unpaid Payments',
+      key: 'totalUnpaidPayments',
       color: 'bg-yellow-100',
-      id: 'pending',
+      id: 'UNPAID',
     },
     {
-      title: 'Job Completed',
-      key: 'totalActivateWork',
+      title: 'Payments Done',
+      key: 'totalPaymentsDone',
       color: 'bg-green-100',
-      id: 'activate',
+      id: 'COMPLETED',
     },
   ];
 
@@ -96,34 +96,55 @@ const BackendSupportHome = () => {
 
   const [workRecords, setWorkRecords] = useState([]);
   const [workRecordsCount, setWorkRecordsCount] = useState([]);
+  const [paymentRecordsCount, setPaymentRecordsCount] = useState([]);
+
   const [branchesWorkRecordsCount, setBranchesWorkRecordsCount] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardKey, setSelectedCardKey] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [memberWorkRecords, setMemberWorkRecords] = useState(null);
+  const [memberPaymentRecords, setMemberPaymentRecords] = useState(null);
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [searchPhone, setSearchPhone] = useState('');
 
-  console.log(selectedCardKey, 'selectedLocation');
+  console.log(selectedLocation, 'selectedLocation');
+  console.log(memberPaymentRecords, 'Member payments');
+  const [branchWisePaymentRecords, setBranchWisePaymentRecords] = useState([]);
 
   // Fetch records from an API
 
-  const fetchRecords = async () => {
-    try {
-      const response = await ApiService.post(
-        '/technician/getBackendSupportWorkAllocation',
-        {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
+  //   const fetchRecords = async () => {
+  //     try {
+  //       const response = await ApiService.post(
+  //         '/technician/getBackendSupportWorkAllocation',
+  //         {
+  //           companyCode: initialAuthState.companyCode,
+  //           unitCode: initialAuthState.unitCode,
+  //         }
+  //       );
 
-      setWorkRecords(response.data || []);
-    } catch (err) {
-      console.error('Failed to fetch data:', err);
-      setWorkRecords([]);
-    }
-  };
+  //       setWorkRecords(response.data || []);
+  //     } catch (err) {
+  //       console.error('Failed to fetch data:', err);
+  //       setWorkRecords([]);
+  //     }
+  //   };
+
+  //   const fetchMemberRecords = async () => {
+  //     try {
+  //       const response = await ApiService.post(
+  //         '/technician/getBackendSupportWorkAllocation',
+  //         {
+  //           supporterId: userStaffId,
+  //           companyCode: initialAuthState.companyCode,
+  //           unitCode: initialAuthState.unitCode,
+  //         }
+  //       );
+  //       setMemberWorkRecords(response.data || []);
+  //     } catch (err) {
+  //       console.error('Failed to fetch data:', err);
+  //       setMemberWorkRecords([]);
+  //     }
+  //   };
 
   const fetchMemberRecords = async () => {
     try {
@@ -135,10 +156,68 @@ const BackendSupportHome = () => {
           unitCode: initialAuthState.unitCode,
         }
       );
-      setMemberWorkRecords(response.data || []);
+
+      const records = response?.data || [];
+
+      // Filter the records with workStatus === 'activate'
+      const activePendingRecords = records?.filter(
+        (record) => record.workStatus === 'activate'
+      );
+
+      // Calculate overall payment counts
+      const overallPaymentsCount = {
+        totalPendingPayments: activePendingRecords.filter(
+          (record) => record.paymentStatus === 'PENDING'
+        ).length,
+        totalPartialPayments: activePendingRecords.filter(
+          (record) => record.paymentStatus === 'PARTIALLY_PAID'
+        ).length,
+        totalUnpaidPayments: activePendingRecords.filter(
+          (record) => record.paymentStatus === 'UNPAID'
+        ).length,
+        totalPaymentsDone: activePendingRecords.filter(
+          (record) => record.paymentStatus === 'COMPLETED'
+        ).length,
+      };
+
+      // Group by branch and calculate payment counts
+      const branchMap = {};
+
+      activePendingRecords.forEach((record) => {
+        const branch = record.branchName || null;
+
+        if (!branchMap[branch]) {
+          branchMap[branch] = {
+            branchName: branch,
+            totalPendingPayments: 0,
+            totalPartialPayments: 0,
+            totalUnpaidPayments: 0,
+            totalPaymentsDone: 0,
+          };
+        }
+
+        if (record.paymentStatus === 'PENDING') {
+          branchMap[branch].totalPendingPayments += 1;
+        } else if (record.paymentStatus === 'PARTIALLY_PAID') {
+          branchMap[branch].totalPartialPayments += 1;
+        } else if (record.paymentStatus === 'UNPAID') {
+          branchMap[branch].totalUnpaidPayments += 1;
+        } else if (record.paymentStatus === 'COMPLETED') {
+          branchMap[branch].totalPaymentsDone += 1;
+        }
+      });
+
+      const branchWise = Object.values(branchMap); // convert to array
+
+      // Set states
+      setMemberPaymentRecords(activePendingRecords);
+      setPaymentRecordsCount(overallPaymentsCount);
+      setBranchWisePaymentRecords(branchWise);
     } catch (err) {
       console.error('Failed to fetch data:', err);
-      setMemberWorkRecords([]);
+      setMemberPaymentRecords([]);
+      setPaymentRecordsCount([]);
+      setBranchWisePaymentRecords([]);
     }
   };
 
@@ -159,12 +238,12 @@ const BackendSupportHome = () => {
   };
 
   useEffect(() => {
-    fetchRecords();
+    // fetchRecords();
     fetchCardRecords();
     fetchMemberRecords();
 
     const interval = setInterval(() => {
-      fetchRecords();
+      //   fetchRecords();
       fetchCardRecords();
     }, 180000);
 
@@ -172,7 +251,7 @@ const BackendSupportHome = () => {
   }, []);
 
   const onClickRefresh = () => {
-    fetchRecords();
+    // fetchRecords();
     fetchCardRecords();
     fetchMemberRecords();
   };
@@ -244,7 +323,7 @@ const BackendSupportHome = () => {
       );
 
       console.log('Status updated successfully:', response.data);
-      await fetchRecords();
+      //   await fetchRecords();
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -282,11 +361,13 @@ const BackendSupportHome = () => {
             card.workStatus === selectedCardId &&
             card.phoneNumber?.toLowerCase().includes(searchPhone.toLowerCase())
         )
-      : ['accept', 'activate', 'pending'].includes(selectedCardId)
-        ? memberWorkRecords.filter(
+      : ['PENDING', 'PARTIALLY_PAID', 'UNPAID', 'COMPLETED'].includes(
+            selectedCardId
+          )
+        ? memberPaymentRecords.filter(
             (card) =>
               card.branchName === selectedLocation &&
-              card.workStatus === selectedCardId &&
+              card.paymentStatus === selectedCardId &&
               card.phoneNumber
                 ?.toLowerCase()
                 .includes(searchPhone.toLowerCase())
@@ -341,7 +422,7 @@ const BackendSupportHome = () => {
                 {item.title}
               </h4>
               <p className="text-4xl font-bold text-blue-600 mt-6 text-center">
-                {workRecordsCount?.[item.key] || 0}
+                {paymentRecordsCount?.[item.key] || 0}
               </p>
             </div>
 
@@ -352,7 +433,7 @@ const BackendSupportHome = () => {
                   Branches
                 </h3>
                 <div className="flex flex-col gap-2">
-                  {branchesWorkRecordsCount
+                  {branchWisePaymentRecords
                     .filter((loc) => loc.branchName)
                     .map((loc, i) => (
                       <div
@@ -454,66 +535,7 @@ const BackendSupportHome = () => {
                           </p>
                         </div>
                       </div>
-
-                      <div
-                        className="mb-2 flex space-x-8"
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        {/* Start Date */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            Start Date:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {card.startDate?.slice(0, 10)}
-                          </p>
-                        </div>
-
-                        {/* End Date */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            End Date:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {card.endDate?.slice(0, 10)}
-                          </p>
-                        </div>
-
-                        {/* Duration */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            Duration:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {card.startDate
-                              ? calculateDuration(card.startDate, card.endDate)
-                              : ''}
-                          </p>
-                        </div>
-                      </div>
-
-                      {card.workStatus !== 'install' && (
+                      {card.paymentStatus === 'PENDING' && (
                         <div
                           className="mb-2 flex space-x-8"
                           style={{
@@ -522,147 +544,74 @@ const BackendSupportHome = () => {
                           }}
                         >
                           {/* Start Date */}
-                          <div className="flex flex-col">
+                          <div className="flex flex-row items-center space-x-1">
                             <p
                               className="text-sm text-gray-600"
                               style={{ fontSize: '14px' }}
                             >
-                              Accepted Date:
+                              Amount:
                             </p>
                             <p
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {card.startDate?.slice(0, 10)}
-                            </p>
-                          </div>
-
-                          {/* End Date */}
-                          <div className="flex flex-col">
-                            <p
-                              className="text-sm text-gray-600"
-                              style={{ fontSize: '14px' }}
-                            >
-                              Activated Date:
-                            </p>
-                            <p
-                              className="text-sm font-semibold text-gray-700"
-                              style={{ fontSize: '13px' }}
-                            >
-                              {card.endDate?.slice(0, 10)}
-                            </p>
-                          </div>
-
-                          {/* Duration */}
-                          <div className="flex flex-col">
-                            <p
-                              className="text-sm text-gray-600"
-                              style={{ fontSize: '14px' }}
-                            >
-                              Duration:
-                            </p>
-                            <p
-                              className="text-sm font-semibold text-gray-700"
-                              style={{ fontSize: '13px' }}
-                            >
-                              {card.startDate
-                                ? calculateDuration(
-                                    card.startDate,
-                                    card.endDate
-                                  )
-                                : ''}
+                              {card.amount ?? 'Nill'}
                             </p>
                           </div>
                         </div>
                       )}
 
-                      {/* <div className="mb-2">
-                        <button
-                          onClick={() => {
-                            let nextStatus;
-                            if (card.workStatus === 'install')
-                              nextStatus = 'accept';
-                            else if (card.workStatus === 'accept')
-                              nextStatus = 'activate';
-                            else nextStatus = card.workStatus;
-                            handleStatusChange(card, nextStatus);
+                      {card.paymentStatus !== 'PENDING' && (
+                        <div
+                          className="mb-2 flex space-x-8"
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
                           }}
-                          className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
                         >
-                          {card?.workStatus === 'install'
-                            ? 'In Progress'
-                            : card?.workStatus === 'accept'
-                              ? 'Activate'
-                              : card?.workStatus === 'activate'
-                                ? 'Activated'
-                                : card?.workStatus?.charAt(0).toUpperCase() +
-                                  card?.workStatus?.slice(1)}
-                        </button>
-                      </div> */}
+                          {/* Start Date */}
+                          <div className="flex flex-row items-center space-x-1">
+                            <p
+                              className="text-sm text-gray-600"
+                              style={{ fontSize: '14px' }}
+                            >
+                              Amount:
+                            </p>
+                            <p
+                              className="text-sm font-semibold text-gray-700"
+                              style={{ fontSize: '13px' }}
+                            >
+                              {card.amount ?? '00'}
+                            </p>
+                          </div>
+
+                          {/* End Date */}
+                          <div className="flex flex-row items-center space-x-1">
+                            <p
+                              className="text-sm text-gray-600"
+                              style={{ fontSize: '14px' }}
+                            >
+                              Paid Amount:
+                            </p>
+                            <p
+                              className="text-sm font-semibold text-gray-700"
+                              style={{ fontSize: '13px' }}
+                            >
+                              {card.paidAmount ?? '00'}
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                         {/* Conditional Status Control */}
                         <div className="mb-1">
-                          {card.workStatus === 'accept' ||
-                          card.workStatus === 'pending' ? (
-                            <div className="relative">
-                              <select
-                                onChange={(e) =>
-                                  handleStatusChange(card, e.target.value)
-                                }
-                                defaultValue=""
-                                className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                              >
-                                <option value="" disabled>
-                                  Change Status
-                                </option>
-                                {card.workStatus === 'accept' && (
-                                  <>
-                                    <option value="activate">Activate</option>
-                                    <option value="pending">Pending</option>
-                                  </>
-                                )}
-                                {card.workStatus === 'pending' && (
-                                  <>
-                                    <option value="activate">Activate</option>
-                                    <option value="cancel">Cancel</option>
-                                  </>
-                                )}
-                              </select>
-                              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                                <svg
-                                  className="w-4 h-4 text-gray-500"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                let nextStatus;
-                                if (card.workStatus === 'install')
-                                  nextStatus = 'accept';
-                                else nextStatus = card.workStatus;
-                                handleStatusChange(card, nextStatus);
-                              }}
-                              className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
-                            >
-                              {card?.workStatus === 'install'
-                                ? 'In Progress'
-                                : card?.workStatus === 'activate'
-                                  ? 'Activated'
-                                  : card?.workStatus?.charAt(0).toUpperCase() +
-                                    card?.workStatus?.slice(1)}
-                            </button>
-                          )}
+                          <p
+                            className="text-sm font-semibold text-gray-700"
+                            style={{ fontSize: '13px' }}
+                          >
+                            {convertToIST(card.startDate)}
+                          </p>
                         </div>
 
                         <button
@@ -1050,4 +999,4 @@ const BackendSupportHome = () => {
   // );
 };
 
-export default BackendSupportHome;
+export default BackendSupportPayments;

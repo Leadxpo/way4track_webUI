@@ -44,8 +44,8 @@ const Staff = () => {
     // 'Unit Code',
     // 'Latitude',
     // 'Longitude',
-    'CIN',
-    'GST',
+    // 'CIN',
+    // 'GST',
     // 'ID',
     // 'Branch Name',
   ];
