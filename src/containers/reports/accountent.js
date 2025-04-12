@@ -17,6 +17,8 @@ const Reports = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedReport, setSelectedReport] = useState("Select Branch");
+  const [balanceSheetReport, setBalenceSheetReport] = useState([]);
+
 
 
 
@@ -39,21 +41,12 @@ const Reports = () => {
       fetchBranchDropDown();
     }, []);
   
-  const fetchPayments = async (endpoint) => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-        branchName: localStorage.getItem('branchName'),
-      };
-      let response = await ApiService.post(endpoint, payload);
-      setData(response?.data || []);
-    } catch (error) {
-      console.error("Error fetching payments:", error);
-      setData([]);
-    }
-  };
+
+
+
+
+
+ 
 
   const handleOpenModal = (name) => {
     setSelectedStock(name);
@@ -89,11 +82,61 @@ const Reports = () => {
   };
 
 
+  const handleDownloadPdf = () => {
+    if (!previewData.length) {
+      alert("No data available to download.");
+      return;
+    }
+  
+    // Loop through the previewData and create a hidden link for each staff
+    previewData.forEach((staff) => {
+      const linkId = `download-pdf-${staff.staffId}`;
+      const existingLink = document.getElementById(linkId);
+  
+      if (existingLink) {
+        existingLink.click(); // trigger the download
+      } else {
+        console.warn(`Download link for staffId ${staff.staffId} not found.`);
+      }
+    });
+  
+    setIsPreviewOpen(false);
+  };
 
   const handleSearch = () => {
     console.log('Searching from:', fromDate, 'to:', toDate);
     // Call your API or filter data here
   };
+
+  useEffect(() => {
+    const fetchBalanceSheetReport = async () => {
+      try {
+        const response = await ApiService.post('/dashboards/getBalanceSheet', {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          fromDate: fromDate,
+          toDate: toDate,
+          branchName: selectedReport
+        });
+        if (response.status) {
+          setBalenceSheetReport(response.data);
+        } else {
+          console.error('Failed to fetch tds report');
+        }
+      } catch (error) {
+        console.error('Error fetching tds report:', error);
+      }
+    };
+
+    fetchBalanceSheetReport();
+  }, [fromDate, toDate, selectedReport]);
+
+
+
+
+
+
+
 
   return (
     <div>
