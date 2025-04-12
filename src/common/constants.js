@@ -25,6 +25,11 @@ export const menuOptions = {
       route: '/products',
     },
     {
+      name: 'Product Type',
+      icon: <img src="./products.png" />,
+      route: '/product-type',
+    },
+    {
       name: 'Product Assign',
       icon: <img src="./product_assign.png" />,
       route: '/products_assign',

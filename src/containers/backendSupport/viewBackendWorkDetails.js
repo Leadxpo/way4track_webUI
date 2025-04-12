@@ -25,40 +25,39 @@ const ViewBackendWorkDetails = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   console.log(data, 'remarks');
+  const fetchRecords = async () => {
+    if (!data?.id) {
+      console.error('No valid ID found for API call.');
+      return;
+    }
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      if (!data?.id) {
-        console.error('No valid ID found for API call.');
-        return;
-      }
-
-      try {
-        console.log('Fetching work details for ID:', data.id);
-        const response = await ApiService.post(
-          '/technician/getTechnicianDetailsById',
-          {
-            id: data.id,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-
-        if (response?.data) {
-          console.log('API Response:', response.data);
-          setWorkRecord(response.data);
-          setEditedRecord(response.data);
-          setRemarks(response.data.remark);
-        } else {
-          console.error('API responded with no data');
-          setWorkRecord(null);
+    try {
+      console.log('Fetching work details for ID:', data.id);
+      const response = await ApiService.post(
+        '/technician/getTechnicianDetailsById',
+        {
+          id: data.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
         }
-      } catch (err) {
-        console.error('Failed to fetch data:', err);
+      );
+
+      if (response?.data) {
+        console.log('API Response:', response.data);
+        setWorkRecord(response.data);
+        setEditedRecord(response.data);
+        setRemarks(response.data.remark);
+      } else {
+        console.error('API responded with no data');
         setWorkRecord(null);
       }
-    };
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setWorkRecord(null);
+    }
+  };
 
+  useEffect(() => {
     fetchRecords();
   }, [data]);
 
@@ -197,29 +196,43 @@ const ViewBackendWorkDetails = () => {
     if (newRemark.trim() === '' && !selectedFile) return;
 
     try {
-      console.log('Fetching work details for ID:', workRecord.id);
+      let fileTypeLabel = null;
+      let fileKey = null;
 
-      // Create the new remark with a placeholder for file
+      if (selectedFile) {
+        const mimeType = selectedFile.type;
+
+        if (mimeType.startsWith('image/')) {
+          fileTypeLabel = 'Image';
+          fileKey = 'image';
+        } else if (mimeType.startsWith('video/')) {
+          fileTypeLabel = 'Video';
+          fileKey = 'videos';
+        } else {
+          fileTypeLabel = 'File';
+          fileKey = 'file';
+        }
+      }
+
       const newRemarkObj = {
         staffId: userId,
         name: userName,
         date: new Date(),
-        desc: selectedFile ? 'Image' : newRemark,
-        file: selectedFile ? 'attached' : null, // just to indicate there is a file
+        desc: newRemark,
+        file: selectedFile ? { name: fileTypeLabel } : null,
       };
 
-      // Combine existing + new remark
-      const updatedRemarks = [...(remarks || []), newRemarkObj];
+      const updatedRemarks = [newRemarkObj];
 
-      // Prepare FormData
       const formData = new FormData();
       formData.append('id', workRecord.id);
       formData.append('companyCode', initialAuthState.companyCode);
       formData.append('unitCode', initialAuthState.unitCode);
-      formData.append('remark', JSON.stringify(updatedRemarks)); // send entire array as JSON string
+      formData.append('remark', JSON.stringify(updatedRemarks));
 
-      if (selectedFile) {
-        formData.append('videos', selectedFile); // binary file added separately
+      // ⬇️ Dynamically set file key
+      if (selectedFile && fileKey) {
+        formData.append(fileKey, selectedFile);
       }
 
       const response = await ApiService.post(
@@ -233,7 +246,8 @@ const ViewBackendWorkDetails = () => {
       );
 
       if (response?.data) {
-        setRemarks(updatedRemarks);
+        // setRemarks(updatedRemarks);
+        fetchRecords();
         setSelectedFile(null);
       } else {
         console.error('API responded with error');
@@ -444,12 +458,82 @@ const ViewBackendWorkDetails = () => {
             )} */}
           </Section>
 
+          <Section title="Payment Details">
+            <DetailRow
+              label="Amount"
+              value={editedRecord.amount}
+              editable={isEditing}
+              onChange={handleChange}
+              field="amount"
+            />
+            <DetailRow
+              label="Paid Amount"
+              value={editedRecord.paidAmount}
+              editable={isEditing}
+              onChange={handleChange}
+              field="paidAmount"
+            />
+            <DetailRow
+              label="Payment Status"
+              value={editedRecord.paymentStatus}
+              editable={isEditing}
+              onChange={handleChange}
+              field="paymentStatus"
+            />
+
+            {editedRecord.screenShot && (
+              <ImageBox
+                src={editedRecord.screenShot}
+                alt="Payment Screenshot"
+                isEditing={isEditing}
+                // onDeleteImage={() => handleDeleteImage(index)}
+              />
+            )}
+          </Section>
+
+          {editedRecord.backEndStaffRelation && (
+            <Section title="Backend Support Details">
+              <DetailRow
+                label="id"
+                value={editedRecord.backEndStaffRelation.id}
+                editable={isEditing}
+                onChange={handleChange}
+                field="id"
+              />
+              <DetailRow
+                label="name"
+                value={editedRecord.backEndStaffRelation.name}
+                editable={isEditing}
+                onChange={handleChange}
+                field="name"
+              />
+              <DetailRow
+                label="Phone Nmuber"
+                value={editedRecord.backEndStaffRelation.phoneNumber}
+                editable={isEditing}
+                onChange={handleChange}
+                field="phoneNumber"
+              />
+
+              {editedRecord.screenShot && (
+                <ImageBox
+                  src={editedRecord.screenShot}
+                  alt="Payment Screenshot"
+                  isEditing={isEditing}
+                  // onDeleteImage={() => handleDeleteImage(index)}
+                />
+              )}
+            </Section>
+          )}
+
           <div className="mt-6 max-w-[1000px] min-h-[300px] border rounded-md p-4 bg-white shadow-md">
             <h1 className="text-xl font-bold mb-4">Remarks</h1>
             {/* Scrollable Chat Area */}
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
               {remarks?.map((remark, index) => {
                 const isLoggedInUser = remark.name === userName;
+                const isImage = remark?.file?.name === 'Image' && remark.image;
+                const isVideo = remark?.file?.name === 'Video' && remark.video;
 
                 return (
                   <div
@@ -457,13 +541,33 @@ const ViewBackendWorkDetails = () => {
                     className={`flex flex-col ${isLoggedInUser ? 'items-end' : 'items-start'}`}
                   >
                     <div
-                      className={`rounded-lg p-3 max-w-[75%] shadow ${
+                      className={`rounded-lg p-3 max-w-[75%] shadow space-y-2 ${
                         isLoggedInUser
                           ? 'bg-blue-100 text-blue-900'
                           : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       <p className="text-sm">{remark.desc}</p>
+
+                      {isImage && (
+                        <img
+                          src={remark.image}
+                          alt="attached"
+                          className="mt-2 rounded max-w-full max-h-[200px]"
+                          style={{ width: '200px', height: '80px' }}
+                        />
+                      )}
+
+                      {isVideo && (
+                        <video
+                          controls
+                          className="mt-2 rounded max-w-full max-h-[250px]"
+                          style={{ width: '250px', height: '200px' }}
+                        >
+                          <source src={remark.video} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
                     </div>
                     <span className="text-xs text-gray-500 mt-1">
                       {remark.name} • {new Date(remark.date).toLocaleString()}
@@ -618,14 +722,14 @@ const ImageBox = ({ src, alt, isEditing, onDeleteImage }) => (
       <button>Download Image</button>
     </a>
 
-    {isEditing && (
+    {/* {isEditing && (
       <button
         className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity"
         onClick={onDeleteImage}
       >
         Delete
       </button>
-    )}
+    )} */}
   </div>
 );
 

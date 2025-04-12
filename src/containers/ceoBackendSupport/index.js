@@ -254,6 +254,7 @@ const CeoBackendSupportHome = () => {
 
   const handleStatusChange = async (item, newStatus) => {
     console.log(item, 'item');
+
     try {
       setRecords((prevRecords) =>
         prevRecords.map((record) =>
@@ -261,16 +262,29 @@ const CeoBackendSupportHome = () => {
         )
       );
 
+      // Prepare the base payload
+      const payload = {
+        id: item.id,
+        workStatus: newStatus,
+        staffId: item.staffId,
+        branchId: item.branchId,
+        backEndStaffRelation: Number(userId),
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+
+      // Add acceptStartDate if newStatus is "accept"
+      if (newStatus === 'accept') {
+        payload.acceptStartDate = new Date().toISOString(); // or new Date() if backend handles parsing
+      }
+
+      if (newStatus === 'activate') {
+        payload.activateDate = new Date().toISOString(); // or new Date() if backend handles parsing
+      }
+
       const response = await ApiService.post(
         '/technician/handleTechnicianDetails',
-        {
-          id: item.id,
-          workStatus: newStatus,
-          staffId: item.staffId,
-          backEndStaffRelation: Number(userId),
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
+        payload
       );
 
       console.log('Status updated successfully:', response.data);
@@ -529,7 +543,7 @@ const CeoBackendSupportHome = () => {
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {card.startDate?.slice(0, 10)}
+                              {convertToIST(card.startDate)}
                             </p>
                           </div>
 
@@ -545,7 +559,7 @@ const CeoBackendSupportHome = () => {
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {card.endDate?.slice(0, 10)}
+                              {convertToIST(card.endDate)}
                             </p>
                           </div>
 
@@ -591,7 +605,7 @@ const CeoBackendSupportHome = () => {
                                 className="text-sm font-semibold text-gray-700"
                                 style={{ fontSize: '13px' }}
                               >
-                                {card.startDate?.slice(0, 10)}
+                                {convertToIST(card.acceptStartDate)}{' '}
                               </p>
                             </div>
 
@@ -607,7 +621,8 @@ const CeoBackendSupportHome = () => {
                                 className="text-sm font-semibold text-gray-700"
                                 style={{ fontSize: '13px' }}
                               >
-                                {card.endDate?.slice(0, 10)}
+                                {/* {card.activateDate?.slice(0, 10)} */}
+                                {convertToIST(card.activeDate)}
                               </p>
                             </div>
 
