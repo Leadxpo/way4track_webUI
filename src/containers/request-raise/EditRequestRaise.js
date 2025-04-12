@@ -12,10 +12,7 @@ const EditRequestRaise = () => {
   const [branch, setBranch] = useState([]);
   
     const requestData = location.state?.requestDetails || {};
-    console.log("requestData ramesh", requestData)
-
-    console.log("requestData ramesh staffData", staffData)
-    console.log("requestData ramesh branch", branch)
+ 
 
   const [formData, setFormData] = useState({
     requestType:'',

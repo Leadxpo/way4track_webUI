@@ -1,42 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 const PurchaseForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [ledger,setLedger] =useState([
-   
-  ]);
-  
-  
-  
-
+  const location = useLocation();
+  const [ledger,setLedger] =useState([]);
   const [formData, setFormData] = useState(
-    {date:"",
+    {date:null,
       day:"",
-      partyName: "", //clientId
+      partyName: "", 
+      ledgerId:"",
       voucherType:"PURCHASE",
       supplierInvoiceNumber:"",
       supplierLocation:"",
       purchaseGst:"",
+      amount:"",
+      SGST:9,
+    CGST: 9,
+    TDS: null,
+    IGST: null,
+    TCS:null,
       productDetails:[{productName: "",
         quantity: null,
         rate: null,
-        totalCost: null,
+        totalCost: null
        }],
        purpose:""
-      // invoices,
-      // entries,
-      // amount,
-      // balanceAmount,
-      // description,
-      // paymentMode,
 
     }
   );
  
-  console.log("++++++====ramesh",formData);
 
   const taxData = [
     { name: 'CGST', percent: '9%' },
@@ -53,6 +48,22 @@ const PurchaseForm = () => {
       [name]: value,
     }));
   };
+
+  const handleLedgerChange = (e) => {
+  const selectedId = Number(e.target.value); // Convert string to number
+  const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+  if (selectedLedger) {
+    setFormData((prev) => ({
+      ...prev,
+      partyName: selectedLedger.name,
+      ledgerId: selectedLedger.id
+    }));
+  }
+  console.log("formdata",formData)
+
+};
+
+  
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -80,15 +91,6 @@ const PurchaseForm = () => {
     'CreditNote',
   ];
 
-  const [invoices, setInvoices] = useState([
-    { id: '73HFUEY63', amount: 100000 },
-    { id: '73HFUEY63', amount: 30000 },
-    { id: '73HFUEY63', amount: 20000 },
-  ]);
-
-  const [entries, setEntries] = useState([
-    { invoice: '', amount: '', paid: '', remaining: '' },
-  ]);
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -122,8 +124,6 @@ const PurchaseForm = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  // const totalAmount = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-  // const balanceAmount = 20000;
 
   const handleBranchClick = () => {
     setIsPopupOpen(true);
@@ -143,6 +143,20 @@ const PurchaseForm = () => {
     }));
   };
 
+  const handleTaxType = (e) => {
+    const value = e.target.value;
+    setSelectedTaxType(value);
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      CGST: value === "CGST" ? 9 : null,
+      SGST: value === "CGST" ? 9 : null,
+      IGST: value === "IGST" ? 9 : null,
+      TDS: value === "TDS" ? 18 : null,
+      TCS: value === "TDS" ? 2 : null,
+    }));
+  };
+
   const handleRemoveEntry = (indexToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -154,8 +168,8 @@ const PurchaseForm = () => {
     const updatedProductDetails = [...formData.productDetails];
     updatedProductDetails[index][field] = value;
   
-    const quantity = parseFloat(updatedProductDetails[index].quantity) || 0;
-    const rate = parseFloat(updatedProductDetails[index].rate) || 0;
+    const quantity = updatedProductDetails[index].quantity || 0;
+    const rate = updatedProductDetails[index].rate || 0;
     updatedProductDetails[index].totalCost = (quantity * rate).toFixed(2); // Keep it 2 decimals
   
     setFormData((prevData) => ({
@@ -163,9 +177,6 @@ const PurchaseForm = () => {
       productDetails: updatedProductDetails,
     }));
   };
-
-  
-
 
   const totalAmount = formData.productDetails.reduce((acc, item) => {
     return acc + (parseFloat(item.totalCost) || 0);
@@ -204,24 +215,53 @@ const PurchaseForm = () => {
       }, []);
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    const payload = new FormData();
 
-    payload.append('date', formData.date);
-    payload.append('day', formData.day);
-    payload.append('partyName', formData.partyName);
-    payload.append('voucherType', formData.voucherType);
-    payload.append('supplierInvoiceNumber', formData.supplierInvoiceNumber);
-    payload.append('supplierLocation', formData.supplierLocation);
-    payload.append('purchaseGst', formData.purchaseGst);
-    payload.append('purpose', formData.purpose);
-    payload.append('companyCode', initialAuthState.companyCode);
-    payload.append('unitCode', initialAuthState.unitCode);
+    const payloadObject = {
+      date: formData.date,
+      day: formData.day,
+      branchId: Number(localStorage.getItem("branchId")),
+      ledgerId: Number(formData?.ledgerId),
+      voucherType: formData.voucherType,
+      invoiceId: formData.supplierInvoiceNumber,
+      supplierLocation: formData.supplierLocation,
+      voucherGST: formData.purchaseGst,
+      amount:Number(
+        selectedTaxType==="CGST" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
+          ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
+        ) : selectedTaxType==="IGST" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
+        ) : selectedTaxType==="TDS" ? (
+          totalAmount +
+          ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
+          ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
+        ) : (
+          totalAmount
+        ))
+      ,
+      productDetails: formData.productDetails.map((item) => ({
+        ...item,
+        quantity: Number(item.quantity),
+        rate: Number(item.rate),
+        totalCost: Number(item.totalCost),
+      })),
+      CGST:formData.CGST ,
+      SGST:formData.SGST,
+      IGST:formData.IGST,
+      TDS:formData.TDS,
+      TCS:formData.TCS,
+      purpose: formData.purpose,
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode
+    };
     
 
     try {
       const endpoint = '/voucher/saveVoucher';
-      const response = await ApiService.post(endpoint, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await ApiService.post(endpoint, payloadObject, {
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.status) {
@@ -348,8 +388,6 @@ const PurchaseForm = () => {
         <input
           type="text"
           placeholder="Day:"
-
-
           name="day"
           value={formData.day}
           className="w-full border rounded p-2"
@@ -367,8 +405,8 @@ const PurchaseForm = () => {
 
 
       <select
-        value={formData.partyName}
-        onChange={handleInputChange}
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
         name="partyName"
         className="w-full border rounded p-2"
         style={{
@@ -384,7 +422,7 @@ const PurchaseForm = () => {
       >
         <option value="">Select Party Name</option>
         {ledger?.map((party) => (
-          <option key={party.clientId} value={party.name}>
+          <option key={party.id} value={party.id}>
             {party.name}
           </option>
         ))}
@@ -392,10 +430,7 @@ const PurchaseForm = () => {
 
         <input
           type="text"
-          // placeholder="Purchase Ledger:"
           value={formData?.voucherType}
-          // onChange={(e) => setDay(e.target.value)}
-          // onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -414,8 +449,6 @@ const PurchaseForm = () => {
           placeholder="Supplier Invoice Number:"
           value={formData.supplierInvoiceNumber}
           name="supplierInvoiceNumber"
-          // value={partyName}
-          // onChange={(e) => setDay(e.target.value)}
           onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
@@ -455,7 +488,6 @@ const PurchaseForm = () => {
           placeholder="Purchase GST:"
           value={formData.purchaseGst}
           name="purchaseGst"
-          // onChange={(e) => setDay(e.target.value)}
           onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{
@@ -587,7 +619,7 @@ const PurchaseForm = () => {
           <label className="mr-2 font-semibold">Select Tax Type:</label>
           <select
             value={selectedTaxType}
-            onChange={(e) => setSelectedTaxType(e.target.value)}
+            onChange={handleTaxType}
             className="px-3 py-1 border rounded-md"
           >
             <option value="CGST">CGST</option>
@@ -605,9 +637,17 @@ const PurchaseForm = () => {
             <div className="flex flex-col w-full">
               <div className="flex justify-between items-center">
                 <span className="font-bold">{tax.name}</span>
-                <span className="font-semibold">{tax.percent}</span>
+                {/* <span className="font-semibold">{tax.percent}</span> */}
+                <input
+                type="number"
+                placeholder={`${tax.name} Percentage:`}
+                value={formData[tax.name]}
+                name={tax.name}
+                onChange={handleInputChange}
+                className="w-1/4 border rounded p-2"
+              />
                 <span className="font-semibold">
-  Amount: ₹{(totalAmount * (1 + parseFloat(tax.percent || 0) / 100)).toFixed(2)}
+  Amount: ₹{(totalAmount * (1 + parseFloat(formData[tax.name] || 0) / 100)).toFixed(2)}
 </span>       
               </div>
 
@@ -616,7 +656,26 @@ const PurchaseForm = () => {
           </div>
         ))}
       </div>
-
+      <div>
+              </div>
+              <div>
+              <p>Total Amount (Including Tax) :{
+  selectedTaxType==="CGST" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
+    ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
+  ) : selectedTaxType==="IGST" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
+  ) : selectedTaxType==="TDS" ? (
+    totalAmount +
+    ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
+    ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
+  ) : (
+    totalAmount
+  )
+}</p>
+              </div>
       <div className="mt-4 w-full border rounded p-2">
   <label className="block mb-1 font-medium">Description:</label>
   <textarea

@@ -155,8 +155,8 @@ import DebitNoteForm from '../vouchers/debitNote';
 import CreditNoteForm from '../vouchers/creditNote';
 import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
 import SubDelarStaff from '../sub-dealers/subDelarStaff';
-
-
+import BackendSupportPayments from '../backendSupport/backendSupportPayments';
+import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPayments';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -402,8 +402,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/payments" element={<Payments />} />
           <Route path="/requests" element={<RequestRaise />} />
           <Route path="/delete-request" element={<DeleteRequest />} />
-          <Route path="/add-request" element={<AddRequestRaise/>} />
-          <Route path="/edit-request" element={<EditRequestRaise/>} />
+          <Route path="/add-request" element={<AddRequestRaise />} />
+          <Route path="/edit-request" element={<EditRequestRaise />} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/add-client" element={<AddEditClient />} />
@@ -556,26 +556,32 @@ const BodyLayout = ({ children }) => {
             element={<BackendSupportWorks />}
           />
           <Route
+            path="/backend-support-payments"
+            element={<BackendSupportPayments />}
+          />
+          <Route
             path="/work-view-details"
             element={<ViewBackendWorkDetails />}
           />
+
+          <Route
+            path="/work-view-payments"
+            element={<CeoBackendSupportPayments />}
+          />
+
           <Route path="/backend-support" element={<CeoBackendSupportHome />} />
           <Route
             path="/backend-work-details/:id"
             element={<FilteredWorkStatusDetails />}
           />
 
-<Route path="/groups" element={<Groups />} />
-<Route path="/add-groups" element={<AddGroups />} />
-<Route path="/more-details-groups" element={<moreDetailsGroups />} />
-<Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
-
-
-          
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/add-groups" element={<AddGroups />} />
+          <Route path="/more-details-groups" element={<moreDetailsGroups />} />
+          <Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
 
           <Route path="/add-designation" element={<AddDesignation />} />
           <Route path="/add-ledger" element={<AddLedger />} />
-
 
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />

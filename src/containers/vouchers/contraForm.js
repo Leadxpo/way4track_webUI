@@ -1,11 +1,98 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const ContraForm = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [ledger,setLedger] =useState([]);
+ const [bankAccount,setBankAccount] =useState([
+   
+  ]);
 
+  const handleDateChange = (e) => {
+    const value = e.target.value;
+  
+    const dayName = new Date(value).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+  
+    setFormData((prev) => ({
+      ...prev,
+      date: value,
+      day: dayName, 
+    }));
+  };
+
+  useEffect(() => {
+    const fetchBankAccounts = async () => {
+      try {
+        const response = await ApiService.post(
+          '/account/getAccountsDetails'
+                    
+                  
+        );
+        console.log("setBankAccount222",response)
+        if (response.status) {
+          
+          setBankAccount(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch accounts');
+        }
+      } catch (error) {
+        console.error('Error fetching accounts:', error);
+      }
+    };
+
+    fetchBankAccounts();
+  }, []);
+
+  const handleLedgerChange = (e) => {
+    const selectedId = Number(e.target.value); // Convert string to number
+  
+    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+  
+    if (selectedLedger) {
+      setFormData((prev) => ({
+        ...prev,
+        partyName: selectedLedger.name,
+        ledgerId: selectedLedger.id
+      }));
+    }
+  };
+
+  useEffect(() => {
+    const fetchLedgers = async () => {
+      try {
+        const response = await ApiService.post(
+          '/ledger/getLedgerDetails', {
+                    companyCode: initialAuthState?.companyCode,
+                    unitCode: initialAuthState?.unitCode,
+                  }
+        );
+        console.log("fedgrfdtrgxfsdf",response)
+        if (response.status) {
+          setLedger(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchLedgers();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const taxData = [
     { name: 'CGST', percent: '9%', amount: '10,5000' },
     { name: 'SGST', percent: '9%', amount: '10,5000' },
@@ -13,6 +100,22 @@ const ContraForm = () => {
     { name: 'TDS', percent: '18%', amount: '10,5000' },
     { name: 'TCS', percent: '2%', amount: '10,5000' },
   ];
+
+    const [formData, setFormData] = useState(
+      {date:"",
+        day:"",
+        partyName: "",
+        bankAccountNumber:"",
+        purpose:""
+        ,
+        ledgerId:"",
+        voucherType:"CONTRA",
+        upiId:"",
+        checkNumber:"",
+        cardNumber:"",
+        amountPaid:null
+      }
+    );
 
   const branchData = [
     'Purchase',
@@ -47,7 +150,7 @@ const ContraForm = () => {
   const [supplierLocation, setSupplierLocation] = useState('');
   const [purchaseGST, setPurchaseGST] = useState('');
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  const [paymentType, setPaymentType] = useState('cash');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
@@ -79,57 +182,100 @@ const ContraForm = () => {
     setIsPopupOpen(false);
   };
 
-  const handleAddEntry = () => {
-    setEntries([
-      ...entries,
-      { invoice: '', amount: '', paid: '', remaining: '' },
-    ]);
-  };
 
-  const handleRemoveEntry = (indexToRemove) => {
-    setEntries((prevEntries) =>
-      prevEntries.filter((_, index) => index !== indexToRemove)
-    );
-  };
 
-  const handleEntryChange = (index, field, value) => {
-    const updatedEntries = [...entries];
-    updatedEntries[index][field] = value;
-    setEntries(updatedEntries);
-  };
 
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`);
     // navigate('/receipt-form')
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleIdChange = (e) => {
+    const value = e.target.value;
+  
+    if (paymentType === 'UPI') {
+      setFormData((prev) => ({ ...prev, upiId: value }));
+    } else if (paymentType === 'Cheque') {
+      setFormData((prev) => ({ ...prev, checkNumber: value }));
+    } else if (paymentType === 'Card') {
+      setFormData((prev) => ({ ...prev, cardNumber: value }));
+    }
+  };
 
-    const formData = {
-      date,
-      day,
-      bank,
-      partyName: 'Customer',
-      invoices,
-      entries,
-      amount,
-      balanceAmount,
-      description,
-      paymentMode,
-    };
+  const handleBankChange = (e) => {
+    const selectedAccountNumber = e.target.value;
+  
+    // If "Cash" is selected, reset bankAmount or treat as special case
+    if (selectedAccountNumber === "cash") {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "cash"
+      }));
+      return;
+    }
+  
+    // Find the selected bank account from list
+    const selectedBank = bankAccount?.find(
+      (bank) => bank.accountNumber === selectedAccountNumber
+    );
+  
+    // Update formData with bankAmount if found
+    if (selectedBank) {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: selectedAccountNumber,
+      }));
+    } else {
+      // If not found, reset values
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "",
+        bankAmount: "0.00",
+      }));
+    }
+  };
+  
 
-    console.log('Form Data to Submit:', formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    const payload = new FormData();
 
-    // Here you can POST the data to an API:
-    // fetch('/api/submit-purchase', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // })
-    // .then(res => res.json())
-    // .then(data => console.log(data))
-    // .catch(err => console.error(err));
+    payload.append('date', formData.date);
+    payload.append('day', formData.day);
+    payload.append('branchId',  Number(localStorage.getItem("branchId")));
+    payload.append('ledgerId', Number(formData?.ledgerId));
+    payload.append('bankAccountNumber',formData.bankAccountNumber);
+    payload.append('voucherType', formData.voucherType);
+    payload.append('purpose', formData.purpose);
+    payload.append('journalType',selected);
+    payload.append('paymentType', paymentType.toLowerCase());
+    payload.append('upiId', formData.upiId);
+    payload.append('checkNumber', formData.checkNumber);
+    payload.append('cardNumber', formData.cardNumber);
+    payload.append('amountPaid', Number(formData.amountPaid));
+
+    payload.append('companyCode', initialAuthState.companyCode);
+    payload.append('unitCode', initialAuthState.unitCode);
+    
+
+    try {
+      const endpoint = '/voucher/saveVoucher';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status) {
+        alert('Contra voucher created successfully!');
+        return response.data;
+      } else {
+        alert('Failed to create Contra voucher details.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error create Contra voucher details:', error);
+      alert('An error occurred while create Contra voucher details.');
+      return null;
+    }
   };
 
   return (
@@ -198,6 +344,7 @@ const ContraForm = () => {
               ))}
             </ul>
             <button
+            type="button"
               onClick={handleClosePopup}
               style={{
                 backgroundColor: '#12A651',
@@ -218,11 +365,15 @@ const ContraForm = () => {
 
       <div className="mt-4 space-y-2">
         {/* <label className="block">Date:</label> */}
+        <div className="mt-4 space-y-2">
+        {/* <label className="block">Date:</label> */}
         <input
           type="date"
           placeholder="Date:"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={formData.date}
+          name="date"
+
+          onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -236,12 +387,12 @@ const ContraForm = () => {
           }}
         />
 
-        {/* <label className="block">Day:</label> */}
+
         <input
           type="text"
           placeholder="Day:"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          name="day"
+          value={formData.day}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -254,52 +405,36 @@ const ContraForm = () => {
             fontWeight: '500',
           }}
         />
+               <div className="flex rounded-lg overflow-hidden w-max shadow-md">
+          <button
+          type="button"
+            onClick={() => setSelected('Debit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Debit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Debit
+          </button>
+          <button
+          type="button"
+            onClick={() => setSelected('Credit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Credit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Credit
+          </button>
+        </div>
 
-        <input
-          type="text"
-          placeholder="Bank Account:"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
 
-        <input
-          type="text"
-          placeholder="Amount"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
-      </div>
-      <div>
-        <p>Balance Amount: 20000/-</p>
-      </div>
-
-      <input
-        type="text"
-        placeholder="Amount"
-        value={partyName}
-        onChange={(e) => setPartyName(e.target.value)}
+<select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
+        name="partyName"
         className="w-full border rounded p-2"
         style={{
           height: '45px',
@@ -311,18 +446,59 @@ const ContraForm = () => {
           fontSize: '20px',
           fontWeight: '500',
         }}
-      />
+      >
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.id} value={party.id}>
+            {party.name}
+          </option>
+        ))}
+      </select>
+
+
+
+      </div>
+
+      <select
+          value={formData.bankAccountNumber}
+          onChange={handleBankChange}
+          name="bankAccountNumber"
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <option value="">Select Bank Name</option>
+          <option value="cash">Cash</option>
+          {bankAccount?.map((account) => (
+            <option key={account.id} value={account.accountNumber}>
+              {`${account.name} (${account.accountNumber})`}
+            </option>
+          ))}
+        </select>
+
+
+      </div>
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
-        <label className="block">Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className=""
-          rows="3"
-        />
-      </div>
+  <label className="block mb-1 font-medium">Description:</label>
+  <textarea
+  name="purpose"
+    value={formData.purpose}
+    onChange={handleInputChange}
+    className="w-full border rounded p-2"
+    rows="3"
+    placeholder="Enter description or notes..."
+  />
+</div>
 
       {/* Payment Mode */}
       <div
@@ -341,8 +517,9 @@ const ContraForm = () => {
 
           {/* Payment Options */}
           <div className="flex gap-2 mb-4">
-            {['Cash', 'UPI', 'Check', 'Card'].map((type) => (
+            {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
+              type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${
                   paymentType === type
@@ -367,28 +544,22 @@ const ContraForm = () => {
             }}
           >
             {(paymentType === 'UPI' ||
-              paymentType === 'Check' ||
+              paymentType === 'Cheque' ||
               paymentType === 'Card') && (
               <div
                 className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
                 style={{ marginLeft: '0px' }}
               >
-                {/* <label className="block mb-1">
-                  {paymentType === 'UPI'
-                    ? 'UPI ID'
-                    : paymentType === 'Check'
-                      ? 'Check ID'
-                      : 'Card ID'}
-                </label> */}
                 <input
                   type="text"
                   placeholder={`${
                     paymentType === 'UPI'
                       ? 'UPI ID'
-                      : paymentType === 'Check'
-                        ? 'Check ID'
+                      : paymentType === 'Cheque'
+                        ? 'Cheque ID'
                         : 'Card ID'
                   }`}
+                  onChange={handleIdChange}
                   className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
                   style={{ marginTop: '20px' }}
                 />
@@ -398,7 +569,9 @@ const ContraForm = () => {
             {/* Amount Field (visible for all) */}
             <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">
               <input
-                type="text"
+                type="number"
+                onChange={handleInputChange}
+                name="amountPaid"
                 placeholder="Enter Amount"
                 className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
               />

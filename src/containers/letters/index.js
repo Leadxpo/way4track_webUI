@@ -25,6 +25,7 @@ const Letters = () => {
     paySlipMonth: "",
     greetingTo: "",
     greetingDesignation: "",
+    greetingEmail: "",
     greetingPhoneNo: ""
   });
   const [staffDetails, setStaffDetails] = useState(null);
@@ -174,13 +175,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -250,12 +250,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -311,12 +310,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -347,7 +345,10 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -368,13 +369,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -446,12 +446,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -504,12 +503,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -539,7 +537,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -560,13 +563,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -628,12 +630,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -682,12 +683,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -709,7 +709,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -730,13 +735,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -807,12 +811,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -875,12 +878,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -902,7 +904,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -923,13 +930,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1002,12 +1008,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1047,12 +1052,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1074,7 +1078,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1095,13 +1104,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1173,12 +1181,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1234,12 +1241,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1274,7 +1280,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1295,13 +1306,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1370,12 +1380,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1418,12 +1427,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1444,7 +1452,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1465,13 +1478,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1540,12 +1552,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1588,12 +1599,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1614,7 +1624,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1635,13 +1650,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1711,12 +1725,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1759,12 +1772,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1785,7 +1797,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1806,13 +1823,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1886,12 +1902,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1930,12 +1945,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -1956,7 +1970,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1977,13 +1996,12 @@ const Letters = () => {
       <Document>
         {/* Page 1 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2059,12 +2077,11 @@ const Letters = () => {
 
         {/* Page 2 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2107,12 +2124,11 @@ const Letters = () => {
 
         {/* Page 3 */}
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2133,7 +2149,12 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo} - {employee.greetingDesignation}, Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.text}>Sincerely,</Text>
+            <Text style={styles.text}>{employee.greetingTo}</Text>
+            <Text style={styles.text}>{employee.greetingDesignation}</Text>
+            <Text style={styles.text}>{employee.greetingEmail} </Text>
+            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2154,12 +2175,11 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2176,8 +2196,8 @@ const Letters = () => {
                 <Text style={styles.text}>{employee.branch}</Text>
               </View>
               <View style={{ width: "30%", flexWrap: "wrap" }}>
-              <Text style={styles.text}>{employee.designation}</Text>
-              <Text style={styles.text}>{employee.department}</Text>
+                <Text style={styles.text}>{employee.designation}</Text>
+                <Text style={styles.text}>{employee.department}</Text>
                 <Text style={{ alignItems: "flex-end" }}>{todayData.split("T")[0]}</Text>
               </View>
             </View>
@@ -2244,12 +2264,11 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2332,12 +2351,11 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2438,13 +2456,12 @@ const Letters = () => {
     return (
       <Document>
         <Page style={styles.page}>
-          <View style={{ borderWidth: 3, padding: 20, height: "100%", borderColor: "green", borderRadius: 5 }}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
             {/* Company Header */}
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
-                <Image style={styles.logo} src="logo.png" />
               </View>
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
@@ -2577,7 +2594,7 @@ const Letters = () => {
             </View>
 
             <Text style={styles.footer}>This is a system-generated payslip and does not require a signature.</Text>
-            </View>
+          </View>
         </Page>
 
       </Document>
@@ -2835,6 +2852,14 @@ const Letters = () => {
           placeholder="Greeting Designation"
           className="flex justify-between items-center shadow-lg w-full rounded-md p-4 my-8 border border-gray-200"
           value={formData.greetingDesignation}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="greetingEmail"
+          placeholder="Greeting Email"
+          className="flex justify-between items-center shadow-lg w-full rounded-md p-4 my-8 border border-gray-200"
+          value={formData.greetingEmail}
           onChange={handleChange}
         />
         <input
