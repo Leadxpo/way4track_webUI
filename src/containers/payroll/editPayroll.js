@@ -42,19 +42,19 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
     return (
         <form onSubmit={handleSubmit(onSave)} className="p-4 bg-white shadow rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                {["staffId", "staffName", "branch", "designation", "year", "monthDays", "presentDays", "month",  "actualSalary", "plBikeNeedToPay",   
-   "leaveDays", "lateDays", "lateDeductions","totalLateMinutes", "carryForwardLeaves", "leaveEncashment", "perDaySalary", "perHourSalary", 
-    "plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance",
-    "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
-    "paybleAmount",].map((field) => (
+            {/* "monthDays",          */}
+                {["year", "month", "presentDays", "actualSalary", "carryForwardLeaves",  "leaveEncashment", "leaveDays", "totalLateMinutes", 
+                "lateDays", "lateDeductions", "perDaySalary", "perHourSalary", "plBikeNeedToPay","plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", 
+                "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance", "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee",
+                "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
+                "paybleAmount"].map((field) => (
                     <Controller
                         key={field}
                         name={field}
                         control={control}
                         render={({ field }) => (
                             <div>
-                                <p>{field.name}</p>
+                                <p style={{textTransform:'capitalize'}}>{field.name}</p>
                                 <input {...field} placeholder={field.name.replace(/([A-Z])/g, " $1")} type="number" className="w-full p-2 border rounded-md" />
                             </div>
                         )}
