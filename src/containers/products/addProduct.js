@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router';
+import * as XLSX from 'xlsx';
 
 const AddProductForm = () => {
   const location = useLocation();
@@ -205,6 +206,44 @@ const AddProductForm = () => {
     } finally {
     }
   };
+
+  const generateExcel = () => {
+    const worksheetData = [
+      {
+        'Product Name': '',
+        'IMEI Number': '',
+        'SIM Number': '',
+        'Date Of Purchase': '',
+        'Vendor Name': '',
+        'Vendor Email ID': '',
+        'Vendor Address': '',
+        'Supplier Name': '',
+        'Serial Number': '',
+        'Primary No': '',
+        'Secondary No': '',
+        'Primary Network': '',
+        'Secondary Network': '',
+        'Category Name': '',
+        Price: '',
+        'Product Description': '',
+        'Company Code': '',
+        'Vendor Phone Number': '',
+        'Device Model': '',
+        'Unit Code': '',
+        'SIM Status': '',
+        'Plan Name': '',
+        'Remarks 1': '',
+        Quantity: '',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sample Format');
+
+    XLSX.writeFile(workbook, 'SampleProductXlFormat.xlsx');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8">Add Product</h1>
@@ -238,14 +277,21 @@ const AddProductForm = () => {
             </select>
           </div>
         )}
-        <a
+        {/* <a
           href="https://storage.googleapis.com/way4track-application/productAssign_photos/assigned_products_xl_format.xlsx"
           download
         >
           <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm">
             Download Sample format
           </button>
-        </a>
+        </a> */}
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          onClick={generateExcel}
+        >
+          Download Sample format
+        </button>
 
         {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
         {renderField('Product Name', 'productName')}

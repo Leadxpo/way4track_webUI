@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import Table from '../../components/Table';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
+import * as XLSX from 'xlsx';
+
 const ProductAssign = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
@@ -73,6 +75,7 @@ const ProductAssign = () => {
     setPermissions(perms);
     productAssignDetails(selectedBranch);
   }, [selectedBranch]);
+  
 
   return (
     <div className="p-10">

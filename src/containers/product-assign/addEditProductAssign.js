@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { FaFileCirclePlus } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
+import * as XLSX from 'xlsx';
 
 const AddEditProductAssign = () => {
   const navigate = useNavigate();
@@ -290,6 +291,22 @@ const AddEditProductAssign = () => {
       />
     </div>
   );
+
+  const generateExcel = () => {
+    const worksheetData = [
+      {
+        'IMEI Number': '',
+        'SIM Number': '',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sample Format');
+
+    XLSX.writeFile(workbook, 'SampleProductAssignXlFormat.xlsx');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
@@ -331,6 +348,12 @@ const AddEditProductAssign = () => {
 
         {/* Form Fields */}
         <div className="space-y-4">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+            onClick={generateExcel}
+          >
+            Download Sample format
+          </button>
           {/* Branch Selection */}
           {branches.length > 0 && (
             <div>
