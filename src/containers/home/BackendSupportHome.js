@@ -474,7 +474,7 @@ const BackendSupportHome = () => {
                             className="text-sm font-semibold text-gray-700"
                             style={{ fontSize: '13px' }}
                           >
-                            {card.startDate?.slice(0, 10)}
+                            {convertToIST(card.startDate)}
                           </p>
                         </div>
 
@@ -490,7 +490,7 @@ const BackendSupportHome = () => {
                             className="text-sm font-semibold text-gray-700"
                             style={{ fontSize: '13px' }}
                           >
-                            {card.endDate?.slice(0, 10)}
+                            {convertToIST(card.endDate)}
                           </p>
                         </div>
 
@@ -533,7 +533,8 @@ const BackendSupportHome = () => {
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {card.startDate?.slice(0, 10)}
+                              {/* {card.acceptStartDate?.slice(0, 10)} */}
+                              {convertToIST(card.acceptStartDate)}
                             </p>
                           </div>
 
@@ -549,7 +550,8 @@ const BackendSupportHome = () => {
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {card.endDate?.slice(0, 10)}
+                              {/* {card.activateDate?.slice(0, 10)} */}
+                              {convertToIST(card.activeDate)}
                             </p>
                           </div>
 

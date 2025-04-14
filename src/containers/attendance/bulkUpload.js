@@ -19,7 +19,6 @@
 //   };
 //   const [formData, setFormData] = useState(initialFormData);
 
-
 //   const handleSave = async () => {
 
 //     if (selectedFile) {
@@ -43,8 +42,6 @@
 //       }
 //     }
 //   };
-
-
 
 //   return (
 //     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -93,11 +90,11 @@
 
 // export default AttendanceUpload;
 
-
 import React, { useState } from 'react';
 import { FaUpload, FaCheck, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import * as XLSX from 'xlsx';
 
 const AttendanceUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -116,17 +113,24 @@ const AttendanceUpload = () => {
 
     setIsLoading(true);
     try {
-      const response = await ApiService.post('/attendance/upload', bulkPayload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      console.log(response, "???????????????????????????")
+      const response = await ApiService.post(
+        '/attendance/upload',
+        bulkPayload,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      console.log(response, '???????????????????????????');
       if (response.message) {
         alert('Bulk upload successful!');
         navigate('/attendance');
-      } 
+      }
     } catch (error) {
       console.error('Error during bulk upload:', error);
-      alert(error.response?.data?.message || 'Failed to upload bulk file. Please check your input.');
+      alert(
+        error.response?.data?.message ||
+          'Failed to upload bulk file. Please check your input.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -152,11 +156,49 @@ const AttendanceUpload = () => {
     setSelectedFile(null);
   };
 
+  const generateExcel = () => {
+    const worksheetData = [
+      {
+        'Staff ID': '',
+        Name: '',
+        'Branch Name': '',
+        'Month-Year': '',
+        'Day 1 IN TIME': '',
+        'Day 1 IN TIME Remarks': '',
+        'Day 1 OUT TIME': '',
+        'Day 1 OUT TIME Remarks': '',
+        'Day 1 Remarks': '',
+        'Day 1 Status': '',
+        'Day 2 IN TIME': '',
+        'Day 2 IN TIME Remarks': '',
+        'Day 2 OUT TIME': '',
+        'Day 2 OUT TIME Remarks': '',
+        'Day 2 Remarks': '',
+        'Day 2 Status': '',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance Format');
+
+    XLSX.writeFile(workbook, 'SampleAttendanceFormat.xlsx');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-6 bg-white rounded-lg shadow-lg w-[500px] text-center">
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+            onClick={generateExcel}
+          >
+            Download Sample format
+          </button>
+        </div>
         <h2 className="text-lg font-semibold mb-4">
-          Upload Update Attendance <span className="text-gray-500">(Excel File)</span>
+          Upload Update Attendance{' '}
+          <span className="text-gray-500">(Excel File)</span>
         </h2>
 
         {/* File Upload */}
@@ -201,4 +243,3 @@ const AttendanceUpload = () => {
 };
 
 export default AttendanceUpload;
-
