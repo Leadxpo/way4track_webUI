@@ -12,32 +12,33 @@ const salaryStatusOptions = [
 const EditPayroll = ({ initialData, onClose, onSave }) => {
     const { control, handleSubmit, watch, setValue } = useForm({ defaultValues: initialData });
     const formData = watch();
-    useEffect(() => {
-        if (formData.actualSalary && formData.monthDays) {
-            const perDaySalary = formData.actualSalary / formData.monthDays;
-            setValue("perDaySalary", perDaySalary.toFixed(2));
-            setValue("perHourSalary", (perDaySalary / 9).toFixed(2));
-        }
+    
+    // useEffect(() => {
+    //     if (formData.actualSalary && formData.monthDays) {
+    //         const perDaySalary = formData.actualSalary / formData.monthDays;
+    //         setValue("perDaySalary", perDaySalary.toFixed(2));
+    //         setValue("perHourSalary", (perDaySalary / 9).toFixed(2));
+    //     }
 
-        if (formData.totalOTHours && formData.perHourSalary) {
-            setValue("OTAmount", (formData.totalOTHours * formData.perHourSalary).toFixed(2));
-        }
+    //     if (formData.totalOTHours && formData.perHourSalary) {
+    //         setValue("OTAmount", (formData.totalOTHours * formData.perHourSalary).toFixed(2));
+    //     }
 
-        if (formData.lateDays && formData.perHourSalary) {
-            setValue("lateDeductions", (formData.lateDays * formData.perHourSalary).toFixed(2));
-        }
+    //     if (formData.lateDays && formData.perHourSalary) {
+    //         setValue("lateDeductions", (formData.lateDays * formData.perHourSalary).toFixed(2));
+    //     }
 
-        if (formData.actualSalary) {
-            const grossSalary = parseFloat(formData.actualSalary) + (parseFloat(formData.OTAmount) || 0) + (parseFloat(formData.incentives) || 0) + (parseFloat(formData.plBikeAmount) || 0);
-            setValue("grossSalary", grossSalary.toFixed(2));
-            setValue("ESIC_Employee", (grossSalary * 0.0075).toFixed(2));
-            setValue("ESIC_Employer", (grossSalary * 0.0325).toFixed(2));
-            const pfWage = (formData.actualSalary * 0.40).toFixed(2);
-            setValue("PF_Employee", (pfWage * 0.12).toFixed(2));
-            setValue("PF_Employer1", (pfWage * 0.0833).toFixed(2));
-            setValue("PF_Employer2", (pfWage * 0.0367).toFixed(2));
-        }
-    }, [formData, setValue]);
+    //     if (formData.actualSalary) {
+    //         const grossSalary = parseFloat(formData.actualSalary) + (parseFloat(formData.OTAmount) || 0) + (parseFloat(formData.incentives) || 0) + (parseFloat(formData.plBikeAmount) || 0);
+    //         setValue("grossSalary", grossSalary.toFixed(2));
+    //         setValue("ESIC_Employee", (grossSalary * 0.0075).toFixed(2));
+    //         setValue("ESIC_Employer", (grossSalary * 0.0325).toFixed(2));
+    //         const pfWage = (formData.actualSalary * 0.40).toFixed(2);
+    //         setValue("PF_Employee", (pfWage * 0.12).toFixed(2));
+    //         setValue("PF_Employer1", (pfWage * 0.0833).toFixed(2));
+    //         setValue("PF_Employer2", (pfWage * 0.0367).toFixed(2));
+    //     }
+    // }, [formData, setValue]);
 
     return (
         <form onSubmit={handleSubmit(onSave)} className="p-4 bg-white shadow rounded-lg">
