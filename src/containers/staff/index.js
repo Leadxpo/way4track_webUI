@@ -182,7 +182,7 @@ const Staff = () => {
 
       if (response.status) {
         alert('Staff deleted successfully');
-
+        getStaffSearchDetails();
         // Update profiles state to remove the deleted staff
         setProfiles((prevProfiles) =>
           prevProfiles.filter((staff) => staff.id !== id)
