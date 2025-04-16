@@ -25,6 +25,7 @@ const Staff = () => {
   console.log(columns, 'columns');
 
   const columnNames = [
+    'ID',
     'Staff ID',
     'Staff Name',
     'Designation',
@@ -46,7 +47,7 @@ const Staff = () => {
     // 'Longitude',
     // 'CIN',
     // 'GST',
-    // 'ID',
+    
     // 'Branch Name',
   ];
   // Fetch Staff Details using useCallback to memoize the function
@@ -68,6 +69,7 @@ const Staff = () => {
 
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
+          id: 'ID',
           staffId: 'Staff ID',
           staffName: 'Staff Name',
           designation: 'Designation',
@@ -84,7 +86,7 @@ const Staff = () => {
           branch_branch_opening: 'Branch Opening',
           branch_CIN: 'CIN',
           branch_GST: 'GST',
-          // id: 'ID',
+          
         };
 
         // Reorder the columns based on `columnNames`
@@ -163,7 +165,7 @@ const Staff = () => {
   };
 
   const handleDelete = async (row) => {
-    const id = row.staffId;
+    const id = row.ID;
     console.log(id, 'iddddsds');
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this record?'
@@ -171,8 +173,9 @@ const Staff = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await ApiService.post('/staff/deletestaffDetails', {
-        staffId: id,
+      const response = await ApiService.post('/staff/handleStaffDetails', {
+        id:row.ID,
+        staffStatus:"INACTIVE",
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
