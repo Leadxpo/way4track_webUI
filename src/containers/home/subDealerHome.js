@@ -569,7 +569,7 @@ const SubDealerHome = () => {
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                    No product types found
+                  No Details found
                   </td>
                 </tr>
               )}
@@ -626,7 +626,7 @@ const SubDealerHome = () => {
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                    No product types found
+                  No Details found
                   </td>
                 </tr>
               )}
@@ -741,7 +741,7 @@ const SubDealerHome = () => {
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                    No product types found
+                  No Details found
                   </td>
                 </tr>
               )}
