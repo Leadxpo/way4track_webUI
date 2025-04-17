@@ -125,8 +125,12 @@ const Letters = () => {
       marginTop: 5,
     },
     text: {
+      fontSize: 10, fontFamily: "Times-Roman",lineHeight:1.5,
+      textAlign: "justify", marginVertical: 4,letterSpacing:0.5
+    },
+    greetingText: {
       fontSize: 10, fontFamily: "Times-Roman",
-      textAlign: "justify", marginVertical: 4
+      textAlign: "justify", marginVertical: 4,
     },
     profileContainer: {
       display: "flex",
@@ -140,8 +144,6 @@ const Letters = () => {
       marginRight: 10,
     },
     signatureSection: {
-      marginTop: 20,
-      // borderTop: "1px solid #000",
       paddingTop: 10,
     },
     signatureBlock: {
@@ -153,7 +155,7 @@ const Letters = () => {
     },
     companyDetails: {
       fontSize: 10,
-      textAlign: 'right',
+      textAlign: 'right',lineHeight:1.5
     },
     footerText: {
       marginBottom: 2, alignSelf: 'center', fontSize: 8, justifyContent: "center"
@@ -162,15 +164,15 @@ const Letters = () => {
     title: { fontSize: 16, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, fontFamily: "Times-Roman" },
     payslipSection: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
     column: { width: '50%' },
-    paysliptext: { marginBottom: 5, fontFamily: "Times-Roman" },
+    paysliptext: { marginBottom: 5, fontFamily: "Times-Roman",lineHeight:'1.2' },
     table: { width: '100%', borderWidth: 1 },
-    row: { flexDirection: 'row', border: 1 },
+    row: { flexDirection: 'row', },
     cell: { flex: 1, textAlign: 'left', paddingHorizontal: 5, fontFamily: "Times-Roman" },
     footer: { marginTop: 10, position: 'absolute', bottom: 5, left: 0, right: 0, textAlign: 'center', fontSize: 10, fontStyle: 'italic', fontFamily: "Times-Roman" }
   });
 
   const OfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -344,11 +346,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -364,7 +366,7 @@ const Letters = () => {
   };
 
   const AccountantOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -433,6 +435,8 @@ const Letters = () => {
               <Text style={styles.text}>• Ensure timely and accurate preparation of monthly, quarterly, and annual financial reports in compliance with accounting standards and company policies.</Text>
               <Text style={styles.text}>• Coordinate and manage budgeting and forecasting processes, providing insights and recommendations to support financial planning and decision-making.</Text>
             </View>
+            
+           
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -458,23 +462,15 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.label}>Tax Compliance:</Text>
               <Text style={styles.text}>• Manage and ensure the accuracy of tax filings, including income tax, GST, and other applicable taxes.</Text>
               <Text style={styles.text}>• Stay updated on changes in tax regulations and advise management on compliance requirements and potential impacts.</Text>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.label}>Audit Support:</Text>
               <Text style={styles.text}>• Lead the coordination with external auditors during annual audits and ensure the timely provision of required documentation.</Text>
               <Text style={styles.text}>• Conduct internal audits to assess the accuracy and compliance of financial records and processes.</Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.label}>Bank Reconciliation:</Text>
-              <Text style={styles.text}>• Perform regular bank reconciliations to verify the accuracy of financial transactions and statements.</Text>
-              <Text style={styles.text}>• Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
             </View>
 
             <View style={styles.section}>
@@ -488,8 +484,21 @@ const Letters = () => {
               <Text style={styles.text}>• Identify and implement best practices and process improvements in financial management and payroll operations.</Text>
               <Text style={styles.text}>• Utilize the latest tools and technologies to enhance efficiency and accuracy in accounting and payroll functions.</Text>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Bank Reconciliation:</Text>
+              <Text style={styles.text}>• Perform regular bank reconciliations to verify the accuracy of financial transactions and statements.</Text>
+              <Text style={styles.text}>• Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Employment Terms:</Text>
+              <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={styles.text}>• As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company can terminate the employment relationship after the bond period, with or without cause and with or without notice.</Text>
+              <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and on boarding costs.</Text>
+              <Text style={styles.text}>• There are no Leaves and no permissions for 3 months from the Joining date.</Text>
+            </View>
 
-
+           
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -515,15 +524,7 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Employment Terms:</Text>
-              <Text style={styles.text}>• This offer is contingent upon the successful completion of a background check and reference check. </Text>
-              <Text style={styles.text}>• As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
-              <Text style={styles.text}>• Your employment with Sharon Telematics Pvt Ltd will be on a contractual basis, with an initial bond period of 2 years. This means that either you or the company can terminate the employment relationship after the bond period, with or without cause and with or without notice.</Text>
-              <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and on boarding costs.</Text>
-              <Text style={styles.text}>• There are no Leaves and no permissions for 3 months from the Joining date.</Text>
-            </View>
-
+           
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.text}>• To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
@@ -536,12 +537,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -558,7 +558,8 @@ const Letters = () => {
   };
 
   const DigitalManagerOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
+
     return (
       <Document>
         {/* Page 1 */}
@@ -708,12 +709,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -730,7 +730,7 @@ const Letters = () => {
   };
 
   const FieldSalesManagerOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -903,12 +903,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -925,7 +924,7 @@ const Letters = () => {
   };
 
   const OperationAssociateOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1039,32 +1038,6 @@ const Letters = () => {
               <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and onboarding costs.</Text>
               <Text style={styles.text}>• There are no leaves and no permissions for 3 months from the joining date.</Text>
             </View>
-            {/* Footer */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
-              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
-              <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
-              <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
-            </View>
-          </View>
-        </Page>
-
-
-        {/* Page 3 */}
-        <Page style={styles.page}>
-          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
-
-            {/* Header */}
-            <View style={styles.headerContainer}>
-              <View style={{ width: "60%" }}>
-              </View>
-              <View style={{ width: "40%", flexWrap: "wrap" }}>
-                <Text style={styles.companyDetails}>
-                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
-                </Text>
-              </View>
-            </View>
-
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.text}>• To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
@@ -1077,12 +1050,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1093,13 +1065,12 @@ const Letters = () => {
             </View>
           </View>
         </Page>
-
       </Document>
     )
   };
 
   const OperationalManagerOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1279,12 +1250,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1301,7 +1271,7 @@ const Letters = () => {
   };
 
   const SalesManagerOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1451,12 +1421,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1473,7 +1442,7 @@ const Letters = () => {
   };
 
   const BranchManagerOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1586,31 +1555,6 @@ const Letters = () => {
               <Text style={styles.text}>• During the bond period, termination of employment by the employee will require reimbursement of [specific amount or details of bond terms] to cover training and onboarding costs.</Text>
               <Text style={styles.text}>• There are no leaves and no permissions for 3 months from the joining date.</Text>
             </View>
-            {/* Footer */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
-              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009</Text>
-              <Text style={styles.footerText}>CIN: U74999AP2021PTC118557 | PAN: AAVCS8794B</Text>
-              <Text style={styles.footerText}>Email: info@sharontelematics.com | Website: www.sharontelematics.com</Text>
-            </View>
-          </View>
-        </Page>
-
-
-        {/* Page 3 */}
-        <Page style={styles.page}>
-          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
-
-            {/* Header */}
-            <View style={styles.headerContainer}>
-              <View style={{ width: "60%" }}>
-              </View>
-              <View style={{ width: "40%", flexWrap: "wrap" }}>
-                <Text style={styles.companyDetails}>
-                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
-                </Text>
-              </View>
-            </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.text}>• To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
@@ -1623,13 +1567,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
-
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1645,7 +1587,7 @@ const Letters = () => {
   };
 
   const TechSupportOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1796,12 +1738,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1818,7 +1759,7 @@ const Letters = () => {
   };
 
   const TechnicianOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -1969,12 +1910,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1991,7 +1931,7 @@ const Letters = () => {
   };
 
   const TeleAssociateOfferLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         {/* Page 1 */}
@@ -2148,12 +2088,11 @@ const Letters = () => {
                 <Text style={styles.text}>Date: ___________________________</Text>
               </View>
             </View>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>Sincerely,</Text>
-            <Text style={styles.text}>{employee.greetingTo}</Text>
-            <Text style={styles.text}>{employee.greetingDesignation}</Text>
-            <Text style={styles.text}>{employee.greetingEmail} </Text>
-            <Text style={styles.text}>Sharon Telematics Pvt Ltd</Text>
+             <Text style={styles.greetingText}>Sincerely,</Text>
+            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -2170,7 +2109,7 @@ const Letters = () => {
   };
 
   const TerminationLetter = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
 
     return (
       <Document>
@@ -2234,9 +2173,9 @@ const Letters = () => {
 
             <View style={styles.signatureSection}>
               <View style={styles.signatureBlock}>
-                <Text style={styles.text}>Sincerely,</Text>
-                <Text style={styles.text}>{employee.greetingTo}</Text>
-                <Text style={styles.text}>{employee.greetingDesignation}</Text>
+                 <Text style={styles.greetingText}>Sincerely,</Text>
+                <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+                <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: 7995512053</Text>
               </View>
@@ -2260,7 +2199,7 @@ const Letters = () => {
   };
 
   const RelievingLetterPDF = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
     return (
       <Document>
         <Page style={styles.page}>
@@ -2320,9 +2259,9 @@ const Letters = () => {
 
             <View style={styles.signatureSection}>
               <View style={styles.signatureBlock}>
-                <Text style={styles.text}>Sincerely,</Text>
-                <Text style={styles.text}>{employee.greetingTo}</Text>
-                <Text style={styles.text}>{employee.greetingDesignation}</Text>
+                 <Text style={styles.greetingText}>Sincerely,</Text>
+                <Text style={styles.greetingText}>{employee.greetingTo}</Text>
+                <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: 7995512053</Text>
               </View>
@@ -2346,7 +2285,7 @@ const Letters = () => {
   };
 
   const ResignationLetterPDF = ({ employee }) => {
-    const todayData = new Date().toISOString();
+    const todayData = getIndiaDate();
 
     return (
       <Document>
@@ -2407,7 +2346,7 @@ const Letters = () => {
 
             {/* Signature Section */}
             <View style={styles.signatureSection}>
-              <Text style={styles.text}>Sincerely,</Text>
+               <Text style={styles.greetingText}>Sincerely,</Text>
               <View style={styles.signatureBlock}>
                 <Text style={styles.text}>{employee.name}</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
@@ -2451,6 +2390,13 @@ const Letters = () => {
 
   const PayrollLetterPDF = ({ employee }) => {
 
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    
+    const monthName = monthNames[employeeData.month - 1];
+    const payslipTitle = `Payslip for the period of ${monthName} - ${employeeData.year}`;
     // Show loading message while fetching data
     if (!employeeData) return <Text>Loading payroll data...</Text>;
     return (
@@ -2473,31 +2419,31 @@ const Letters = () => {
               47-11-24, Flat no 501, Fifth Floor, Chillapalli Complex, Dwaraka Nagar, Visakhapatnam, Andhra Pradesh 530016
             </Text>
             <Text style={{ textAlign: 'center', fontWeight: 'bold', borderWidth: 2, padding: 5, borderColor: "#333333", color: "#f3f3f3", backgroundColor: "#000000" }}>
-              Payslip for the period of {employeeData.month} / {employeeData.year}
+            {payslipTitle}
             </Text>
 
             {/* Employee Details */}
             <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333" }]}>
               <View style={[styles.column, { borderRightWidth: 2, borderColor: "#333333" }]}>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Name:</Text> <Text>{employeeData.staffName}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Designation:</Text> <Text>{employeeData.designation}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Days Worked:</Text> <Text>{employeeData.presentDays}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Leave Days:</Text> <Text>{employeeData.leaveDays}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Late Days:</Text> <Text>{employeeData.lateDays}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Total Late Minutes:</Text> <Text>{employeeData.totalLateMinutes} mins</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 3 }}>
@@ -2505,32 +2451,32 @@ const Letters = () => {
                 </View>
               </View>
               <View style={styles.column}>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Month Days:</Text> <Text>{employeeData.monthDays}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Total OT Hours:</Text> <Text>{employeeData.totalOTHours} hrs</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Per Day Salary:</Text> <Text>₹{employeeData.perDaySalary}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Per Hour Salary:</Text> <Text>₹{employeeData.perHourSalary}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>Bank Account No:</Text> <Text>N/A</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>PAN:</Text> <Text>N/A</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", borderBottom: 2, borderBottomColor: "#333333", paddingHorizontal: 8, paddingVertical: 3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 3 }}>
                   <Text style={styles.label}>UAN:</Text> <Text>N/A</Text>
                 </View>
               </View>
             </View>
 
             {/* Earnings & Deductions Table */}
-            <Text style={{ textAlign: 'left', fontWeight: 'bold', borderWidth: 2, padding: 5, borderColor: "#333333", color: "#333333" }}>
+            <Text style={{ textAlign: 'left', fontWeight: 'bold',marginTop:20,marginBottom:10,color: "#333333" }}>
               Calculation
             </Text>
             <View style={styles.table}>
@@ -2592,7 +2538,6 @@ const Letters = () => {
                 <Text>Authorized Signature</Text>
               </View>
             </View>
-
             <Text style={styles.footer}>This is a system-generated payslip and does not require a signature.</Text>
           </View>
         </Page>

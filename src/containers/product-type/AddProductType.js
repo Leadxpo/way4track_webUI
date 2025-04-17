@@ -8,7 +8,7 @@ export default function AddProductType() {
     name: '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    description: '',
+    type: '',
     photo: null,
     image: null,
   });
@@ -33,7 +33,7 @@ export default function AddProductType() {
     data.append('name', formData.name);
     data.append('companyCode', formData.companyCode);
     data.append('unitCode', formData.unitCode);
-    data.append('description', formData.description);
+    data.append('type', formData.type);
 
     if (formData.photo) data.append('photo', formData.photo);
     if (formData.image) data.append('image', formData.image);
