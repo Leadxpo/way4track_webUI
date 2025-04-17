@@ -160,6 +160,11 @@ import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPaymen
 import AddTicket from '../tickets/AddTicket';
 import EditTicket from '../tickets/EditTicket';
 import ViewTicket from '../tickets/ViewTicket';
+import SubStaffDetails from '../sub-dealers/SubStaffDetails';
+import AddSubStaff from '../sub-dealers/AddSubStaff';
+import PersonnelDetails from '../sub-dealers/AddSubStaff';
+import EditSubStaff from '../sub-dealers/EditSubStaff';
+import ViewSubStaff from '../sub-dealers/ViewSubStaff';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -507,6 +512,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/vendor-profile" element={<VendorProfile />} />
           <Route path="/delete-sub-dealer" element={<DeleteSubDealer />} />
+          
+          <Route path="/sub-staff-details" element={<SubStaffDetails />} />
           <Route path="/sub-dealer-profile" element={<SubDealerDetails />} />
           <Route path="/day-book" element={<DayBook />} />
           <Route path="/ledger-details" element={<LedgerDetails />} />
@@ -585,10 +592,11 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-groups" element={<AddGroups />} />
           <Route path="/more-details-groups" element={<moreDetailsGroups />} />
           <Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
-
+          <Route path="/add-sub-staff" element={<PersonnelDetails/>} />
+          <Route path="/edit-sub-staff" element={<EditSubStaff/>} />
+          <Route path="/view-sub-staff" element={<ViewSubStaff/>} />
           <Route path="/add-designation" element={<AddDesignation />} />
           <Route path="/add-ledger" element={<AddLedger />} />
-
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />

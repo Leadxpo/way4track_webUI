@@ -107,6 +107,11 @@ export const menuOptions = {
       route: '/products',
     },
     {
+      name: 'Sub Dealer Staff',
+      icon: <img src="./products.png" />,
+      route: '/sub-staff-details',
+    },
+    {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
       route: '/requests',
