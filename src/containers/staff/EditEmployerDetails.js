@@ -79,6 +79,7 @@ const EditEmployerDetails = () => {
       // { label: "Staff ID", name: "staffId", type: "text" },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
+      { label: 'Designation', name: 'designation', type: 'text' },
 
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
       { label: 'Office Email', name: 'officeEmail', type: 'email' },

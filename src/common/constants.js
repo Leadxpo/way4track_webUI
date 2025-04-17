@@ -284,7 +284,7 @@ export const menuOptions = {
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'call center': [
+  'Tele caller': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -683,7 +683,7 @@ export const formattedPaths = {
       icon: <img src="./maintenance.png" />,
     },
   },
-  'call center': {
+  'Tele caller': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/customer-requests': {
       name: 'Customer Requests',

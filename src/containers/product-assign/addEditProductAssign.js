@@ -217,8 +217,8 @@ const AddEditProductAssign = () => {
     });
     try {
       const endpoint = formData.id
-        ? '/product-assign/handleProductDetails'
-        : '/product-assign/handleProductDetails';
+        ? '/products/bulk-upload'
+        : '/products/bulk-upload';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -328,7 +328,7 @@ const AddEditProductAssign = () => {
           />
           <input
             type="file"
-            accept="image/*"
+            // accept="image/*"
             name="file"
             className="ml-4 border p-2 rounded"
             onChange={handleFileChange}
