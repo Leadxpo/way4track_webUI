@@ -157,6 +157,9 @@ import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
 import SubDelarStaff from '../sub-dealers/subDelarStaff';
 import BackendSupportPayments from '../backendSupport/backendSupportPayments';
 import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPayments';
+import AddTicket from '../tickets/AddTicket';
+import EditTicket from '../tickets/EditTicket';
+import ViewTicket from '../tickets/ViewTicket';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -461,6 +464,9 @@ const BodyLayout = ({ children }) => {
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
+          <Route path="/add-ticket" element={<AddTicket />} />
+          <Route path="/edit-ticket" element={<EditTicket />} />
+          <Route path="/view-ticket" element={<ViewTicket />} />
           <Route path="/hiring" element={<Hiring />} />
           <Route path="/add-hiring" element={<AddHiring />} />
           <Route path="/delete-hiring" element={<DeleteHiring />} />
