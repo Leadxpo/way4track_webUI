@@ -3,6 +3,8 @@ import { PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet, PDFView
 import { FaDownload, FaChevronDown } from 'react-icons/fa';
 import StaffDropdown from "../../components/staffDropdownId";
 import ApiService from "../../services/ApiService";
+import { toWords } from 'number-to-words';
+
 const Letters = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -124,6 +126,11 @@ const Letters = () => {
       fontSize: 13, fontFamily: "Times-Roman",
       marginBottom: 10, marginTop: 5
     },
+    payslipLabel: {
+      fontWeight: "extrabold",
+      fontSize: 13, fontFamily: "Times-Roman",
+      marginVertical: 5
+    },
     text: {
       fontSize: 11, fontFamily: "Times-Roman",
       marginLeft: 20, lineHeight: 1.3,
@@ -170,10 +177,11 @@ const Letters = () => {
     payslipSection: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
     column: { width: '50%' },
     paysliptext: { marginBottom: 5, fontFamily: "Times-Roman", lineHeight: 1 },
-    table: { width: '100%', borderWidth: 1 },
+    table: { width: '100%', borderWidth: 1 ,marginTop:20},
     row: { flexDirection: 'row', },
     mainRow: { flexDirection: 'row', border: 1 },
     cell: { flex: 1, textAlign: 'left', paddingVertical: 3, paddingHorizontal: 5, fontFamily: "Times-Roman" },
+    lastcell: { textAlign: 'left', paddingVertical: 3, paddingHorizontal: 5, fontFamily: "Times-Roman" },
     footer: { marginTop: 10, position: 'absolute', bottom: 5, left: 0, right: 0, textAlign: 'center', fontSize: 10, fontStyle: 'italic', fontFamily: "Times-Roman" }
   });
 
@@ -3205,14 +3213,14 @@ const Letters = () => {
 
             <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
               <View style={{ width: 200 }}>
-                <Text style={styles.label}>{employee?.name},</Text>
+                <Text style={styles.text}>{employee?.name},</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
                 <Text style={styles.text}>{employee.branch}</Text>
               </View>
               <View style={{ flexWrap: "wrap" }}>
                 <Text style={styles.text}>{employee.designation}</Text>
                 <Text style={styles.text}>{employee.department}</Text>
-                <Text style={{ alignItems: "flex-end" }}>{todayData.split("T")[0]}</Text>
+                <Text style={styles.text}>{todayData.split("T")[0]}</Text>
               </View>
             </View>
             <View style={styles.section}>
@@ -3221,7 +3229,7 @@ const Letters = () => {
                 Pvt Ltd. is terminated effective {employee.date} for the following
               </Text>
 
-              <Text style={styles.text}> reasons:</Text>
+              <Text style={styles.text}> Reasons:</Text>
               <Text style={styles.text}>{employee.description}</Text>
             </View>
 
@@ -3248,11 +3256,11 @@ const Letters = () => {
 
             <View style={styles.signatureSection}>
               <View style={styles.signatureBlock}>
-                <Text style={styles.greetingText}>Sincerely,</Text>
-                <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-                <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+                <Text style={styles.text}>Sincerely,</Text>
+                <Text style={styles.text}>{employee.greetingTo}</Text>
+                <Text style={styles.text}>{employee.greetingDesignation}</Text>
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
-                <Text style={styles.text}>Contact: 7995512053</Text>
+                <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
               <View style={styles.signatureBlock}>
                 <Text style={styles.text}>Signature:</Text>
@@ -3294,7 +3302,7 @@ const Letters = () => {
 
             <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
               <View style={{ width: 200 }}>
-                <Text style={styles.label}>{employee?.name},</Text>
+                <Text style={styles.text}>{employee?.name},</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
                 <Text style={styles.text}>{employee.branch}</Text>
                 <Text style={styles.text}>{employee.address}</Text>
@@ -3324,7 +3332,7 @@ const Letters = () => {
                 Your last working day will be {employee.lastWorkingDay}, and we kindly request that you complete any pending tasks and assist in transitioning your responsibilities during this time. We understand that leaving on such short notice requires adjustments, and we will do our best to ensure a smooth handover.
               </Text>
               <Text style={styles.text}>
-                Regarding your benefits and dues, we will initiate the necessary processes to settle any outstanding payments, including your final paycheck, accumulated vacation days, and any other eligible benefits. If you have any specific questions or concerns regarding this matter, please do not hesitate to contact our HR Department at 7995512053.
+                Regarding your benefits and dues, we will initiate the necessary processes to settle any outstanding payments, including your final paycheck, accumulated vacation days, and any other eligible benefits. If you have any specific questions or concerns regarding this matter, please do not hesitate to contact our HR Department at {employee.greetingPhoneNo}.
               </Text>
               <Text style={styles.text}>
                 Once again, we would like to express our gratitude for your hard work and dedication to the company. We wish you all the best in your future endeavors.
@@ -3334,11 +3342,11 @@ const Letters = () => {
 
             <View style={styles.signatureSection}>
               <View style={styles.signatureBlock}>
-                <Text style={styles.greetingText}>Sincerely,</Text>
-                <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-                <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
+                <Text style={styles.text}>Sincerely,</Text>
+                <Text style={styles.text}>{employee.greetingTo}</Text>
+                <Text style={styles.text}>{employee.greetingDesignation}</Text>
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
-                <Text style={styles.text}>Contact: 7995512053</Text>
+                <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
               <View style={styles.signatureBlock}>
                 <Text style={styles.text}>Signature:</Text>
@@ -3383,7 +3391,7 @@ const Letters = () => {
             {/* Profile Section */}
             <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
               <View style={{ width: 200 }}>
-                <Text style={styles.label}>{employee?.name},</Text>
+                <Text style={styles.text}>{employee?.name},</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
                 <Text style={styles.text}>{employee.branch}</Text>
                 <Text style={styles.text}>{employee.address}</Text>
@@ -3395,8 +3403,8 @@ const Letters = () => {
 
             {/* Employee Details */}
             <View style={styles.section}>
-              <Text style={styles.label}>Company Name: SharlonTelematrice</Text>
-              <Text style={styles.label}>Company Address: Visakhaptnam</Text>
+              <Text style={styles.text}>Company Name: SharlonTelematrice</Text>
+              <Text style={styles.text}>Company Address: Visakhaptnam</Text>
             </View>
 
             {/* Letter Content */}
@@ -3421,7 +3429,7 @@ const Letters = () => {
 
             {/* Signature Section */}
             <View style={styles.signatureSection}>
-              <Text style={styles.greetingText}>Sincerely,</Text>
+              <Text style={styles.text}>Sincerely,</Text>
               <View style={styles.signatureBlock}>
                 <Text style={styles.text}>{employee.name}</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
@@ -3498,45 +3506,45 @@ const Letters = () => {
             <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333" }]}>
               <View style={[styles.column, { borderRightWidth: 2, borderColor: "#333333" }]}>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
+                  <Text style={styles.payslipLabel}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Name:</Text> <Text>{employeeData.staffName}</Text>
+                  <Text style={styles.payslipLabel}>Name:</Text> <Text style={{width:110}}>{employeeData.staffName}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Designation:</Text> <Text>{employeeData.designation}</Text>
+                  <Text style={styles.payslipLabel}>Designation:</Text> <Text>{employeeData.designation}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Days Worked:</Text> <Text>{employeeData.presentDays}</Text>
+                  <Text style={styles.payslipLabel}>Days Worked:</Text> <Text>{employeeData.presentDays}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Leave Days:</Text> <Text>{employeeData.leaveDays}</Text>
+                  <Text style={styles.payslipLabel}>Leave Days:</Text> <Text>{employeeData.leaveDays}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Late Days:</Text> <Text>{employeeData.lateDays}</Text>
+                  <Text style={styles.payslipLabel}>Late Days:</Text> <Text>{employeeData.lateDays}</Text>
                 </View>
               </View>
               <View style={styles.column}>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Month Days:</Text> <Text>{employeeData.monthDays}</Text>
+                  <Text style={styles.payslipLabel}>Month Days:</Text> <Text>{employeeData.monthDays}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Total OT Hours:</Text> <Text>{employeeData.totalOTHours} hrs</Text>
+                  <Text style={styles.payslipLabel}>Total OT Hours:</Text> <Text>{employeeData.totalOTHours} hrs</Text>
                 </View>
                 {/* <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Per Day Salary:</Text> <Text>₹{employeeData.perDaySalary}</Text>
+                  <Text style={styles.payslipLabel}>Per Day Salary:</Text> <Text>₹{employeeData.perDaySalary}</Text>
                 </View> */}
                 {/* <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Per Hour Salary:</Text> <Text>₹{employeeData.perHourSalary}</Text>
+                  <Text style={styles.payslipLabel}>Per Hour Salary:</Text> <Text>₹{employeeData.perHourSalary}</Text>
                 </View> */}
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>Bank Account No:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>Bank Account No:</Text> <Text>N/A</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>PAN:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>PAN:</Text> <Text>N/A</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.label}>UAN:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>UAN:</Text> <Text>N/A</Text>
                 </View>
               </View>
             </View>
@@ -3586,12 +3594,12 @@ const Letters = () => {
                 <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Deductions</Text>
                 <Text style={[styles.cell, { fontWeight: 'bold' }]}>{employeeData.lateDeductions}</Text>
               </View>
+              <View style={[styles.mainRow,{padding:10}]}>
+                <Text style={[styles.lastcell, {flex:3, fontWeight: 'bold' }]}> Net Pay ( {toWords(employeeData.netSalary)} )</Text>
+                <Text style={[styles.lastcell, {flex:1, fontWeight: 'bold' }]}>  Rs {employeeData.netSalary}</Text>
+                {/* <Text style={[styles.cell, { fontWeight: 'bold'}]}> </Text> */}
+              </View>
             </View>
-
-            {/* Net Pay */}
-            <Text style={{ fontWeight: 'bold', marginVertical: 10, fontSize: 14 }}>
-              Net Pay (Rounded): ₹{employeeData.netSalary}
-            </Text>
 
             {/* Signature */}
             {/* <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'space-between' }}>
