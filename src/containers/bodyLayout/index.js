@@ -165,6 +165,10 @@ import AddSubStaff from '../sub-dealers/AddSubStaff';
 import PersonnelDetails from '../sub-dealers/AddSubStaff';
 import EditSubStaff from '../sub-dealers/EditSubStaff';
 import ViewSubStaff from '../sub-dealers/ViewSubStaff';
+import AppointmentTable from '../appointment/AppointmentTable';
+import AddAppointment from '../appointment/AddAppointment';
+import EditAppointment from '../appointment/EditAppointment';
+import ViewAppointment from '../appointment/ViewAppointment';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -531,6 +535,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          {/* telecaller */}
+          <Route path="/appointment-table" element={<AppointmentTable />} />
+          <Route path="/create-appointment" element={<AddAppointment/>} />
+          <Route path="/edit-appointment" element={<EditAppointment />} />
+          <Route path="/view-appointment" element={<ViewAppointment/>} />
+          EditAppointment
           <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
             path="/bank-details-dashboard"

@@ -289,13 +289,13 @@ export const menuOptions = {
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'Tele caller': [
+  'tele caller': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
       route: '/customer-care-home',
     },
-    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
+    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' },
     {
       name: 'Tickets Assign',
       icon: <img src="./tickets.png" />,
