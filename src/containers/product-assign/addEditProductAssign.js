@@ -7,6 +7,8 @@ import * as XLSX from 'xlsx';
 const AddEditProductAssign = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const role = localStorage.getItem('role');
+  console.log(role, 'Role');
 
   // const [imeiList, setImeiList] = useState([]);
   // const [showDropdown1, setShowDropdown1] = useState(false);
@@ -54,6 +56,8 @@ const AddEditProductAssign = () => {
   const [staff, setStaff] = useState([]);
   const [product, setProduct] = useState([]);
   const [subDealerNames, setSubDealerNames] = useState([]);
+
+  console.log(staff, 'stafrf names');
 
   useEffect(() => {
     const getProductNamesDropDown = async () => {
@@ -132,13 +136,31 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaff(res.data || []);
+        const branchId = localStorage.getItem('branch_id');
+        console.log(branchId, 'local');
+
+        const res = await ApiService.post('/dashboards/getStaffSearchDetails', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        const allStaff = res.data || [];
+        console.log(allStaff, 'allStaff');
+
+        // Filter staff by branch_id and designation
+        const filteredStaff = allStaff.filter(
+          (staff) =>
+            Number(staff.branch_id) === Number(branchId) &&
+            staff.designation === 'Technician'
+        );
+
+        setStaff(filteredStaff);
+        console.log(filteredStaff, 'Filtered Staff - Technicians');
       } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaff([]);
       }
     };
+
     fetchStaff();
   }, []);
 
@@ -399,46 +421,67 @@ const AddEditProductAssign = () => {
             Download Sample format
           </button>
           {/* Branch Selection */}
-          <div>
-            <p className="font-semibold mb-1">Assign To</p>
-            <select
-              value={formData.assignTo}
-              onChange={(e) => {
-                const selectedId = e.target.value;
-                const selected = unifiedData.find(
-                  (item) => item.id === selectedId
-                );
+          {role !== 'Branch Manager' && (
+            <div>
+              <p className="font-semibold mb-1">Assign To</p>
+              <select
+                value={formData.assignTo}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selected = unifiedData.find(
+                    (item) => item.id === selectedId
+                  );
 
-                if (selected?.type === 'branch') {
-                  setFormData((prev) => ({
-                    ...prev,
-                    assignTo: selected.id,
-                    branchId: selected.id.split('-')[1], // extract numeric ID
-                    staffId: '', // clear staffId
-                    branchOrPerson: 'Branch',
-                  }));
-                } else if (selected?.type === 'subdealer') {
-                  setFormData((prev) => ({
-                    ...prev,
-                    assignTo: selected.id,
-                    subDealerId: selected.id.split('-')[1], // extract numeric ID
-                    branchId: '', // clear branchId
-                    branchOrPerson: 'Subdealer',
-                  }));
-                }
-              }}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="">Select Branch or Subdealer</option>
-              {unifiedData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.type === 'branch'
-                    ? `🏢 Branch: ${item.label}`
-                    : `👤 Subdealer: ${item.label}`}
-                </option>
-              ))}
-            </select>
-          </div>
+                  if (selected?.type === 'branch') {
+                    setFormData((prev) => ({
+                      ...prev,
+                      assignTo: selected.id,
+                      branchId: selected.id.split('-')[1], // extract numeric ID
+                      staffId: '', // clear staffId
+                      branchOrPerson: 'Branch',
+                    }));
+                  } else if (selected?.type === 'subdealer') {
+                    setFormData((prev) => ({
+                      ...prev,
+                      assignTo: selected.id,
+                      subDealerId: selected.id.split('-')[1], // extract numeric ID
+                      branchId: '', // clear branchId
+                      branchOrPerson: 'Subdealer',
+                    }));
+                  }
+                }}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select Branch or Subdealer</option>
+                {unifiedData.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.type === 'branch'
+                      ? `🏢 Branch: ${item.label}`
+                      : `👤 Subdealer: ${item.label}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {role === 'Branch Manager' && (
+            <div>
+              <p className="font-semibold mb-1">Select Staff</p>
+              <select
+                name="staffId"
+                value={formData.staffId}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select Staff</option>
+                {staff.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.staffName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Product Selection */}
           {product.length > 0 && (
