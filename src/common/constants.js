@@ -295,12 +295,8 @@ export const menuOptions = {
       icon: <img src="./home.png" />,
       route: '/customer-care-home',
     },
-    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' },
-    {
-      name: 'Tickets Assign',
-      icon: <img src="./tickets.png" />,
-      route: '/ticket-aasign',
-    },
+    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' }
+    
   ],
   'sales man': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
