@@ -5,10 +5,10 @@ import ApiService from '../../services/ApiService';
 const EditBankDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log("bankkkkkk",location.state)
+  console.log('bankkkkkk', location.state);
   const [data, setData] = useState({
-    id:'',
-    staffId:'',
+    id: '',
+    staffId: '',
     accountNumber: '',
     bankName: '',
     ifscCode: '',
@@ -29,47 +29,51 @@ const EditBankDetails = () => {
 
   const handleSubmit = async () => {
     try {
-      const endpoint = "/staff/handleStaffDetails"; 
-      const response = await ApiService.post(endpoint,data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const endpoint = '/staff/handleStaffDetails';
+      const response = await ApiService.post(endpoint, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      console.log(response,"response bank details")
-  
+      console.log(response, 'response bank details');
+
       if (response.status) {
-        alert("Bank details updated successfully!");
+        alert('Bank details updated successfully!');
+        navigate('/staff-details');
         return response.data;
       } else {
-        alert("Failed to update bank details.");
+        alert('Failed to update bank details.');
         return null;
       }
     } catch (error) {
-      console.error("Error updating bank details:", error);
-      alert("An error occurred while updating bank details.");
+      console.error('Error updating bank details:', error);
+      alert('An error occurred while updating bank details.');
       return null;
     }
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-6">
-      <h3 className="text-3xl font-semibold mb-6 text-center">Edit Bank Details</h3>
+      <h3 className="text-3xl font-semibold mb-6 text-center">
+        Edit Bank Details
+      </h3>
       <div className="space-y-6">
-        {['accountNumber', 'bankName', 'ifscCode', 'accountBranch'].map((field) => (
-          <div key={field} className="flex flex-col">
-            <label className="text-gray-700 font-medium mb-1 capitalize">
-              {field.replace(/([A-Z])/g, ' $1').trim()}
-            </label>
-            <input
-              type="text"
-              name={field}
-              value={data[field] || ''}
-              onChange={handleChange}
-              placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').trim()}`}
-              className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none text-gray-700"
-            />
-          </div>
-        ))}
+        {['accountNumber', 'bankName', 'ifscCode', 'accountBranch'].map(
+          (field) => (
+            <div key={field} className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1 capitalize">
+                {field.replace(/([A-Z])/g, ' $1').trim()}
+              </label>
+              <input
+                type="text"
+                name={field}
+                value={data[field] || ''}
+                onChange={handleChange}
+                placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').trim()}`}
+                className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none text-gray-700"
+              />
+            </div>
+          )
+        )}
 
         <div className="flex flex-col">
           <label className="text-gray-700 font-medium mb-1">Account Type</label>
@@ -81,7 +85,9 @@ const EditBankDetails = () => {
           >
             <option value="">Select Account Type</option>
             {['savings', 'current'].map((type) => (
-              <option key={type} value={type}>{type}</option>
+              <option key={type} value={type}>
+                {type}
+              </option>
             ))}
           </select>
         </div>

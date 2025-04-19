@@ -155,6 +155,9 @@ import DebitNoteForm from '../vouchers/debitNote';
 import CreditNoteForm from '../vouchers/creditNote';
 import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
 import SubDelarStaff from '../sub-dealers/subDelarStaff';
+import SubDealerNotifications from '../notifications/sub-dealer-home-notifications';
+
+
 import BackendSupportPayments from '../backendSupport/backendSupportPayments';
 import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPayments';
 import AddTicket from '../tickets/AddTicket';
@@ -383,6 +386,9 @@ const BodyLayout = ({ children }) => {
               onClick={() => navigate('/notifications')}
             />
           </div>
+          <div>
+            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
+          </div>
         </div>
       </div>
 
@@ -451,6 +457,7 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
+
           <Route path="/sales_visit" element={<SalesVisit />} />
 
           <Route path="/sales-visit-details" element={<SalesVisitDetails />} />
@@ -514,6 +521,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-sub-dealer" element={<AddSubDealer />} />
           <Route path="/add-product" element={<AddProductForm />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/sub-dealer-notifications" element={<SubDealerNotifications />} />
           <Route path="/vendor-profile" element={<VendorProfile />} />
           <Route path="/delete-sub-dealer" element={<DeleteSubDealer />} />
           
@@ -602,6 +610,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-groups" element={<AddGroups />} />
           <Route path="/more-details-groups" element={<moreDetailsGroups />} />
           <Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
+
+
+
+
           <Route path="/add-sub-staff" element={<PersonnelDetails/>} />
           <Route path="/edit-sub-staff" element={<EditSubStaff/>} />
           <Route path="/view-sub-staff" element={<ViewSubStaff/>} />

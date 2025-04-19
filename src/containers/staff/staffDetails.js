@@ -15,8 +15,8 @@ const StaffDetails = () => {
 
   const [formData, setFormData] = useState({
     personnelDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId || '',
       name: 'John Doe',
       dob: '1990-01-01',
       gender: 'Male',
@@ -34,8 +34,8 @@ const StaffDetails = () => {
       bloodGroup: 'O+',
     },
     educationDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       qualifications: [
         { qualificationName: 'B.Tech', marksOrCgpa: '8.5 CGPA', file: null },
       ],
@@ -51,8 +51,8 @@ const StaffDetails = () => {
       ],
     },
     bankDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       accountNumber: '123456789012',
       bankName: 'ABC Bank',
       ifscCode: 'ABC12345',
@@ -60,8 +60,8 @@ const StaffDetails = () => {
       accountType: 'savings',
     },
     employerDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       branch: 'Head Office',
       staffId: 'EMP12345',
       joiningDate: '2020-06-15',

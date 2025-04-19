@@ -2,10 +2,9 @@
 
 import axios from 'axios';
 
-
 export const initialAuthState = {
   userId: 4,
-  userName: 'admin', 
+  userName: 'admin',
   companyCode: 'WAY4TRACK',
   unitCode: 'WAY4',
 };
