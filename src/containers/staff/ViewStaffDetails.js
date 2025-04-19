@@ -10,7 +10,7 @@ const ViewStaffDetails = () => {
   console.log('locationnnnnnnnnnnnnnnnnnn', state.staffDetails);
   const [formData] = useState({
     personnelDetails: {
-      id:state.staffDetails.id,
+      id: state.staffDetails.id,
       staffId: state.staffDetails.staffId,
       name: 'John Doe',
       dob: '1990-01-01',
@@ -28,7 +28,7 @@ const ViewStaffDetails = () => {
       bloodGroup: 'O+',
     },
     educationDetails: {
-      id:state.staffDetails.id,
+      id: state.staffDetails.id,
       staffId: state.staffDetails.staffId,
       qualifications: [
         { qualificationName: 'B.Tech', marksOrCgpa: '8.5 CGPA', file: null },
@@ -45,7 +45,7 @@ const ViewStaffDetails = () => {
       ],
     },
     bankDetails: {
-      id:state.staffDetails.id,
+      id: state.staffDetails.id,
       staffId: state.staffDetails.staffId,
       accountNumber: '123456789012',
       bankName: 'ABC Bank',
@@ -54,7 +54,7 @@ const ViewStaffDetails = () => {
       accountType: 'savings',
     },
     employerDetails: {
-      id:state.staffDetails.id,
+      id: state.staffDetails.id,
       staffId: state.staffDetails.staffId,
       branchName: 'Head Office',
       staffId: 'EMP12345',
@@ -77,7 +77,7 @@ const ViewStaffDetails = () => {
     },
   });
 
-  console.log(formData.employerDetails,"employeers")
+  console.log(formData.employerDetails, 'employeers');
 
   const handleEdit = (path, data) => {
     navigate(path, { state: { data } });

@@ -75,7 +75,6 @@ const ProductAssign = () => {
     setPermissions(perms);
     productAssignDetails(selectedBranch);
   }, [selectedBranch]);
-  
 
   return (
     <div className="p-10">

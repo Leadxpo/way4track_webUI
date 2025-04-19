@@ -442,6 +442,7 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
+
           <Route path="/sales_visit" element={<SalesVisit />} />
 
           <Route path="/sales-visit-details" element={<SalesVisitDetails />} />

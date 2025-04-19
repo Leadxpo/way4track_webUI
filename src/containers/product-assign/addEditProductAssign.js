@@ -53,6 +53,7 @@ const AddEditProductAssign = () => {
   const [image, setImage] = useState(productAssign?.file || '');
   const [staff, setStaff] = useState([]);
   const [product, setProduct] = useState([]);
+  const [subDealerNames, setSubDealerNames] = useState([]);
 
   useEffect(() => {
     const getProductNamesDropDown = async () => {
@@ -66,6 +67,30 @@ const AddEditProductAssign = () => {
       }
     };
     getProductNamesDropDown();
+  }, []);
+
+  useEffect(() => {
+    const fetchSubDealerDropDown = async () => {
+      try {
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerNamesDropDown',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response.data) {
+          setSubDealerNames(response.data);
+          console.log(response.data, 'sub delear');
+        } else {
+          console.error('Invalid API:');
+        }
+      } catch (error) {
+        console.error('Error fetching sub delears names:', error);
+      }
+    };
+
+    fetchSubDealerDropDown();
   }, []);
 
   useEffect(() => {
@@ -206,6 +231,8 @@ const AddEditProductAssign = () => {
   //   getActiveStatusInHands(record.id);
   // }
 
+  console.log(formData, 'formdata');
+
   const handleSave = async () => {
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -307,6 +334,23 @@ const AddEditProductAssign = () => {
     XLSX.writeFile(workbook, 'SampleProductAssignXlFormat.xlsx');
   };
 
+  const unifiedData = [
+    ...subDealerNames.map((dealer) => ({
+      id: `sub-${dealer.id}`,
+      label: dealer.name,
+      type: 'subdealer',
+      original: dealer,
+    })),
+    ...branches.map((branch) => ({
+      id: `branch-${branch.id}`,
+      label: branch.branchName,
+      type: 'branch',
+      original: branch,
+    })),
+  ];
+
+  console.log(unifiedData, 'UNIFID');
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
@@ -355,26 +399,46 @@ const AddEditProductAssign = () => {
             Download Sample format
           </button>
           {/* Branch Selection */}
-          {branches.length > 0 && (
-            <div>
-              <p className="font-semibold mb-1">Branch</p>
-              <select
-                name="branchId"
-                value={formData.branchId}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select a Branch
+          <div>
+            <p className="font-semibold mb-1">Assign To</p>
+            <select
+              value={formData.assignTo}
+              onChange={(e) => {
+                const selectedId = e.target.value;
+                const selected = unifiedData.find(
+                  (item) => item.id === selectedId
+                );
+
+                if (selected?.type === 'branch') {
+                  setFormData((prev) => ({
+                    ...prev,
+                    assignTo: selected.id,
+                    branchId: selected.id.split('-')[1], // extract numeric ID
+                    staffId: '', // clear staffId
+                    branchOrPerson: 'Branch',
+                  }));
+                } else if (selected?.type === 'subdealer') {
+                  setFormData((prev) => ({
+                    ...prev,
+                    assignTo: selected.id,
+                    subDealerId: selected.id.split('-')[1], // extract numeric ID
+                    branchId: '', // clear branchId
+                    branchOrPerson: 'Subdealer',
+                  }));
+                }
+              }}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select Branch or Subdealer</option>
+              {unifiedData.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.type === 'branch'
+                    ? `🏢 Branch: ${item.label}`
+                    : `👤 Subdealer: ${item.label}`}
                 </option>
-                {branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.branchName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+              ))}
+            </select>
+          </div>
 
           {/* Product Selection */}
           {product.length > 0 && (

@@ -4,6 +4,7 @@ import ApiService from '../../services/ApiService';
 
 export default function EditEducationDetails() {
   const location = useLocation();
+  const navigate=useNavigate()
   console.log('EducationDetails', location.state);
   const [educationDetails, setEducationDetails] = useState([]);
   const [qualification, setQualification] = useState([
@@ -32,9 +33,9 @@ export default function EditEducationDetails() {
       if (qualifications?.length) {
         setQualification(
           qualifications.map((qual) => ({
-            qualificationName: qual.qualificationName || "",
-            marksOrCgpa: qual.marksOrCgpa || "",
-            file: qual.file || null, 
+            qualificationName: qual.qualificationName || '',
+            marksOrCgpa: qual.marksOrCgpa || '',
+            file: qual.file || null,
           }))
         );
       }
@@ -42,11 +43,11 @@ export default function EditEducationDetails() {
       if (experience?.length) {
         setExperience(
           experience.map((exp) => ({
-            previousCompany: exp.previousCompany || "",
-            previous_designation: exp.previous_designation || "",
-            total_experience: exp.total_experience || "",
-            previous_salary: exp.previous_salary || "",
-            letter: exp.letter || "experienceLetter",
+            previousCompany: exp.previousCompany || '',
+            previous_designation: exp.previous_designation || '',
+            total_experience: exp.total_experience || '',
+            previous_salary: exp.previous_salary || '',
+            letter: exp.letter || 'experienceLetter',
             uploadLetters: exp.uploadLetters || null,
           }))
         );
@@ -127,45 +128,40 @@ export default function EditEducationDetails() {
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      
-      const staffId = location.state?.data?.id; 
-  
+
+      const staffId = location.state?.data?.id;
+
       const qualifications = qualification.map((qual) => ({
         qualificationName: qual.qualificationName,
         marksOrCgpa: qual.marksOrCgpa,
       }));
-  
+
       const experienceDetails = experience.map((exp) => ({
         previousCompany: exp.previousCompany,
         previous_designation: exp.previous_designation,
         total_experience: exp.total_experience,
         previous_salary: exp.previous_salary,
       }));
-  
+
       formData.append('qualifications', JSON.stringify(qualifications));
       formData.append('experienceDetails', JSON.stringify(experienceDetails));
 
-      
-  
       if (staffId) {
         formData.append('id', staffId);
       }
-  
+
       qualification.forEach((qual) => {
         if (qual.file) {
           formData.append('qualificationFiles', qual.file);
         }
       });
-  
+
       experience.forEach((exp) => {
         if (exp.uploadLetters) {
           formData.append('experience', exp.uploadLetters);
         }
       });
 
-
-      
-  
       const response = await ApiService.post(
         '/staff/handleStaffDetails',
         formData,
@@ -173,12 +169,13 @@ export default function EditEducationDetails() {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-  
+
       console.log(response, 'response education details');
-  
+
       if (response.status) {
         alert('Education details updated successfully!');
         return response.data;
+        navigate("/staff-details")
       } else {
         alert('Failed to update education details.');
         return null;
@@ -189,7 +186,6 @@ export default function EditEducationDetails() {
       return null;
     }
   };
-  
 
   return (
     <div>

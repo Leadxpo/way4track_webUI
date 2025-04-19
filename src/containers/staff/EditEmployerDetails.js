@@ -153,6 +153,7 @@ const EditEmployerDetails = () => {
       if (response.status) {
         alert('Employer details updated successfully!');
         return response.data;
+        navigate("/staff-details")
       } else {
         alert('Failed to update employer details.');
         return null;
