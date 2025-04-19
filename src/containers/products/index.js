@@ -18,34 +18,85 @@ const data = [
 ];
 
 const data1 = [
-  { id: 1, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 5342, date: "5342" },
-  { id: 2, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3423, date: "3423" },
-  { id: 3, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 234, date: "234" },
-  { id: 4, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3412, date: "3412" },
-  { id: 5, staffId: "7664FG462G", staffName: "Praveen", product: "7664FG462G", quantity: 3322, date: "3322" },
+  {
+    id: 1,
+    staffId: '7664FG462G',
+    staffName: 'Praveen',
+    product: '7664FG462G',
+    quantity: 5342,
+    date: '5342',
+  },
+  {
+    id: 2,
+    staffId: '7664FG462G',
+    staffName: 'Praveen',
+    product: '7664FG462G',
+    quantity: 3423,
+    date: '3423',
+  },
+  {
+    id: 3,
+    staffId: '7664FG462G',
+    staffName: 'Praveen',
+    product: '7664FG462G',
+    quantity: 234,
+    date: '234',
+  },
+  {
+    id: 4,
+    staffId: '7664FG462G',
+    staffName: 'Praveen',
+    product: '7664FG462G',
+    quantity: 3412,
+    date: '3412',
+  },
+  {
+    id: 5,
+    staffId: '7664FG462G',
+    staffName: 'Praveen',
+    product: '7664FG462G',
+    quantity: 3322,
+    date: '3322',
+  },
 ];
 
 const Products = () => {
-  const [selected, setSelected] = useState("branchstock");
-  const [branchStock, setBranchStock] = useState([]);
-  const [inhandStock, setInhandStock] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
-  if(branchStock){
-    console.log("++++++++ R",branchStock)
-  }
+  const [selected, setSelected] = useState(() => {
+    const role = localStorage.getItem('role'); // adjust the key if needed
+    if (role === 'Branch Manager') return 'branchstock';
+    if (role === 'Sub Dealer') return 'subDealerStock';
+    // if (role === 'subDealer') return 'subDealerStock';
+    if (role === 'CEO') return '';
+    return ''; // default fallback
+  });
 
+  const [branchStock, setBranchStock] = useState([]);
+  const [branchList, setBranchList] = useState([]);
+  const [inHandStock, setInHandStock] = useState([]);
+  const [inhandList, setInhandList] = useState([]);
+  const [subDealerStock, setSubDealerStock] = useState([]);
+  const [subDealerList, setSubDealerList] = useState([]);
+  const [subDealerNames, setSubDealerNames] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [stock, setStock] = useState(null);
+  const [allProductsStock, setAllProductsStock] = useState(null);
+  // if (branchStock) {
+  //   console.log('++++++++ R', branchStock);
+  // }
+  console.log('Selected:', selected);
+
+  console.log(branchStock, 'branchStock');
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
   };
   const [filters, setFilters] = useState({
-    staffId: "",
-    staffName: "",
-    productName: "",
-    fromDate: "",
-    toDate: "",
+    staffId: '',
+    staffName: '',
+    productName: '',
+    fromDate: '',
+    toDate: '',
   });
-
 
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('');
@@ -74,9 +125,7 @@ const Products = () => {
       };
 
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
-      if (
-        payload.role === 'Technician' || payload.role === 'Sales Man'
-      ) {
+      if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
 
@@ -128,9 +177,15 @@ const Products = () => {
 
       let response;
       if (payload.staffId) {
-        response = await ApiService.post('/dashboards/getSearchDetailProductAssign', payload);
+        response = await ApiService.post(
+          '/dashboards/getSearchDetailProductAssign',
+          payload
+        );
       } else {
-        response = await ApiService.post('/products/getSearchDetailProduct', payload);
+        response = await ApiService.post(
+          '/products/getSearchDetailProduct',
+          payload
+        );
       }
 
       if (response?.status) {
@@ -147,7 +202,9 @@ const Products = () => {
         setColumns(Object.keys(filteredData[0] || {})); // Corrected empty object
         setProducts(response.data || []);
       } else {
-        alert(response?.data?.internalMessage || 'Failed to fetch product details.');
+        alert(
+          response?.data?.internalMessage || 'Failed to fetch product details.'
+        );
       }
     } catch (error) {
       console.error('Error fetching product details:', error);
@@ -166,7 +223,7 @@ const Products = () => {
   const handleSearch = () => {
     const searchQuery = searchData.name.toLowerCase().trim();
 
-    if (searchQuery === "") {
+    if (searchQuery === '') {
       setBranchStock(branchStock); // Reset to original data
     } else {
       const filteredData = branchStock.filter((item) =>
@@ -202,274 +259,497 @@ const Products = () => {
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
+
+  const fetchAllProductStock = async () => {
+    try {
+      const response = await ApiService.post('/products/productAssignDetails', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+      if (response.data) {
+        setBranchList(response.data.branchList);
+        setBranchStock(response.data.branchDetails);
+        setInhandList(response.data.staffList);
+        setInHandStock(response.data.staffDetails);
+        setSubDealerList(response.data.subDealerList);
+        setSubDealerStock(response.data.subDealerDetails);
+        setAllProductsStock(response.data);
+        console.log('qazwsxedc', response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
+
+  const fetchStock = async () => {
+    try {
+      const response = await ApiService.post(
+        '/products/getSearchDetailProduct',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+      if (response.data) {
+        setStock(response.data);
+        console.log('qazwsxedc', response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
+
+  const fetchSubDealerDropDown = async () => {
+    try {
+      const response = await ApiService.post(
+        '/subdealer/getSubDealerNamesDropDown',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+      if (response.data) {
+        setSubDealerNames(response.data);
+        console.log(response.data, 'sub delear');
+      } else {
+        console.error('Invalid API:');
+      }
+    } catch (error) {
+      console.error('Error fetching sub delears names:', error);
+    }
+  };
+
   useEffect(() => {
-    fetchBranchStock();
-    fetchInhandStock();
+    fetchAllProductStock();
+    fetchStock();
+    fetchSubDealerDropDown();
   }, []);
 
-  const fetchBranchStock = async () => {
-    try {
-      const response = await ApiService.post("/products/getDetailProduct",
-        {companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode}
-        );
-      if (response.data) {
-        setBranchStock(response.data);
-        console.log("qazwsxedc",response.data)
-      } else {
-        console.error("Invalid API response");
-      }
-    } catch (error) {
-      console.error("Error fetching product types:", error);
-    } finally {
-      
-    }
-  };
+  // console.log(branchList, 'kisyd');
 
-  const fetchInhandStock = async () => {
-    try {
-      const response = await ApiService.post("/products/getAllproductDetails",
-        // {companyCode: initialAuthState.companyCode,
-        //   unitCode: initialAuthState.unitCode}
-        );
-      if (response.data) {
-        setInhandStock(response.data);
-        console.log("qazwsxedc",response.data)
-      } else {
-        console.error("Invalid API response");
-      }
-    } catch (error) {
-      console.error("Error fetching product types:", error);
-    } finally {
-      
-    }
-  };
+  const totalBranchStock = branchStock.reduce((total, item) => {
+    const present = parseInt(item.presentStock || '0', 10);
+    const hand = parseInt(item.handStock || '0', 10);
+    return total + present + hand;
+  }, 0);
+
+  const totalHandStock = inHandStock.reduce((total, item) => {
+    const hand = parseInt(item.handStock || '0', 10);
+    return total + hand;
+  }, 0);
+
+  const totalSubDealerStock = subDealerStock.reduce((total, item) => {
+    const present = parseInt(item.presentStock || '0', 10);
+
+    return total + present;
+  }, 0);
 
   return (
     <div className="m-2">
-      <div className="flex justify-between items-center py-4">
-        {/* Left: Staff Details Heading */}
-        <h2 className="text-2xl font-semibold text-gray-800">Products</h2>
+      <div className="flex justify-between items-center py-6 border-b border-gray-300 mb-4">
+        <h2 className="text-3xl font-bold text-gray-900">Products</h2>
 
-        {/* Right: Icons and Add Staff Button */}
         <div className="flex items-center space-x-4">
           <button
-            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
+              permissions.add
+                ? 'bg-green-700 hover:bg-green-800 shadow-md'
+                : 'bg-gray-400 cursor-not-allowed opacity-50'
+            }`}
             onClick={() => navigate('/add-product')}
             disabled={!permissions.add}
           >
-            <span>Add Product</span>
+            <span className="font-medium">Add Product</span>
           </button>
           <button
-  className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer shadow-md ${
-    permissions.add ? 'bg-orange-500 hover:bg-orange-600' : 'bg-gray-400 cursor-not-allowed opacity-50'
-  }`}
-  onClick={() => navigate('/add-inhand-product')}
-  disabled={!permissions.add}
->
-  <span>In hand Products</span>
-</button>
-
+            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
+              permissions.add
+                ? 'bg-orange-500 hover:bg-orange-600 shadow-md'
+                : 'bg-gray-400 cursor-not-allowed opacity-50'
+            }`}
+            onClick={() => navigate('/add-inhand-product')}
+            disabled={!permissions.add}
+          >
+            <span className="font-medium">In hand Products</span>
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 m-6">
-  {/* Conditionally render based on role */}
-  {role !== 'Technician' && role !== 'Sales Man' && (
-    <div className="bg-red-400 rounded-2xl p-6 shadow-lg flex flex-col justify-between"
-    onClick={() => setSelected("branchstock")}>
-      <div className="bg-white shadow-md rounded-md p-2 w-3/4">
-        <span className="text-gray-800 font-medium">Branch Stack</span>
-      </div>
-      <div className="text-white text-6xl font-bold mt-4">500</div>
-    </div>
-  )}
+      {role !== 'CEO' && role !== 'Sub Dealer' && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+          {role !== 'CEO' && role !== 'Sales Man' && (
+            <div
+              className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('branchstock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">
+                  Total Products
+                </span>
+              </div>
+              <div className="text-white text-5xl font-extrabold mt-6">
+                {totalBranchStock}
+              </div>
+            </div>
+          )}
 
-  {/* Always display In Hand Products card */}
-  <div className="bg-green-400 rounded-2xl p-6 shadow-lg flex flex-col justify-between"
-  onClick={() => setSelected("handstock")}>
-    <div className="bg-white shadow-md rounded-md p-2 w-3/4">
-      <span className="text-gray-800 font-medium">In Hand Products</span>
-    </div>
-    <div className="text-white text-6xl font-bold mt-4">220</div>
-  </div>
-</div>
+          {/* <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('subDealerStock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">Sub Dealers</span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">100</div>
+          </div>
 
-
-      {/* Search and Table */}
-      {selected==="branchstock"&&(<>
-        <div className="flex mb-4">
-        <div className="flex-grow mx-2">
-          <input
-            type="text"
-            name="name"
-            placeholder="Search by Name"
-            value={searchData.name}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
-          />
+          <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('handstock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">
+                In Hand Products
+              </span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">220</div>
+          </div> */}
         </div>
-        <button
-          onClick={handleSearch}
-          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-        >
-          <FaSearch className="mr-2" /> Search
-        </button>
-      </div>
+      )}
 
-      <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-                  <thead>
-                    <tr className="bg-gray-100 border-b">
-                    <th className="px-6 py-3 text-left text-sm font-bold">S.No.</th>
-                      <th className="px-6 py-3 text-left text-sm font-bold">Product Name</th>
-                
-                      <th className="px-6 py-3 text-left text-sm font-bold">Present Stock</th>
-                      <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {branchStock.length > 0 ? (
-                      branchStock.map((item, index) => (
-                        <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
-                          <td className="px-6 py-4">{index+1}</td>
-                          <td className="px-6 py-4">{item.productName}</td>
-                          <td className="px-6 py-4">{item.presentStock}</td>
-                          <td className="px-6 py-4 text-center relative dropdown-container">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleDropdown(index);
-                              }}
-                              className="p-2 bg-white rounded-md focus:outline-none"
-                            >
-                              <FaEllipsisV className="cursor-pointer text-gray-700" />
-                            </button>
-      
-                            {dropdownOpen === index && (
-                              <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
-                                <ul className="text-left">
-                                  <li className="p-2 hover:bg-gray-100 cursor-pointer" >Edit</li>
-                                  <li className="p-2 hover:bg-gray-100 cursor-pointer"  >Delete</li>
-                                  <li className="p-2 hover:bg-gray-100 cursor-pointer" >More Details</li>
-                                </ul>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5" className="text-center py-4">
-                          No product types found
+      {role !== 'CEO' && role !== 'Branch Manager' && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+          {/* {role !== 'CEO' && role !== 'Sales Man' && (
+            <div
+              className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('branchstock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">
+                  Total Products
+                </span>
+              </div>
+              <div className="text-white text-5xl font-extrabold mt-6">500</div>
+            </div>
+          )} */}
+
+          <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('subDealerStock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">Total Products</span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">
+              {totalSubDealerStock}
+            </div>
+          </div>
+
+          {/* <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('handstock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">
+                In Hand Products
+              </span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">220</div>
+          </div> */}
+        </div>
+      )}
+
+      {role === 'CEO' && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+          {role !== 'Technician' && role !== 'Sales Man' && (
+            <>
+              <div
+                className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                onClick={() => setSelected('branchstock')}
+              >
+                <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                  <select
+                    name="branchName"
+                    value={selectedBranch}
+                    onChange={(e) => setSelectedBranch(e.target.value)}
+                    className="w-full p-1 text-gray-700 rounded focus:outline-none"
+                  >
+                    <option value="">Select Branch</option>
+                    {branchList.map((branch, index) => (
+                      <option key={index} value={branch.branchName}>
+                        {branch.branchName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="text-white text-5xl font-extrabold mt-6">
+                  {totalBranchStock}
+                </div>
+              </div>
+            </>
+          )}
+
+          <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('subDealerStock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">Sub Dealers</span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">
+              {totalSubDealerStock}
+            </div>
+          </div>
+
+          <div
+            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+            onClick={() => setSelected('handstock')}
+          >
+            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+              <span className="text-gray-800 font-medium">
+                In Hand Products
+              </span>
+            </div>
+            <div className="text-white text-5xl font-extrabold mt-6">
+              {totalHandStock}
+            </div>
+          </div>
+        </div>
+      )}
+      {selected == !'branchstock' &&
+        selected == !'handstock' &&
+        selected == !'subDealerStock' && (
+          <>
+            <div className="flex flex-wrap gap-4 mb-6">
+              <input
+                type="text"
+                name="name"
+                placeholder="Search by Name"
+                value={searchData.name}
+                onChange={handleInputChange}
+                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm focus:ring-2 focus:ring-green-500"
+              />
+              <button
+                onClick={handleSearch}
+                className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800 transition"
+              >
+                <FaSearch className="mr-2" /> Search
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      S.No.
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      Product Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      Present Stock
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stock?.length > 0 ? (
+                    stock?.map((item, index) => (
+                      <tr
+                        key={item.id}
+                        className={`border-b ${
+                          index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+                        } hover:bg-gray-50`}
+                      >
+                        <td className="px-6 py-4">{index + 1}</td>
+                        <td className="px-6 py-4">{item.productName}</td>
+                        <td className="px-6 py-4">{item.notAssignedStock}</td>
+                        <td className="px-6 py-4 text-center relative dropdown-container">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleDropdown(index);
+                            }}
+                            className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                          >
+                            <FaEllipsisV className="text-gray-600" />
+                          </button>
+
+                          {dropdownOpen === index && (
+                            <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md w-40 z-50">
+                              <ul className="text-left">
+                                <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                                  Edit
+                                </li>
+                                <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                                  Delete
+                                </li>
+                                <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                                  More Details
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                         </td>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div></>
-  
-  
-  )}
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="text-center py-4 text-gray-500"
+                      >
+                        No product types found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
 
-    {selected==="handstock"&&(<>
-    <div className="flex mb-4">
-        <div className="flex-grow mr-2">
-          <input
-            type="text"
-            name="productId"
-            placeholder="Search with ID"
-            value={searchData.productId}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        <div className="flex-grow mx-2">
-          <input
-            type="text"
-            name="productName"
-            placeholder="Search with Name"
-            value={searchData.productName}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        <div className="flex-grow mx-2">
-          <input
-            type="text"
-            name="location"
-            placeholder="Search with location"
-            value={searchData.location}
-            onChange={handleInputChange}
-            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            style={{ paddingLeft: '8px' }}
-          />
-        </div>
-        <button
-          onClick={handleSearch}
-          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-        >
-          <FaSearch className="mr-2" /> Search
-        </button>
-      </div>
-
-      <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-gray-100 border-b">
-            <th className="px-6 py-3 text-left text-sm font-bold">Staff Id</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Staff Name</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Product</th>
-            <th className="px-6 py-3 text-left text-sm font-bold"> Quantity</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">  Date</th>
-            <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inhandStock.map((item, index) => (
-            <tr
-              key={item.id}
-              className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}
+      {(selected === 'branchstock' ||
+        selected === 'handstock' ||
+        selected === 'subDealerStock') && (
+        <>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <input
+              type="text"
+              name="productId"
+              placeholder="Search with ID"
+              value={searchData.productId}
+              onChange={handleInputChange}
+              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+            />
+            <input
+              type="text"
+              name="productName"
+              placeholder="Search with Name"
+              value={searchData.productName}
+              onChange={handleInputChange}
+              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+            />
+            <input
+              type="text"
+              name="location"
+              placeholder="Search with Location"
+              value={searchData.location}
+              onChange={handleInputChange}
+              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+            />
+            <button
+              onClick={handleSearch}
+              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800"
             >
-              <td className="px-6 py-4">{item.staffId}</td>
-              <td className="px-6 py-4">{item.staffName}</td>
-              <td className="px-6 py-4">{item.product}</td>
-              <td className="px-6 py-4">{item.quantity}</td>
-              <td className="px-6 py-4">{item.date}</td>
-              <td className="border p-2 text-center relative">
-  <button 
-    onClick={() => toggleDropdown(item.id)} 
-    className="p-2 bg-white rounded-md focus:outline-none"
-  >
-    <FaEllipsisV className="cursor-pointer text-gray-700" />
-  </button>
+              <FaSearch className="mr-2" /> Search
+            </button>
+          </div>
 
-  {dropdownOpen === item.id && (
-    <div className="absolute right-0 bg-white shadow-md border rounded-md w-32 z-10">
-      <ul className="text-left">
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">More Details</li>
-      </ul>
-    </div>
-  )}
-</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    Product Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    {selected === 'branchstock' && 'Branch'}
+                    {selected === 'subDealerStock' && 'Sub Dealer'}
+                    {selected === 'handstock' && 'Staff ID'}
+                  </th>
 
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div></>)}
+                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
+                    IMEI
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    Sim Number
+                  </th> */}
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {(selected === 'branchstock'
+                  ? branchStock
+                  : selected === 'subDealerStock'
+                    ? subDealerStock
+                    : inHandStock
+                ).map((item, index) => (
+                  <tr
+                    key={item.id || index}
+                    className={`border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-50`}
+                  >
+                    {/* Product Name - safely render only if not null */}
+                    <td className="px-6 py-4">{item.productName || '-'}</td>
 
+                    {/* Conditional ID or identifier field */}
+                    {selected === 'handstock' && (
+                      <td className="px-6 py-4">{item.staffName}</td>
+                    )}
 
+                    {selected === 'branchstock' && (
+                      <td className="px-6 py-4">{item.branchName}</td>
+                    )}
+                    {selected === 'subDealerStock' && (
+                      <td className="px-6 py-4">{item.subDealerName}</td>
+                    )}
 
+                    {/* Staff Name for in-hand */}
+                    {/* {selected === 'handstock' && (
+                      <td className="px-6 py-4">{item.staffName}</td>
+                    )} */}
 
+                    {/* Date - optional fallback */}
+                    <td className="px-6 py-4">{item.date || '-'}</td>
+
+                    {/* Actions */}
+                    <td className="px-6 py-4 text-center relative">
+                      <button
+                        onClick={() => toggleDropdown(item.id)}
+                        className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                      >
+                        <FaEllipsisV className="text-gray-600" />
+                      </button>
+
+                      {dropdownOpen === item.id && (
+                        <div className="absolute right-0 bg-white shadow-md border rounded-md w-40 z-50 mt-2">
+                          <ul className="text-left">
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                              Edit
+                            </li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                              Delete
+                            </li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer">
+                              More Details
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
-
-
 };
 
 export default Products;

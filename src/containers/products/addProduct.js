@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router';
+import * as XLSX from 'xlsx';
 
 const AddProductForm = () => {
   const location = useLocation();
@@ -39,7 +40,7 @@ const AddProductForm = () => {
     SIM_IMSI: '',
     SIM_NO: '',
     MOBILE_NUMBER: '',
-    productTypeId:null,
+    productTypeId: null,
     file: null,
     ...employeeData,
   };
@@ -105,9 +106,13 @@ const AddProductForm = () => {
       bulkPayload.append('companyCode', initialAuthState.companyCode);
       bulkPayload.append('unitCode', initialAuthState.unitCode);
       try {
-        const response = await ApiService.post('/products/bulk-upload', bulkPayload, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await ApiService.post(
+          '/products/bulk-upload',
+          bulkPayload,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
         if (response.status) {
           alert('Bulk upload successful!');
           navigate('/products');
@@ -126,9 +131,13 @@ const AddProductForm = () => {
       });
 
       try {
-        const response = await ApiService.post('/api/products/createOrUpdateProduct', payload, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await ApiService.post(
+          '/api/products/createOrUpdateProduct',
+          payload,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
         if (response.data.status) {
           alert('Product saved successfully!');
           navigate('/staff');
@@ -175,10 +184,7 @@ const AddProductForm = () => {
     </div>
   );
 
-
-
   const [productTypes, setProductTypes] = useState([]);
-
 
   useEffect(() => {
     fetchProductTypes();
@@ -186,19 +192,58 @@ const AddProductForm = () => {
 
   const fetchProductTypes = async () => {
     try {
-      const response = await ApiService.post("/productType/getProductTypeDetails");
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
       if (response.data) {
         setProductTypes(response.data);
-        console.log("qazwsxedc",response.data)
+        console.log('qazwsxedc', response.data);
       } else {
-        console.error("Invalid API response");
+        console.error('Invalid API response');
       }
     } catch (error) {
-      console.error("Error fetching product types:", error);
+      console.error('Error fetching product types:', error);
     } finally {
-      
     }
   };
+
+  const generateExcel = () => {
+    const worksheetData = [
+      {
+        'Product Name': '',
+        'IMEI Number': '',
+        'SIM Number': '',
+        'Date Of Purchase': '',
+        'Vendor Name': '',
+        'Vendor Email ID': '',
+        'Vendor Address': '',
+        'Supplier Name': '',
+        'Serial Number': '',
+        'Primary No': '',
+        'Secondary No': '',
+        'Primary Network': '',
+        'Secondary Network': '',
+        'Category Name': '',
+        Price: '',
+        'Product Description': '',
+        'Company Code': '',
+        'Vendor Phone Number': '',
+        'Device Model': '',
+        'Unit Code': '',
+        'SIM Status': '',
+        'Plan Name': '',
+        'Remarks 1': '',
+        Quantity: '',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sample Format');
+
+    XLSX.writeFile(workbook, 'SampleProductXlFormat.xlsx');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8">Add Product</h1>
@@ -232,6 +277,21 @@ const AddProductForm = () => {
             </select>
           </div>
         )}
+        {/* <a
+          href="https://storage.googleapis.com/way4track-application/productAssign_photos/assigned_products_xl_format.xlsx"
+          download
+        >
+          <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm">
+            Download Sample format
+          </button>
+        </a> */}
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          onClick={generateExcel}
+        >
+          Download Sample format
+        </button>
 
         {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
         {renderField('Product Name', 'productName')}
@@ -256,29 +316,33 @@ const AddProductForm = () => {
         {renderField('SIM_IMSI', 'SIM_IMSI')}
         {renderField('SIM_NO', 'SIM_NO')}
         {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')} */}
-       
 
-       <div>
-      <label className="font-semibold mb-1 block">Select Product Type</label>
-      <select
-      name="productTypeId"
-        className="border p-2 rounded-md w-full"
-        onChange={handleInputChange}
-        value={formData.productTypeId}
-      >
-        <option value="">Select a product type</option>
-        {productTypes.map((type) => (
-          <option key={type.id} value={type.id}>
-            {type.name}
-          </option>
-        ))}
-      </select>
-     
-    </div>
+        <div>
+          <label className="font-semibold mb-1 block">
+            Select Product Type
+          </label>
+          <select
+            name="productTypeId"
+            className="border p-2 rounded-md w-full"
+            onChange={handleInputChange}
+            value={formData.productTypeId}
+          >
+            <option value="">Select a product type</option>
+            {productTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
-          <input type="file" accept=".csv, .xlsx, .xls" onChange={handleBulkFileChange} />
+          <input
+            type="file"
+            accept=".csv, .xlsx, .xls"
+            onChange={handleBulkFileChange}
+          />
         </div>
 
         <div>

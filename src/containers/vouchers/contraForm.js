@@ -8,8 +8,6 @@ const ContraForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [ledger,setLedger] =useState([]);
-  const { selectedBranch } = location?.state || {};
-  console.log("+++++===== selectedBranch purchase",selectedBranch)
  const [bankAccount,setBankAccount] =useState([
    
   ]);
@@ -106,11 +104,10 @@ const ContraForm = () => {
     const [formData, setFormData] = useState(
       {date:"",
         day:"",
-        // partyName: "",
+        partyName: "",
         bankAccountNumber:"",
         purpose:""
         ,
-        particular:"",
         ledgerId:"",
         voucherType:"CONTRA",
         upiId:"",
@@ -153,7 +150,7 @@ const ContraForm = () => {
   const [supplierLocation, setSupplierLocation] = useState('');
   const [purchaseGST, setPurchaseGST] = useState('');
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  const [paymentType, setPaymentType] = useState('cash');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
@@ -204,6 +201,39 @@ const ContraForm = () => {
       setFormData((prev) => ({ ...prev, cardNumber: value }));
     }
   };
+
+  const handleBankChange = (e) => {
+    const selectedAccountNumber = e.target.value;
+  
+    // If "Cash" is selected, reset bankAmount or treat as special case
+    if (selectedAccountNumber === "cash") {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "cash"
+      }));
+      return;
+    }
+  
+    // Find the selected bank account from list
+    const selectedBank = bankAccount?.find(
+      (bank) => bank.accountNumber === selectedAccountNumber
+    );
+  
+    // Update formData with bankAmount if found
+    if (selectedBank) {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: selectedAccountNumber,
+      }));
+    } else {
+      // If not found, reset values
+      setFormData((prev) => ({
+        ...prev,
+        bankAccountNumber: "",
+        bankAmount: "0.00",
+      }));
+    }
+  };
   
 
   const handleSubmit = async (e) => {
@@ -212,15 +242,11 @@ const ContraForm = () => {
 
     payload.append('date', formData.date);
     payload.append('day', formData.day);
-    // payload.append('branchId', Number(selectedBranch?.branchId));
+    payload.append('branchId',  Number(localStorage.getItem("branchId")));
+    payload.append('ledgerId', Number(formData?.ledgerId));
     payload.append('bankAccountNumber',formData.bankAccountNumber);
-    // payload.append('ledgerId', Number(formData?.ledgerId));
-    
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
-    payload.append('particular', formData.particular);
-    
-
     payload.append('journalType',selected);
     payload.append('paymentType', paymentType.toLowerCase());
     payload.append('upiId', formData.upiId);
@@ -273,7 +299,7 @@ const ContraForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Journal
+          Contra
         </h2>
       </div>
 
@@ -318,6 +344,7 @@ const ContraForm = () => {
               ))}
             </ul>
             <button
+            type="button"
               onClick={handleClosePopup}
               style={{
                 backgroundColor: '#12A651',
@@ -378,14 +405,36 @@ const ContraForm = () => {
             fontWeight: '500',
           }}
         />
+               <div className="flex rounded-lg overflow-hidden w-max shadow-md">
+          <button
+          type="button"
+            onClick={() => setSelected('Debit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Debit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Debit
+          </button>
+          <button
+          type="button"
+            onClick={() => setSelected('Credit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Credit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Credit
+          </button>
+        </div>
 
 
-      </div>
-
-      <select
-        value={formData.bankAccountNumber}
-        onChange={handleInputChange}
-        name="bankAccountNumber"
+<select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
+        name="partyName"
         className="w-full border rounded p-2"
         style={{
           height: '45px',
@@ -398,20 +447,22 @@ const ContraForm = () => {
           fontWeight: '500',
         }}
       >
-        <option value="">Select Bank Name</option>
-        {bankAccount?.map((account) => (
-          <option key={account.id} value={account.accountNumber}>
-            {`${account.name} (${account.accountNumber})`}
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.id} value={party.id}>
+            {party.name}
           </option>
         ))}
       </select>
 
-      <input
-          type="text"
-          placeholder="Particular"
-          name="particular"
-          value={formData.particular}
-          onChange={handleInputChange}
+
+
+      </div>
+
+      <select
+          value={formData.bankAccountNumber}
+          onChange={handleBankChange}
+          name="bankAccountNumber"
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -423,9 +474,18 @@ const ContraForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
-      </div>
+        >
+          <option value="">Select Bank Name</option>
+          <option value="cash">Cash</option>
+          {bankAccount?.map((account) => (
+            <option key={account.id} value={account.accountNumber}>
+              {`${account.name} (${account.accountNumber})`}
+            </option>
+          ))}
+        </select>
 
+
+      </div>
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
@@ -459,6 +519,7 @@ const ContraForm = () => {
           <div className="flex gap-2 mb-4">
             {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
+              type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${
                   paymentType === type

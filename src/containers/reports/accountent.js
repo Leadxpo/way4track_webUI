@@ -3,13 +3,42 @@ import React, { useState, useEffect } from 'react';
 import { FaDownload, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as XLSX from "xlsx";
-import ConvertPDF from '../../components/convertPDF';
+import BalanceSheet from '../../components/Reports/BalanceSheet';
+import ProfitLoss from '../../components/Reports/ProfitLoss';
+import LedgerRegister from '../../components/Reports/LedgerReports';
+import PurchaseRegister from '../../components/Reports/PurcheseRegister';
+import JournalRegister from '../../components/Reports/JournalRegister';
+import CreditNoteRegister from '../../components/Reports/CreditNoteRegister';
+import DebitNoteRegister from '../../components/Reports/DebitNoteRegister';
+import GstriReport from '../../components/Reports/GstriReport';
+import PayableReport from '../../components/Reports/PayableReport';
+
+
+
+
+import CashBankReport from '../../components/Reports/CashBankReport';
+import CashFlowReport from '../../components/Reports/CashFlowStatement';
+import FixedAssetReport from '../../components/Reports/FixedAssertReport';
+import IncomeStatementReport from '../../components/Reports/IncomeStatement';
+import LoanInterestReport from '../../components/Reports/LoanInterest';
+import SaleReturn from '../../components/Reports/SaleReturn';
+import TcsReport from '../../components/Reports/TcsReport';
+import TdsReport from '../../components/Reports/Tds';
+import TrailBalance from '../../components/Reports/TrailBalance';
+
+
+
+
+
+
+
+
+
 
 
 
 const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStock, setSelectedStock] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [data, setData] = useState([]);
   const [previewData, setPreviewData] = useState([]);
@@ -17,9 +46,15 @@ const Reports = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedReport, setSelectedReport] = useState("Select Branch");
+  const [selectedStock, setSelectedStock] = useState('');
+  const [tdsReport, setTdsReport] = useState([]);
+  const [trialBalance, setTrialBalance] = useState([]);
 
 
 
+ if(tdsReport){
+  console.log("---====+++",tdsReport)
+ }
 
     const fetchBranchDropDown = async () => {
       try {
@@ -39,30 +74,25 @@ const Reports = () => {
       fetchBranchDropDown();
     }, []);
   
-  const fetchPayments = async (endpoint) => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-        branchName: localStorage.getItem('branchName'),
-      };
-      let response = await ApiService.post(endpoint, payload);
-      setData(response?.data || []);
-    } catch (error) {
-      console.error("Error fetching payments:", error);
-      setData([]);
-    }
-  };
+
+
+
+
+
+ 
 
   const handleOpenModal = (name) => {
     setSelectedStock(name);
+    console.log("name111111repeort name",name)
     setIsModalOpen(true);
   };
 
 
+ 
+
   const handleSelect = (branchName) => {
     setSelectedReport(branchName);
+    console.log("branchName",branchName);
     setIsDropdownOpen(false);
   };
   
@@ -72,134 +102,172 @@ const Reports = () => {
       alert("No data available to preview.");
       return;
     }
-    setPreviewData(data);
+
+    if(selectedStock==="tds"){
+      setPreviewData(tdsReport);
+    }
+
+    
+    if(selectedStock==="trialbalance"){
+      setPreviewData(trialBalance);
+    }
+    
+    if(selectedStock==="BalanceSheet"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="ProfitLoss"){
+      setPreviewData();
+    }
+
+    if(selectedStock==="LedgerRegister"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="PurchaseRegister"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="JournalRegister"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="CreditNoteRegister"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="DebitNoteRegister"){
+      setPreviewData();
+    }
+    
+    if(selectedStock==="GstriReport"){
+      setPreviewData();
+    }
+    
+
     setIsPreviewOpen(true);
   };
 
-  const handleDownload = () => {
-    if (!previewData.length) {
-      alert("No data available to download.");
-      return;
-    }
-    const worksheet = XLSX.utils.json_to_sheet(previewData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "Report.xlsx");
-    setIsPreviewOpen(false);
-  };
-
-
+  
+  
 
   const handleSearch = () => {
     console.log('Searching from:', fromDate, 'to:', toDate);
     // Call your API or filter data here
   };
 
+ 
+
+
+
+
+
+
   return (
     <div>
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Trial Balence</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Branch Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("trialbalance")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Balence Sheet</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("BalanceSheet")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Profit And Loss Account</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("ProfitLoss")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Stock Summary</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Returns</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("salereturn")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Reconciliation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Revarse Charge Supplies</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">TDS Reports</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("tdsreport")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">TCS Reports</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("tcsreport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Balence Shoot</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Income Statement</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("incomestatement")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Cash Flow Statement</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("cashflowreport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Bank Reconciliation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Account Receivable and Account Payable Reconciliation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Fixed Asserts and Depreciation</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("fixedassetreport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Inventary Reconciliation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Loan and Interest</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("loaninterestreport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Invoice And Receipts</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Tax Decuments And Records</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      </div> */}
+      {/* <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">GST Reconciliation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Payables</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("PayableReport")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
@@ -209,33 +277,36 @@ const Reports = () => {
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Ledger Register</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("LedgerRegister")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Purchase Register</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("PurchaseRegister")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Journal Register</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("JournalRegister")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
-        <p className="text-xl text-white font-bold">Create Note Register</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <p className="text-xl text-white font-bold">Credit Note Register</p>
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("CreditNoteRegister")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Debit Note Register</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("DebitNoteRegister")} />
       </div>
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Get Report GSTRI ,GSTR 3B</p>
-        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
+        <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("GstriReport")} />
       </div>
+
+
+
 
       {isModalOpen && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -313,49 +384,169 @@ const Reports = () => {
 )}
 
 
-      {/* Preview Modal */}
- {isPreviewOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-            <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
-            <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
-              <table className="min-w-full border">
-                <thead className="bg-gray-200 text-gray-700">
-                  <tr>
-                    {Object.keys(previewData[0]).map((key, index) => (
-                      <th key={index} className="p-2 text-left border">{key}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {previewData.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
-                      {Object.values(row).map((value, i) => (
-                        <td key={i} className="p-2 border">{value}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
 
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setIsPreviewOpen(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDownload}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-              >
-                Download Excel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+ 
+{isPreviewOpen && (
+  selectedStock === "BalanceSheet" ? (
+    <BalanceSheet
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) : selectedStock === "ProfitLoss" ? (
+    <ProfitLoss
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) : selectedStock === "LedgerRegister" ? (
+    <LedgerRegister
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) : selectedStock === "PurchaseRegister" ? (
+    <PurchaseRegister
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+  selectedStock === "JournalRegister" ? (
+    <JournalRegister
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+  selectedStock === "CreditNoteRegister" ? (
+    <CreditNoteRegister
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+  selectedStock === "DebitNoteRegister" ? (
+    <DebitNoteRegister
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+  selectedStock === "GstriReport" ? (
+    <GstriReport
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+  selectedStock === "PayableReport" ? (
+    <PayableReport
+      fromDate={fromDate}
+      toDate={toDate}
+      selectedReport={selectedReport}
+      onClose={() => setIsPreviewOpen(false)}
+    />
+  ) :
+ 
+
+
+    selectedStock === "trialbalance" ? (
+      <TrailBalance
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) : selectedStock === "salereturn" ? (
+      <SaleReturn
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) : selectedStock === "tdsreport" ? (
+      <TdsReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) : selectedStock === "tcsreport" ? (
+      <TcsReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+    selectedStock === "incomestatement" ? (
+      <IncomeStatementReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+    selectedStock === "cashflowreport" ? (
+      <CashFlowReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+    selectedStock === "fixedassetreport" ? (
+      <FixedAssetReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+    selectedStock === "loaninterestreport" ? (
+      <LoanInterestReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+    selectedStock === "cashbankreport" ? (
+      <CashBankReport
+        fromDate={fromDate}
+        toDate={toDate}
+        selectedReport={selectedReport}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    ) :
+  
+
+
+
+
+
+
+
+
+  null
+)}
+
+
+
+
+
+
+
+
 
     </div>
   );

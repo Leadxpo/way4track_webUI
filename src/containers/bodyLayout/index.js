@@ -158,6 +158,20 @@ import SubDelarStaff from '../sub-dealers/subDelarStaff';
 import SubDealerNotifications from '../notifications/sub-dealer-home-notifications';
 
 
+import BackendSupportPayments from '../backendSupport/backendSupportPayments';
+import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPayments';
+import AddTicket from '../tickets/AddTicket';
+import EditTicket from '../tickets/EditTicket';
+import ViewTicket from '../tickets/ViewTicket';
+import SubStaffDetails from '../sub-dealers/SubStaffDetails';
+import AddSubStaff from '../sub-dealers/AddSubStaff';
+import PersonnelDetails from '../sub-dealers/AddSubStaff';
+import EditSubStaff from '../sub-dealers/EditSubStaff';
+import ViewSubStaff from '../sub-dealers/ViewSubStaff';
+import AppointmentTable from '../appointment/AppointmentTable';
+import AddAppointment from '../appointment/AddAppointment';
+import EditAppointment from '../appointment/EditAppointment';
+import ViewAppointment from '../appointment/ViewAppointment';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -465,6 +479,9 @@ const BodyLayout = ({ children }) => {
 
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
+          <Route path="/add-ticket" element={<AddTicket />} />
+          <Route path="/edit-ticket" element={<EditTicket />} />
+          <Route path="/view-ticket" element={<ViewTicket />} />
           <Route path="/hiring" element={<Hiring />} />
           <Route path="/add-hiring" element={<AddHiring />} />
           <Route path="/delete-hiring" element={<DeleteHiring />} />
@@ -506,6 +523,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/sub-dealer-notifications" element={<SubDealerNotifications />} />
           <Route path="/vendor-profile" element={<VendorProfile />} />
           <Route path="/delete-sub-dealer" element={<DeleteSubDealer />} />
+          
+          <Route path="/sub-staff-details" element={<SubStaffDetails />} />
           <Route path="/sub-dealer-profile" element={<SubDealerDetails />} />
           <Route path="/day-book" element={<DayBook />} />
           <Route path="/ledger-details" element={<LedgerDetails />} />
@@ -523,6 +542,12 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
+          {/* telecaller */}
+          <Route path="/appointment-table" element={<AppointmentTable />} />
+          <Route path="/create-appointment" element={<AddAppointment/>} />
+          <Route path="/edit-appointment" element={<EditAppointment />} />
+          <Route path="/view-appointment" element={<ViewAppointment/>} />
+          EditAppointment
           <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
             path="/bank-details-dashboard"
@@ -561,9 +586,19 @@ const BodyLayout = ({ children }) => {
             element={<BackendSupportWorks />}
           />
           <Route
+            path="/backend-support-payments"
+            element={<BackendSupportPayments />}
+          />
+          <Route
             path="/work-view-details"
             element={<ViewBackendWorkDetails />}
           />
+
+          <Route
+            path="/work-view-payments"
+            element={<CeoBackendSupportPayments />}
+          />
+
           <Route path="/backend-support" element={<CeoBackendSupportHome />} />
           <Route
             path="/backend-work-details/:id"
@@ -578,10 +613,11 @@ const BodyLayout = ({ children }) => {
 
 
 
+          <Route path="/add-sub-staff" element={<PersonnelDetails/>} />
+          <Route path="/edit-sub-staff" element={<EditSubStaff/>} />
+          <Route path="/view-sub-staff" element={<ViewSubStaff/>} />
           <Route path="/add-designation" element={<AddDesignation />} />
           <Route path="/add-ledger" element={<AddLedger />} />
-
-
           <Route path="/letters" element={<Letters />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />

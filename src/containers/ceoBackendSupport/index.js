@@ -191,6 +191,7 @@ const CeoBackendSupportHome = () => {
   const [selectedCardKey, setSelectedCardKey] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [expandedCardId, setExpandedCardId] = useState(null);
+  const [searchPhone, setSearchPhone] = useState('');
 
   console.log(branchesWorkRecordsCounts[0], 'useState');
 
@@ -253,6 +254,7 @@ const CeoBackendSupportHome = () => {
 
   const handleStatusChange = async (item, newStatus) => {
     console.log(item, 'item');
+
     try {
       setRecords((prevRecords) =>
         prevRecords.map((record) =>
@@ -260,16 +262,29 @@ const CeoBackendSupportHome = () => {
         )
       );
 
+      // Prepare the base payload
+      const payload = {
+        id: item.id,
+        workStatus: newStatus,
+        staffId: item.staffId,
+        branchId: item.branchId,
+        backEndStaffRelation: Number(userId),
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+
+      // Add acceptStartDate if newStatus is "accept"
+      if (newStatus === 'accept') {
+        payload.acceptStartDate = new Date().toISOString(); // or new Date() if backend handles parsing
+      }
+
+      if (newStatus === 'activate') {
+        payload.activateDate = new Date().toISOString(); // or new Date() if backend handles parsing
+      }
+
       const response = await ApiService.post(
         '/technician/handleTechnicianDetails',
-        {
-          id: item.id,
-          workStatus: newStatus,
-          staffId: item.staffId,
-          backEndStaffRelation: Number(userId),
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
+        payload
       );
 
       console.log('Status updated successfully:', response.data);
@@ -324,6 +339,15 @@ const CeoBackendSupportHome = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Work Records</h2>
+
+        <input
+          type="text"
+          placeholder="Search by Phone Number"
+          value={searchPhone}
+          onChange={(e) => setSearchPhone(e.target.value)}
+          className="border px-4 py-2 rounded-md mb-4 w-full max-w-xs"
+        />
+
         <button
           onClick={onClickRefresh}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
@@ -399,12 +423,15 @@ const CeoBackendSupportHome = () => {
 
       {selectedCardKey && selectedLocation && (
         <div className="mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {workRecords
               .filter(
                 (card) =>
                   card.branchName === selectedLocation &&
-                  card.workStatus === selectedCardId
+                  card.workStatus === selectedCardId &&
+                  card.phoneNumber
+                    ?.toLowerCase()
+                    .includes(searchPhone.toLowerCase())
               )
               .map((card, i) => {
                 const cardBgColor =
@@ -434,55 +461,285 @@ const CeoBackendSupportHome = () => {
                       <div className="flex flex-col h-full justify-between">
                         <div className="flex justify-between items-center mb-2">
                           <span
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '14px', fontWeight: 'bold' }}
+                            className="text-lg font-semibold text-gray-700"
+                            style={{ fontSize: '18px', fontWeight: 'bold' }}
                           >
                             ID: {card.technicianNumber}
                           </span>
-                          <span
-                            className="text-sm text-gray-500 flex items-center"
-                            style={{ fontSize: '12px' }}
-                          >
-                            <TfiTimer className="mr-1 text-black" />
-                            {card.startDate
-                              ? calculateDuration(card.startDate, card.endDate)
-                              : ''}
-                          </span>
+                          {/* <span
+                              className="text-sm text-gray-500 flex items-center"
+                              style={{ fontSize: '12px' }}
+                            >
+                              <TfiTimer className="mr-1 text-black" />
+                              {card.startDate
+                                ? calculateDuration(card.startDate, card.endDate)
+                                : ''}
+                            </span> */}
                         </div>
                         <hr className="mb-2" />
-                        <div className="mb-2">
-                          <p className="text-lg font-bold text-gray-800">
-                            {card.staffName}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {card.phoneNumber}
-                          </p>
+                        <div className="mb-2 flex space-x-4">
+                          <div className="text-left">
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Client Name:
+                            </p>
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Tech Support:
+                            </p>
+                            {card.workStatus !== 'install' && (
+                              <p
+                                className="text-lg font-semibold text-gray-500"
+                                style={{ fontSize: '15px' }}
+                              >
+                                Backend Support:
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            <p
+                              className="text-lg font-bold text-gray-800"
+                              style={{ fontSize: '16px' }}
+                            >
+                              {card.clientName}
+                            </p>
+                            <p
+                              className="text-lg font-bold text-gray-800"
+                              style={{ fontSize: '16px' }}
+                            >
+                              {card.staffName}
+                            </p>
+                            {card.workStatus !== 'install' && (
+                              <p
+                                className="text-lg font-bold text-gray-800"
+                                style={{ fontSize: '16px' }}
+                              >
+                                {card.backSupportterName}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="mb-2">
-                          <button
-                            onClick={() => {
-                              let nextStatus;
-                              if (card.workStatus === 'install')
-                                nextStatus = 'accept';
-                              else if (card.workStatus === 'accept')
-                                nextStatus = 'activate';
-                              else nextStatus = card.workStatus;
-                              handleStatusChange(card, nextStatus);
+
+                        <div
+                          className="mb-2 flex space-x-8"
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          {/* Start Date */}
+                          <div className="flex flex-col">
+                            <p
+                              className="text-sm text-gray-600"
+                              style={{ fontSize: '14px' }}
+                            >
+                              Start Date:
+                            </p>
+                            <p
+                              className="text-sm font-semibold text-gray-700"
+                              style={{ fontSize: '13px' }}
+                            >
+                              {convertToIST(card.startDate)}
+                            </p>
+                          </div>
+
+                          {/* End Date */}
+                          <div className="flex flex-col">
+                            <p
+                              className="text-sm text-gray-600"
+                              style={{ fontSize: '14px' }}
+                            >
+                              End Date:
+                            </p>
+                            <p
+                              className="text-sm font-semibold text-gray-700"
+                              style={{ fontSize: '13px' }}
+                            >
+                              {convertToIST(card.endDate)}
+                            </p>
+                          </div>
+
+                          {/* Duration */}
+                          <div className="flex flex-col">
+                            <p
+                              className="text-sm text-gray-600"
+                              style={{ fontSize: '14px' }}
+                            >
+                              Duration:
+                            </p>
+                            <p
+                              className="text-sm font-semibold text-gray-700"
+                              style={{ fontSize: '13px' }}
+                            >
+                              {card.startDate
+                                ? calculateDuration(
+                                    card.startDate,
+                                    card.endDate
+                                  )
+                                : ''}
+                            </p>
+                          </div>
+                        </div>
+
+                        {card.workStatus !== 'install' && (
+                          <div
+                            className="mb-2 flex space-x-8"
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
                             }}
-                            className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
                           >
-                            {card?.workStatus === 'install'
-                              ? 'In Progress'
-                              : card?.workStatus === 'accept'
-                                ? 'Activate'
-                                : card?.workStatus === 'activate'
-                                  ? 'Activated'
-                                  : card?.workStatus?.charAt(0).toUpperCase() +
-                                    card?.workStatus?.slice(1)}
-                          </button>
-                        </div>
+                            {/* Start Date */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
+                              >
+                                Accepted Date:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {convertToIST(card.acceptStartDate)}{' '}
+                              </p>
+                            </div>
+
+                            {/* End Date */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
+                              >
+                                Activated Date:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {/* {card.activateDate?.slice(0, 10)} */}
+                                {convertToIST(card.activeDate)}
+                              </p>
+                            </div>
+
+                            {/* Duration */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
+                              >
+                                Duration:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {card.startDate
+                                  ? calculateDuration(
+                                      card.startDate,
+                                      card.endDate
+                                    )
+                                  : ''}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* <div className="mb-2">
+                            <button
+                              onClick={() => {
+                                let nextStatus;
+                                if (card.workStatus === 'install')
+                                  nextStatus = 'accept';
+                                else if (card.workStatus === 'accept')
+                                  nextStatus = 'activate';
+                                else nextStatus = card.workStatus;
+                                handleStatusChange(card, nextStatus);
+                              }}
+                              className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
+                            >
+                              {card?.workStatus === 'install'
+                                ? 'In Progress'
+                                : card?.workStatus === 'accept'
+                                  ? 'Activate'
+                                  : card?.workStatus === 'activate'
+                                    ? 'Activated'
+                                    : card?.workStatus?.charAt(0).toUpperCase() +
+                                      card?.workStatus?.slice(1)}
+                            </button>
+                          </div> */}
+
                         <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                          {card.startDate ? convertToIST(card.startDate) : '-'}
+                          {/* Conditional Status Control */}
+                          <div className="mb-1">
+                            {card.workStatus === 'accept' ||
+                            card.workStatus === 'pending' ? (
+                              <div className="relative">
+                                <select
+                                  onChange={(e) =>
+                                    handleStatusChange(card, e.target.value)
+                                  }
+                                  defaultValue=""
+                                  className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                                >
+                                  <option value="" disabled>
+                                    Change Status
+                                  </option>
+                                  {card.workStatus === 'accept' && (
+                                    <>
+                                      <option value="activate">Activate</option>
+                                      <option value="pending">Pending</option>
+                                    </>
+                                  )}
+                                  {card.workStatus === 'pending' && (
+                                    <>
+                                      <option value="activate">Activate</option>
+                                      <option value="cancel">Cancel</option>
+                                    </>
+                                  )}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                                  <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  let nextStatus;
+                                  if (card.workStatus === 'install')
+                                    nextStatus = 'accept';
+                                  else nextStatus = card.workStatus;
+                                  handleStatusChange(card, nextStatus);
+                                }}
+                                className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
+                              >
+                                {card?.workStatus === 'install'
+                                  ? 'In Progress'
+                                  : card?.workStatus === 'activate'
+                                    ? 'Activated'
+                                    : card?.workStatus
+                                        ?.charAt(0)
+                                        .toUpperCase() +
+                                      card?.workStatus?.slice(1)}
+                              </button>
+                            )}
+                          </div>
+
                           <button
                             onClick={() =>
                               navigate('/work-view-details', {

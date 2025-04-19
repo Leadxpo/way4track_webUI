@@ -127,26 +127,28 @@ const Attendance = () => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border p-2">Staff ID</th>
-            <th className="border p-2">Date</th>
+            <th className="border p-2">Staff Name</th>
             <th className="border p-2">Branch</th>
+            <th className="border p-2">Date</th>
             <th className="border p-2">In Time</th>
             <th className="border p-2">Out Time</th>
             <th className="border p-2">Status</th>
-            <th className="border p-2">Staff Name</th>
             <th className="border p-2">Action</th>
           </tr>
         </thead>
         <tbody>
 
-          {profiles.map((att) => (
+          {profiles.map((att) => {
+            console.log(att)
+            return(
             <tr key={att.id} className="text-center">
               <td className="border p-2">{att.staffId}</td>
-              <td className="border p-2">{new Date(att.day).toLocaleDateString()}</td>
+              <td className="border p-2">{att.staffName.trim()}</td>
               <td className="border p-2">{att.branchName}</td>
+              <td className="border p-2">{new Date(att.day).toLocaleDateString()}</td>
               <td className="border p-2">{att.inTimeRemark}</td>
               <td className="border p-2">{att.outTimeRemark}</td>
               <td className="border p-2">{att.status}</td>
-              <td className="border p-2">{att.staffName.trim()}</td>
               <td className="border p-2">
                 {/* <button
                     onClick={() => navigate('/attendance-details', { state: { attendanceDetails: att } })}
@@ -162,7 +164,7 @@ const Attendance = () => {
                 </button>
               </td>
             </tr>
-          ))
+          )})
           }
         </tbody>
       </table>

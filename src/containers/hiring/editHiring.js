@@ -121,7 +121,7 @@
 //                       <option value="SubDealer">Sub Dealer</option>
 //                       <option value="Technician">Technician</option>
 //                       <option value="SalesMan">Sales Man</option>
-//                       <option value="CallCenter">Call Center</option>
+//                       <option value="CallCenter">Tele caller</option>
 //                       <option value="Warehouse Manager">Warehouse Manager</option>
 //                     </select>
 //                   </label>
@@ -454,7 +454,7 @@ const EditHiring = () => {
                           <option value="SubDealer">Sub Dealer</option>
                           <option value="Technician">Technician</option>
                           <option value="SalesMan">Sales Man</option>
-                          <option value="CallCenter">Call Center</option>
+                          <option value="CallCenter">Tele caller</option>
                           <option value="Warehouse Manager">
                             Warehouse Manager
                           </option>

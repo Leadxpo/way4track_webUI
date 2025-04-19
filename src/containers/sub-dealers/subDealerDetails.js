@@ -12,6 +12,7 @@ const SubDealerDetails = () => {
   
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
+  console.log("==========Id====",subDealerDetailsFromState)
  
   const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
@@ -28,6 +29,9 @@ const SubDealerDetails = () => {
     const [receivedPayments, setReceivedPayments] = useState([]);
     const [pendingAmount, setPendingAmount] = useState([]);
     const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
+    const [productData, setProductData] = useState([]);
+    const [works, setWorks] = useState([]);
+
       
 
   useEffect(() => {
@@ -116,6 +120,64 @@ const SubDealerDetails = () => {
     };
     getProductsPhotos();
   }, [subDealerDetailsFromState.SubDealerId]);
+
+
+  useEffect(() => {
+    const getProductsData = async () => {
+      try {
+        const response = await ApiService.post(
+          '/dashboards/getProductsAssignmentSummaryBySubDealer',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response.status) {
+          // Ensure vendor details data is an array
+          setProductData(response.data || []);
+        } else {
+          setProductData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching vendor details data:', error);
+        alert('Failed to fetch vendor details data.');
+      }
+    };
+    getProductsData();
+  }, [subDealerDetailsFromState.SubDealerId]);
+
+
+
+
+  useEffect(() => {
+    const getWorks = async () => {
+      try {
+        const response = await ApiService.post(
+          '/technician/getBackendSupportWorkAllocation',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response.status) {
+          // Ensure vendor details data is an array
+          setWorks(response.data || []);
+        } else {
+          setWorks([]);
+        }
+      } catch (error) {
+        console.error('Error fetching vendor details data:', error);
+        alert('Failed to fetch vendor details data.');
+      }
+    };
+    getWorks();
+  }, [subDealerDetailsFromState.SubDealerId]);
+
+
+
+
 
 
 
@@ -305,8 +367,8 @@ ReceivedPayments();
 }, []);
 
 // Filtering received payments based on search query
-const filteredPayments = Array.isArray(receivedPayments)
-? receivedPayments.filter((payment) =>
+const filteredPayments = Array.isArray(productData)
+? productData.filter((payment) =>
     payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 : [];
@@ -345,8 +407,8 @@ PendingAmount();
 }, []);
 
 // Filtering pending amounts based on search query
-const filteredPendingAmount = Array.isArray(pendingAmount)
-? pendingAmount.filter((payment) =>
+const filteredPendingAmount = Array.isArray(works)
+? works.filter((payment) =>
     payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 : [];
@@ -396,7 +458,9 @@ const filteredPendingAmount = Array.isArray(pendingAmount)
             <h1 className="text-2xl font-bold"></h1>
               <button
                 className="bg-yellow-400 text-black px-5 py-2  rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
-                onClick={() => navigate('/add-subdeler-staff')}
+               onClick={() => navigate('/add-subdeler-staff', { state: { subDealerId: subDealerDetailsFromState } })}
+
+
               >
                 <FaPlus /> Create Sub Dealer Staff
               </button>

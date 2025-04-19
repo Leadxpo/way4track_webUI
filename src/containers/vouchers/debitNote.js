@@ -10,6 +10,8 @@ const DebitNoteForm = () => {
   const [bankAccount,setBankAccount] =useState([
      
     ]);
+
+  const [ledger,setLedger] =useState([]);
   const { selectedBranch } = location?.state || {};
   console.log("+++++===== selectedBranch purchase",selectedBranch)
   const taxData = [
@@ -44,7 +46,8 @@ const DebitNoteForm = () => {
     const [formData, setFormData] = useState(
       {date:"",
         day:"",
-        partyName: "", 
+        partyName: "",
+        ledgerId:"",
         bankAccountNumber:"",
         saleId:"",
         amount:"",
@@ -104,6 +107,43 @@ const DebitNoteForm = () => {
     }));
   };
 
+  useEffect(() => {
+    const fetchLedgers = async () => {
+      try {
+        const response = await ApiService.post(
+          '/ledger/getLedgerDetails', {
+                    companyCode: initialAuthState?.companyCode,
+                    unitCode: initialAuthState?.unitCode,
+                  }
+        );
+        console.log("fedgrfdtrgxfsdf",response)
+        if (response.status) {
+          setLedger(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch ledger');
+        }
+      } catch (error) {
+        console.error('Error fetching ledger:', error);
+      }
+    };
+
+    fetchLedgers();
+  }, []);
+
+  const handleLedgerChange = (e) => {
+    const selectedId = Number(e.target.value); // Convert string to number
+  
+    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+  
+    if (selectedLedger) {
+      setFormData((prev) => ({
+        ...prev,
+        partyName: selectedLedger.name,
+        ledgerId: selectedLedger.id
+      }));
+    }
+  };
+
   const handleDateChange = (e) => {
     const value = e.target.value;
   
@@ -152,8 +192,8 @@ const DebitNoteForm = () => {
  
      payload.append('date', formData.date);
      payload.append('day', formData.day);
-     payload.append('partyName', formData.partyName);
-  
+     payload.append('ledgerId', Number(formData.ledgerId));
+     payload.append('branchId', Number(localStorage.getItem("branchId")));
      payload.append('bankAccountNumber', formData.bankAccountNumber);
      payload.append('saleId', formData.saleId);
      payload.append('amount', formData.amount);
@@ -308,7 +348,7 @@ const DebitNoteForm = () => {
           }}
         />
 
-        <input
+        {/* <input
           type="text"
           name="partyName"
           placeholder="Party Name"
@@ -325,7 +365,31 @@ const DebitNoteForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
+
+<select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
+        name="partyName"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.id} value={party.id}>
+            {party.name}
+          </option>
+        ))}
+      </select>
 
 <select
         value={formData.bankAccountNumber}

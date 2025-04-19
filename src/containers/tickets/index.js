@@ -1,511 +1,193 @@
-import React, { useState, useEffect } from 'react';
-import ApiService from '../../services/ApiService'; // Adjust the import based on your structure
-import TableWithSearchFilter from '../tablesSearchFilter';
-import { initialAuthState } from '../../services/ApiService';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getPermissions } from '../../common/commonUtils';
+
+import React, { useState, useEffect } from "react";
+import { FaSearch, FaEllipsisV } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import ApiService, { initialAuthState } from "../../services/ApiService";
 
 const Tickets = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [formData, setFormData] = useState({
-    problem: '',
-    date: '',
-    addressingDepartment: '', // Ensure this exists
-    staffId: null,
-    branchId: null,
-    companyCode: '',
-    unitCode: '',
-    workStatus: '',
-    description: '',
-  });
-  const [ticketDetails, setTicketDetails] = useState([]);
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
-  const [staffList, setStaffList] = useState([]); // Store fetched staff names
-  const [branchList, setBranchList] = useState([]); // Store fetched branches
-  const [selectedStaffId, setSelectedStaffId] = useState(null); // Selected staff ID
-  const [selectedStaffNumber, setSelectedStaffNumber] = useState(''); // Staff number
-  const [selectedBranch, setSelectedBranch] = useState(''); // Selected branch
-  const [date, setDate] = useState(''); // Date state
   const navigate = useNavigate();
-  const location = useLocation();
-  const [branches, setBranches] = useState([]);
-  const [permissions, setPermissions] = useState({});
-  useEffect(() => {
-    const perms = getPermissions('tickets');
-    setPermissions(perms);
-  }, []);
-  const ticketData = location.state?.tickettDetails || {};
-  useEffect(() => {
-    if (isModalOpen) {
-      fetchStaffNames();
-      fetchBranches();
-    }
-  }, [isModalOpen]);
+  const [searchData, setSearchData] = useState({ name: "" });
+  const [ticket, setTicket] = useState([]);
+  const [allTickets, setAllTickets] = useState([]); // Store full data
+  const [loading, setLoading] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
-    if (isEditMode && selectedTicket) {
-      setDate(selectedTicket.date.slice(0, 10)); // Set date in yyyy-MM-dd format for editing
+    fetchTickets();
+  }, []);
+
+  const fetchTickets = async () => {
+    try {
+      const response = await ApiService.post("/tickets/getTicketDetails",{
+        companyCode:initialAuthState?.companyCode,
+          unitCode:initialAuthState?.unitCode,
+      });
+      console.log("fetch ticketss",response);
+      if (response.status) {
+        setTicket(response.data || []);
+        setAllTickets(response.data || []); // Store original data
+      } else {
+        console.error("Error: API response is invalid");
+      }
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [isEditMode, selectedTicket]);
+  };
+
+ 
+
+  const handleSearch = () => {
+    const searchQuery = searchData.name.toLowerCase().trim();
+  
+    if (searchQuery === "") {
+      setTicket(allTickets); // Reset if empty
+    } else {
+      const filteredData = allTickets.filter((item) =>
+        Object.values(item).some((val) =>
+          val?.toString().toLowerCase().includes(searchQuery)
+        )
+      );
+      setTicket(filteredData);
+    }
+  };
+  
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setSearchData({ ...searchData, [e.target.name]: e.target.value });
   };
-  const fetchStaffNames = async () => {
-    try {
-      const response = await ApiService.post('/staff/getStaffNamesDropDown');
-      setStaffList(response.data || []);
-    } catch (error) {
-      console.error('Failed to fetch staff names:', error);
-    }
+
+  const toggleDropdown = (id) => {
+    setDropdownOpen(dropdownOpen === id ? null : id);
   };
+
   useEffect(() => {
-    const fetchBranches = async () => {
-      try {
-        const response = await ApiService.post(
-          '/branch/getBranchNamesDropDown'
-        );
-        if (response.status) {
-          setBranches(response.data); // Set branches to state
-        } else {
-          console.error('Failed to fetch branches');
-        }
-      } catch (error) {
-        console.error('Error fetching branches:', error);
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".dropdown-container")) {
+        setDropdownOpen(null);
       }
     };
-
-    fetchBranches();
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-  const fetchBranches = async () => {
+
+  const handleDelete = async (ticketId) => {
+    if (!window.confirm("Are you sure you want to delete this ticket?")) {
+      return;
+    }
+
+    const payload={id:ticketId,companyCode:initialAuthState.companyCode,unitCode:initialAuthState.unitCode}
+  
+  
     try {
-      const response = await ApiService.post('/branch/getBranchNamesDropDown');
-      setBranchList(response.data || []);
-      console.log(response.data, '{{{{{{{{{{{');
+      const res = await ApiService.post(
+        `/tickets/deleteTicketDetails`,
+        payload
+      );
+        if(res.status){
+          alert("Ticket deleted successfully!");
+      fetchTickets();
+        }
+      
+      // Refresh or update the UI after deletion
     } catch (error) {
-      console.error('Failed to fetch branches:', error);
+      console.error("Error deleting Ticket:", error);
+      alert("Failed to delete Ticket.");
     }
   };
-
-  const handleStaffChange = (e) => {
-    const staffId = e.target.value;
-    console.log('+++++++++', e);
-    setSelectedStaffId(staffId);
-
-    // Find the selected staff and set their number
-    const selectedStaff = staffList.find(
-      (staff) => staff.id === Number(staffId)
-    );
-    setSelectedStaffNumber(selectedStaff?.staffId || '');
-  };
-
-  const handleBranchChange = (e) => {
-    console.log('Selected Branch ID:', e.target.value);
-    setSelectedBranch(e.target.value);
-  };
-
-  const handleDateChange = (e) => {
-    setDate(e.target.value); // Update date when changed
-  };
-
-  const handleOpenModalForAdd = () => {
-    setSelectedTicket(null);
-    setIsEditMode(false);
-    setIsModalOpen(true);
-    setSelectedStaffId('');
-    setSelectedStaffNumber('');
-    setSelectedBranch(null);
-    setDate(''); // Reset date for Add
-  };
-
-  const fetchTicketDetails = async (ticket) => {
-    try {
-      const response = await ApiService.post('/tickets/getTicketDetailsById', {
-        id: ticket.ticketId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
-
-      if (response.status) {
-        const staff = response.data?.[0];
-        setTicketDetails({
-          staffName: staff?.staffName || '',
-          addressingDepartment: staff?.addressingDepartment || '',
-          ticketNumber: staff?.ticketNumber || '',
-          branchId: staff?.branchId || '',
-          date: staff?.date || '',
-          problem: staff?.problem || '',
-          branchName: staff?.branchName || '',
-          staffNumber: staff?.staffNumber || '',
-          staffId: staff?.staffId || '',
-        });
-        setSelectedTicket({
-          staffName: staff?.staffName || '',
-          addressingDepartment: staff?.addressingDepartment || '',
-          ticketNumber: staff?.ticketNumber || '',
-          branchId: staff?.branchId || '',
-          date: staff?.date || '',
-          problem: staff?.problem || '',
-          branchName: staff?.branchName || '',
-          staffNumber: staff?.staffNumber || '',
-          staffId: staff?.staffId || '',
-          description: staff?.description || '',
-        });
-        setSelectedStaffId(staff?.staffId || '');
-        const tempId = staff?.staffId || '';
-        const selectedStaff = staffList.find(
-          (staff) => staff.id === Number(tempId)
-        );
-        setSelectedStaffNumber(selectedStaff?.staffId || '');
-        setSelectedBranch(ticket?.branch || null);
-      }
-    } catch (error) {
-      console.error('Error fetching staff details:', error);
-      alert('Failed to fetch staff details.');
-    }
-  };
-
-  const handleOpenMoreDetailsModal = async (ticket) => {
-    await fetchTicketDetails(ticket); // Ensure data is fetched before opening modal
-    console.log(ticket);
-    setSelectedTicket(ticket);
-    setIsMoreDetailsModalOpen(true);
-  };
-  const handleOpenModalForEdit = async (ticket) => {
-    await fetchTicketDetails(ticket);
-    //setSelectedTicket(ticket);
-    setIsEditMode(true);
-    setIsModalOpen(true);
-    // setSelectedStaffId(ticket?.staffId || '');
-    // setSelectedStaffNumber(ticket?.staffNumber || '');
-    // setSelectedBranch(ticket?.branch || null);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedTicket(null);
-    setSelectedStaffId('');
-    setSelectedStaffNumber('');
-    setSelectedBranch(null);
-    setDate('');
-  };
-
-  const handleCloseMoreDetailsModal = () => {
-    setIsMoreDetailsModalOpen(false);
-    setSelectedTicket(null);
-  };
-  const handleSaveTicket = async () => {
-    const payload = {
-      id: selectedTicket?.id || null,
-      date: date || '',
-      branchId: Number(formData.branchId) || null,
-      problem: formData.problem,
-      addressingDepartment: formData.addressingDepartment, // Ensure this is included
-      staffId: Number(selectedStaffId) || null,
-      staffName: selectedStaffId || '',
-      workStatus: formData.workStatus,
-      description: formData.description,
-      companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode,
-    };
-
-    try {
-      const endpoint = selectedTicket?.id
-        ? '/tickets/handleTicketDetails'
-        : '/tickets/handleTicketDetails';
-
-      const response = await ApiService.post(endpoint, payload, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.data.status) {
-        alert(
-          selectedTicket?.id
-            ? 'Ticket updated successfully!'
-            : 'Ticket saved successfully!'
-        );
-        navigate('/vendors');
-      } else {
-        alert('Failed to save ticket details. Please try again.');
-      }
-      handleCloseModal();
-    } catch (error) {
-      console.error('Error saving ticket:', error);
-      alert('Failed to save ticket details. Please try again.');
-    }
-  };
-
   return (
-    <div className="p-10">
-      <div className="flex justify-between mb-4">
-        <p className="text-xl font-bold">Tickets</p>
+    <div className="m-2">
+      <div className="flex justify-between items-center py-4">
+        <h2 className="text-2xl font-semibold text-gray-800">Tickets</h2>
+        <button
+          className="bg-green-700 text-white px-4 py-2 rounded-md"
+          onClick={() => navigate("/add-ticket")}
+        >
+          Add Ticket
+        </button>
       </div>
 
-      {/* Modal for Add/Edit Ticket */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative w-3/4">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6"
-            >
-              X
-            </button>
-            <h2 className="text-xl font-bold text-center mb-4">
-              {isEditMode ? 'Edit Ticket' : 'Create Ticket'}
-            </h2>
-            <form>
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                {/* Staff Name Dropdown */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Staff Name
-                  </label>
-                  <select
-                    name="staffId"
-                    value={selectedStaffId}
-                    onChange={handleStaffChange}
-                    className="border p-2 rounded w-full focus:outline-none"
-                  >
-                    <option value="">Select Staff</option>
-                    {staffList.map((staff) => (
-                      <option key={staff.id} value={staff.id}>
-                        {staff.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {/* Staff Number */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Staff Number
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedStaffNumber}
-                    readOnly
-                    className="border p-2 rounded w-full focus:outline-none bg-gray-100"
-                  />
-                </div>
-                {/* Date */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={handleDateChange}
-                    // onChange={handleInputChange}
-                    className="border p-2 rounded w-full focus:outline-none"
-                  />
-                </div>
-                {/* Problem */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    className="w-full border p-2 rounded mb-4 focus:outline-none"
-                    onChange={handleInputChange}
-                    name="description"
-                    defaultValue={
-                      isEditMode && selectedTicket
-                        ? selectedTicket.description
-                        : ''
-                    }
-                  ></textarea>
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Problem
-                  </label>
-                  <textarea
-                    className="w-full border p-2 rounded mb-4 focus:outline-none"
-                    onChange={handleInputChange}
-                    name="problem"
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.problem : ''
-                    }
-                  ></textarea>
-                </div>
-                {/* Branch Dropdown */}
-                {/* <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Select Branch
-                  </label>
-                  <select
-                    value={formData.branchId}
-                    name='branchId'
-                    onChange={handleBranchChange}
-                    className="border p-2 rounded w-full focus:outline-none"
-                  >
-                    <option value="">Select Branch</option>
-                    {branchList.map((branch) => (
-                      <option key={branch.id} value={branch.id}>
-                        {branch.branchName}
-                      </option>
-                    ))}
-                  </select>
-                </div> */}
+      <div className="flex mb-4">
+        <div className="flex-grow mx-2">
+          <input
+            type="text"
+            name="name"
+            placeholder="Search by Name"
+            value={searchData.name}
+            onChange={handleInputChange}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
+          />
+        </div>
+        <button
+          onClick={handleSearch}
+          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+        >
+          <FaSearch className="mr-2" /> Search
+        </button>
+      </div>
 
-                {branches.length > 0 && (
-                  <div className="space-y-4">
-                    <div>
-                      <p className="font-semibold mb-1">Branch</p>
-                      <select
-                        name="branchId"
-                        value={formData.branchId}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+      {loading ? (
+        <p className="text-center text-gray-600">Loading...</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead>
+              <tr className="border-b bg-blue-500 text-white text-left">
+                <th className="px-6 py-3 text-left text-sm font-bold">Ticket No.</th>
+                <th className="px-6 py-3 text-left text-sm font-bold">Problem</th>
+                <th className="px-6 py-3 text-left text-sm font-bold">Addressing Department</th>
+                
+                <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ticket.length > 0 ? (
+                ticket.map((item, index) => (
+                  <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
+                    
+                    <td className="px-6 py-4">{item.ticketNumber}</td>
+                    <td className="px-6 py-4">{item.problem}</td>
+                    <td className="px-6 py-4">{item.addressingDepartment}</td>
+
+                    <td className="px-6 py-4 relative dropdown-container">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDropdown(item.id);
+                        }}
+                        className="p-2 bg-white rounded-md focus:outline-none"
                       >
-                        <option value="" disabled>
-                          Select a Branch
-                        </option>
-                        {branches.map((branch) => (
-                          <option key={branch.id} value={branch.id}>
-                            {branch.branchName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {/* Address */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    className="border p-2 rounded w-full focus:outline-none"
-                    onChange={handleInputChange}
-                    defaultValue={
-                      isEditMode && selectedTicket ? selectedTicket.address : ''
-                    }
-                  />
-                </div>
-                <div>
-                  <p className="font-semibold mb-1">Addressing Department</p>
-                  <select
-                    name="addressingDepartment"
-                    value={formData.addressingDepartment}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="">Select addressingDepartment</option>
-                    <option value="CEO">CEO</option>
-                    <option value="HR">HR</option>
-                    <option value="Accountant">Accountant</option>
-                    <option value="Branch Manager">Branch Manager</option>
-                    <option value="Backend Support">Backend Support</option>
-                    <option value="Sub Dealer">Sub Dealer</option>
-                    <option value="Technician">Technician</option>
-                    <option value="Sales Man">Sales Man</option>
-                    <option value="Call Center">Call Center</option>
-                    <option value="Warehouse Manager">Warehouse Manager</option>
-                  </select>
-                </div>
-                <div>
-                  <p className="font-semibold mb-1">Work Status</p>
-                  <select
-                    name="workStatus"
-                    value={formData.workStatus || 'Pending'}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="allocated">Allocated</option>
-                    <option value="completed">Completed</option>
-                    <option value="incomplete">Incomplete</option>
-                  </select>
-                </div>
-              </div>
+                        <FaEllipsisV className="cursor-pointer text-gray-700" />
+                      </button>
 
-              {/* Problems */}
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">
-                  other Information
-                </label>
-                <textarea
-                  className="w-full border p-2 rounded mb-4 focus:outline-none"
-                  onChange={handleInputChange}
-                  defaultValue={
-                    isEditMode && selectedTicket
-                      ? selectedTicket.otherInformation
-                      : ''
-                  }
-                ></textarea>
-              </div>
-              {/* Save Button */}
-              <button
-                type="button"
-                className="bg-green-600 text-white py-2 px-6 rounded font-bold hover:bg-green-500 mx-auto block"
-                onClick={handleSaveTicket}
-              >
-                {isEditMode ? 'Save Changes' : 'Save'}
-              </button>
-            </form>
-          </div>
+                      {dropdownOpen === item.id && (
+                        <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
+                          <ul className="text-left">
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>
+                          </ul>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    No Tickets found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       )}
-
-      {isMoreDetailsModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-md shadow-lg relative w-2/4 border border-gray-300">
-            <button
-              onClick={handleCloseMoreDetailsModal}
-              className="absolute top-2 right-2 text-white cursor-pointer bg-green-600 rounded-full w-6 h-6 flex items-center justify-center"
-            >
-              X
-            </button>
-            <h2 className="text-xl font-bold border-b pb-2 mb-4">
-              Ticket Details
-            </h2>
-            <div className="space-y-3">
-              {' '}
-              {/* Adds gap between each line */}
-              <p>
-                <strong>Ticket Number:</strong> {ticketDetails.ticketNumber}
-              </p>
-              <p>
-                <strong>Staff Name:</strong> {ticketDetails.staffName}
-              </p>
-              <p>
-                <strong>Addressing Department:</strong>{' '}
-                {ticketDetails.addressingDepartment}
-              </p>
-              <p>
-                <strong>Branch Name:</strong> {ticketDetails.branchName}
-              </p>
-              <p>
-                <strong>Date:</strong>{' '}
-                {new Date(ticketDetails.date).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <TableWithSearchFilter
-        type="tickets"
-        showCreateBtn={permissions.add}
-        showDelete={permissions.delete}
-        showEdit={permissions.edit}
-        showDetails={permissions.view}
-        onCreateNew={handleOpenModalForAdd}
-        onEdit={handleOpenModalForEdit}
-        onDetails={handleOpenMoreDetailsModal} // Pass function correctly
-        onDelete={() => {}}
-      />
     </div>
   );
 };
 
 export default Tickets;
+
+

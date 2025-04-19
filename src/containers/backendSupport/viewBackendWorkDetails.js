@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { FaPaperclip } from 'react-icons/fa6';
 
 const ViewBackendWorkDetails = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { data } = location.state || {};
   const [workRecord, setWorkRecord] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -18,43 +20,92 @@ const ViewBackendWorkDetails = () => {
 
   const parsedProfile = JSON.parse(userProfile);
   const userName = parsedProfile?.data?.name;
+  const [serviceOptions, setServiceOptions] = useState(null);
+  const [vehicleTypeOptions, setVehicleTypeOptions] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   console.log(data, 'remarks');
+  const fetchRecords = async () => {
+    if (!data?.id) {
+      console.error('No valid ID found for API call.');
+      return;
+    }
+
+    try {
+      console.log('Fetching work details for ID:', data.id);
+      const response = await ApiService.post(
+        '/technician/getTechnicianDetailsById',
+        {
+          id: data.id,
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+
+      if (response?.data) {
+        console.log('API Response:', response.data);
+        setWorkRecord(response.data);
+        setEditedRecord(response.data);
+        setRemarks(response.data.remark);
+      } else {
+        console.error('API responded with no data');
+        setWorkRecord(null);
+      }
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setWorkRecord(null);
+    }
+  };
 
   useEffect(() => {
-    const fetchRecords = async () => {
-      if (!data?.id) {
-        console.error('No valid ID found for API call.');
-        return;
-      }
+    fetchRecords();
+  }, [data]);
 
+  useEffect(() => {
+    const fetchServices = async () => {
       try {
-        console.log('Fetching work details for ID:', data.id);
         const response = await ApiService.post(
-          '/technician/getTechnicianDetailsById',
+          '/ServiceType/getServiceTypeNamesDropDown',
           {
-            id: data.id,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
         );
 
         if (response?.data) {
-          console.log('API Response:', response.data);
-          setWorkRecord(response.data);
-          setEditedRecord(response.data);
-          setRemarks(response.data.remark);
+          console.log(response.data, 'services');
+          setServiceOptions(response.data);
         } else {
           console.error('API responded with no data');
-          setWorkRecord(null);
         }
       } catch (err) {
         console.error('Failed to fetch data:', err);
-        setWorkRecord(null);
       }
     };
+    fetchServices();
+  }, []);
 
-    fetchRecords();
-  }, [data]);
+  useEffect(() => {
+    const fetchVehicleTypes = async () => {
+      try {
+        const response = await ApiService.post(
+          '/VehicleType/getVehicleTypeNamesDropDown',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response?.data) {
+          setVehicleTypeOptions(response.data);
+        } else {
+          console.error('API responded with no data');
+        }
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+      }
+    };
+    fetchVehicleTypes();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -142,50 +193,70 @@ const ViewBackendWorkDetails = () => {
     : [];
 
   const handleSend = async () => {
-    if (newRemark.trim() === '') return;
-
-    // const remarkData = {
-    //   message: newRemark,
-    //   by: 'admin',
-    //   timestamp: new Date().toLocaleString(),
-    // };
+    if (newRemark.trim() === '' && !selectedFile) return;
 
     try {
-      console.log('Fetching work details for ID:', workRecord.id);
+      let fileTypeLabel = null;
+      let fileKey = null;
 
-      // Combine previous remarks with the new one
-      const updatedRemarks = [
-        ...(remarks || []), // existing remarks (fallback to empty array if null)
-        {
-          staffId: userId,
-          name: userName,
-          date: new Date(),
-          desc: newRemark,
-        },
-      ];
+      if (selectedFile) {
+        const mimeType = selectedFile.type;
+
+        if (mimeType.startsWith('image/')) {
+          fileTypeLabel = 'Image';
+          fileKey = 'image';
+        } else if (mimeType.startsWith('video/')) {
+          fileTypeLabel = 'Video';
+          fileKey = 'videos';
+        } else {
+          fileTypeLabel = 'File';
+          fileKey = 'file';
+        }
+      }
+
+      const newRemarkObj = {
+        staffId: userId,
+        name: userName,
+        date: new Date(),
+        desc: newRemark,
+        file: selectedFile ? { name: fileTypeLabel } : null,
+      };
+
+      const updatedRemarks = [newRemarkObj];
+
+      const formData = new FormData();
+      formData.append('id', workRecord.id);
+      formData.append('companyCode', initialAuthState.companyCode);
+      formData.append('unitCode', initialAuthState.unitCode);
+      formData.append('remark', JSON.stringify(updatedRemarks));
+
+      // ⬇️ Dynamically set file key
+      if (selectedFile && fileKey) {
+        formData.append(fileKey, selectedFile);
+      }
 
       const response = await ApiService.post(
         '/technician/handleTechnicianDetails',
+        formData,
         {
-          id: workRecord.id,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-          remark: updatedRemarks, // send combined remarks
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         }
       );
 
       if (response?.data) {
-        alert('Sent successfully');
-        setRemarks(updatedRemarks); // update the state after sending
+        // setRemarks(updatedRemarks);
+        fetchRecords();
+        setSelectedFile(null);
       } else {
         console.error('API responded with error');
       }
     } catch (err) {
-      console.error('Failed to fetch data:', err);
+      console.error('Failed to send remark or file:', err);
       setWorkRecord(null);
     }
 
-    // onSendRemark(remarkData); // Call parent function or update state
     setNewRemark('');
   };
 
@@ -196,47 +267,57 @@ const ViewBackendWorkDetails = () => {
       </h1>
       {workRecord ? (
         <div className="border p-6 rounded-md bg-gray-50 shadow-md">
-          <button
-            onClick={isEditing ? handleSave : handleEdit}
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            {isEditing ? 'Save' : 'Edit'}
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <button
+              onClick={() => navigate(-1)}
+              className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Back
+            </button>
+
+            <button
+              onClick={isEditing ? handleSave : handleEdit}
+              className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              {isEditing ? 'Save' : 'Edit'}
+            </button>
+          </div>
 
           <Section title="General Information">
-            <DetailRow label="ID" value={workRecord.id} editable={false} />
+            {/* <DetailRow label="ID" value={workRecord.id} editable={false} /> */}
             <DetailRow
               label="Service"
               value={editedRecord.service}
               editable={isEditing}
               onChange={handleChange}
               field="service"
+              options={serviceOptions}
             />
             <DetailRow
               label="Work Status"
               value={editedRecord.workStatus}
-              editable={isEditing}
+              // editable={isEditing}
               onChange={handleChange}
               field="workStatus"
             />
             <DetailRow
               label="Payment Status"
               value={editedRecord.paymentStatus}
-              editable={isEditing}
+              // editable={isEditing}
               onChange={handleChange}
               field="paymentStatus"
             />
             <DetailRow
               label="Date"
               value={new Date(editedRecord.date).toLocaleString()}
-              editable={isEditing}
+              // editable={isEditing}
               onChange={handleChange}
               field="date"
             />
             <DetailRow
               label="Attend Date"
               value={new Date(editedRecord.attendedDate).toLocaleString()}
-              editable={isEditing}
+              // editable={isEditing}
               onChange={handleChange}
               field="attendedDate"
             />
@@ -266,6 +347,7 @@ const ViewBackendWorkDetails = () => {
               editable={isEditing}
               onChange={handleChange}
               field="vehicleType"
+              options={vehicleTypeOptions}
             />
             <DetailRow
               label="Vehicle Number"
@@ -376,13 +458,82 @@ const ViewBackendWorkDetails = () => {
             )} */}
           </Section>
 
+          <Section title="Payment Details">
+            <DetailRow
+              label="Amount"
+              value={editedRecord.amount}
+              editable={isEditing}
+              onChange={handleChange}
+              field="amount"
+            />
+            <DetailRow
+              label="Paid Amount"
+              value={editedRecord.paidAmount}
+              editable={isEditing}
+              onChange={handleChange}
+              field="paidAmount"
+            />
+            <DetailRow
+              label="Payment Status"
+              value={editedRecord.paymentStatus}
+              editable={isEditing}
+              onChange={handleChange}
+              field="paymentStatus"
+            />
+
+            {editedRecord.screenShot && (
+              <ImageBox
+                src={editedRecord.screenShot}
+                alt="Payment Screenshot"
+                isEditing={isEditing}
+                // onDeleteImage={() => handleDeleteImage(index)}
+              />
+            )}
+          </Section>
+
+          {editedRecord.backEndStaffRelation && (
+            <Section title="Backend Support Details">
+              <DetailRow
+                label="id"
+                value={editedRecord.backEndStaffRelation.id}
+                editable={isEditing}
+                onChange={handleChange}
+                field="id"
+              />
+              <DetailRow
+                label="name"
+                value={editedRecord.backEndStaffRelation.name}
+                editable={isEditing}
+                onChange={handleChange}
+                field="name"
+              />
+              <DetailRow
+                label="Phone Nmuber"
+                value={editedRecord.backEndStaffRelation.phoneNumber}
+                editable={isEditing}
+                onChange={handleChange}
+                field="phoneNumber"
+              />
+
+              {editedRecord.screenShot && (
+                <ImageBox
+                  src={editedRecord.screenShot}
+                  alt="Payment Screenshot"
+                  isEditing={isEditing}
+                  // onDeleteImage={() => handleDeleteImage(index)}
+                />
+              )}
+            </Section>
+          )}
+
           <div className="mt-6 max-w-[1000px] min-h-[300px] border rounded-md p-4 bg-white shadow-md">
             <h1 className="text-xl font-bold mb-4">Remarks</h1>
-
             {/* Scrollable Chat Area */}
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
               {remarks?.map((remark, index) => {
                 const isLoggedInUser = remark.name === userName;
+                const isImage = remark?.file?.name === 'Image' && remark.image;
+                const isVideo = remark?.file?.name === 'Video' && remark.video;
 
                 return (
                   <div
@@ -390,13 +541,33 @@ const ViewBackendWorkDetails = () => {
                     className={`flex flex-col ${isLoggedInUser ? 'items-end' : 'items-start'}`}
                   >
                     <div
-                      className={`rounded-lg p-3 max-w-[75%] shadow ${
+                      className={`rounded-lg p-3 max-w-[75%] shadow space-y-2 ${
                         isLoggedInUser
                           ? 'bg-blue-100 text-blue-900'
                           : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       <p className="text-sm">{remark.desc}</p>
+
+                      {isImage && (
+                        <img
+                          src={remark.image}
+                          alt="attached"
+                          className="mt-2 rounded max-w-full max-h-[200px]"
+                          style={{ width: '200px', height: '80px' }}
+                        />
+                      )}
+
+                      {isVideo && (
+                        <video
+                          controls
+                          className="mt-2 rounded max-w-full max-h-[250px]"
+                          style={{ width: '250px', height: '200px' }}
+                        >
+                          <source src={remark.video} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
                     </div>
                     <span className="text-xs text-gray-500 mt-1">
                       {remark.name} • {new Date(remark.date).toLocaleString()}
@@ -405,8 +576,8 @@ const ViewBackendWorkDetails = () => {
                 );
               })}
             </div>
-
             {/* Input and Send Button */}
+
             <div className="flex items-center gap-3 mt-4">
               <input
                 type="text"
@@ -415,6 +586,21 @@ const ViewBackendWorkDetails = () => {
                 value={newRemark}
                 onChange={(e) => setNewRemark(e.target.value)}
               />
+
+              <input
+                id="file-upload"
+                type="file"
+                onChange={(e) => setSelectedFile(e.target.files[0])}
+                className="hidden"
+              />
+
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer p-2 rounded bg-gray-100 hover:bg-gray-200"
+              >
+                <FaPaperclip className="w-5 h-5 text-gray-600" />
+              </label>
+
               <button
                 onClick={handleSend}
                 className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
@@ -453,34 +639,6 @@ const ViewBackendWorkDetails = () => {
 //     }
 //   };
 
-// const remarks = [
-//   {
-//     by: 'admin',
-//     message: 'Installation has been scheduled for tomorrow morning.',
-//     timestamp: '2025-04-06 09:15 AM',
-//   },
-//   {
-//     by: 'user',
-//     message: 'Okay, I will be available at the venue by 9:00 AM.',
-//     timestamp: '2025-04-06 09:20 AM',
-//   },
-//   {
-//     by: 'admin',
-//     message: 'Please ensure the power supply is ready.',
-//     timestamp: '2025-04-06 09:22 AM',
-//   },
-//   {
-//     by: 'user',
-//     message: 'Yes, everything will be arranged beforehand.',
-//     timestamp: '2025-04-06 09:25 AM',
-//   },
-//   {
-//     by: 'admin',
-//     message: 'Great. Let me know once it’s done.',
-//     timestamp: '2025-04-06 09:30 AM',
-//   },
-// ];
-
 const Section = ({ title, children }) => (
   <div className="mb-6 p-4 bg-white rounded-lg shadow-md border">
     <h2 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
@@ -490,16 +648,39 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-const DetailRow = ({ label, value, editable, onChange, field }) => (
+const DetailRow = ({
+  label,
+  value,
+  editable,
+  onChange,
+  field,
+  options = [],
+}) => (
   <div className="flex justify-between items-center border-b py-2">
     <span className="font-semibold text-gray-600">{label}:</span>
     {editable ? (
-      <input
-        type="text"
-        className="border px-2 py-1"
-        value={value}
-        onChange={(e) => onChange(e, field)}
-      />
+      ['service', 'vehicleType'].includes(field) ? (
+        <select
+          className="border px-2 py-1"
+          style={{ width: '50%' }}
+          value={value}
+          onChange={(e) => onChange(e, field)}
+        >
+          <option value="">Select {label}</option>
+          {options.map((opt) => (
+            <option key={opt.id} value={opt}>
+              {opt.name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          className="border px-2 py-1"
+          value={value}
+          onChange={(e) => onChange(e, field)}
+        />
+      )
     ) : (
       <span className="text-gray-800">{value}</span>
     )}
@@ -541,14 +722,14 @@ const ImageBox = ({ src, alt, isEditing, onDeleteImage }) => (
       <button>Download Image</button>
     </a>
 
-    {isEditing && (
+    {/* {isEditing && (
       <button
         className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity"
         onClick={onDeleteImage}
       >
         Delete
       </button>
-    )}
+    )} */}
   </div>
 );
 
