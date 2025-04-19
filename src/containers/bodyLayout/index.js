@@ -155,6 +155,7 @@ import DebitNoteForm from '../vouchers/debitNote';
 import CreditNoteForm from '../vouchers/creditNote';
 import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
 import SubDelarStaff from '../sub-dealers/subDelarStaff';
+import SubDealerNotifications from '../notifications/sub-dealer-home-notifications';
 
 
 
@@ -371,6 +372,9 @@ const BodyLayout = ({ children }) => {
               onClick={() => navigate('/notifications')}
             />
           </div>
+          <div>
+            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
+          </div>
         </div>
       </div>
 
@@ -402,8 +406,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/payments" element={<Payments />} />
           <Route path="/requests" element={<RequestRaise />} />
           <Route path="/delete-request" element={<DeleteRequest />} />
-          <Route path="/add-request" element={<AddRequestRaise/>} />
-          <Route path="/edit-request" element={<EditRequestRaise/>} />
+          <Route path="/add-request" element={<AddRequestRaise />} />
+          <Route path="/edit-request" element={<EditRequestRaise />} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/add-client" element={<AddEditClient />} />
@@ -499,6 +503,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-sub-dealer" element={<AddSubDealer />} />
           <Route path="/add-product" element={<AddProductForm />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/sub-dealer-notifications" element={<SubDealerNotifications />} />
           <Route path="/vendor-profile" element={<VendorProfile />} />
           <Route path="/delete-sub-dealer" element={<DeleteSubDealer />} />
           <Route path="/sub-dealer-profile" element={<SubDealerDetails />} />
@@ -565,13 +570,13 @@ const BodyLayout = ({ children }) => {
             element={<FilteredWorkStatusDetails />}
           />
 
-<Route path="/groups" element={<Groups />} />
-<Route path="/add-groups" element={<AddGroups />} />
-<Route path="/more-details-groups" element={<moreDetailsGroups />} />
-<Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/add-groups" element={<AddGroups />} />
+          <Route path="/more-details-groups" element={<moreDetailsGroups />} />
+          <Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
 
 
-          
+
 
           <Route path="/add-designation" element={<AddDesignation />} />
           <Route path="/add-ledger" element={<AddLedger />} />

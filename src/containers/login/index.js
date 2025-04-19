@@ -1,4 +1,4 @@
-import React, { useState ,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -15,6 +15,68 @@ const Login = ({ handleLoginFlag }) => {
 
   const navigate = useNavigate();
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+  //   setLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       staffId: userId,
+  //       password: password,
+  //       designation: role,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode,
+  //     };
+
+  //     const response = await ApiService.post('/login/LoginDetails', payload);
+  //     console.log("ramesh login", response)
+
+
+
+  //     if (response.data.status) {
+  //       const userProfile = response.data;
+  //       console.log("response data", response.data);
+
+  //       localStorage.setItem('userId', userId);
+  //       localStorage.setItem('password', password);
+  //       localStorage.setItem('role', role);
+  //       localStorage.setItem('userProfile', JSON.stringify(userProfile));
+  //       // Fetch branch name separately if needed
+  //       console.log("===========", userProfile.data)
+  //       let branchName = userProfile.data.branch?.branchName;
+  //       localStorage.setItem('branchName', branchName);
+  //       localStorage.setItem('branch_id', userProfile.data.branch?.id);
+  //       localStorage.setItem('id', userProfile.data?.id);
+
+  //       const subDealerData = response.data.date?.[0]; // safely access first item
+  //       if (subDealerData) {
+  //         localStorage.setItem('role', 'Sub Dealer');
+  //         localStorage.setItem('userId', subDealerData.subDealerId); // ✅ this is what you'll use later
+  //         localStorage.setItem('companyCode', subDealerData.companyCode);
+  //         localStorage.setItem('unitCode', subDealerData.unitCode);
+  //       }
+  //       await fetchUserPermissions(
+  //         userId,
+  //         initialAuthState.companyCode,
+  //         initialAuthState.unitCode
+  //       );
+
+  //       handleLoginFlag();
+  //     } else {
+  //       alert("Please enter correct login details");
+  //       setError(response?.internalMessage || 'Invalid login credentials.');
+  //     }
+  //   } catch (err) {
+  //     setError(
+  //       err?.response?.data?.internalMessage ||
+  //       'Failed to login. Please check your credentials.'
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -30,35 +92,46 @@ const Login = ({ handleLoginFlag }) => {
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log("ramesh login", response)
+      console.log("Login response:", response);
 
       if (response.data.status) {
-        const userProfile = response.data;
-        console.log("response data", response.data);
-
         localStorage.setItem('userId', userId);
         localStorage.setItem('password', password);
         localStorage.setItem('role', role);
-        localStorage.setItem('userProfile', JSON.stringify(userProfile));
-        // Fetch branch name separately if needed
-        console.log("===========",userProfile.data)
-        let branchName = userProfile.data.branch?.branchName;
-        localStorage.setItem('branchName', branchName);
-        localStorage.setItem('branch_id', userProfile.data.branch?.id);
-        localStorage.setItem('id', userProfile.data?.id);
+        localStorage.setItem('userProfile', JSON.stringify(response.data));
+
+        const isSubDealer = role === 'Sub Dealer';
+        if (isSubDealer) {
+          const subDealerData = response.data.data?.data?.[0];
+          if (subDealerData) {
+            localStorage.setItem('userId', subDealerData.subDealerId);
+            localStorage.setItem('companyCode', subDealerData.companyCode);
+            localStorage.setItem('unitCode', subDealerData.unitCode);
+            localStorage.setItem('id', subDealerData.id);
+            localStorage.setItem('branchName', subDealerData.branchName || '');
+          }
+        } else {
+          const staffData = response.data.data;
+          localStorage.setItem('companyCode', staffData.companyCode);
+          localStorage.setItem('unitCode', staffData.unitCode);
+          localStorage.setItem('id', staffData.id);
+          localStorage.setItem('branchName', staffData.branch?.branchName || '');
+          localStorage.setItem('branch_id', staffData.branch?.id || '');
+        }
 
         await fetchUserPermissions(
-          userId,
-          initialAuthState.companyCode,
-          initialAuthState.unitCode
+          localStorage.getItem('userId'),
+          localStorage.getItem('companyCode'),
+          localStorage.getItem('unitCode')
         );
 
-        handleLoginFlag();
+        handleLoginFlag(); // redirect / update UI
       } else {
         alert("Please enter correct login details");
         setError(response?.internalMessage || 'Invalid login credentials.');
       }
     } catch (err) {
+      console.error("Login error:", err);
       setError(
         err?.response?.data?.internalMessage ||
         'Failed to login. Please check your credentials.'
@@ -67,7 +140,6 @@ const Login = ({ handleLoginFlag }) => {
       setLoading(false);
     }
   };
-
 
   const fetchUserPermissions = async (userId, companyCode, unitCode) => {
     try {
@@ -99,7 +171,7 @@ const Login = ({ handleLoginFlag }) => {
       setDesignations([]);
     }
   };
-  
+
   useEffect(() => {
     fetchDesignations();
   }, []);
@@ -158,23 +230,23 @@ const Login = ({ handleLoginFlag }) => {
           </div>
 
           <div className="mb-6">
-  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-    Role
-  </label>
-  <select
-    id="role"
-    value={role}
-    onChange={(e) => setRole(e.target.value)}
-    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-  >
-    <option value="">Select Role</option>
-    {designations.map((item, index) => (
-      <option key={index} value={item.designation}>
-        {item.designation}
-      </option>
-    ))}
-  </select>
-</div>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+              Role
+            </label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select Role</option>
+              {designations.map((item, index) => (
+                <option key={index} value={item.designation}>
+                  {item.designation}
+                </option>
+              ))}
+            </select>
+          </div>
 
 
           {/* Login Button */}
