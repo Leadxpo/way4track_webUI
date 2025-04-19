@@ -120,7 +120,6 @@ export default function AddStaffForm() {
             setPersonnelDetails={(data) =>
               handleTempDataUpdate(data, 'personnelDetails')
             }
-
             personnelDetails={formData.personnelDetails}
           />
         );
@@ -130,7 +129,6 @@ export default function AddStaffForm() {
             setEducationDetails={(data) =>
               handleTempDataUpdate(data, 'educationDetails')
             }
-
             educationDetails={formData.educationDetails}
           />
         );

@@ -39,7 +39,6 @@ const EditEmployerDetails = () => {
 
   // Fetch Branches
   const fetchBranches = async () => {
-
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       if (response.status) {
@@ -119,7 +118,7 @@ const EditEmployerDetails = () => {
       if (!date || date === '') return null;
       return date;
     };
-  
+
     const payload = {
       id: data.id ?? '',
       // staffId: "SFp-0002",
@@ -133,7 +132,7 @@ const EditEmployerDetails = () => {
       mobileAllocation: data.mobileAllocation ?? '',
       insuranceNumber: data.insuranceNumber ?? '',
       description: data.description ?? '',
-  
+
       // Date fields: actual null if not provided
       joiningDate: formatDate(data.joiningDate),
       terminationDate: formatDate(data.terminationDate),
@@ -142,18 +141,18 @@ const EditEmployerDetails = () => {
       insuranceEligibilityDate: formatDate(data.insuranceEligibilityDate),
       insuranceExpiryDate: formatDate(data.insuranceExpiryDate),
     };
-  
-    console.log("qqqqqqqwwwwwww",payload);
+
+    console.log('qqqqqqqwwwwwww', payload);
     try {
       const endpoint = '/staff/handleStaffDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'application/json' },
       });
-  
+
       if (response.status) {
         alert('Employer details updated successfully!');
+        navigate('/staff-details');
         return response.data;
-        navigate("/staff-details")
       } else {
         alert('Failed to update employer details.');
         return null;
@@ -164,10 +163,6 @@ const EditEmployerDetails = () => {
       return null;
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

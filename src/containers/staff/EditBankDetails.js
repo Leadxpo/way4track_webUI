@@ -38,8 +38,8 @@ const EditBankDetails = () => {
 
       if (response.status) {
         alert('Bank details updated successfully!');
-        return response.data;
         navigate('/staff-details');
+        return response.data;
       } else {
         alert('Failed to update bank details.');
         return null;

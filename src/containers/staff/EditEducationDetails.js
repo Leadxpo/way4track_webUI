@@ -174,8 +174,9 @@ export default function EditEducationDetails() {
 
       if (response.status) {
         alert('Education details updated successfully!');
-        return response.data;
         navigate("/staff-details")
+        return response.data;
+        
       } else {
         alert('Failed to update education details.');
         return null;
