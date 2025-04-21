@@ -98,6 +98,40 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/vehicle',
     },
+    // newly added options
+    {
+      name: 'Sales Visits',
+      icon: <img src="./work_allocation.png" />,
+      route: '/sales_visit',
+    },
+    // {
+    //   name: 'Performance',
+    //   icon: <img src="./work_allocation.png" />,
+    //   route: '/performance',
+    // },
+    {
+      name: 'Designation',
+      icon: <img src="./designation.png" />,
+      route: '/designations',
+    },
+    { name: 'Letters', icon: <img src="./letters.png" />, route: '/letters' },
+    {
+      name: 'Attendance',
+      icon: <img src="./attendance.jpg" />,
+      route: '/attendance',
+    },
+    {
+      name: 'Payroll',
+      icon: <img src="./payroll.png" />,
+      route: '/payroll',
+    },
+    { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
+    {
+      name: 'Dispatch',
+      icon: <img src="./payroll.png" />,
+      route: '/dispatch',
+    },
+
   ],
   'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
