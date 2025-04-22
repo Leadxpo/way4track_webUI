@@ -30,7 +30,7 @@ export default function AddTicket() {
     const payload = {
       problem: formData.problem,
       date: formattedDate, 
-      addressingDepartment: formData.addressingDepartment,
+      // addressingDepartment: formData.addressingDepartment,
       designationRelation:formData.designationRelation,
       workStatus: formData.workStatus,
       description: formData.description,

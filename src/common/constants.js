@@ -40,11 +40,11 @@ export const menuOptions = {
       route: '/requests',
     },
     { name: 'Tracker', icon: <img src="./tracker.png" />, route: '/tracker' },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
 
     {
@@ -68,7 +68,7 @@ export const menuOptions = {
       icon: <img src="./analysis.png" />,
       route: '/analysis',
     },
-    { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
+    // { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
     {
       name: 'Payments',
       icon: <img src="./payments.png" />,

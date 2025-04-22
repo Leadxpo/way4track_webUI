@@ -36,9 +36,11 @@ const CustomerForm = ({ editData }) => {
         country: formData.country,
         panNumber: formData.panNumber,
         registrationType: formData.registrationType,
-        tcsDeductable: formData.tcsDeductable || 'no',
-        tdsDeductable: formData.tdsDeductable || 'no',
-        gstNumber: formData.gstNumber,
+        tcsDeductable: true,
+        tdsDeductable: true,
+        // tcsDeductable: formData.tcsDeductable,
+        // tdsDeductable: formData.tdsDeductable,
+        gstUinNumber: formData.gstNumber,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       };
@@ -116,7 +118,7 @@ const CustomerForm = ({ editData }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 font-semibold mb-1">Tcs Deductable</label>
             <input
               type="text"
@@ -138,7 +140,43 @@ const CustomerForm = ({ editData }) => {
               placeholder="Enter Tcs Deductable"
               className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-          </div>
+          </div> */}
+
+
+<div>
+  <label className="block text-gray-700 font-semibold mb-1">TCS Deductable</label>
+  <div className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      name="tcsDeductable"
+      checked={formData.tcsDeductable}
+      onChange={(e) =>
+        handleChange({
+          target: { name: 'tcsDeductable', value: e.target.checked },
+        })
+      }
+    />
+    <span>{formData.tcsDeductable ? 'Yes' : 'No'}</span>
+  </div>
+</div>
+
+<div>
+  <label className="block text-gray-700 font-semibold mb-1">TDS Deductable</label>
+  <div className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      name="tdsDeductable"
+      checked={formData.tdsDeductable}
+      onChange={(e) =>
+        handleChange({
+          target: { name: 'tdsDeductable', value: e.target.checked },
+        })
+      }
+    />
+    <span>{formData.tdsDeductable ? 'Yes' : 'No'}</span>
+  </div>
+</div>
+
 
           <div>
             <label className="block text-gray-700 font-semibold mb-1">Pan Number</label>

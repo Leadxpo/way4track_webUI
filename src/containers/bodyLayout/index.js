@@ -330,12 +330,12 @@ const BodyLayout = ({ children }) => {
             </button>
           ) : (
             <div className="w-full md:w-auto relative mb-4 md:mb-0">
-              <input
+              {/* <input
                 className="w-full md:w-64 border rounded pl-2 text-sm focus:outline-none"
                 placeholder="Search here"
                 value={searchTerm}
                 onChange={handleSearch}
-              />
+              /> */}
               {/* Dropdown for search results */}
               {searchTerm && results.length > 0 && (
                 <div className="absolute bg-white border rounded shadow-lg z-10 max-h-48 overflow-y-auto w-full">
