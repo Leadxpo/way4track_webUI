@@ -381,14 +381,18 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/settings')}
             />
+            
+          <div>
+          {role==="Sub Dealer"?
+            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
+          :
             <FaBell
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/notifications')}
-            />
+            />}
+            </div>
           </div>
-          <div>
-            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
-          </div>
+         
         </div>
       </div>
 

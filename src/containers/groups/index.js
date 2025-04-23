@@ -187,7 +187,7 @@ const GroupTable = () => {
                     />
                     {dropdownOpenIndex === index && (
                       <div className="absolute right-0 mt-2 w-40 bg-white border shadow-lg rounded z-10">
-                        <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleNavigate('edit', item)}>Edit</p>
+                        <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/add-groups', { state: { item } })}>Edit</p>
                         <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</p>
                       </div>
                     )}

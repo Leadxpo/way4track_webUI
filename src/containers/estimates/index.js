@@ -23,13 +23,13 @@ const Estimates = () => {
     <>
       <TableWithDateFilter
         type="estimate"
-        onEdit={handleEdit}
-        onDelete={() => {}}
+        // onEdit={handleEdit}
+        // onDelete={() => {}}
         onDetails={handleDetails}
         showStatusFilter={true}
         showCreateBtn={true}
-        showDelete={permissions.delete}
-        showEdit={permissions.edit}
+        // showDelete={permissions.delete}
+        // showEdit={permissions.edit}
         showDetails={permissions.view}
       />
       {/* <div style={{ height: '100vh', width: '50vw' }}>

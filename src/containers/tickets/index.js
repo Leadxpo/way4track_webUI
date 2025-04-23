@@ -135,8 +135,11 @@ const Tickets = () => {
             <thead>
               <tr className="border-b bg-blue-500 text-white text-left">
                 <th className="px-6 py-3 text-left text-sm font-bold">Ticket No.</th>
-                <th className="px-6 py-3 text-left text-sm font-bold">Problem</th>
-                <th className="px-6 py-3 text-left text-sm font-bold">Addressing Department</th>
+                {/* <th className="px-6 py-3 text-left text-sm font-bold">Branch</th> */}
+                <th className="px-6 py-3 text-left text-sm font-bold">Date</th>
+               
+                {/* <th className="px-6 py-3 text-left text-sm font-bold">Problem</th> */}
+                {/* <th className="px-6 py-3 text-left text-sm font-bold">Addressing Department</th> */}
                 
                 <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
               </tr>
@@ -147,9 +150,10 @@ const Tickets = () => {
                   <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
                     
                     <td className="px-6 py-4">{item.ticketNumber}</td>
-                    <td className="px-6 py-4">{item.problem}</td>
-                    <td className="px-6 py-4">{item.addressingDepartment}</td>
-
+                    {/* <td className="px-6 py-4">{item.branchName}</td> */}
+                    {/* <td className="px-6 py-4">{item.problem}</td> */}
+                    {/* <td className="px-6 py-4">{item.addressingDepartment}</td> */}
+                    <td className="px-6 py-4">{item.date}</td>
                     <td className="px-6 py-4 relative dropdown-container">
                       <button
                         onClick={(e) => {
