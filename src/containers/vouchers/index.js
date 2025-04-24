@@ -542,7 +542,7 @@ const Vouchers = () => {
         <table className="min-w-full border">
           <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="p-3">Voucher No.</th>
+              <th className="p-3">Voucher ID</th>
               <th className="p-3">Branch</th>
               <th className="p-3">Voucher Type</th>
               <th className="p-3">Generation Date/Time</th>
@@ -564,12 +564,12 @@ const Vouchers = () => {
                 <td className="p-3">{voucher.paymentMode}</td>
                 <td className="p-3">{voucher.paymentStatus
                 }</td>
-                <td
+                {/* <td
                   className="px-4 py-2 text-center"
                   onClick={(e) => handleActionClick(e, voucher)}
                 >
                   <FaEllipsisV className="cursor-pointer" />
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

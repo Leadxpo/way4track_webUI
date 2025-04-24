@@ -319,6 +319,20 @@ const TableWithSearchFilter = ({
     );
     setFilteredData(filtered);
   };
+
+
+  const handleHiringSearch = (e) => {
+    const inputName = e.target.value;
+    setStatusFilter(inputName);
+  
+    const filtered = data.filter(
+      (item) =>
+        inputName === '' ||
+        item.candidateName.toLowerCase().includes(inputName.toLowerCase())
+    );
+  
+    setFilteredData(filtered);
+  };
   const handleSearch = async () => {
     switch (type) {
       case 'clients':
@@ -425,6 +439,7 @@ const TableWithSearchFilter = ({
           />
         </div>
         {/* Search by Name */}
+        
         <div className="flex-grow mx-2">
           <input
             type="text"
@@ -438,7 +453,7 @@ const TableWithSearchFilter = ({
               type === 'tickets'
                 ? 'Search with Client Name'
                 : type === 'hiring'
-                  ? 'Search with Hire Name'
+                  ? 'Search with Name'
                   : 'Search with Name'
             }
             onChange={(e) => setSearchName(e.target.value)}
@@ -482,7 +497,7 @@ const TableWithSearchFilter = ({
           ) : (
             <select
               value={statusFilter}
-              onChange={handleStatusChange}
+              onChange={type==="hiring"?handleHiringSearch:handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
               <option value="" disabled>
