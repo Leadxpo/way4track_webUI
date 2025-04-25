@@ -30,7 +30,7 @@ const Staff = () => {
     'Staff Name',
     'Designation',
     'Phone Number',
-    'Email',
+    // 'Email',
     'Branch Name',
     'Branch Number',
     'Branch Address',
@@ -66,7 +66,7 @@ const Staff = () => {
 
       if (response.status) {
         const rawData = response.data || [];
-
+        console.log("rrttttt",rawData);
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
           id: 'ID',
@@ -74,7 +74,7 @@ const Staff = () => {
           staffName: 'Staff Name',
           designation: 'Designation',
           phoneNumber: 'Phone Number',
-          branch_email: 'Email',
+          branch_email: 'Branch Email',
           branch_name: 'Branch Name',
           branch_branch_number: 'Branch Number',
           branch_branch_address: 'Branch Address',
@@ -409,8 +409,9 @@ const Table = ({
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
-  console.log(columns, '|||||||||||||||');
-  return (
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [showRowPopup, setShowRowPopup] = useState(false);
+    return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
         <div className="p-4 text-center text-gray-500">No data found</div>
@@ -445,7 +446,10 @@ const Table = ({
                 <tr
                   key={rowIndex}
                   className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                >
+                  onClick={() => {
+                    setSelectedRowData(row);
+                    setShowRowPopup(true);
+                  }}                >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
@@ -509,6 +513,29 @@ const Table = ({
           </table>
         </div>
       )}
+
+{showRowPopup && selectedRowData && (
+  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+    <div className="bg-white rounded-lg shadow-lg w-96 p-4 relative">
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        onClick={() => setShowRowPopup(false)}
+      >
+        ×
+      </button>
+      <h2 className="text-lg font-semibold mb-2">Staff Details</h2>
+      <div className="space-y-2">
+        {columns.map((column, index) => (
+          <div key={index} className="flex justify-between text-sm">
+            <span className="font-medium">{column}:</span>
+            <span>{selectedRowData[column] || '-'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

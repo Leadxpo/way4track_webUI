@@ -13,7 +13,7 @@ export const menuOptions = {
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
-    { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
+    // { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
     {
       name: 'Sub Dealers',
       icon: <img src="./subdealers.png" />,
@@ -40,11 +40,11 @@ export const menuOptions = {
       route: '/requests',
     },
     { name: 'Tracker', icon: <img src="./tracker.png" />, route: '/tracker' },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
 
     {
@@ -68,7 +68,7 @@ export const menuOptions = {
       icon: <img src="./analysis.png" />,
       route: '/analysis',
     },
-    { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
+    // { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
     {
       name: 'Payments',
       icon: <img src="./payments.png" />,
@@ -98,6 +98,39 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/vehicle',
     },
+    // newly added options
+    {
+      name: 'Sales Visits',
+      icon: <img src="./work_allocation.png" />,
+      route: '/sales_visit',
+    },
+    // {
+    //   name: 'Performance',
+    //   icon: <img src="./work_allocation.png" />,
+    //   route: '/performance',
+    // },
+    {
+      name: 'Designation',
+      icon: <img src="./designation.png" />,
+      route: '/designations',
+    },
+    { name: 'Letters', icon: <img src="./letters.png" />, route: '/letters' },
+    {
+      name: 'Attendance',
+      icon: <img src="./attendance.jpg" />,
+      route: '/attendance',
+    },
+    {
+      name: 'Payroll',
+      icon: <img src="./payroll.png" />,
+      route: '/payroll',
+    },
+    {
+      name: 'Dispatch',
+      icon: <img src="./payroll.png" />,
+      route: '/dispatch',
+    },
+
   ],
   'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
@@ -295,12 +328,8 @@ export const menuOptions = {
       icon: <img src="./home.png" />,
       route: '/customer-care-home',
     },
-    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' },
-    {
-      name: 'Tickets Assign',
-      icon: <img src="./tickets.png" />,
-      route: '/ticket-aasign',
-    },
+    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' }
+    
   ],
   'sales man': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },

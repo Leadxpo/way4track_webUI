@@ -65,8 +65,18 @@ const TableWithSearchFilter = ({
         }
       );
 
+      console.log("tttttrrr ",response.data)
+
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
+        // const filteredClients = response.data.map(client => ({
+        //   clientId: client.clientId,
+        //   name: client.name,
+        //   email: client.email,
+        //   phoneNumber: client.phoneNumber,
+        // }));
+  
+        // setFilteredData(filteredClients);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -319,6 +329,20 @@ const TableWithSearchFilter = ({
     );
     setFilteredData(filtered);
   };
+
+
+  const handleHiringSearch = (e) => {
+    const inputName = e.target.value;
+    setStatusFilter(inputName);
+  
+    const filtered = data.filter(
+      (item) =>
+        inputName === '' ||
+        item.candidateName.toLowerCase().includes(inputName.toLowerCase())
+    );
+  
+    setFilteredData(filtered);
+  };
   const handleSearch = async () => {
     switch (type) {
       case 'clients':
@@ -425,6 +449,7 @@ const TableWithSearchFilter = ({
           />
         </div>
         {/* Search by Name */}
+        
         <div className="flex-grow mx-2">
           <input
             type="text"
@@ -438,7 +463,7 @@ const TableWithSearchFilter = ({
               type === 'tickets'
                 ? 'Search with Client Name'
                 : type === 'hiring'
-                  ? 'Search with Hire Name'
+                  ? 'Search with Name'
                   : 'Search with Name'
             }
             onChange={(e) => setSearchName(e.target.value)}
@@ -446,6 +471,7 @@ const TableWithSearchFilter = ({
             style={{ paddingLeft: '8px' }}
           />
         </div>
+        {type==="hiring"&&
         <div className="flex-grow mx-2">
           {showStatusFilter ? (
             // <select
@@ -482,7 +508,7 @@ const TableWithSearchFilter = ({
           ) : (
             <select
               value={statusFilter}
-              onChange={handleStatusChange}
+              onChange={type==="hiring"?handleHiringSearch:handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
               <option value="" disabled>
@@ -495,7 +521,7 @@ const TableWithSearchFilter = ({
               ))}
             </select>
           )}
-        </div>
+        </div>}
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

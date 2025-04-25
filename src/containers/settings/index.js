@@ -143,7 +143,7 @@ const Settings = () => {
                   </thead>
                   <tbody>
                     {staffData.permissions &&
-                    staffData.permissions.length > 0 ? (
+                      staffData.permissions.length > 0 ? (
                       staffData.permissions.map((permission, index) => (
                         <tr key={index} className="border-t">
                           <td className="p-2">{permission.name}</td>
@@ -211,44 +211,36 @@ const Settings = () => {
                   alt="Staff"
                   className="w-32 h-32 rounded-full mb-4 object-cover shadow-lg"
                 />
-                <div className="text-left mb-6 space-y-4">
-                  <p>
-                    <span className="font-bold">Name:</span>{' '}
-                    {staffData.staffName}
-                  </p>
-                  <p>
-                    <span className="font-bold">Number:</span>{' '}
-                    {staffData.phoneNumber}
-                  </p>
-                  <p>
-                    <span className="font-bold">Staff ID:</span>{' '}
-                    {staffData.staffId}
-                  </p>
-                  <p>
-                    <span className="font-bold">Designation:</span>{' '}
-                    {staffData.designation}
-                  </p>
-                  <p>
-                    <span className="font-bold">Branch:</span>{' '}
-                    {staffData.branchName}
-                  </p>
-                  <p>
-                    <span className="font-bold">Date Of Birth:</span>{' '}
-                    {staffData.dob}
-                  </p>
-                  <p>
-                    <span className="font-bold">Email ID:</span>{' '}
-                    {staffData.email}
-                  </p>
-                  <p>
-                    <span className="font-bold">Aadhar Number:</span>{' '}
-                    {staffData.aadharNumber}
-                  </p>
-                  <p>
-                    <span className="font-bold">Address:</span>{' '}
-                    {staffData.address}
-                  </p>
-                </div>
+             <div className="mb-6 space-y-4 text-left">
+  <p>
+    <span className="font-bold">Name:</span> {staffData.staffName}
+  </p>
+  <p>
+    <span className="font-bold">Number:</span> {staffData.phoneNumber}
+  </p>
+  <p>
+    <span className="font-bold">Staff ID:</span> {staffData.staffId}
+  </p>
+  <p>
+    <span className="font-bold">Designation:</span> {staffData.designation}
+  </p>
+  <p>
+    <span className="font-bold">Branch:</span> {staffData.branchName}
+  </p>
+  <p>
+    <span className="font-bold">Date Of Birth:</span> {staffData.dob}
+  </p>
+  <p>
+    <span className="font-bold">Email ID:</span> {staffData.email}
+  </p>
+  <p>
+    <span className="font-bold">Aadhar Number:</span> {staffData.aadharNumber}
+  </p>
+  <p className="break-words max-w-xs">
+    <span className="font-bold">Address:</span> {staffData.address}
+  </p>
+</div>
+
                 <button
                   className="bg-green-700 text-white px-6 py-2 rounded-lg"
                   onClick={handleSaveChanges}

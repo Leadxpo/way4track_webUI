@@ -292,11 +292,11 @@ useEffect(() => {
               )}
             </div>
           ))}
-      <button
+      {/* <button
       className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition duration-300"
     >
       ADD
-    </button>
+    </button> */}
           
       </div>
     </div>

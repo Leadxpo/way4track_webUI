@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 const CustomerForm = ({ editData }) => {
   const navigate = useNavigate();
-
+  
+  const [groupData, setGroupData] = useState([]);
   const [formData, setFormData] = useState({
     name: editData?.customerName || '',
-    group: editData?.under || '',
+    groupId: editData?.groupId || '',
+    groupName: editData?.groupName || '',
     state: editData?.state || '',
     country: editData?.country || '',
     panNumber: editData?.panNumber || '',
@@ -17,6 +19,8 @@ const CustomerForm = ({ editData }) => {
 
     gstNumber: editData?.gstNumber || '',
   });
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,14 +35,15 @@ const CustomerForm = ({ editData }) => {
 
     const payload = {
         name: formData.customerName,
-        group: formData.group,
+        group: formData.groupName,
+        groupId:formData.groupId,
         state: formData.state,
         country: formData.country,
         panNumber: formData.panNumber,
         registrationType: formData.registrationType,
-        tcsDeductable: formData.tcsDeductable || 'no',
-        tdsDeductable: formData.tdsDeductable || 'no',
-        gstNumber: formData.gstNumber,
+        tcsDeductable: Boolean(formData.tcsDeductable),
+tdsDeductable: Boolean(formData.tdsDeductable),
+        gstUinNumber: formData.gstNumber,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       };
@@ -61,6 +66,57 @@ const CustomerForm = ({ editData }) => {
     }
   };
 
+
+    const fetchGroups = async () => {
+      try {
+        const response = await ApiService.post('/groups/getGroupDataForTable', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+
+
+        console.log("pppppp uuuuuuu",response.data)
+  
+        if (response.status) {
+          setGroupData(response.data);
+         if(groupData){
+          console.log("pppppp uuuuuuu groupData",groupData)
+         }
+        } else {
+          console.error('Failed to fetch group data');
+          setGroupData([]);
+          // setFilteredData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching group data:', error);
+      }
+    };
+
+    useEffect(() => {
+        fetchGroups();
+      }, []);
+
+      const handleGroupChange = (e) => {
+        const selectedId = Number(e.target.value);
+        const selectedGroup = groupData.find(
+          (group) => group.id === selectedId
+        );
+      
+        if (selectedGroup) {
+          setFormData((prev) => ({
+            ...prev,
+            groupName: selectedGroup.name,
+            groupId: selectedId,
+          }));
+        } else {
+          setFormData((prev) => ({
+            ...prev,
+            groupName: '',
+            groupId: '',
+          }));
+        }
+      };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex justify-center items-start">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-2xl">
@@ -80,7 +136,7 @@ const CustomerForm = ({ editData }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 font-semibold mb-1">Group</label>
             <input
               type="text"
@@ -90,7 +146,24 @@ const CustomerForm = ({ editData }) => {
               placeholder="Group"
               className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-          </div>
+          </div> */}
+
+<div>
+  <label className="block text-gray-700 font-semibold mb-1">Group</label>
+  <select
+    name="group"
+    value={formData.groupId}
+    onChange={handleGroupChange}
+    className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+  >
+    <option value="">Select Group</option>
+    {groupData.map((group) => (
+      <option key={group.id} value={group.id}>
+        {group.name}
+      </option>
+    ))}
+  </select>
+</div>
 
           <div>
             <label className="block text-gray-700 font-semibold mb-1">State</label>
@@ -116,7 +189,7 @@ const CustomerForm = ({ editData }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 font-semibold mb-1">Tcs Deductable</label>
             <input
               type="text"
@@ -138,7 +211,43 @@ const CustomerForm = ({ editData }) => {
               placeholder="Enter Tcs Deductable"
               className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-          </div>
+          </div> */}
+
+
+<div>
+  <label className="block text-gray-700 font-semibold mb-1">TCS Deductable</label>
+  <div className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      name="tcsDeductable"
+      checked={formData.tcsDeductable}
+      onChange={(e) =>
+        handleChange({
+          target: { name: 'tcsDeductable', value: e.target.checked },
+        })
+      }
+    />
+    <span>{formData.tcsDeductable ? 'Yes' : 'No'}</span>
+  </div>
+</div>
+
+<div>
+  <label className="block text-gray-700 font-semibold mb-1">TDS Deductable</label>
+  <div className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      name="tdsDeductable"
+      checked={formData.tdsDeductable}
+      onChange={(e) =>
+        handleChange({
+          target: { name: 'tdsDeductable', value: e.target.checked },
+        })
+      }
+    />
+    <span>{formData.tdsDeductable ? 'Yes' : 'No'}</span>
+  </div>
+</div>
+
 
           <div>
             <label className="block text-gray-700 font-semibold mb-1">Pan Number</label>
@@ -161,10 +270,10 @@ const CustomerForm = ({ editData }) => {
               className="w-full px-4 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700"
             >
               <option value="">Select</option>
-              <option value="registered">unknown</option>
-              <option value="unregistered">composition</option>
-              <option value="composition">regular</option>
-              <option value="composition">unregistered</option>
+              <option value="unknown">unknown</option>
+              <option value="composition">composition</option>
+              <option value="regular">regular</option>
+              <option value="unregistered">unregistered</option>
 
             </select>
           </div>

@@ -1,33 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const AddEditClient = () => {
+const AddClient = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const clientData = location.state?.clientDetails || {};
-  console.log(clientData, "?????????")
+  
   const initialFormData = {
-    id: clientData?.id || null,
-    name: clientData.name || '',
-    phoneNumber: clientData.phoneNumber || '',
-    gstNumber: clientData.gstNumber || '',
-    // clientId: clientData.clientId || '',
-    branch: clientData.branch || '',
-    branchName: clientData.branchName || '', 
-    dob: clientData.dob || '',
-    email: clientData.email || '',
-    address: clientData.address || '',
-    joiningDate: clientData.joiningDate,
+
+    name: '',
+    phoneNumber:'',
+    gstNumber:'',
+    branch:'',
+    branchName:'', 
+    dob:'',
+    email:'',
+    address:'',
+    joiningDate:null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    file: clientData?.file || null,
+    file:null,
   };
   
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
-  const [image, setImage] = useState(clientData?.file || '');
+  const [image, setImage] = useState('');
   const [errors, setErrors] = useState({});
 
 if(errors)
@@ -90,15 +86,13 @@ if(errors)
         payload.append(key, value);
       }
     });
-    console.log(payload, "_____")
     try {
-      const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
-      const response = await ApiService.post(endpoint, payload, {
+      const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
       if (response.status) {
-        alert(formData.id ? 'Client updated successfully!' : 'Client added successfully!');
+        alert('Client added successfully!');
         navigate('/clients');
       } else {
         alert('Failed to save client details. Please try again.');
@@ -234,7 +228,7 @@ const handleChange = useCallback(
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {clientData.id ? 'Edit Customer' : 'Add Customer'}
+           Add Customer
           </h1>
         </div>
         {/* Photo Section */}
@@ -400,4 +394,4 @@ const handleChange = useCallback(
   );
 };
 
-export default AddEditClient;
+export default AddClient;

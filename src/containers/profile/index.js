@@ -19,7 +19,7 @@ const ProfileSettings = () => {
         const response = await ApiService.post('/login/ProfileDetails', payload);
 
         if (response && response.status) {
-          setProfileData(response.data?.data?.[0] || null);
+          setProfileData(response.data?.data || null);
         } else {
           setError(response?.internalMessage || 'Failed to fetch profile details.');
         }
@@ -45,7 +45,7 @@ const ProfileSettings = () => {
         <div className="flex flex-col items-center">
           <img
             src={profileData.staffPhoto || '/default-avatar.png'}
-            alt={profileData.name || 'Profile'}
+            // alt={profileData.name || 'Profile'}
             className="w-32 h-32 rounded-full object-cover shadow-md"
           />
           <h2 className="text-2xl font-semibold mt-4">{profileData.name}</h2>
@@ -61,7 +61,7 @@ const ProfileSettings = () => {
             <ProfileDetail label="Aadhar Number" value={profileData.aadharNumber} />
             <ProfileDetail label="Address" value={profileData.address} />
             <ProfileDetail label="Joining Date" value={profileData.joiningDate} />
-            <ProfileDetail label="Basic Salary" value={`₹${Number(profileData.basicSalary).toLocaleString()}`} />
+            <ProfileDetail label="Basic Salary" value={profileData.monthlySalary} />
             <ProfileDetail label="Experience (Years)" value={`${profileData.beforeExperience} years`} />
           </div>
         </div>

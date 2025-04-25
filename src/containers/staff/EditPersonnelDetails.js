@@ -125,7 +125,6 @@ const EditPersonnelDetails = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-
       if (response.status) {
         alert('Personnel details updated successfully!');
         navigate(-1);

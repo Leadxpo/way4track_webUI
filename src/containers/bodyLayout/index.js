@@ -172,6 +172,8 @@ import AppointmentTable from '../appointment/AppointmentTable';
 import AddAppointment from '../appointment/AddAppointment';
 import EditAppointment from '../appointment/EditAppointment';
 import ViewAppointment from '../appointment/ViewAppointment';
+import AddClient from '../clients/addClient';
+import EditClient from '../clients/EditClient';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -330,12 +332,12 @@ const BodyLayout = ({ children }) => {
             </button>
           ) : (
             <div className="w-full md:w-auto relative mb-4 md:mb-0">
-              <input
+              {/* <input
                 className="w-full md:w-64 border rounded pl-2 text-sm focus:outline-none"
                 placeholder="Search here"
                 value={searchTerm}
                 onChange={handleSearch}
-              />
+              /> */}
               {/* Dropdown for search results */}
               {searchTerm && results.length > 0 && (
                 <div className="absolute bg-white border rounded shadow-lg z-10 max-h-48 overflow-y-auto w-full">
@@ -381,14 +383,18 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/settings')}
             />
+            
+          <div>
+          {role==="Sub Dealer"?
+            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
+          :
             <FaBell
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/notifications')}
-            />
+            />}
+            </div>
           </div>
-          <div>
-            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
-          </div>
+         
         </div>
       </div>
 
@@ -424,7 +430,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-request" element={<EditRequestRaise />} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
-          <Route path="/add-client" element={<AddEditClient />} />
+          <Route path="/add-client" element={<AddClient />} />
+          <Route path="/edit-client" element={<EditClient />} />
           <Route path="/delete-client" element={<DeleteClient />} />
           <Route path="/client-details" element={<ClientProfile />} />
           <Route path="/products_assign" element={<ProductAssign />} />

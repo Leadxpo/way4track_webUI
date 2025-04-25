@@ -173,8 +173,8 @@ useEffect(() => {
   }
 }, [formData.panCardNumber]);
 
-const SubStaffId=Number(localStorage.getItem("id"));
-    // const SubStaffId=6;
+const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -200,7 +200,7 @@ const handleSubmit = async (e) => {
     password: formData.password,
     companyCode: companyCode,
     unitCode: unitCode,
-    subDealerId:SubStaffId,
+    subDealerId:userProfile?.data.id,
   };
 
   try {

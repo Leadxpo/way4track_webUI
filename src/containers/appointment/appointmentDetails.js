@@ -49,12 +49,12 @@ const AppointmentDetails = () => {
       {/* Header Section */}
       <div className="flex items-center gap-6 mb-6 shadow-md p-6">
         {/* Image Section */}
-        <div className="flex-shrink-0 flex items-center justify-center h-full">
+        {/* <div className="flex-shrink-0 flex items-center justify-center h-full">
           <img
             src={appointmentDetails.image}
             className="w-36 h-36 rounded-full object-cover border border-gray-300"
           />
-        </div>
+        </div> */}
 
         {/* Fields Section */}
         <div className="flex-grow grid grid-cols-1 gap-4">
