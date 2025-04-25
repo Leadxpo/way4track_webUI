@@ -11,7 +11,7 @@ const Clients = () => {
     setPermissions(perms);
   }, []);
   const handleVendorEdit = (clientDetails) => {
-    navigate('/add-client', { state: { clientDetails } });
+    navigate('/edit-client', { state: { clientDetails } });
   };
 
   const handleDelete = (clientDetails) => {

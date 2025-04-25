@@ -101,19 +101,19 @@ const EditAsset = () => {
     try {
       console.log(payload,"payload")
       const endpoint = formData.id
-        ? '/asserts/update' // Use an update endpoint if 'id' exists
+        ? '/asserts/create' // Use an update endpoint if 'id' exists
         : '/asserts/create'; // Use a create endpoint if 'id' is null
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'Asset updated successfully!'
             : 'Asset added successfully!'
         );
-        navigate('/add-assets');
+        navigate('/asset-details');
       } else {
         alert('Failed to save asset details. Please try again.');
       }
@@ -124,7 +124,7 @@ const EditAsset = () => {
   };
 
   const handleCancel = () => {
-    navigate('/add-asset');
+    navigate('/asset-details');
   };
 
   // Handle file input (photo)

@@ -9,7 +9,7 @@ const AddAsset = () => {
   const navigate = useNavigate();
 
   const assetData = location.state?.assetDetails || {};
-  console.log(assetData, '>>>');
+
   const [voucherList, setVoucherList] = useState([]);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState(assetData?.photo || '');
@@ -31,7 +31,6 @@ const AddAsset = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  console.log(formData,"formData")
 
 
 
@@ -98,21 +97,19 @@ const AddAsset = () => {
     
 
     try {
-      console.log(payload,"payload")
       const endpoint = formData.id
-        ? '/asserts/update' // Use an update endpoint if 'id' exists
-        : '/asserts/create'; // Use a create endpoint if 'id' is null
+        ? '/asserts/create'
+        : '/asserts/create'; 
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'Asset updated successfully!'
             : 'Asset added successfully!'
         );
-        navigate('/add-assets');
+        navigate('/asserts');
       } else {
         alert('Failed to save asset details. Please try again.');
       }
@@ -123,7 +120,7 @@ const AddAsset = () => {
   };
 
   const handleCancel = () => {
-    navigate('/add-asset');
+    navigate('/asserts');
   };
 
   // Handle file input (photo)
