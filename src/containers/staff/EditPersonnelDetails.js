@@ -127,8 +127,7 @@ const EditPersonnelDetails = () => {
       );
       if (response.status) {
         alert('Personnel details updated successfully!');
-        console.log("rrr :",stateData)
-        navigate('/staff-details', { state: { staffDetails: stateData } });
+        navigate(-1);
       } else {
         alert('Failed to update personnel details.');
       }

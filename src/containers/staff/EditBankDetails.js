@@ -38,7 +38,7 @@ const EditBankDetails = () => {
 
       if (response.status) {
         alert('Bank details updated successfully!');
-        navigate('/staff-details');
+        navigate(-1);
         return response.data;
       } else {
         alert('Failed to update bank details.');

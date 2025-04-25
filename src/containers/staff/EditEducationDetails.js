@@ -174,7 +174,7 @@ export default function EditEducationDetails() {
 
       if (response.status) {
         alert('Education details updated successfully!');
-        navigate("/staff-details")
+        navigate(-1)
         return response.data;
         
       } else {

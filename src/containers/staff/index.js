@@ -47,7 +47,7 @@ const Staff = () => {
     // 'Longitude',
     // 'CIN',
     // 'GST',
-    
+
     // 'Branch Name',
   ];
   // Fetch Staff Details using useCallback to memoize the function
@@ -86,7 +86,6 @@ const Staff = () => {
           branch_branch_opening: 'Branch Opening',
           branch_CIN: 'CIN',
           branch_GST: 'GST',
-          
         };
 
         // Reorder the columns based on `columnNames`
@@ -174,8 +173,8 @@ const Staff = () => {
 
     try {
       const response = await ApiService.post('/staff/handleStaffDetails', {
-        id:row.ID,
-        staffStatus:"INACTIVE",
+        id: row.ID,
+        staffStatus: 'INACTIVE',
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
