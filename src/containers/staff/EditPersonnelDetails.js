@@ -125,10 +125,10 @@ const EditPersonnelDetails = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-
       if (response.status) {
         alert('Personnel details updated successfully!');
-        navigate('/staff-details');
+        console.log("rrr :",stateData)
+        navigate('/staff-details', { state: { staffDetails: stateData } });
       } else {
         alert('Failed to update personnel details.');
       }

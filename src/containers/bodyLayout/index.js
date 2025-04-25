@@ -172,6 +172,8 @@ import AppointmentTable from '../appointment/AppointmentTable';
 import AddAppointment from '../appointment/AddAppointment';
 import EditAppointment from '../appointment/EditAppointment';
 import ViewAppointment from '../appointment/ViewAppointment';
+import AddClient from '../clients/addClient';
+import EditClient from '../clients/EditClient';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -428,7 +430,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-request" element={<EditRequestRaise />} />
           <Route path="/request-details" element={<RequestDetails />} />
           <Route path="/clients" element={<Clients />} />
-          <Route path="/add-client" element={<AddEditClient />} />
+          <Route path="/add-client" element={<AddClient />} />
+          <Route path="/edit-client" element={<EditClient />} />
           <Route path="/delete-client" element={<DeleteClient />} />
           <Route path="/client-details" element={<ClientProfile />} />
           <Route path="/products_assign" element={<ProductAssign />} />

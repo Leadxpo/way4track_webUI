@@ -65,8 +65,18 @@ const TableWithSearchFilter = ({
         }
       );
 
+      console.log("tttttrrr ",response.data)
+
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
+        // const filteredClients = response.data.map(client => ({
+        //   clientId: client.clientId,
+        //   name: client.name,
+        //   email: client.email,
+        //   phoneNumber: client.phoneNumber,
+        // }));
+  
+        // setFilteredData(filteredClients);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -461,6 +471,7 @@ const TableWithSearchFilter = ({
             style={{ paddingLeft: '8px' }}
           />
         </div>
+        {type==="hiring"&&
         <div className="flex-grow mx-2">
           {showStatusFilter ? (
             // <select
@@ -510,7 +521,7 @@ const TableWithSearchFilter = ({
               ))}
             </select>
           )}
-        </div>
+        </div>}
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

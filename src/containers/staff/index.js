@@ -30,7 +30,7 @@ const Staff = () => {
     'Staff Name',
     'Designation',
     'Phone Number',
-    'Email',
+    // 'Email',
     'Branch Name',
     'Branch Number',
     'Branch Address',
@@ -66,7 +66,7 @@ const Staff = () => {
 
       if (response.status) {
         const rawData = response.data || [];
-
+        console.log("rrttttt",rawData);
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
           id: 'ID',
@@ -74,7 +74,7 @@ const Staff = () => {
           staffName: 'Staff Name',
           designation: 'Designation',
           phoneNumber: 'Phone Number',
-          branch_email: 'Email',
+          branch_email: 'Branch Email',
           branch_name: 'Branch Name',
           branch_branch_number: 'Branch Number',
           branch_branch_address: 'Branch Address',

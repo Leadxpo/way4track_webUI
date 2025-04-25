@@ -13,7 +13,7 @@ export const menuOptions = {
     { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
-    { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
+    // { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
     {
       name: 'Sub Dealers',
       icon: <img src="./subdealers.png" />,
@@ -125,7 +125,6 @@ export const menuOptions = {
       icon: <img src="./payroll.png" />,
       route: '/payroll',
     },
-    { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
     {
       name: 'Dispatch',
       icon: <img src="./payroll.png" />,

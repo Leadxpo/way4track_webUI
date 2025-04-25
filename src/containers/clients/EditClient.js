@@ -1,29 +1,33 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const AddClient = () => {
+const EditClient = () => {
   const navigate = useNavigate();
-  
-  const initialFormData = {
+  const location = useLocation();
 
-    name: '',
-    phoneNumber:'',
-    gstNumber:'',
-    branch:'',
-    branchName:'', 
-    dob:'',
-    email:'',
-    address:'',
-    joiningDate:null,
+  const clientData = location.state?.clientDetails || {};
+  console.log( "?????????",clientData);
+  const initialFormData = {
+    id: clientData?.id || null,
+    name: clientData.name || '',
+    phoneNumber: clientData.phoneNumber || '',
+    gstNumber: clientData.gstNumber || '',
+    // clientId: clientData.clientId || '',
+    branch: clientData.branch || '',
+    branchName: clientData.branchName || '', 
+    dob: clientData.dob || '',
+    email: clientData.email || '',
+    address: clientData.address || '',
+    joiningDate: clientData.joiningDate,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    file:null,
+    file: clientData?.file || null,
   };
   
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(clientData?.file || '');
   const [errors, setErrors] = useState({});
 
 if(errors)
@@ -92,7 +96,7 @@ if(errors)
       });
   
       if (response.status) {
-        alert('Client added successfully!');
+        alert('Client updated successfully!');
         navigate('/clients');
       } else {
         alert('Failed to save client details. Please try again.');
@@ -228,7 +232,7 @@ const handleChange = useCallback(
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-           Add Customer
+        Edit Customer
           </h1>
         </div>
         {/* Photo Section */}
@@ -380,7 +384,7 @@ const handleChange = useCallback(
           onClick={handleSave}
           className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-700 transition-all"
         >
-          Save
+          Update
         </button>
         <button
           onClick={handleCancel}
@@ -394,4 +398,4 @@ const handleChange = useCallback(
   );
 };
 
-export default AddClient;
+export default EditClient;
