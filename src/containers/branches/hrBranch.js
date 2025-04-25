@@ -3,6 +3,7 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 import { FaSearch, FaFileDownload } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import ConvertPDF from '../../components/convertPDF';
+import { useNavigate } from 'react-router';
 
 
 const BranchList = () => {
@@ -15,7 +16,7 @@ const BranchList = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
 
-
+  const navigate=useNavigate();
 
 
   useEffect(() => {
@@ -283,7 +284,13 @@ const BranchList = () => {
   return (
     <div className="max-w-5xl mx-auto p-4">
       <h3 className="text-2xl font-semibold my-4">Branch Staff</h3>
-
+      <button
+          onClick={()=>navigate("/branches")}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 my-2 rounded-lg shadow hover:bg-blue-600"
+        >
+        
+           Branch List
+        </button>
       <div className="flex justify-between gap-4 mb-4">
         {/* Branch Selection Dropdown */}
         <select
