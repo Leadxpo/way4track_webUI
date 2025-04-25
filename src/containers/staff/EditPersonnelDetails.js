@@ -128,7 +128,7 @@ const EditPersonnelDetails = () => {
 
       if (response.status) {
         alert('Personnel details updated successfully!');
-        navigate('/staff-details');
+        navigate(-1);
       } else {
         alert('Failed to update personnel details.');
       }
