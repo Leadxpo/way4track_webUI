@@ -15,7 +15,6 @@ const Clients = () => {
   };
 
   const handleDelete = (clientDetails) => {
-
     navigate('/delete-client', { state: { clientDetails } });
   };
 

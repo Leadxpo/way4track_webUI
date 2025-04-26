@@ -7,7 +7,6 @@ const DeleteClient = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const clientDetails = location.state?.clientDetails || null;
-
   // Function to handle client deletion
   const deleteClientDetails = async () => {
     if (!location.state?.clientDetails) {

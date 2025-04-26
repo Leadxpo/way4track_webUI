@@ -7,7 +7,6 @@ const DeleteSubDealer = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const subDealerDetails = location.state?.subDealerDetails || null;
-
   const deleteSubDealerDetails = async () => {
     if (!subDealerDetails) {
       alert('No subDealer details available.');
@@ -16,7 +15,7 @@ const DeleteSubDealer = () => {
 
     try {
       const payload = {
-        subDealerId: location.state?.subDealerDetails,
+        subDealerId:subDealerDetails.SubDealerId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };

@@ -9,27 +9,26 @@ const AddEditSubDealer = () => {
   const location = useLocation();
 
   const subDealerData = location.state?.subDealerDetails || {};
-console.log(subDealerData, "<<<<<<< SubDealer Data");
+  console.log(subDealerData, "<<<<<<< SubDealer Data");
 
-const initialFormData = {
-  id: subDealerData?.id || null, // Ensure single occurrence of id
-  name: subDealerData?.name || '',
-  subDealerPhoneNumber: subDealerData?.subDealerPhoneNumber || '',
-  alternatePhoneNumber: subDealerData?.alternatePhoneNumber || '',
-  gstNumber: subDealerData?.gstNumber || '',
-  password: subDealerData?.password || '', // Ensure password holds actual password
-  startingDate: subDealerData?.startingDate || '',
-  emailId: subDealerData?.emailId || '',
-  aadharNumber: subDealerData?.aadharNumber || '',
-  address: subDealerData?.address || '',
-  subDealerPhoto: subDealerData?.subDealerPhoto || null, // Ensure it's an image/file
-  companyCode: subDealerData?.companyCode || '',
-  unitCode: subDealerData?.unitCode || '',
-  branchName: subDealerData?.branchName || '',
+  const initialFormData = {
+    id: subDealerData?.id || null, // Ensure single occurrence of id
+    name: subDealerData?.name || '',
+    subDealerPhoneNumber: subDealerData?.subDealerPhoneNumber || '',
+    alternatePhoneNumber: subDealerData?.alternatePhoneNumber || '',
+    gstNumber: subDealerData?.gstNumber || '',
+    password: subDealerData?.password || '', // Ensure password holds actual password
+    startingDate: subDealerData?.startingDate || '',
+    emailId: subDealerData?.emailId || '',
+    aadharNumber: subDealerData?.aadharNumber || '',
+    address: subDealerData?.address || '',
+    subDealerPhoto: subDealerData?.subDealerPhoto || null, // Ensure it's an image/file
+    branchId: subDealerData?.branchId || '',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
+  };
 
-};
-
-
+  const [branches, setBranches] = useState([]);
   const [formData, setFormData] = useState(initialFormData);
   const [errorMessage, setErrorMessage] = useState('');
   const [image, setImage] = useState(subDealerData?.photo || '');
@@ -38,6 +37,24 @@ const initialFormData = {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
 
   useEffect(() => {
     if (
@@ -55,7 +72,7 @@ const initialFormData = {
             }
           );
           const subDealer = response.data?.[0];
-          console.log("+++++++++++++++",subDealer);
+          console.log("+++++++++++++++", subDealer);
           setFormData((prev) => ({
             ...prev,
             ...subDealer,
@@ -72,7 +89,7 @@ const initialFormData = {
 
   const handleSave = async () => {
     const payload = new FormData();
-  
+
     // Append form fields correctly, ensuring no duplicate id
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'id' && value !== null) {
@@ -83,21 +100,21 @@ const initialFormData = {
         payload.append(key, value);
       }
     });
-  
+
     console.log([...payload.entries()], '✅ Corrected Payload Before Sending');
-  
+
     try {
       const endpoint = formData.id
         ? '/subdealer/handleSubDealerDetails' // Update sub-dealer
         : '/subdealer/handleSubDealerDetails'; // Create new sub-dealer
-  
+
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
-      console.log(response.data, '✅ API Response');
-  
-      if (response.data && response.data.status) {
+
+      console.log(response, '✅ API Response');
+
+      if (response.status) {
         alert(formData.id ? 'Sub-dealer updated successfully!' : 'Sub-dealer added successfully!');
         navigate('/sub_dealers');
       } else {
@@ -108,7 +125,7 @@ const initialFormData = {
       alert('Failed to save sub-dealer details. Please try again.');
     }
   };
-  
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -228,6 +245,28 @@ const initialFormData = {
               />
             </div>
           ))}
+                    {/* Branch */}
+                    {branches.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
+                <select
+                  name="branchId"
+                  value={formData.branchId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>Select a Branch</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
         </div>
 
         {errorMessage && (
