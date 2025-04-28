@@ -50,6 +50,7 @@ const AddProductForm = () => {
   const [image, setImage] = useState(null);
   const [bulkFile, setBulkFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Fetch vendors
   useEffect(() => {
@@ -96,6 +97,12 @@ const AddProductForm = () => {
 
   // Save product or bulk upload
   const handleSave = async () => {
+    if (!formData.productTypeId) {
+      setErrors({ productTypeId: 'Please select a product type.' });
+      return; // Stop execution if validation fails
+    }
+
+    setErrors({}); // Clear previous errors
     setIsLoading(true);
 
     if (bulkFile) {
@@ -324,7 +331,11 @@ const AddProductForm = () => {
           <select
             name="productTypeId"
             className="border p-2 rounded-md w-full"
-            onChange={handleInputChange}
+            // onChange={handleInputChange}
+            onChange={(e) => {
+              handleInputChange(e);
+              setErrors((prev) => ({ ...prev, productTypeId: '' })); // Clear error when changed
+            }}
             value={formData.productTypeId}
           >
             <option value="">Select a product type</option>
@@ -334,6 +345,9 @@ const AddProductForm = () => {
               </option>
             ))}
           </select>
+          {errors.productTypeId && (
+            <p className="text-red-500 text-sm mt-1">{errors.productTypeId}</p>
+          )}
         </div>
 
         <div>

@@ -381,25 +381,27 @@ const Products = () => {
         </div>
       </div>
 
-      {role !== 'CEO' && role !== 'Sub Dealer' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
-          {role !== 'CEO' && role !== 'Sales Man' && (
-            <div
-              className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-              onClick={() => setSelected('branchstock')}
-            >
-              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-                <span className="text-gray-800 font-medium">
-                  Total Products
-                </span>
+      {role !== 'CEO' &&
+        role !== 'Sub Dealer' &&
+        role !== 'Warehouse Manager' && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+            {role !== 'CEO' && role !== 'Sales Man' && (
+              <div
+                className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                onClick={() => setSelected('branchstock')}
+              >
+                <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                  <span className="text-gray-800 font-medium">
+                    Total Products
+                  </span>
+                </div>
+                <div className="text-white text-5xl font-extrabold mt-6">
+                  {totalBranchStock}
+                </div>
               </div>
-              <div className="text-white text-5xl font-extrabold mt-6">
-                {totalBranchStock}
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* <div
+            {/* <div
             className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
             onClick={() => setSelected('subDealerStock')}
           >
@@ -420,12 +422,14 @@ const Products = () => {
             </div>
             <div className="text-white text-5xl font-extrabold mt-6">220</div>
           </div> */}
-        </div>
-      )}
+          </div>
+        )}
 
-      {role !== 'CEO' && role !== 'Branch Manager' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
-          {/* {role !== 'CEO' && role !== 'Sales Man' && (
+      {role !== 'CEO' &&
+        role !== 'Branch Manager' &&
+        role !== 'Warehouse Manager' && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+            {/* {role !== 'CEO' && role !== 'Sales Man' && (
             <div
               className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
               onClick={() => setSelected('branchstock')}
@@ -439,19 +443,21 @@ const Products = () => {
             </div>
           )} */}
 
-          <div
-            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-            onClick={() => setSelected('subDealerStock')}
-          >
-            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-              <span className="text-gray-800 font-medium">Total Products</span>
+            <div
+              className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('subDealerStock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">
+                  Total Products
+                </span>
+              </div>
+              <div className="text-white text-5xl font-extrabold mt-6">
+                {totalSubDealerStock}
+              </div>
             </div>
-            <div className="text-white text-5xl font-extrabold mt-6">
-              {totalSubDealerStock}
-            </div>
-          </div>
 
-          {/* <div
+            {/* <div
             className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
             onClick={() => setSelected('handstock')}
           >
@@ -462,66 +468,67 @@ const Products = () => {
             </div>
             <div className="text-white text-5xl font-extrabold mt-6">220</div>
           </div> */}
-        </div>
-      )}
+          </div>
+        )}
 
-      {role === 'CEO' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
-          {role !== 'Technician' && role !== 'Sales Man' && (
-            <>
-              <div
-                className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-                onClick={() => setSelected('branchstock')}
-              >
-                <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-                  <select
-                    name="branchName"
-                    value={selectedBranch}
-                    onChange={(e) => setSelectedBranch(e.target.value)}
-                    className="w-full p-1 text-gray-700 rounded focus:outline-none"
-                  >
-                    <option value="">Select Branch</option>
-                    {branchList.map((branch, index) => (
-                      <option key={index} value={branch.branchName}>
-                        {branch.branchName}
-                      </option>
-                    ))}
-                  </select>
+      {role === 'CEO' ||
+        (role === 'Warehouse Manager' && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+            {role !== 'Technician' && role !== 'Sales Man' && (
+              <>
+                <div
+                  className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                  onClick={() => setSelected('branchstock')}
+                >
+                  <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                    <select
+                      name="branchName"
+                      value={selectedBranch}
+                      onChange={(e) => setSelectedBranch(e.target.value)}
+                      className="w-full p-1 text-gray-700 rounded focus:outline-none"
+                    >
+                      <option value="">Select Branch</option>
+                      {branchList.map((branch, index) => (
+                        <option key={index} value={branch.branchName}>
+                          {branch.branchName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="text-white text-5xl font-extrabold mt-6">
+                    {totalBranchStock}
+                  </div>
                 </div>
-                <div className="text-white text-5xl font-extrabold mt-6">
-                  {totalBranchStock}
-                </div>
+              </>
+            )}
+
+            <div
+              className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('subDealerStock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">Sub Dealers</span>
               </div>
-            </>
-          )}
-
-          <div
-            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-            onClick={() => setSelected('subDealerStock')}
-          >
-            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-              <span className="text-gray-800 font-medium">Sub Dealers</span>
+              <div className="text-white text-5xl font-extrabold mt-6">
+                {totalSubDealerStock}
+              </div>
             </div>
-            <div className="text-white text-5xl font-extrabold mt-6">
-              {totalSubDealerStock}
+
+            <div
+              className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('handstock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">
+                  In Hand Products
+                </span>
+              </div>
+              <div className="text-white text-5xl font-extrabold mt-6">
+                {totalHandStock}
+              </div>
             </div>
           </div>
-
-          <div
-            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-            onClick={() => setSelected('handstock')}
-          >
-            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-              <span className="text-gray-800 font-medium">
-                In Hand Products
-              </span>
-            </div>
-            <div className="text-white text-5xl font-extrabold mt-6">
-              {totalHandStock}
-            </div>
-          </div>
-        </div>
-      )}
+        ))}
       {selected == !'branchstock' &&
         selected == !'handstock' &&
         selected == !'subDealerStock' && (
