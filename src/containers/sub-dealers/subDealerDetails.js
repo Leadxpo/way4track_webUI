@@ -12,8 +12,10 @@ const SubDealerDetails = () => {
   
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  console.log("==========Id====",subDealerDetailsFromState)
+  console.log("==========Idddddd====+++++",subDealerDetailsFromState)
  
+  
+  const [subDealer, setSubDealer] = useState({});
   const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
@@ -32,15 +34,15 @@ const SubDealerDetails = () => {
     const [productData, setProductData] = useState([]);
     const [works, setWorks] = useState([]);
 
-      
 
+    
   useEffect(() => {
     const fetchSubDealerDetails = async () => {
       try {
         const response = await ApiService.post(
           '/subdealer/getSubDealerDetails',
           {
-            subDealerId: subDealerDetailsFromState.SubDealerId,
+            subDealerId: subDealer.id,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
@@ -50,14 +52,14 @@ const SubDealerDetails = () => {
           setSubDealerDetails({
             ...subDealer,
             name: subDealer.name,
-            phone: subDealer.subDealerPhoneNumber,
-            email: subDealer.emailId,
+            subDealerPhoneNumber: subDealer.subDealerPhoneNumber,
+            emailId: subDealer.emailId,
             alternatePhoneNumber: subDealer.alternatePhoneNumber,
             aadharNumber: subDealer.aadharNumber,
             gstNumber: subDealer.gstNumber,
             address: subDealer.address,
             subDealerPhoto: subDealer.subDealerPhoto,
-            branch: subDealer.branchName,
+            branchName: subDealer.branchName,
           });
         } else {
           setSubDealerDetails({});
@@ -70,31 +72,67 @@ const SubDealerDetails = () => {
     fetchSubDealerDetails();
   }, [subDealerDetailsFromState.SubDealerId]);
 
+  // useEffect(() => {
+  //   const fetchSubDealerDetailsData = async () => {
+  //     try {
+  //       const response = await ApiService.post(
+  //         '/dashboards/getDetailSubDealerData',
+  //         {
+  //           subDealerId: subDealerDetailsFromState.SubDealerId,
+  //           companyCode: initialAuthState.companyCode,
+  //           unitCode: initialAuthState.unitCode,
+  //         }
+  //       );
+  //       console.log(response.data);
+  //       if (response.status) {
+  //         // Ensure subDealer details data is an array
+  //         setSubDealerDetailsData([...response.data] || []);
+  //       } else {
+  //         setSubDealerDetailsData([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching subDealer details data:', error);
+  //       //alert('Failed to fetch subDealer details data.');
+  //     }
+  //   };
+  //   fetchSubDealerDetailsData();
+  // }, [subDealerDetailsFromState.SubDealerId]);
+
   useEffect(() => {
-    const fetchSubDealerDetailsData = async () => {
+    const fetchSubDealers = async () => {
       try {
-        const response = await ApiService.post(
-          '/dashboards/getDetailSubDealerData',
-          {
-            subDealerId: subDealerDetailsFromState.SubDealerId,
+        const response = await ApiService.post('/subdealer/getSubDealerDetailById',{subDealerId:subDealerDetailsFromState.SubDealerId,
+            
             companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-        console.log(response.data);
+            unitCode:  initialAuthState.unitCode});
         if (response.status) {
-          // Ensure subDealer details data is an array
-          setSubDealerDetailsData([...response.data] || []);
+            console.log("kk",response.data)
+            setSubDealer(
+                
+              {name:response.data.name,
+                subDealerPhoneNumber:response.data.subDealerPhoneNumber,
+                alternatePhoneNumber:response.data.alternatePhoneNumber,
+                gstNumber:response.data.gstNumber,
+                startingDate:response.data.startingDate,
+                emailId:response.data.emailId,
+                password:response.data.password,
+                aadharNumber:response.data.aadharNumber,
+                address:response.data.address,
+                branchId:response.data.branchId,
+                id:response.data.id
+            }
+            )
+        //   s(response.data);
         } else {
-          setSubDealerDetailsData([]);
+          console.error('Failed to fetch SubDealers');
         }
       } catch (error) {
-        console.error('Error fetching subDealer details data:', error);
-        //alert('Failed to fetch subDealer details data.');
+        console.error('Error fetching SubDealers:', error);
       }
     };
-    fetchSubDealerDetailsData();
-  }, [subDealerDetailsFromState.SubDealerId]);
+
+    fetchSubDealers();
+  }, [location.state?.subDealerDetailsFromState]);
 
   useEffect(() => {
     const getProductsPhotos = async () => {
@@ -426,30 +464,35 @@ const filteredPendingAmount = Array.isArray(works)
       <p className="font-bold text-xl">Sub Dealer ID</p>
       <div className="flex items-start space-x-28 bg-white p-6 rounded-lg shadow-md">
         <img
-          src={subDealerDetails.subDealerPhoto}
+          src={subDealer.subDealerPhoto}
           alt="subDealer"
           className="w-32 h-32 rounded-full object-cover"
         />
         <div className="space-y-5">
           <p className="text-gray-800  font-bold text-xl">
-            Sub Dealer Name : {subDealerDetails.name}
+            Sub Dealer Name : {subDealer.name}
           </p>
           <p className="text-gray-800 font-semibold">
-            Phone number : {subDealerDetails.phone}
+            Phone number : {subDealer.subDealerPhoneNumber
+            }
           </p>
-          <p className="text-gray-800 font-semibold">Email : {subDealerDetails.email}</p>
+          <p className="text-gray-800 font-semibold">Email : {subDealer.
+emailId
+}</p>
           <p className="text-gray-800 font-semibold">
-            SubDealer Branch : {subDealerDetails.branch}
+            SubDealer Branch : {subDealer.branchName
+            }
           </p>
           <p className="text-gray-800 font-semibold">
-            Date of Birth : {subDealerDetails.dob}
+            Date of Birth : {subDealer.dob}
           </p>
 
           <p className="text-gray-800 font-semibold">
-            Gst Number : {subDealerDetails.gstNumber}
+            Gst Number : {subDealer.gstNumber}
           </p>
 
-          <p className="text-gray-800 font-semibold">Address : {subDealerDetails.address}</p>
+          <p className="text-gray-800 font-semibold">Address : {subDealer.
+address}</p>
         </div>
       </div>
 
@@ -458,7 +501,7 @@ const filteredPendingAmount = Array.isArray(works)
             <h1 className="text-2xl font-bold"></h1>
               <button
                 className="bg-yellow-400 text-black px-5 py-2  rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
-               onClick={() => navigate('/add-subdeler-staff', { state: { subDealerId: subDealerDetailsFromState } })}
+               onClick={() => navigate('/add-subdeler-staff', { state: { subDealerId: subDealer.id } })}
 
 
               >

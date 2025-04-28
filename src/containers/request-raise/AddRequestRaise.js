@@ -109,28 +109,30 @@ const AddRequestRaise = () => {
         requestTo: Number(formData.requestTo),
         requestFrom:id,
         branch: Number(formData.branch),
-        requestFor: formData.description,
+        // requestFor: formData.description,
+        requestFor: formData.requestFor,
         status: "pending",
         products:formData.requestType==="products"?formData.products:null,
+        description:formData.description,
         // subDealerId: formData.subDealerId || 1,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor:formData.requestFor,
-        fromDate:formData.fromDate,
-        toDate:formData.toDate,
+        // fromDate:formData.fromDate,
+        // toDate:formData.toDate,
       };
 
 
       console.log("payload request 1234",payload);
-      // const response = await ApiService.post(
-      //   '/requests/handleRequestDetails',
-      //   payload
-      // );
-      // if (response.status) {
-      //   navigate('/requests');
-      // } else {
-      //   alert('failed to raise request');
-      // }
+      const response = await ApiService.post(
+        '/requests/handleRequestDetails',
+        payload
+      );
+      if (response.status) {
+        navigate('/requests');
+      } else {
+        alert('failed to raise request');
+      }
     } catch (error) {
       console.error(error);
       alert('failed to raise request');

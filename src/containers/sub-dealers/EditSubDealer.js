@@ -4,42 +4,47 @@ import { useNavigate, useLocation } from 'react-router';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 
-const AddSubDealer = () => {
+const EditSubDealer = () => {
   const navigate = useNavigate();
-  
-  const initialFormData = {
+  const location = useLocation();
+
+  const subDealerData = location.state.subDealerDetails
+  ;
+  console.log(subDealerData, "sreeeee<<<<<<< SubDealer Data");
+
+
+
+  const [branches, setBranches] = useState([]);
+  const [formData, setFormData] = useState({
     id: null,
-    name: '',
-    subDealerPhoneNumber: '',
-    alternatePhoneNumber: '',
-    gstNumber: '',
+    name:'',
+    subDealerPhoneNumber:'',
+    alternatePhoneNumber:'',
+    gstNumber:'',
     password:'',
     startingDate:'',
     emailId:'',
     aadharNumber:'',
     address:'',
     subDealerPhoto:null,
-    branchId:'',
+    branchId:null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-  };
-
-  const [branches, setBranches] = useState([]);
-  const [formData, setFormData] = useState(initialFormData);
+  });
   const [errorMessage, setErrorMessage] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(subDealerData?.photo || '');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
         const response = await ApiService.post('/branch/getBranchNamesDropDown');
         if (response.status) {
-          setBranches(response.data);
+          setBranches(response.data); // Set branches to state
         } else {
           console.error('Failed to fetch branches');
         }
@@ -50,6 +55,40 @@ const AddSubDealer = () => {
 
     fetchBranches();
   }, []);
+
+  useEffect(() => {
+    const fetchSubDealers = async () => {
+      try {
+        const response = await ApiService.post('/subdealer/getSubDealerDetailById',{subDealerId:subDealerData.SubDealerId,
+            
+            companyCode: initialAuthState.companyCode,
+            unitCode:  initialAuthState.unitCode});
+        if (response.status) {
+            console.log("kk",response.data)
+            setFormData({name:response.data.name,
+                subDealerPhoneNumber:response.data.subDealerPhoneNumber,
+                alternatePhoneNumber:response.data.alternatePhoneNumber,
+                gstNumber:response.data.gstNumber,
+                startingDate:response.data.startingDate,
+                emailId:response.data.emailId,
+                password:response.data.password,
+                aadharNumber:response.data.aadharNumber,
+                address:response.data.address,
+                branchId:response.data.branchId,
+                id:response.data.id
+            })
+        //   s(response.data);
+        } else {
+          console.error('Failed to fetch SubDealers');
+        }
+      } catch (error) {
+        console.error('Error fetching SubDealers:', error);
+      }
+    };
+
+    fetchSubDealers();
+  }, [location.state?.subDealerDetails]);
+
 
 
 
@@ -78,7 +117,7 @@ const AddSubDealer = () => {
       console.log(response, '✅ API Response');
 
       if (response.status) {
-        alert('Sub-dealer added successfully!');
+        alert('Sub-dealer updated successfully!');
         navigate('/sub_dealers');
       } else {
         alert(response.data.internalMessage || 'Failed to save sub-dealer details. Please try again.');
@@ -110,7 +149,7 @@ const AddSubDealer = () => {
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            Add Sub Dealer
+            Edit Sub Dealer
           </h1>
         </div>
 
@@ -241,7 +280,7 @@ const AddSubDealer = () => {
             onClick={handleSave}
             className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
           >
-            Save
+            Update
           </button>
           <button
             onClick={handleCancel}
@@ -255,4 +294,4 @@ const AddSubDealer = () => {
   );
 };
 
-export default AddSubDealer;
+export default EditSubDealer;
