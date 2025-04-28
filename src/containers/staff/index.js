@@ -56,7 +56,7 @@ const Staff = () => {
       const response = await ApiService.post(
         '/dashboards/getStaffSearchDetails',
         {
-          staffId: staffId,
+          // staffId: staffId,
           branchName: selectedBranch,
           staffName: staffName,
           companyCode: initialAuthState?.companyCode,
@@ -66,7 +66,7 @@ const Staff = () => {
 
       if (response.status) {
         const rawData = response.data || [];
-        console.log("rrttttt",rawData);
+        console.log('rrttttt', rawData);
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
           id: 'ID',
@@ -130,8 +130,23 @@ const Staff = () => {
   };
 
   const handleSearch = async () => {
-    await getStaffSearchDetails();
+    let filteredProfiles = profiles;
+
+    if (staffId.trim() !== '') {
+      filteredProfiles = filteredProfiles.filter((profile) =>
+        profile['Staff ID']?.toLowerCase().includes(staffId.toLowerCase())
+      );
+    }
+
+    if (staffName.trim() !== '') {
+      filteredProfiles = filteredProfiles.filter((profile) =>
+        profile['Staff Name']?.toLowerCase().includes(staffName.toLowerCase())
+      );
+    }
+
+    setProfiles(filteredProfiles);
   };
+
   // Initial API calls
   useEffect(() => {
     const perms = getPermissions('staff');
@@ -411,7 +426,7 @@ const Table = ({
   };
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [showRowPopup, setShowRowPopup] = useState(false);
-    return (
+  return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
         <div className="p-4 text-center text-gray-500">No data found</div>
@@ -449,7 +464,8 @@ const Table = ({
                   onClick={() => {
                     setSelectedRowData(row);
                     setShowRowPopup(true);
-                  }}                >
+                  }}
+                >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
@@ -514,28 +530,27 @@ const Table = ({
         </div>
       )}
 
-{showRowPopup && selectedRowData && (
-  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-    <div className="bg-white rounded-lg shadow-lg w-96 p-4 relative">
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-        onClick={() => setShowRowPopup(false)}
-      >
-        ×
-      </button>
-      <h2 className="text-lg font-semibold mb-2">Staff Details</h2>
-      <div className="space-y-2">
-        {columns.map((column, index) => (
-          <div key={index} className="flex justify-between text-sm">
-            <span className="font-medium">{column}:</span>
-            <span>{selectedRowData[column] || '-'}</span>
+      {showRowPopup && selectedRowData && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96 p-4 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={() => setShowRowPopup(false)}
+            >
+              ×
+            </button>
+            <h2 className="text-lg font-semibold mb-2">Staff Details</h2>
+            <div className="space-y-2">
+              {columns.map((column, index) => (
+                <div key={index} className="flex justify-between text-sm">
+                  <span className="font-medium">{column}:</span>
+                  <span>{selectedRowData[column] || '-'}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
-
+        </div>
+      )}
     </div>
   );
 };
