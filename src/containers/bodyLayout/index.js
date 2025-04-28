@@ -174,6 +174,8 @@ import EditAppointment from '../appointment/EditAppointment';
 import ViewAppointment from '../appointment/ViewAppointment';
 import AddClient from '../clients/addClient';
 import EditClient from '../clients/EditClient';
+import AddEditSubDealer from '../sub-dealers/addSubDealer';
+import EditSubDealer from '../sub-dealers/EditSubDealer';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -525,7 +527,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
           <Route path="/delete-vendor" element={<DeleteVendor />} />
-          <Route path="/add-sub-dealer" element={<AddSubDealer />} />
+          <Route path="/add-sub-dealer" element={<AddSubDealer/>} />
+          <Route path="/edit-sub-dealer" element={<EditSubDealer/>} />
           <Route path="/add-product" element={<AddProductForm />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/sub-dealer-notifications" element={<SubDealerNotifications />} />
