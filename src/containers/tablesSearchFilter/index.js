@@ -219,6 +219,7 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch vendor details.');
     }
   }, [workData?.serviceOrProduct, searchName, workData?.workAllocationNumber]);
+  
   useEffect(() => {
     switch (type) {
       case 'tickets':
