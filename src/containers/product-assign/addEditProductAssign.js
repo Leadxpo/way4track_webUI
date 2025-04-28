@@ -484,7 +484,7 @@ const AddEditProductAssign = () => {
           )}
 
           {/* Product Selection */}
-          {product.length > 0 && (
+          {product?.length > 0 && (
             <div>
               <p className="font-semibold mb-1">Product Type</p>
               <select

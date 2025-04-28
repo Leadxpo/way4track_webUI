@@ -10,7 +10,7 @@ const StaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   console.log('staff details', state);
-  const [staffPhoto, setStaffPhoto] = useState("")
+  const [staffPhoto, setStaffPhoto] = useState('');
   const userId = localStorage.getItem('userId');
 
   const [formData, setFormData] = useState({
@@ -29,8 +29,8 @@ const StaffDetails = () => {
       drivingLicenceNumber: 'DL-123456789',
       drivingLicence: 'Yes',
       address: '123, Main Street, NY',
-      uanNumber: '100200300400',
-      esicNumber: 'ESIC123456',
+      UANNumber: '100200300400',
+      ESICNumber: 'ESIC123456',
       bloodGroup: 'O+',
     },
     educationDetails: {
@@ -84,7 +84,9 @@ const StaffDetails = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const [editedPassword, setEditedPassword] = useState(formData.employerDetails.password);
+  const [editedPassword, setEditedPassword] = useState(
+    formData.employerDetails.password
+  );
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [passwordData, setPasswordData] = useState({
@@ -118,7 +120,7 @@ const StaffDetails = () => {
 
       if (response.errorCode === 200) {
         const staff = response.data;
-        setStaffPhoto(staff.staffPhoto)
+        setStaffPhoto(staff.staffPhoto);
         setFormData({
           personnelDetails: {
             id: staff.id,
@@ -136,8 +138,10 @@ const StaffDetails = () => {
             panCardNumber: staff.panCardNumber || '',
             drivingLicence: staff.drivingLicence || '',
             address: staff.address || '',
-            uanNumber: staff.uanNumber || '',
-            esicNumber: staff.esicNumber || '',
+            // uanNumber: staff.uanNumber || '',
+            // esicNumber: staff.esicNumber || '',
+            uanNumber: (staff.uanNumber || '').toUpperCase(),
+            esicNumber: (staff.esicNumber || '').toUpperCase(),
             bloodGroup: staff.bloodGroup || '',
           },
           educationDetails: {
@@ -267,12 +271,12 @@ const StaffDetails = () => {
       </div>
 
       <div>
-      <img
-            src={staffPhoto || "logo-square.png"}
-            alt={staffPhoto}
-            className="rounded-full w-24 h-24 mx-auto mb-4"
-          />            
-          </div>
+        <img
+          src={staffPhoto || 'logo-square.png'}
+          alt={staffPhoto}
+          className="rounded-full w-24 h-24 mx-auto mb-4"
+        />
+      </div>
 
       <DetailsCard
         title="Personnel Details"

@@ -267,14 +267,14 @@ export const menuOptions = {
     },
     {
       name: 'Dispatch',
-      icon: <img src="./dispath.png" />,
+      icon: <img src="./Dispatch.png" />,
       route: '/dispatch',
     },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
     {
       name: 'Work Allocation',
