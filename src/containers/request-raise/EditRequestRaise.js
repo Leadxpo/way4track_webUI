@@ -33,6 +33,30 @@ const EditRequestRaise = () => {
   });
 
 
+  // const fetchRequestRaise = async () => {
+  //   try {
+  //     const response = await ApiService.post('/requests/getRequestDetails',{id:
+  //       requestData.requestId,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode});
+        
+  //     if (response.status) {
+  //       // setRequestRaiseDetail(response.data);
+
+  //       console.log("fetchStaffData fetchStaffData", response.data)
+  //     } else {
+  //       console.error('Error fetching staff data');
+  //     }
+  //   } catch (e) {
+  //     console.error('Error fetching staff data', e);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchRequestRaise();
+  // }, []);
+
+  // getRequestDetails
   const fetchStaffData = async () => {
     try {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
