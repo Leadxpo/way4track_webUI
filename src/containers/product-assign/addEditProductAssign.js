@@ -56,6 +56,7 @@ const AddEditProductAssign = () => {
   const [staff, setStaff] = useState([]);
   const [product, setProduct] = useState([]);
   const [subDealerNames, setSubDealerNames] = useState([]);
+  const [errors, setErrors] = useState({});
 
   console.log(staff, 'stafrf names');
 
@@ -256,6 +257,19 @@ const AddEditProductAssign = () => {
   console.log(formData, 'formdata');
 
   const handleSave = async () => {
+    const newErrors = {};
+
+    if (!formData.assignTo) {
+      newErrors.assignTo = 'Please select a branch or subdealer.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
@@ -385,34 +399,6 @@ const AddEditProductAssign = () => {
           </h1>
         </div>
 
-        {/* Photo Section */}
-        <div className="flex items-center space-x-2 mb-6">
-          <img
-            src={image || 'https://i.pravatar.cc/150?img=5'}
-            alt="Employee"
-            className="w-24 h-24 rounded-full object-cover"
-          />
-          <input
-            type="file"
-            // accept="image/*"
-            name="file"
-            className="ml-4 border p-2 rounded"
-            onChange={handleFileChange}
-          />
-          {formData.file && (
-            <button
-              onClick={() => {
-                setFormData({ ...formData, file: null });
-                setImage('');
-              }}
-              className="ml-2 text-red-500"
-            >
-              Remove
-            </button>
-          )}
-        </div>
-
-        {/* Form Fields */}
         <div className="space-y-4">
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
@@ -449,6 +435,7 @@ const AddEditProductAssign = () => {
                       branchOrPerson: 'Subdealer',
                     }));
                   }
+                  setErrors((prev) => ({ ...prev, assignTo: '' }));
                 }}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
@@ -461,6 +448,9 @@ const AddEditProductAssign = () => {
                   </option>
                 ))}
               </select>
+              {errors.assignTo && (
+                <p className="text-red-500 text-sm mt-1">{errors.assignTo}</p>
+              )}
             </div>
           )}
 
@@ -505,6 +495,36 @@ const AddEditProductAssign = () => {
             </div>
           )}
         </div>
+
+        {/* Photo Section */}
+        <div>
+          <label className="font-semibold mb-1 block">Bulk Upload File</label>
+          {/* <img
+            src={image || 'https://i.pravatar.cc/150?img=5'}
+            alt="Employee"
+            className="w-24 h-24 rounded-full object-cover"
+          /> */}
+          <input
+            type="file"
+            // accept="image/*"
+            name="file"
+            className="border p-2 rounded"
+            onChange={handleFileChange}
+          />
+          {formData.file && (
+            <button
+              onClick={() => {
+                setFormData({ ...formData, file: null });
+                setImage('');
+              }}
+              className="ml-2 text-red-500"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+
+        {/* Form Fields */}
 
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">
