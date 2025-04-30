@@ -266,7 +266,8 @@ const PurchaseForm = () => {
 
       if (response.status) {
         alert('Purchase voucher created successfully!');
-        return response.data;
+        navigate("/vouchers");
+        // return response.data;
       } else {
         alert('Failed to create purchase voucher details.');
         return null;

@@ -212,7 +212,8 @@ const DebitNoteForm = () => {
  
        if (response.status) {
          alert('Debit note voucher created successfully!');
-         return response.data;
+         navigate("/vouchers");
+        //  return response.data;
        } else {
          alert('Failed to create Debit note voucher details.');
          return null;

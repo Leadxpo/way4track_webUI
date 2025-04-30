@@ -212,7 +212,8 @@ const CreditNoteForm = () => {
  
        if (response.status) {
          alert('Credit note voucher created successfully!');
-         return response.data;
+         navigate("/vouchers");
+        //  return response.data;
        } else {
          alert('Failed to create Credit note voucher details.');
          return null;

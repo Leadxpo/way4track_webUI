@@ -60,6 +60,26 @@ const TableWithDateFilter = ({
     fetchBranches();
   }, []);
 
+
+  const [searchSubdealer, setSearchSubdealer] = useState("");
+  const [subdealerList, setSubdealerList] = useState([]);
+
+  const handleSearchSubdealer = () => {
+    const searchQuery = searchSubdealer.toLowerCase().trim();
+  
+    if (searchQuery === "") {
+      setFilteredData(subdealerList); // Reset to original data
+    } else {
+      const filteredData = subdealerList.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        )
+      );
+      setFilteredData(filteredData);
+    }
+  };
+  
+
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
@@ -111,7 +131,7 @@ const TableWithDateFilter = ({
             joiningDate, // Place 'joiningDate' after 'phoneNumber'
           })
         );
-
+        setSubdealerList(formattedData);
         setFilteredData(formattedData);
       } else {
         alert(response.data.message || 'Failed to fetch sub-dealer details.');
@@ -383,7 +403,28 @@ const TableWithDateFilter = ({
         )}
       </div>
 
+{type==="sub_dealers"&&
+      <div className="flex mb-4">
+              <div className="flex-grow mx-2">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Search by Subdealer Id or Name"
+                  value={searchSubdealer}
+                  onChange={(e)=>setSearchSubdealer(e.target.value)}
+                  className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
+                />
+              </div>
+              <button
+                onClick={handleSearchSubdealer}
+                className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+              >
+                <FaSearch className="mr-2" /> Search
+              </button>
+            </div>}
+
       {/* Filters Row */}
+      {type==="sub_dealers"?"":
       <div className="flex mb-4">
         {showDateFilters && (
           <div className="flex-grow mr-2">
@@ -449,7 +490,7 @@ const TableWithDateFilter = ({
         >
           <FaSearch className="mr-2" /> Search
         </button>
-      </div>
+      </div>}
 
       {/* Table Row */}
       <div className="mt-8">

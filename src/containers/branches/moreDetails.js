@@ -288,8 +288,8 @@ const BranchDetails = () => {
       <input
         type="text"
         placeholder="Search by Account Number or Account Holder"
-        value={search}
-        onChange={handleSearch}
+        // value={search}
+        // onChange={handleSearch}
         className="w-full p-2 border rounded mb-4"
       />
       <table className="w-full border-collapse border border-gray-300">

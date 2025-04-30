@@ -266,7 +266,8 @@ const ContraForm = () => {
 
       if (response.status) {
         alert('Contra voucher created successfully!');
-        return response.data;
+        navigate("/vouchers");
+        // return response.data;
       } else {
         alert('Failed to create Contra voucher details.');
         return null;

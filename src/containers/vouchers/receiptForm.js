@@ -278,7 +278,8 @@ const ReceiptForm = () => {
 
       if (response.status) {
         alert('Receipt voucher created successfully!');
-        return response.data;
+        navigate("/vouchers")
+        // return response.data;
       } else {
         alert('Failed to create Receipt voucher details.');
         return null;

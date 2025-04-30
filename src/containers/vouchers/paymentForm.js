@@ -278,7 +278,8 @@ const PaymentForm = () => {
 
       if (response.status) {
         alert('Payment voucher created successfully!');
-        return response.data;
+        navigate("/vouchers");
+        // return response.data;
       } else {
         alert('Failed to create Payment voucher details.');
         return null;
