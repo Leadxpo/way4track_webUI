@@ -40,7 +40,7 @@ const TableWithDateFilter = ({
   const subDealerData = location.state?.subDealersData || {};
   const requestData = location.state?.requestData || {};
   const [columnNames, setColumnNames] = useState([]);
-
+  const [branchFilter, setBranchFilter] = useState('');
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -306,6 +306,21 @@ const TableWithDateFilter = ({
     setFilteredData(filtered);
   };
 
+  const handleBranchFilter = (e) => { 
+    const selectedBranch = e.target.value; 
+    setBranchFilter(selectedBranch);
+  
+    if (!data || !Array.isArray(data)) return;
+  
+    const filtered = data.filter(item => 
+      !selectedBranch || item.branchName === selectedBranch
+    );
+  
+    setFilteredData(filtered);
+  };
+
+
+
   const handleSearch = async () => {
     switch (type) {
       case 'vendors':
@@ -317,7 +332,7 @@ const TableWithDateFilter = ({
       case 'estimate':
         await getEstimateData();
         break;
-      case 'requsts':
+      case 'requests':
         await getRequestsData();
         break;
       case 'payments':
@@ -411,9 +426,10 @@ const TableWithDateFilter = ({
               ))}
             </select>
           ) : (
+            
             <select
-              value={statusFilter}
-              onChange={handleStatusChange}
+              value={branchFilter}
+              onChange={handleBranchFilter}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
               <option value="" disabled>

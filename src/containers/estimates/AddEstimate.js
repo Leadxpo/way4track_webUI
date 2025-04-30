@@ -10,7 +10,8 @@ import {EstimatePDF} from './EstimatePDF';
 const AddEstimate = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
-  // Check if editing or creating
+
+  
   // Initial state for form
   const initialFormState = {
     client: '',
@@ -243,13 +244,15 @@ const handleService = (index, e) => {
       return new File([pdfBlob], "estimate.pdf", { type: "application/pdf" });
     };
   
+    console.log("formDataPayload! estimate estimateeeee1");
     try {
-      const pdfFile = await generatePdf(pdfData); // Generate PDF File
-      
+      console.log("formDataPayload! estimate estimateeeee2");
+      const pdfFile = await generatePdf(pdfData); 
+      console.log("formDataPayload! estimate estimateeeee3");
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst=(estimateDto.totalAmount * formData.scstPercentage) /100;
       const includeTax=estimateDto.totalAmount+cgst+scst
-  console.log("acsdbttrdf : ",pdfFile)
+      console.log("formDataPayload! estimate estimateeeee4");
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append("estimatePdf", pdfFile); // Attach PDF file
@@ -274,7 +277,7 @@ const handleService = (index, e) => {
   
       // Append Product Details as JSON String
       formDataPayload.append("productDetails", JSON.stringify(estimateDto.productDetails));
-  
+      console.log("formDataPayload! estimate estimateeeee5");
       // Send FormData with Binary PDF
       await ApiService.post("/estimate/handleEstimateDetails", formDataPayload, {
         headers: { "Content-Type": "multipart/form-data" }, // Important for binary data
@@ -285,7 +288,7 @@ const handleService = (index, e) => {
       navigate("/estimate");
     } catch (err) {
       console.error("Failed to save estimate:", err);
-      alert("Estimate saved successfully!",err);
+      alert("Failed to save estimate!",err);
     }
   };
   

@@ -165,12 +165,23 @@ const Login = ({ handleLoginFlag }) => {
   const fetchDesignations = async () => {
     try {
       const response = await ApiService.post("/designations/getAllDesignation");
-      setDesignations(response.data || []);
+      const fetchedData = Array.isArray(response.data) ? response.data : [];
+  
+      // Add custom roles
+      const updatedDesignations = [
+        ...fetchedData,
+        { designation: "Subdealer" },
+        { designation: "Subdealer Staff" },
+      ];
+  
+      setDesignations(updatedDesignations);
     } catch (error) {
       console.error("Error fetching designations:", error);
       setDesignations([]);
     }
   };
+  
+
 
   useEffect(() => {
     fetchDesignations();

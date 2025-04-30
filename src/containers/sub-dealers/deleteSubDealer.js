@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -7,6 +7,31 @@ const DeleteSubDealer = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const subDealerDetails = location.state?.subDealerDetails || null;
+  console.log("3456789",subDealerDetails)
+  const [subDealerId,setSubDealerId]= useState();
+  useEffect(() => {
+    const fetchSubDealers = async () => {
+      try {
+        const response = await ApiService.post('/subdealer/getSubDealerDetailById',{subDealerId:subDealerDetails.SubDealerId,
+            
+            companyCode: initialAuthState.companyCode,
+            unitCode:  initialAuthState.unitCode});
+        if (response.status) {
+            console.log("kk",response.data)
+            setSubDealerId(
+                response.data.id
+            )
+        //   s(response.data);
+        } else {
+          console.error('Failed to fetch SubDealers');
+        }
+      } catch (error) {
+        console.error('Error fetching SubDealers:', error);
+      }
+    };
+
+    fetchSubDealers();
+  }, [location.state?.subDealerDetails]);
   const deleteSubDealerDetails = async () => {
     if (!subDealerDetails) {
       alert('No subDealer details available.');
@@ -15,7 +40,7 @@ const DeleteSubDealer = () => {
 
     try {
       const payload = {
-        subDealerId:subDealerDetails.SubDealerId,
+        id:subDealerId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
