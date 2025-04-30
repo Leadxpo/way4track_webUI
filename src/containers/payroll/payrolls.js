@@ -5,7 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 import { useLocation, useNavigate } from 'react-router';
 
-const Payroll = () => {
+const Payrolls = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [payrollData, setPayrollData] = useState([]);
@@ -19,23 +19,23 @@ const Payroll = () => {
   const fetchPayrollData = async (branchName = "All") => {
    console.log("selected data : ",selectedDate) ;
     try {
-      // const payload = {
-      //   companyCode: initialAuthState.companyCode,
-      //   unitCode: initialAuthState.unitCode,
-      //   month: selectedDate.split("-")[1],
-      //   year: selectedDate.split("-")[0],
-      // };
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        date: selectedDate,
+        month: selectedDate.split("-")[1],
+        year: selectedDate.split("-")[0],
       };
+      // const payload = {
+      //   companyCode: initialAuthState.companyCode,
+      //   unitCode: initialAuthState.unitCode,
+      //   date: selectedDate,
+      // };
 
       if (branchName !== "All") {
         payload.branch = branchName;
       }
-      const res = await ApiService.post('/dashboards/payRoll', payload);
-      // const res = await ApiService.post("/PAYROLL/getPayRollDetails", payload);
+      // const res = await ApiService.post('/dashboards/payRoll', payload);
+      const res = await ApiService.post("/PAYROLL/getPayRollDetails", payload);
       if (res.status) {
 
         console.log("Formatted Payroll Data:", res.data);
@@ -219,4 +219,4 @@ const Payroll = () => {
   );
 };
 
-export default Payroll;
+export default Payrolls;
