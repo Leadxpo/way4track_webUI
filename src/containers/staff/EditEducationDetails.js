@@ -1,11 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { MdFileDownload } from 'react-icons/md';
+
+const urlToBlob = async (url) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return blob;
+};
+
+const blobToFile = (blob, filename) => {
+  return new File([blob], filename, { type: blob.type });
+};
 
 export default function EditEducationDetails() {
   const location = useLocation();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   console.log('EducationDetails', location.state);
+  console.log('check0123');
   const [educationDetails, setEducationDetails] = useState([]);
   const [qualification, setQualification] = useState([
     {
@@ -125,7 +137,10 @@ export default function EditEducationDetails() {
     });
   }, [qualification, experience, setEducationDetails]);
 
+  
+
   const handleSubmit = async () => {
+    console.log('check0');
     try {
       const formData = new FormData();
 
@@ -150,17 +165,47 @@ export default function EditEducationDetails() {
         formData.append('id', staffId);
       }
 
-      qualification.forEach((qual) => {
-        if (qual.file) {
-          formData.append('qualificationFiles', qual.file);
-        }
-      });
+      // qualification.forEach((qual) => {
+      //   if (qual.file) {
+      //     formData.append('qualificationFiles', qual.file);
+      //   }
+      // });
 
-      experience.forEach((exp) => {
-        if (exp.uploadLetters) {
-          formData.append('experience', exp.uploadLetters);
+      // experience.forEach((exp) => {
+      //   if (exp.uploadLetters) {
+      //     formData.append('experience', exp.uploadLetters);
+      //   }
+      // });
+
+      console.log('check1');
+      for (const [i, qual] of qualification.entries()) {
+        console.log('check2');
+        if (qual.file) {
+          console.log(qual.file, 'filename');
+          if (typeof qual.file === 'string' && qual.file.startsWith('http')) {
+            const blob = await urlToBlob(qual.file);
+            const file = blobToFile(blob, `qualification_${i}.pdf`);
+            formData.append('qualificationFiles', file);
+          } else {
+            formData.append('qualificationFiles', qual.file);
+          }
         }
-      });
+      }
+
+      for (const [i, exp] of experience.entries()) {
+        if (exp.uploadLetters) {
+          if (
+            typeof exp.uploadLetters === 'string' &&
+            exp.uploadLetters.startsWith('http')
+          ) {
+            const blob = await urlToBlob(exp.uploadLetters);
+            const file = blobToFile(blob, `experience_${i}.pdf`);
+            formData.append('experience', file);
+          } else {
+            formData.append('experience', exp.uploadLetters);
+          }
+        }
+      }
 
       const response = await ApiService.post(
         '/staff/handleStaffDetails',
@@ -174,9 +219,8 @@ export default function EditEducationDetails() {
 
       if (response.status) {
         alert('Education details updated successfully!');
-        navigate(-1)
+        navigate(-1);
         return response.data;
-        
       } else {
         alert('Failed to update education details.');
         return null;
@@ -236,11 +280,30 @@ export default function EditEducationDetails() {
                 }
                 // required
               />
-              <input
-                type="file"
-                className="border rounded p-2"
-                onChange={(e) => handleFileChange(index, e)}
-              />
+              <div key={index} className="mb-4">
+                <input
+                  type="file"
+                  className="border rounded p-2"
+                  onChange={(e) => handleFileChange(index, e)}
+                />
+                {qual.file && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <img
+                      src={qual.file}
+                      alt="Preview"
+                      className="h-16 w-16 object-cover border"
+                    />
+                    <a
+                      href={qual.file}
+                      download
+                      className="text-blue-600 hover:underline"
+                    >
+                      {/* Replace with an icon if needed */}
+                      <MdFileDownload className="w-5 h-5" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
 
             {index > 0 && (

@@ -140,14 +140,14 @@ const StaffDetails = () => {
             address: staff.address || '',
             // uanNumber: staff.uanNumber || '',
             // esicNumber: staff.esicNumber || '',
-            uanNumber: (staff.uanNumber || '').toUpperCase(),
-            esicNumber: (staff.esicNumber || '').toUpperCase(),
+            'UAN Number': (staff.uanNumber || '').toUpperCase(),
+            'ESIC Number': (staff.esicNumber || '').toUpperCase(),
             bloodGroup: staff.bloodGroup || '',
           },
           educationDetails: {
             id: staff.id,
             qualifications: staff.qualifications || [],
-            experience: staff.experience || [],
+            experience: staff.experienceDetails || [],
           },
           bankDetails: {
             id: staff.id,
@@ -306,6 +306,22 @@ const StaffDetails = () => {
           <p key={index}>
             <strong>Qualification:</strong> {qual.qualificationName},{' '}
             <strong>Marks/CGPA:</strong> {qual.marksOrCgpa}
+          </p>
+        ))}
+      </DetailsCard>
+
+      <DetailsCard
+        title="Previous Experience"
+        onEdit={() =>
+          handleEdit('/edit-staff-education', formData.educationDetails)
+        }
+      >
+        {formData.educationDetails.experience.map((exp, index) => (
+          <p key={index}>
+            <strong>Company Name:</strong> {exp.previousCompany},{' '}
+            <strong>Designation:</strong> {exp.previous_designation},{' '}
+            <strong>Experience:</strong> {exp.total_experience},{' '}
+            <strong>Salary:</strong> {exp.previous_salary}
           </p>
         ))}
       </DetailsCard>
