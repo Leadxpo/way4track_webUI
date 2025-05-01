@@ -281,13 +281,15 @@ const AddEstimate = () => {
       formDataPayload.append("productDetails", JSON.stringify(estimateDto.productDetails));
       console.log("formDataPayload! estimate estimateeeee5");
       // Send FormData with Binary PDF
-      await ApiService.post("/estimate/handleEstimateDetails", formDataPayload, {
+      const res = await ApiService.post("/estimate/handleEstimateDetails", formDataPayload, {
         headers: { "Content-Type": "multipart/form-data" }, // Important for binary data
       });
-
-      console.log("Estimate saved successfully!");
-      alert("Estimate saved successfully!")
-      navigate("/estimate");
+       if(res.status){
+        console.log("Estimate saved successfully!");
+        alert("Estimate saved successfully!");
+        navigate("/estimate");
+       }
+      
     } catch (err) {
       console.error("Failed to save estimate:", err);
       alert("Failed to save estimate!", err);
