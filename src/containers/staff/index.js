@@ -348,7 +348,8 @@ const Staff = () => {
         showEdit={true}
         showDetails={true}
         onDetails={handleMoreDetails}
-        data={Array.isArray(profiles) ? profiles : []}
+        data={Array.isArray(profiles) ? [...profiles]
+          .sort((a, b) => String(a.staffId).localeCompare(String(b.staffId))) : []}
       />
       {/* )}{' '} */}
     </div>
