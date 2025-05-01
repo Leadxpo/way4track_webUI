@@ -138,33 +138,35 @@ const Attendance = () => {
         </thead>
         <tbody>
 
-          {profiles.map((att) => {
-            console.log(att)
-            return(
-            <tr key={att.id} className="text-center">
-              <td className="border p-2">{att.staffId}</td>
-              <td className="border p-2">{att.staffName.trim()}</td>
-              <td className="border p-2">{att.branchName}</td>
-              <td className="border p-2">{new Date(att.day).toLocaleDateString()}</td>
-              <td className="border p-2">{att.inTimeRemark}</td>
-              <td className="border p-2">{att.outTimeRemark}</td>
-              <td className="border p-2">{att.status}</td>
-              <td className="border p-2">
-                {/* <button
+          {[...profiles]
+            .sort((a, b) => String(a.day).localeCompare(String(b.day))).map((att) => {
+              console.log(att)
+              return (
+                <tr key={att.id} className="text-center">
+                  <td className="border p-2">{att.staffId}</td>
+                  <td className="border p-2">{att.staffName.trim()}</td>
+                  <td className="border p-2">{att.branchName}</td>
+                  <td className="border p-2">{new Date(att.day).toLocaleDateString()}</td>
+                  <td className="border p-2">{att.inTimeRemark}</td>
+                  <td className="border p-2">{att.outTimeRemark}</td>
+                  <td className="border p-2">{att.status}</td>
+                  <td className="border p-2">
+                    {/* <button
                     onClick={() => navigate('/attendance-details', { state: { attendanceDetails: att } })}
                     className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-blue-600"
                   >
                     More Details
                   </button> */}
-                <button
-                  onClick={() => navigate('/attendance-edi', { state: { attendanceDetails: att } })}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                >
-                  Edit Details
-                </button>
-              </td>
-            </tr>
-          )})
+                    <button
+                      onClick={() => navigate('/attendance-edi', { state: { attendanceDetails: att } })}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
+                    >
+                      Edit Details
+                    </button>
+                  </td>
+                </tr>
+              )
+            })
           }
         </tbody>
       </table>
