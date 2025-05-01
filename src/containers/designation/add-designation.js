@@ -24,6 +24,14 @@ const AddDesignation = () => {
         { name: "estimate", add: false, edit: false, delete:false, view: false },
         { name: "attendance", add: false, edit: false, delete:false, view: false },
         { name: "requests", add: false, edit: false, delete:false, view: false },
+
+        { name: "product-type", add: false, edit: false, delete:false, view: false },
+        { name: "invoice", add: false, edit: false, delete:false, view: false },
+        { name: "backend-support", add: false, edit: false, delete:false, view: false },
+        { name: "service", add: false, edit: false, delete:false, view: false },
+        { name: "vehicle", add: false, edit: false, delete:false, view: false },
+        { name: "sales-visit", add: false, edit: false, delete:false, view: false },
+        { name: "dispatch", add: false, edit: false, delete:false, view: false },
     ]);
 
     // Handle permission toggling
@@ -49,11 +57,14 @@ const AddDesignation = () => {
     
         const payload = {
             designation,
-            roles: JSON.stringify(updatedRoles), // Convert roles to JSON string
+            // roles: JSON.stringify(updatedRoles), // Convert roles to JSON string
+            roles: updatedRoles,
             companyCode: initialAuthState?.companyCode,
             unitCode: initialAuthState?.unitCode,
         };
     
+
+        console.log("paylooaddd role >>>>>>>>",payload);
         try {
             const endpoint = `/designations/createDesignation`;
             const response = await ApiService.post(endpoint, payload);
