@@ -17,20 +17,25 @@ const Payroll = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const fetchPayrollData = async (branchName = "All") => {
-   console.log("selected data : ",selectedDate.split("-")[0]) ;
+   console.log("selected data : ",selectedDate) ;
     try {
+      // const payload = {
+      //   companyCode: initialAuthState.companyCode,
+      //   unitCode: initialAuthState.unitCode,
+      //   month: selectedDate.split("-")[1],
+      //   year: selectedDate.split("-")[0],
+      // };
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        month: selectedDate.split("-")[1],
-        year: selectedDate.split("-")[0],
+        date: selectedDate,
       };
 
       if (branchName !== "All") {
         payload.branch = branchName;
       }
-
-      const res = await ApiService.post("/PAYROLL/getPayRollDetails", payload);
+      const res = await ApiService.post('/dashboards/payRoll', payload);
+      // const res = await ApiService.post("/PAYROLL/getPayRollDetails", payload);
       if (res.status) {
 
         console.log("Formatted Payroll Data:", res.data);

@@ -266,7 +266,8 @@ const SaleForm = () => {
 
       if (response.status) {
         alert('Sale voucher created successfully!');
-        return response.data;
+        navigate("/vouchers");
+        // return response.data;
       } else {
         alert('Failed to create sale voucher details.');
         return null;

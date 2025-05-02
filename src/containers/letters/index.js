@@ -52,6 +52,13 @@ const Letters = () => {
       year: "numeric",
     });
   };
+  const getIndiaJoiningData = (date) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
   useEffect(() => {
     if (staffDetails) {
@@ -237,7 +244,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -446,7 +453,7 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -458,7 +465,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -537,7 +544,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -733,7 +740,7 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -744,7 +751,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -820,7 +827,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -951,7 +958,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -988,7 +995,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1064,7 +1071,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -1276,7 +1283,7 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -1287,7 +1294,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1363,7 +1370,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -1500,7 +1507,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -1535,7 +1542,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1610,7 +1617,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -1874,7 +1881,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -1885,7 +1892,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1961,7 +1968,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -2103,7 +2110,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -2140,7 +2147,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2216,7 +2223,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -2357,7 +2364,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -2393,7 +2400,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2467,7 +2474,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -2607,7 +2614,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
             {/* Footer */}
@@ -2644,7 +2651,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2720,7 +2727,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -2861,7 +2868,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -2898,7 +2905,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2974,7 +2981,7 @@ const Letters = () => {
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {employee?.joiningDate}</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Start Date: {getIndiaJoiningData(employee?.joiningDate)}</Text>
               </View>
             </View>
 
@@ -3154,7 +3161,7 @@ const Letters = () => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {employee.joiningDate}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -3165,7 +3172,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
 
-            <View style={styles.section}>
+           <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -3262,7 +3269,7 @@ const Letters = () => {
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
-              <View style={styles.signatureBlock}>
+              <View style={[styles.signatureBlock,{marginTop:30}]}>
                 <Text style={styles.text}>Signature:</Text>
                 <Text style={styles.text}>Date:</Text>
               </View>
@@ -3348,7 +3355,7 @@ const Letters = () => {
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
-              <View style={styles.signatureBlock}>
+              <View style={[styles.signatureBlock,{marginTop:30}]}>
                 <Text style={styles.text}>Signature:</Text>
                 <Text style={styles.text}>Date:</Text>
               </View>

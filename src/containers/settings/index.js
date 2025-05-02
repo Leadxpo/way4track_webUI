@@ -13,21 +13,94 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profiles, setProfiles] = useState([]);
 
+  // const getStaffPermissions = async () => {
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/permissions/getStaffPermissions',
+  //       {
+  //         staffId: staffId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+  //     if (response.status) {
+  //       const staff = response.data?.[0];
+  //       console.log("ttttt roleee",staff);
+  //       setMockData(staff); // Save entire data for all staff
+  //       console.log(staff, '_________________');
+  //       setStaffData(staff || null); // Initial staff data from the first response
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching staff details:', error);
+  //     alert('Failed to fetch staff details.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const getStaffPermissions = async () => {
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/permissions/getStaffPermissions',
+  //       {
+  //         staffId: staffId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+  
+  //     if (response.status) {
+  //       const staff = response.data?.[0];
+  
+  //       // ✅ Parse and clean permissions
+  //       if (staff.permissions && typeof staff.permissions === "string") {
+  //         try {
+  //           const parsedPermissions = JSON.parse(staff.permissions);
+  //           staff.permissions = parsedPermissions.map(({ delete: _, ...rest }) => rest); // remove "delete"
+  //         } catch (e) {
+  //           console.error("Failed to parse permissions:", e);
+  //           staff.permissions = [];
+  //         }
+  //       }
+  
+  //       console.log("ttttt roleee", staff);
+  //       setMockData(staff);
+  //       setStaffData(staff || null);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching staff details:', error);
+  //     alert('Failed to fetch staff details.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  
   const getStaffPermissions = async () => {
+    setIsLoading(true);
     try {
-      const response = await ApiService.post(
-        '/permissions/getStaffPermissions',
-        {
-          staffId: staffId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
+      const response = await ApiService.post('/permissions/getStaffPermissions', {
+        staffId: staffId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+  
       if (response.status) {
-        const staff = response.data?.[0];
-        setMockData(staff); // Save entire data for all staff
-        console.log(staff, '_________________');
-        setStaffData(staff || null); // Initial staff data from the first response
+        const staff = response.data?.[0]; // Access the first object
+  
+        // If permissions is a string, parse it to an array of objects
+        if (staff && staff.permissions) {
+          try {
+            staff.permissions = JSON.parse(staff.permissions); // Parse if it's a string
+          } catch (e) {
+            console.error('Error parsing permissions:', e);
+          }
+        }
+  
+        console.log("Staff role data with parsed permissions:", staff);
+        setMockData(staff);
+        setStaffData(staff || null);
+      } else {
+        alert("Failed to fetch staff permissions. Please try again.");
       }
     } catch (error) {
       console.error('Error fetching staff details:', error);
@@ -36,6 +109,7 @@ const Settings = () => {
       setIsLoading(false);
     }
   };
+  
 
   const handleSearch = async () => {
     try {
@@ -73,6 +147,7 @@ const Settings = () => {
   };
 
   const handleSaveChanges = async () => {
+    console.log("staffData.permissions rrrr",staffData?.permissions)
     try {
       const response = await ApiService.post(
         '/permissions/handlePermissionDetails',
@@ -142,9 +217,9 @@ const Settings = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {staffData.permissions &&
-                      staffData.permissions.length > 0 ? (
-                      staffData.permissions.map((permission, index) => (
+                    {staffData?.permissions &&
+                      staffData?.permissions?.length > 0 ? (
+                      staffData?.permissions.map((permission, index) => (
                         <tr key={index} className="border-t">
                           <td className="p-2">{permission.name}</td>
                           <td className="p-2 text-center">

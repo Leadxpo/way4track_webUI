@@ -63,7 +63,8 @@ const EditDesignation = () => {
         const payload = {
             id: designationDetails.id,
             designation: designationDetails.designation,
-            roles: JSON.stringify(designationDetails.roles), // Convert roles to JSON string
+            // roles: JSON.stringify(designationDetails.roles), // Convert roles to JSON string
+            roles: designationDetails.roles,
             companyCode: initialAuthState?.companyCode,
             unitCode: initialAuthState?.unitCode,
         };

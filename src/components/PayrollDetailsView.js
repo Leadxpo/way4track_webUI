@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import EditPayroll from "../containers/payroll/editPayroll";
 import ApiService, { initialAuthState } from '../services/ApiService';
-
+import { useNavigate } from "react-router";
 
 const PayrollDetailsView = ({ payrollData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editpayrollData, setPayrollData] = useState(false);
-
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-7xl w-full bg-white shadow-lg rounded-lg p-6">
@@ -112,7 +112,7 @@ console.log("=====================",payrollPayload)
               ? payrollArray.map((p) => (p.id === updatedData.id ? updatedData : p))
               : [...payrollArray, response.data];
           });
-          
+           navigate("/payrolls");
           setIsEditing(false); // Only close editing after successful save
         } else {
           alert(response.data.message || "Failed to save payroll details.");
