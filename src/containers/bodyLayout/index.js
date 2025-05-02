@@ -177,6 +177,7 @@ import AddClient from '../clients/addClient';
 import EditClient from '../clients/EditClient';
 import AddEditSubDealer from '../sub-dealers/addSubDealer';
 import EditSubDealer from '../sub-dealers/EditSubDealer';
+import CustomHome from '../home/CustomHome';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -569,6 +570,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-bank-account" element={<AddEditBankDetails />} />
           <Route path="/add-amount" element={<AddAmount />} />
           <Route path="/bank-details" element={<BankDetails />} />
+          <Route path="/custom-home" element={<CustomHome />} />
+          
           {/* <Route path="/ticket-assign" element={<TicketAssign />} /> */}
           <Route path="/customer-care-home" element={<CustomerCareHome />} />
           <Route

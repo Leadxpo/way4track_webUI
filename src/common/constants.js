@@ -329,7 +329,12 @@ export const menuOptions = {
       route: '/customer-care-home',
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' }
-    
+
+  ],
+
+  'om': [
+    { name: 'Custom Home', icon: <img src="./home.png" />, route: '/custom-home' }
+
   ],
   'sales man': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
@@ -980,6 +985,10 @@ export const formattedPaths = {
       name: 'Performance',
       icon: <img src="./performance.png" />,
     },
+  },
+
+  om: {
+    '/custom-home': { name: 'Home', icon: <img src="./home.png" /> },
   },
 };
 
