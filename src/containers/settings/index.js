@@ -13,30 +13,30 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profiles, setProfiles] = useState([]);
 
-  const getStaffPermissions = async () => {
-    try {
-      const response = await ApiService.post(
-        '/permissions/getStaffPermissions',
-        {
-          staffId: staffId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
-      if (response.status) {
-        const staff = response.data?.[0];
-        console.log("ttttt roleee",staff);
-        setMockData(staff); // Save entire data for all staff
-        console.log(staff, '_________________');
-        setStaffData(staff || null); // Initial staff data from the first response
-      }
-    } catch (error) {
-      console.error('Error fetching staff details:', error);
-      alert('Failed to fetch staff details.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const getStaffPermissions = async () => {
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/permissions/getStaffPermissions',
+  //       {
+  //         staffId: staffId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+  //     if (response.status) {
+  //       const staff = response.data?.[0];
+  //       console.log("ttttt roleee",staff);
+  //       setMockData(staff); // Save entire data for all staff
+  //       console.log(staff, '_________________');
+  //       setStaffData(staff || null); // Initial staff data from the first response
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching staff details:', error);
+  //     alert('Failed to fetch staff details.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // const getStaffPermissions = async () => {
   //   try {
@@ -75,6 +75,41 @@ const Settings = () => {
   //   }
   // };
   
+  const getStaffPermissions = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.post('/permissions/getStaffPermissions', {
+        staffId: staffId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+  
+      if (response.status) {
+        const staff = response.data?.[0]; // Access the first object
+  
+        // If permissions is a string, parse it to an array of objects
+        if (staff && staff.permissions) {
+          try {
+            staff.permissions = JSON.parse(staff.permissions); // Parse if it's a string
+          } catch (e) {
+            console.error('Error parsing permissions:', e);
+          }
+        }
+  
+        console.log("Staff role data with parsed permissions:", staff);
+        setMockData(staff);
+        setStaffData(staff || null);
+      } else {
+        alert("Failed to fetch staff permissions. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error fetching staff details:', error);
+      alert('Failed to fetch staff details.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
 
   const handleSearch = async () => {
     try {
@@ -112,6 +147,7 @@ const Settings = () => {
   };
 
   const handleSaveChanges = async () => {
+    console.log("staffData.permissions rrrr",staffData?.permissions)
     try {
       const response = await ApiService.post(
         '/permissions/handlePermissionDetails',
