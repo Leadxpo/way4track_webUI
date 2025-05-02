@@ -170,8 +170,8 @@ const Login = ({ handleLoginFlag }) => {
       // Add custom roles
       const updatedDesignations = [
         ...fetchedData,
-        { designation: "Subdealer" },
-        { designation: "Subdealer Staff" },
+        { designation: "sub dealer" },
+        { designation: "sub dealer staff" },
       ];
   
       setDesignations(updatedDesignations);
