@@ -563,9 +563,9 @@ const Products = () => {
                     <th className="px-6 py-3 text-left text-sm font-bold">
                       Present Stock
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-bold">
+                    {/* <th className="px-6 py-3 text-left text-sm font-bold">
                       Action
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -580,7 +580,7 @@ const Products = () => {
                         <td className="px-6 py-4">{index + 1}</td>
                         <td className="px-6 py-4">{item.productName}</td>
                         <td className="px-6 py-4">{item.notAssignedStock}</td>
-                        <td className="px-6 py-4 text-center relative dropdown-container">
+                        {/* <td className="px-6 py-4 text-center relative dropdown-container">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -606,7 +606,7 @@ const Products = () => {
                               </ul>
                             </div>
                           )}
-                        </td>
+                        </td> */}
                       </tr>
                     ))
                   ) : (
@@ -684,9 +684,9 @@ const Products = () => {
                   <th className="px-6 py-3 text-left text-sm font-bold">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold">
+                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     Action
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -724,7 +724,7 @@ const Products = () => {
                     <td className="px-6 py-4">{item.date || '-'}</td>
 
                     {/* Actions */}
-                    <td className="px-6 py-4 text-center relative">
+                    {/* <td className="px-6 py-4 text-center relative">
                       <button
                         onClick={() => toggleDropdown(item.id)}
                         className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
@@ -747,7 +747,7 @@ const Products = () => {
                           </ul>
                         </div>
                       )}
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

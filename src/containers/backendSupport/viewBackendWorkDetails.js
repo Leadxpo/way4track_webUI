@@ -667,7 +667,7 @@ const DetailRow = ({
           onChange={(e) => onChange(e, field)}
         >
           <option value="">Select {label}</option>
-          {options.map((opt) => (
+          {options?.map((opt) => (
             <option key={opt.id} value={opt}>
               {opt.name}
             </option>

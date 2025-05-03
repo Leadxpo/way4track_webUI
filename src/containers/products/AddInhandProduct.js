@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import ApiService, { initialAuthState } from "../../services/ApiService";
+import React, { useState, useEffect } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const AddInhandProduct = () => {
   const [formData, setFormData] = useState({
-    staffId: "",
-    assignTime: "",
+    staffId: '',
+    assignTime: '',
     productTypeId: 0, // Default as number
     numberOfProducts: 0, // Default as number
   });
@@ -14,32 +14,44 @@ const AddInhandProduct = () => {
 
   // Fetch Staff List
   const fetchEmployees = async () => {
-    const branchName="Vishakapatnam"
+    const branchName = 'Vishakapatnam';
     try {
-      const response = await ApiService.post("/dashboards/getTotalStaffDetails", {
-        branchName:branchName,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
-
-      console.log(
-        "qqqqq",
-        response.data.staff.filter(staff => staff.staffDesignation === "Technician")
+      console.log("check")
+      const response = await ApiService.post(
+        '/dashboards/getTotalStaffDetails',
+        {
+          branchName: branchName,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
       );
 
-      setStaffList(response.data.staff.filter(staff => staff.staffDesignation === "Technician"));
+      console.log("check2")
 
+      console.log(
+        'qqqqq',
+        response.data.staff.filter(
+          (staff) => staff.staffDesignation === 'Technician'
+        )
+      );
+      if (response.data) {
+        setStaffList(
+          response.data.staff.filter(
+            (staff) => staff.staffDesignation === 'Technician'
+          )
+        );
+        alert("details fetched")
+      } else {
+        alert('Invalid API');
+      }
     } catch (error) {
-      console.error("Error fetching employees:", error);
-      alert("Failed to fetch employee data.");
+      console.error('Error fetching employees:', error);
+      alert('Failed to fetch employee data.');
     }
   };
 
-
-
   useEffect(() => {
     fetchEmployees();
-
   }, []);
 
   // Handle input change
@@ -48,46 +60,53 @@ const AddInhandProduct = () => {
 
     setFormData((prevState) => ({
       ...prevState,
-      [name]: name === "productTypeId" || name === "numberOfProducts" ? Number(value) : value,
+      [name]:
+        name === 'productTypeId' || name === 'numberOfProducts'
+          ? Number(value)
+          : value,
     }));
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.staffId || !formData.assignTime || !formData.productTypeId || !formData.numberOfProducts) {
-      alert("Please fill all fields");
+    if (
+      !formData.staffId ||
+      !formData.assignTime ||
+      !formData.productTypeId ||
+      !formData.numberOfProducts
+    ) {
+      alert('Please fill all fields');
       return;
     }
 
     try {
       const response = await ApiService.post(
-        "/product-assign/handleProductDetails",
+        '/product-assign/handleProductDetails',
         {
           ...formData,
           productTypeId: Number(formData.productTypeId),
           numberOfProducts: Number(formData.numberOfProducts),
           companyCode: initialAuthState.companyCode,
-    unitCode: initialAuthState.unitCode,
+          unitCode: initialAuthState.unitCode,
         }
       );
 
-      console.log("Submitting:", response);
-      alert("Product Handover successfully!");
+      console.log('Submitting:', response);
+      alert('Product Handover successfully!');
 
       // Reset Form
       setFormData({
-        staffId: "",
-        assignTime: "",
+        staffId: '',
+        assignTime: '',
         productTypeId: 0,
         numberOfProducts: 0,
       });
     } catch (error) {
-      console.error("Error submitting data:", error);
-      alert("Submission failed.");
+      console.error('Error submitting data:', error);
+      alert('Submission failed.');
     }
   };
-
 
   useEffect(() => {
     fetchProductTypes();
@@ -95,17 +114,18 @@ const AddInhandProduct = () => {
 
   const fetchProductTypes = async () => {
     try {
-      const response = await ApiService.post("/productType/getProductTypeDetails");
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
       if (response.data) {
         setProductTypes(response.data);
-        console.log("qazwsxedc",response.data)
+        console.log('qazwsxedc', response.data);
       } else {
-        console.error("Invalid API response");
+        console.error('Invalid API response');
       }
     } catch (error) {
-      console.error("Error fetching product types:", error);
+      console.error('Error fetching product types:', error);
     } finally {
-      
     }
   };
 
@@ -113,7 +133,6 @@ const AddInhandProduct = () => {
     <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Assign In-Hand Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
         {/* Staff Selection */}
         <div>
           <label className="block text-sm font-medium">Staff</label>
@@ -167,7 +186,9 @@ const AddInhandProduct = () => {
 
         {/* Number of Products */}
         <div>
-          <label className="block text-sm font-medium">Number of Products</label>
+          <label className="block text-sm font-medium">
+            Number of Products
+          </label>
           <input
             type="number"
             name="numberOfProducts"
@@ -179,7 +200,10 @@ const AddInhandProduct = () => {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
+        <button
+          type="submit"
+          className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+        >
           Submit
         </button>
       </form>
