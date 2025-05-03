@@ -148,11 +148,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export default function GroupForm() {
   const location = useLocation();
-  console.log("Location Location",location.state.item);
-  const editData =  location.state.item
-  console.log("Location Location",location.state.item);
+  console.log("Location Location",location?.state?.item);
+  const editData =  location?.state?.item
+  console.log("Location Location",location?.state?.item);
   const [groupName, setGroupName] = useState("");
-  const [under, setUnder] = useState(""); // Changed underGroup to under
+  const [under, setUnder] = useState(""); 
   const [underType, setUnderType] = useState("");
   const [selectedSubType, setSelectedSubType] = useState("");
 
