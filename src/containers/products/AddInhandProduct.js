@@ -6,17 +6,19 @@ const AddInhandProduct = () => {
     staffId: '',
     assignTime: '',
     productTypeId: 0, // Default as number
-    numberOfProducts: 0, // Default as number
+    numberOfProducts: 0,
   });
 
   const [staffList, setStaffList] = useState([]);
   const [productTypes, setProductTypes] = useState([]);
+  const [bulkFile, setBulkFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch Staff List
   const fetchEmployees = async () => {
-    const branchName = 'Vishakapatnam';
+    const branchName = 'Visakhapatnam';
     try {
-      console.log("check")
+      console.log('check');
       const response = await ApiService.post(
         '/dashboards/getTotalStaffDetails',
         {
@@ -26,7 +28,7 @@ const AddInhandProduct = () => {
         }
       );
 
-      console.log("check2")
+      console.log('check2');
 
       console.log(
         'qqqqq',
@@ -40,13 +42,11 @@ const AddInhandProduct = () => {
             (staff) => staff.staffDesignation === 'Technician'
           )
         );
-        alert("details fetched")
       } else {
-        alert('Invalid API');
+        console.log('Failed to fetch employee data.');
       }
     } catch (error) {
       console.error('Error fetching employees:', error);
-      alert('Failed to fetch employee data.');
     }
   };
 
@@ -68,44 +68,96 @@ const AddInhandProduct = () => {
   };
 
   // Handle form submission
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (
+  //     !formData.staffId ||
+  //     !formData.assignTime ||
+  //     !formData.productTypeId
+  //     // !formData.numberOfProducts
+  //   ) {
+  //     alert('Please fill all fields');
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/products/bulk-upload',
+  //       {
+  //         ...formData,
+  //         productTypeId: Number(formData.productTypeId),
+  //         numberOfProducts: Number(formData.numberOfProducts),
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+
+  //     console.log('Submitting:', response);
+  //     alert('Product Handover successfully!');
+
+  //     // Reset Form
+  //     setFormData({
+  //       staffId: '',
+  //       assignTime: '',
+  //       productTypeId: 0,
+  //       numberOfProducts: 0,
+  //     });
+  //   } catch (error) {
+  //     console.error('Error submitting data:', error);
+  //     alert('Submission failed.');
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (
       !formData.staffId ||
       !formData.assignTime ||
-      !formData.productTypeId ||
-      !formData.numberOfProducts
+      !formData.productTypeId
+      // !formData.numberOfProducts
     ) {
-      alert('Please fill all fields');
+      alert('Please fill all required fields.');
       return;
     }
 
+    setIsLoading(true);
+
+    const payload = new FormData();
+    payload.append('staffId', formData.staffId);
+    payload.append('assignTime', formData.assignTime);
+    payload.append('productTypeId', formData.productTypeId);
+    // payload.append('numberOfProducts', formData.numberOfProducts);
+    payload.append('companyCode', initialAuthState.companyCode);
+    payload.append('unitCode', initialAuthState.unitCode);
+
+    if (bulkFile) {
+      payload.append('file', bulkFile);
+    }
+
     try {
-      const response = await ApiService.post(
-        '/product-assign/handleProductDetails',
-        {
-          ...formData,
-          productTypeId: Number(formData.productTypeId),
-          numberOfProducts: Number(formData.numberOfProducts),
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
-
-      console.log('Submitting:', response);
-      alert('Product Handover successfully!');
-
-      // Reset Form
-      setFormData({
-        staffId: '',
-        assignTime: '',
-        productTypeId: 0,
-        numberOfProducts: 0,
+      const response = await ApiService.post('/products/bulk-upload', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
+
+      if (response.status) {
+        alert('Product handover successfully!');
+        // Reset form
+        setFormData({
+          staffId: '',
+          assignTime: '',
+          productTypeId: 0,
+          numberOfProducts: 0,
+        });
+      } else {
+        alert('Submission failed. Please try again.');
+      }
     } catch (error) {
       console.error('Error submitting data:', error);
-      alert('Submission failed.');
+      alert('Submission failed. Please check your input.');
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -129,6 +181,13 @@ const AddInhandProduct = () => {
     }
   };
 
+  const handleBulkFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setBulkFile(selectedFile);
+    }
+  };
+
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Assign In-Hand Product</h2>
@@ -145,8 +204,8 @@ const AddInhandProduct = () => {
           >
             <option value="">Select Staff</option>
             {staffList.map((staff) => (
-              <option key={staff.staffId} value={staff.staffId}>
-                {staff.staffId}
+              <option key={staff.staffId} value={staff.id}>
+                {staff.staffName}
               </option>
             ))}
           </select>
@@ -196,6 +255,15 @@ const AddInhandProduct = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded-md"
             required
+          />
+        </div>
+
+        <div>
+          <label className="font-semibold mb-1 block">Bulk Upload File</label>
+          <input
+            type="file"
+            accept=".csv, .xlsx, .xls"
+            onChange={handleBulkFileChange}
           />
         </div>
 
