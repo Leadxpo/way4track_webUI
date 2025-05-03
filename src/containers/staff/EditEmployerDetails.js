@@ -78,7 +78,7 @@ const EditEmployerDetails = () => {
       // { label: "Staff ID", name: "staffId", type: "text" },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
-      { label: 'Designation', name: 'designation', type: 'text' },
+      { label: 'Designation', name: 'designation', type: 'select' },
 
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
       { label: 'Office Email', name: 'officeEmail', type: 'email' },
@@ -208,15 +208,32 @@ const EditEmployerDetails = () => {
       {inputFields.map(({ label, name, type }) => (
         <div className="mb-4" key={name}>
           <label className="block font-medium mb-1">{label}</label>
-          <input
-            type={type}
-            name={name}
-            value={data[name]}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
+          {type === 'select' && name === 'designation' ? (
+            <select
+              name={name}
+              value={data[name]}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">Select {label}</option>
+              {designations.map((designation) => (
+                <option key={designation.id} value={designation.name}>
+                  {designation.designation}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type={type}
+              name={name}
+              value={data[name]}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            />
+          )}
         </div>
       ))}
+
       {/* Branch Dropdown */}
       <div className="mb-4">
         <label className="block font-medium mb-1">Branch Name</label>
