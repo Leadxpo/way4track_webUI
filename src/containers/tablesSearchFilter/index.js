@@ -86,6 +86,32 @@ const TableWithSearchFilter = ({
     }
   }, [searchID, searchName, clientData?.branchName]);
 
+  // const getHiringSearchDetails = useCallback(async () => {
+  //   try {
+  //     const response = await ApiService.post('/hiring/getHiringSearchDetails', {
+  //       hiringId: searchID,
+  //       candidateName: searchName,
+  //       status: status,
+  //       companyCode: initialAuthState?.companyCode,
+  //       unitCode: initialAuthState?.unitCode,
+  //     });
+  // console.log("jkl",response);
+  //     // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
+  //     if (response.status) {
+  //       console.log(response.data, 'Response Data'); // Log data to verify it
+  //       const filteredData = response.data.map(
+  //         ({ qualifications, ...rest }) => rest
+  //       );
+  //       setFilteredData(filteredData);
+  //     } else {
+  //       alert(response.data.message || 'Failed to fetch client details.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching client details:', error);
+  //     alert('Failed to fetch client details.');
+  //   }
+  // }, [searchID, searchName, status]);
+
   const getHiringSearchDetails = useCallback(async () => {
     try {
       const response = await ApiService.post('/hiring/getHiringSearchDetails', {
@@ -95,13 +121,12 @@ const TableWithSearchFilter = ({
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-
-      // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
+  
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        const filteredData = response.data.map(
-          ({ qualifications, ...rest }) => rest
-        );
+        const filteredData = response.data.map(({ qualifications, ...rest }) => ({
+          ...rest,
+          dateOfUpload: rest.dateOfUpload?.split('T')[0], // Extract just the date
+        }));
         setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -110,7 +135,9 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName, status]);
+  }, [searchID, searchName, status, initialAuthState]);
+  
+ 
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {

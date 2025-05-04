@@ -129,6 +129,7 @@ const AddRequestRaise = () => {
         payload
       );
       if (response.status) {
+        alert('Request saved successfully');
         navigate('/requests');
       } else {
         alert('failed to raise request');

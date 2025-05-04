@@ -171,6 +171,7 @@ const EditRequestRaise = () => {
         payload
       );
       if (response.status) {
+        alert('Request updated successfully');
         navigate('/requests');
       } else {
         alert('failed to raise request');
