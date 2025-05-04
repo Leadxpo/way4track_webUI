@@ -113,7 +113,7 @@ const EditAsset = () => {
             ? 'Asset updated successfully!'
             : 'Asset added successfully!'
         );
-        navigate('/asset-details');
+        navigate('/asserts');
       } else {
         alert('Failed to save asset details. Please try again.');
       }

@@ -233,7 +233,7 @@ export const menuOptions = {
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'warehouse manager': [
+  'warehouse': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -431,7 +431,7 @@ export const menuOptions = {
     },
     {
       name: 'Performance',
-      icon: <img src="./performance.png" />,
+      icon: <img src="./appointments.png" />,
       route: '/performance',
     },
   ],

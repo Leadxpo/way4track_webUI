@@ -12,7 +12,7 @@ const EditRequestRaise = () => {
   const [branch, setBranch] = useState([]);
 
   const requestData = location.state?.requestDetails || {};
-  console.log("rrrr eee tttt",requestData);
+  console.log("rrr edit",requestData);
   
 
   const [formData, setFormData] = useState({
@@ -247,9 +247,11 @@ const EditRequestRaise = () => {
           requestFor: data.requestFor || '',
           fromDate: data?.fromDate || '',
           toDate: data?.toDate || '',
-          requestTo: "",
-          branch: "",
-
+          requestTo:data?.requestTo.id
+          ,
+          branch:data?.branchId
+          .id,
+          
           products: data.products || '',
 
         });

@@ -191,7 +191,7 @@ const TableWithDateFilter = ({
         '/requests/getRequestsBySearch',
         requestBody
       );
-  console.log("yyyyyy",response);
+  console.log("yyyyyy request",response);
       // Check if response contains data and update state
       if (response?.length) {
         setFilteredData(response); // Ensure you're setting the correct data
@@ -477,7 +477,7 @@ const TableWithDateFilter = ({
                 Select a Branch
               </option>
               {branches.map((branch) => (
-                <option key={branch.id} value={branch.branchName}>
+                <option key={branch.id} value={branch.id}>
                   {branch.branchName}
                 </option>
               ))}

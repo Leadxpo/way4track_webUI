@@ -118,8 +118,8 @@ const AddRequestRaise = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor:formData.requestFor,
-        // fromDate:formData.fromDate,
-        // toDate:formData.toDate,
+        fromDate:formData.fromDate,
+        toDate:formData.toDate,
       };
 
 
