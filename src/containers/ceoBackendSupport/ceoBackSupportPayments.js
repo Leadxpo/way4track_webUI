@@ -450,7 +450,7 @@ const CeoBackendSupportPayments = () => {
                   key={i}
                   className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
                 >
-                  {card.staffName ? (
+                  {card.staffName || card.subDealerName ? (
                     <div className="flex flex-col h-full justify-between">
                       <div className="flex justify-between items-center mb-2">
                         <span

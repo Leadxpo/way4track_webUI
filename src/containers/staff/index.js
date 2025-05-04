@@ -50,6 +50,8 @@ const Staff = () => {
 
     // 'Branch Name',
   ];
+
+  console.log(columns, 'Staff table columns');
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -348,8 +350,13 @@ const Staff = () => {
         showEdit={true}
         showDetails={true}
         onDetails={handleMoreDetails}
-        data={Array.isArray(profiles) ? [...profiles]
-          .sort((a, b) => String(a.staffId).localeCompare(String(b.staffId))) : []}
+        data={
+          Array.isArray(profiles)
+            ? [...profiles].sort((a, b) =>
+                String(a.staffId).localeCompare(String(b.staffId))
+              )
+            : []
+        }
       />
       {/* )}{' '} */}
     </div>
@@ -462,10 +469,10 @@ const Table = ({
                 <tr
                   key={rowIndex}
                   className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                  onClick={() => {
-                    setSelectedRowData(row);
-                    setShowRowPopup(true);
-                  }}
+                  // onClick={() => {
+                  //   setSelectedRowData(row);
+                  //   setShowRowPopup(true);
+                  // }}
                 >
                   {columns.map((column, colIndex) => (
                     <td
@@ -474,7 +481,15 @@ const Table = ({
                         checkColumn(column)
                           ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
                           : ''
-                      }`}
+                      } ${column === 'Staff ID' ? 'cursor-pointer hover:underline text-blue-600 hover:bg-blue-500 hover:text-white' : ''}`}
+                      onClick={
+                        column === 'Staff ID'
+                          ? () => {
+                              setSelectedRowData(row);
+                              setShowRowPopup(true);
+                            }
+                          : undefined
+                      }
                     >
                       {row[column] || '-'}
                     </td>
