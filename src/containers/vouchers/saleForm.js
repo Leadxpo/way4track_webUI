@@ -26,6 +26,7 @@ const SaleForm = () => {
       {
         productName: '',
         type: '',
+        description: '',
         quantity: null,
         rate: null,
         totalCost: null,
@@ -138,6 +139,7 @@ const SaleForm = () => {
         {
           productName: '',
           type: '',
+          description: '',
           quantity: null,
           rate: null,
           totalCost: null,
@@ -559,6 +561,16 @@ const SaleForm = () => {
                 <option value="ServiceSales">ServiceSales</option>
                 <option value="Others">Others</option>
               </select>
+
+              <input
+                placeholder="Description:"
+                name="description"
+                value={entry.description}
+                onChange={(e) =>
+                  handleEntryChange(index, 'description', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
 
               <input
                 type="number"
