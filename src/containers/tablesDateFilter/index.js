@@ -166,6 +166,51 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
+  // const getRequestsData = useCallback(async () => {
+  //   try {
+  //     const requestBody = {
+  //       companyCode: initialAuthState?.companyCode,
+  //       unitCode: initialAuthState?.unitCode,
+  //       role: localStorage.getItem('role'),
+  //     };
+
+  //     // Add staffId if role is Technician or Sales Man
+  //     if (
+  //       requestBody.role === 'Technician' ||
+  //       requestBody.role === 'Sales Man'
+  //     ) {
+  //       requestBody.staffId = localStorage.getItem('userId');
+  //     }
+
+  //     // Add branchName only if defined
+  //     if (requestData.branchName) {
+  //       requestBody.branchName = requestData.branchName;
+  //     }
+
+  //     const response = await ApiService.post(
+  //       '/requests/getRequestsBySearch',
+  //       requestBody
+  //     );
+  // console.log("yyyyyy request",response);
+  //     // Check if response contains data and update state
+  //     if (response?.length) {
+  //       setFilteredData(response); // Ensure you're setting the correct data
+  //     } else {
+  //       console.warn(
+  //         'Request failed:',
+  //         response?.data?.message || 'No data found'
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching request details:', error);
+  //     // Optionally, handle errors by setting an error state or notifying the user
+  //   }
+  // }, [
+  //   requestData.branchName,
+  //   initialAuthState?.companyCode,
+  //   initialAuthState?.unitCode,
+  // ]);
+  
   const getRequestsData = useCallback(async () => {
     try {
       const requestBody = {
@@ -173,28 +218,34 @@ const TableWithDateFilter = ({
         unitCode: initialAuthState?.unitCode,
         role: localStorage.getItem('role'),
       };
-
-      // Add staffId if role is Technician or Sales Man
+  
       if (
         requestBody.role === 'Technician' ||
         requestBody.role === 'Sales Man'
       ) {
         requestBody.staffId = localStorage.getItem('userId');
       }
-
-      // Add branchName only if defined
+  
       if (requestData.branchName) {
         requestBody.branchName = requestData.branchName;
       }
-
+  
       const response = await ApiService.post(
         '/requests/getRequestsBySearch',
         requestBody
       );
-  console.log("yyyyyy request",response);
-      // Check if response contains data and update state
+  
+      console.log("yyyyyy request", response);
+  
       if (response?.length) {
-        setFilteredData(response); // Ensure you're setting the correct data
+        const cleanedData = response.map((item) => ({
+          requestNumber: item.requestNumber,
+          branchName: item.branchName,
+          requestType: item.requestType,
+          status: item.status,
+        }));
+  
+        setFilteredData(cleanedData);
       } else {
         console.warn(
           'Request failed:',
@@ -203,14 +254,12 @@ const TableWithDateFilter = ({
       }
     } catch (error) {
       console.error('Error fetching request details:', error);
-      // Optionally, handle errors by setting an error state or notifying the user
     }
   }, [
     requestData.branchName,
     initialAuthState?.companyCode,
     initialAuthState?.unitCode,
   ]);
-
   const getPaymentsData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getPaymentData', {
