@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import * as XLSX from 'xlsx';
 
 const AddInhandProduct = () => {
   const [formData, setFormData] = useState({
@@ -188,6 +189,43 @@ const AddInhandProduct = () => {
     }
   };
 
+  const generateExcel = () => {
+    const worksheetData = [
+      {
+        'Product Name': '',
+        'IMEI Number': '',
+        'SIM Number': '',
+        'Date Of Purchase': '',
+        'Vendor Name': '',
+        'Vendor Email ID': '',
+        'Vendor Address': '',
+        'Supplier Name': '',
+        'Serial Number': '',
+        'Primary No': '',
+        'Secondary No': '',
+        'Primary Network': '',
+        'Secondary Network': '',
+        'Category Name': '',
+        Price: '',
+        'Product Description': '',
+        'Company Code': '',
+        'Vendor Phone Number': '',
+        'Device Model': '',
+        'Unit Code': '',
+        'SIM Status': '',
+        'Plan Name': '',
+        'Remarks 1': '',
+        Quantity: '',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sample Format');
+
+    XLSX.writeFile(workbook, 'SampleProductXlFormat.xlsx');
+  };
+
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Assign In-Hand Product</h2>
@@ -235,16 +273,18 @@ const AddInhandProduct = () => {
             required
           >
             <option value="">Select Product</option>
-            {productTypes.map((product) => (
-              <option key={product.id} value={product.id}>
-                {product.name}
-              </option>
-            ))}
+            {productTypes
+              .filter((type) => type.type === 'PRODUCT')
+              .map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.name}
+                </option>
+              ))}
           </select>
         </div>
 
         {/* Number of Products */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium">
             Number of Products
           </label>
@@ -256,7 +296,14 @@ const AddInhandProduct = () => {
             className="w-full p-2 border rounded-md"
             required
           />
-        </div>
+        </div> */}
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          onClick={generateExcel}
+        >
+          Download Sample format
+        </button>
 
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>

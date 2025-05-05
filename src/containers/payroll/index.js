@@ -12,12 +12,13 @@ const Payroll = () => {
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split('T')[0]
   );
   const location = useLocation();
   const navigate = useNavigate();
-  const fetchPayrollData = async (branchName = "All") => {
-   console.log("selected data : ",selectedDate) ;
+  const fetchPayrollData = async (branchName = 'All') => {
+    console.log('selected data : ', selectedDate);
     try {
       // const payload = {
       //   companyCode: initialAuthState.companyCode,
@@ -31,30 +32,29 @@ const Payroll = () => {
         date: selectedDate,
       };
 
-      if (branchName !== "All") {
+      if (branchName !== 'All') {
         payload.branch = branchName;
       }
       const res = await ApiService.post('/dashboards/payRoll', payload);
       // const res = await ApiService.post("/PAYROLL/getPayRollDetails", payload);
       if (res.status) {
-
-        console.log("Formatted Payroll Data:", res.data);
+        console.log('Formatted Payroll Data:', res.data);
 
         setPayrollData(res.data);
-        if (branchName === "All") {
+        if (branchName === 'All') {
           const uniqueBranches = Array.from(
             new Set(res.data.map((b) => b.branch).filter(Boolean)) // Filter out null values
           ).map((branch) => ({
             branchName: branch,
           }));
-          setBranches([{ branchName: "All" }, ...uniqueBranches]);
+          setBranches([{ branchName: 'All' }, ...uniqueBranches]);
         }
       } else {
         // setPayrollData([]);
-        if (branchName === "All") setBranches([{ branchName: "All" }]);
+        if (branchName === 'All') setBranches([{ branchName: 'All' }]);
       }
     } catch (err) {
-      console.error("Failed to fetch payroll data:", err);
+      console.error('Failed to fetch payroll data:', err);
       setPayrollData([]);
     }
   };
@@ -63,28 +63,27 @@ const Payroll = () => {
     fetchPayrollData(selectedBranch);
   }, [selectedBranch, selectedDate]);
 
-
   useEffect(() => {
     fetchPayrollData();
   }, []);
   // Columns for the table
   const columns = payrollData.length
     ? Object.keys(payrollData[0]).map((key, index) => ({
-      title: typeof key === "string" ? formatString(key) : key,  // Ensure key is a string
-      dataIndex: key, // Use key instead of index for proper column mapping
-    }))
+        title: typeof key === 'string' ? formatString(key) : key, // Ensure key is a string
+        dataIndex: key, // Use key instead of index for proper column mapping
+      }))
     : [];
   useEffect(() => {
     fetchPayrollData(activeTab);
   }, [activeTab]);
 
   const payrollItem = {
-    staffId: "EMP123",
-    staffName: "John Doe",
-    designation: "Software Engineer",
-    staffPhoto: "https://via.placeholder.com/100",
-    branch: "Mumbai",
-    salaryStatus: "Paid",
+    staffId: 'EMP123',
+    staffName: 'John Doe',
+    designation: 'Software Engineer',
+    staffPhoto: 'https://via.placeholder.com/100',
+    branch: 'Mumbai',
+    salaryStatus: 'Paid',
     monthDays: 30,
     presentDays: 28,
     leaveDays: 2,
@@ -102,8 +101,10 @@ const Payroll = () => {
   const handleTabClick = (branch) => {
     setActiveTab(branch);
     setSelectedBranch(branch);
-    fetchPayrollData(branch);  // Immediately fetch new data when a tab is clicked
+    // fetchPayrollData(branch);
   };
+
+  console.log(activeTab, 'active Tab');
 
   // Handle row edit
   const handleChangePayroll = (row) => {
@@ -120,14 +121,52 @@ const Payroll = () => {
     fetchPayrollData(selectedBranch, selectedDate);
   };
 
-   // Define the column order explicitly
-   const columnOrder = [
-    "staffId", "staffName", "branch", "designation", "year", "monthDays", "presentDays", "month",  
-    "actualSalary", "leaveDays", "lateDays", "lateDeductions","totalLateMinutes", "carryForwardLeaves", "leaveEncashment", "perDaySalary", "perHourSalary", 
-    "plBikeNeedToPay", "plBikeAmount","totalEarlyMinutes", "totalOTHours", "OTAmount", "daysOutLate6HoursOrMore", "extraHalfSalary", "incentives","foodAllowance",
-    "ActualEarnedMonthlySalary", "grossSalary", "ESIC_Employee", "ESIC_Employer", "PF_Employee","PF_Employer1","PF_Employer2","professionalTax", "netSalary", "Advance",
-    "paybleAmount","salaryStatus"
-];
+  // Define the column order explicitly
+  const columnOrder = [
+    'staffId',
+    'staffName',
+    'branch',
+    'designation',
+    'year',
+    'monthDays',
+    'presentDays',
+    'month',
+    'actualSalary',
+    'leaveDays',
+    'lateDays',
+    'lateDeductions',
+    'totalLateMinutes',
+    'carryForwardLeaves',
+    'leaveEncashment',
+    'perDaySalary',
+    'perHourSalary',
+    'plBikeNeedToPay',
+    'plBikeAmount',
+    'totalEarlyMinutes',
+    'totalOTHours',
+    'OTAmount',
+    'daysOutLate6HoursOrMore',
+    'extraHalfSalary',
+    'incentives',
+    'foodAllowance',
+    'ActualEarnedMonthlySalary',
+    'grossSalary',
+    'ESIC_Employee',
+    'ESIC_Employer',
+    'PF_Employee',
+    'PF_Employer1',
+    'PF_Employer2',
+    'professionalTax',
+    'netSalary',
+    'Advance',
+    'paybleAmount',
+    'salaryStatus',
+  ];
+
+  const filteredData =
+    selectedBranch === 'All'
+      ? payrollData
+      : payrollData.filter((row) => row.branch === selectedBranch);
   return (
     <div>
       {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
@@ -137,10 +176,11 @@ const Payroll = () => {
           <button
             key={branch.branchName} // Use branchName as the key
             onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
-            className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
-              ? 'border-b-2 border-black text-black'
-              : 'text-gray-500'
-              }`}
+            className={`pb-2 text-sm font-semibold ${
+              activeTab === branch.branchName
+                ? 'border-b-2 border-black text-black'
+                : 'text-gray-500'
+            }`}
           >
             {branch.branchName}
           </button>
@@ -165,54 +205,72 @@ const Payroll = () => {
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 whitespace-nowrap scrollbar-hide">
         <div className='className="overflow-hidden"'>
-
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-blue-500 text-white text-left">
-              {payrollData.length > 0 &&
-                columnOrder.map((key) => (
-                  <th key={key} className="px-4 py-3 border capitalize">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </th>
-                ))}
-              <th className="px-4 py-3 border">Action</th>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-blue-500 text-white text-left">
+                {payrollData.length > 0 &&
+                  columnOrder.map((key) => (
+                    <th key={key} className="px-4 py-3 border capitalize">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </th>
+                  ))}
+                <th className="px-4 py-3 border">Action</th>
               </tr>
-          </thead>
-          <tbody>
-            {payrollData.length > 0 ? (
-              payrollData.map((row, rowIndex) => (
-                <tr
-                  key={rowIndex} 
-                  className={`border ${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
-                >
-                  {columnOrder.map((value, colIndex) => {
-                    if (value==="ActualEarnedMonthlySalary") {
-                      row["ActualEarnedMonthlySalary"]=parseInt(row["incentives"])+parseInt(row["foodAllowance"])+parseInt(row["OTAmount"])+parseInt(row["extraHalfSalary"]+parseInt(row["plBikeAmount"]));
-                    }
-                    return(
-                    <td style={{textWrap:'wrap'}} key={colIndex} className="px-4 py-2 border text-center">
-                      {row[value] ?? "N/A"}
+            </thead>
+            <tbody>
+              {filteredData.length > 0 ? (
+                filteredData.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className={`border ${rowIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+                  >
+                    {columnOrder.map((value, colIndex) => {
+                      if (value === 'ActualEarnedMonthlySalary') {
+                        row['ActualEarnedMonthlySalary'] =
+                          parseInt(row['incentives']) +
+                          parseInt(row['foodAllowance']) +
+                          parseInt(row['OTAmount']) +
+                          parseInt(
+                            row['extraHalfSalary'] +
+                              parseInt(row['plBikeAmount'])
+                          );
+                      }
+                      return (
+                        <td
+                          style={{ textWrap: 'wrap' }}
+                          key={colIndex}
+                          className="px-4 py-2 border text-center"
+                        >
+                          {row[value] ?? 'N/A'}
+                        </td>
+                      );
+                    })}
+                    <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
+                      <button
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                        onClick={() =>
+                          navigate('/payroll-details', {
+                            state: { paySlipDetails: row },
+                          })
+                        }
+                      >
+                        View
+                      </button>
                     </td>
-                  )})}
-                  <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
-                    <button
-                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                      onClick={() => navigate("/payroll-details", { state: { paySlipDetails: row } })}
-                    >
-                      View
-                    </button>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={Object.keys(payrollData[0] || {}).length + 1}
+                    className="text-center py-4"
+                  >
+                    No data available
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={Object.keys(payrollData[0] || {}).length + 1} className="text-center py-4">
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

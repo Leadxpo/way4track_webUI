@@ -483,14 +483,16 @@ const AddEditProductAssign = () => {
                 onChange={handleProductChange}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               >
-                <option value="" disabled>
+                <option value="">
                   Select a product type
                 </option>
-                {product.map((pa) => (
-                  <option key={pa.id} value={pa.id}>
-                    {pa.name}
-                  </option>
-                ))}
+                {product
+                  .filter((pa) => pa.type === 'PRODUCT')
+                  .map((pa) => (
+                    <option key={pa.id} value={pa.id}>
+                      {pa.name}
+                    </option>
+                  ))}
               </select>
             </div>
           )}

@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-
-
+import React, { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 
 const salaryStatusOptions = [
   { value: 'Paid', label: 'Paid' },
@@ -10,7 +8,9 @@ const salaryStatusOptions = [
 ];
 
 const EditPayroll = ({ initialData, onClose, onSave }) => {
-  const { control, handleSubmit, watch, setValue } = useForm({ defaultValues: initialData });
+  const { control, handleSubmit, watch, setValue } = useForm({
+    defaultValues: initialData,
+  });
   const formData = watch();
 
   // useEffect(() => {
@@ -41,57 +41,63 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
   // }, [formData, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="p-4 bg-white shadow rounded-lg">
+    <form
+      onSubmit={handleSubmit(onSave)}
+      className="p-4 bg-white shadow rounded-lg"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* "monthDays",          */}
         {[
-          "monthDays",
-          "presentDays",
-          "actualSalary",
-          "leaveDays",
-          "nonPaidLeave",
-          "totalLateHours",
-          "lateDeductions",
-          "carryForwardLeaves",
-          "leaveEncashment",
-          "plBikeNeedToPay",
-          "plBikeAmount",
-          "totalOTHours",
-          "OTAmount",
-          "fullDayOTs",
-          "fullDayOTsAmount",
-          "salesAmount",
-          "incentives",
-          "foodAllowance",
-          "ActualEarnedMonthlySalary",
-          "grossSalary",
-          "ESIC_Employee",
-          "ESIC_Employer",
-          "pfBasicWages",
-          "PF_Employee",
-          "PF_Employer1",
-          "PF_Employer2",
-          "professionalTax",
-          "netSalary",
-          "otherDeductions",
-          "adavnceAmount",
-          "payableAmount",
-          "salaryDate",
-          "salaryStatus",
-        ]
-          .map((field) => (
-            <Controller
-              key={field}
-              name={field}
-              control={control}
-              render={({ field }) => (
-                <div>
-                  <p style={{ textTransform: 'capitalize' }}>{field.name}</p>
-                  <input {...field} placeholder={field.name.replace(/([A-Z])/g, " $1")}  className="w-full p-2 border rounded-md" />
-                </div>
-              )}
-            />
-          ))}
+          'monthDays',
+          'presentDays',
+          'actualSalary',
+          'leaveDays',
+          'nonPaidLeave',
+          'totalLateHours',
+          'lateDeductions',
+          'carryForwardLeaves',
+          'leaveEncashment',
+          'plBikeNeedToPay',
+          'plBikeAmount',
+          'totalOTHours',
+          'OTAmount',
+          'fullDayOTs',
+          'fullDayOTsAmount',
+          'salesAmount',
+          'incentives',
+          'foodAllowance',
+          'ActualEarnedMonthlySalary',
+          'grossSalary',
+          'ESIC_Employee',
+          'ESIC_Employer',
+          'pfBasicWages',
+          'PF_Employee',
+          'PF_Employer1',
+          'PF_Employer2',
+          'professionalTax',
+          'netSalary',
+          'otherDeductions',
+          'adavnceAmount',
+          'payableAmount',
+          'salaryDate',
+          'salaryStatus',
+        ].map((field) => (
+          <Controller
+            key={field}
+            name={field}
+            control={control}
+            render={({ field }) => (
+              <div>
+                <p style={{ textTransform: 'capitalize' }}>{field.name}</p>
+                <input
+                  {...field}
+                  placeholder={field.name.replace(/([A-Z])/g, ' $1')}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            )}
+          />
+        ))}
 
         <Controller
           name="salaryStatus"
@@ -100,7 +106,9 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           rules={{ required: 'Salary status is required' }}
           render={({ field }) => (
             <select {...field}>
-              <option value="" disabled>Select salary status</option>
+              <option value="" disabled>
+                Select salary status
+              </option>
               {salaryStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -116,16 +124,27 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           render={() => (
             <div>
               <p style={{ textTransform: 'capitalize' }}>Remark</p>
-              <input placeholder="Remark" style={{ height: 100 }} className="w-full p-2 border rounded-md" />
+              <input
+                placeholder="Remark"
+                style={{ height: 100 }}
+                className="w-full p-2 border rounded-md"
+              />
             </div>
           )}
         />
       </div>
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded-md">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 px-4 py-2 rounded-md"
+        >
           Cancel
         </button>
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md" >
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded-md"
+        >
           Save
         </button>
       </div>

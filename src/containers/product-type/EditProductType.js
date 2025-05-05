@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
-import ApiService, { initialAuthState } from "../../services/ApiService";
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 export default function EditProductType() {
   const location = useLocation();
@@ -8,8 +8,11 @@ export default function EditProductType() {
   const productType = location.state?.productType;
   console.log("productType ---->productType",productType);
   const [formData, setFormData] = useState({
-    name: "",
-   type:""
+    name: '',
+    type: '',
+    id: null,
+    // photo: null,
+    // image: null,
   });
 
   useEffect(() => {
@@ -28,22 +31,26 @@ export default function EditProductType() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data ={name:formData.name,
-      companyCode: initialAuthState.companyCode,unitCode:initialAuthState.unitCode,type:formData.type,id:productType.id
-    };
+
+    const data = new FormData();
+    data.append('id', productType.id);
+    data.append('name', formData.name);
+    data.append('companyCode', initialAuthState.companyCode);
+    data.append('unitCode', initialAuthState.unitCode);
+    data.append('type', formData.type);
+
+    // data.append('photo', formData.photo);
+    // data.append('image', formData.image);
+
     try {
-      const res=await ApiService.post("/productType/handleProductTypeDetails", data, {
-        headers: { 'Content-Type': 'application/json' }
+      await ApiService.post('/productType/handleProductTypeDetails', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      if(res.status){
-        alert("Product Type updated successfully!");
-        navigate("/product-type");
-      }
-      
-      
+      alert('Product Type updated successfully!');
+      navigate('/product-type');
     } catch (error) {
-      console.error("Error updating product type:", error);
-      alert("Failed to update product type.");
+      console.error('Error updating product type:', error);
+      alert('Failed to update product type.');
     }
   };
 
@@ -77,6 +84,51 @@ export default function EditProductType() {
             <option value="APPLICATION">Application</option>
           </select>
         </div>
+
+        {/* <div>
+          <label className="block text-sm font-medium">Description</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded-md"
+          ></textarea>
+        </div> */}
+
+        {/* <div>
+          <label className="block text-sm font-medium">Product Photo</label>
+          <input type="file" name="photo" value={formData.photo} onChange={handleFileChange} accept="image/*" className="w-full" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Blog Image</label>
+          <input type="file" name="image" value={formData.image} onChange={handleFileChange} accept="image/*" className="w-full" />
+        </div> */}
+
+        {/* <div>
+          <label className="block text-sm font-medium">Product Photo</label>
+
+          <input
+            type="file"
+            name="photo"
+            onChange={handleFileChange}
+            accept="image/*"
+            className="w-full"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Blog Image</label>
+
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            accept="image/*"
+            className="w-full"
+          />
+        </div> */}
 
         <button
           type="submit"

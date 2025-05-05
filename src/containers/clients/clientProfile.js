@@ -8,7 +8,7 @@ const ClientProfile = () => {
   console.log(location.state?.clientDetails, ':::::::');
 
   console.log(clientDetailsFromState, ':::::::');
-  const [clientDetails, setClientDetails] = useState([]);
+  const [clientDetails, setClientDetails] = useState({});
   const [clientDetailsData, setClientDetailsData] = useState([]);
   const [clientSearchDetailsData, setClientSearchDetailsData] = useState([]);
   console.log(clientDetails, 'clientDetails');
@@ -24,7 +24,6 @@ const ClientProfile = () => {
             unitCode: initialAuthState.unitCode,
           }
         );
-        console.log('Client Details Data:', response.data.data);
         setClientDetailsData(
           Array.isArray(response.data.data) ? response.data.data : []
         );
@@ -47,11 +46,9 @@ const ClientProfile = () => {
         if (response.status) {
           const client = response.data;
           setClientDetails({
-            ...client,
             name: client.name,
             phoneNumber: client.phoneNumber,
             email: client.email,
-            branch: client.branch.branchName,
             dob: client.dob,
             address: client.address,
             gstNumber: client.gstNumber,
@@ -80,9 +77,9 @@ const ClientProfile = () => {
           '/technician/getClientDataForTablePhoneNumber',
           payload
         );
-        console.log('Client Details search Data:', response.data.data);
+        console.log('Client Details search Data:', response.data);
         setClientSearchDetailsData(
-          Array.isArray(response.data.data) ? response.data.data : []
+          Array.isArray(response.data) ? response.data : []
         );
       } catch (error) {
         console.error('Error fetching client details data:', error);
@@ -112,19 +109,19 @@ const ClientProfile = () => {
             Phone number : {clientDetails.phoneNumber}
           </p>
           <p className="text-gray-800">Email : {clientDetails.email}</p>
-          <p className="text-gray-800">
+          {/* <p className="text-gray-800">
             Customer Branch : {clientDetails.branch}
-          </p>
+          </p> */}
           <p className="text-gray-800">
             GST Number : {clientDetails.gstNumber}
           </p>
-          <p className="text-gray-800">Date of Birth : {clientDetails.dob}</p>
+          <p className="text-gray-800">Joining Date : {clientDetails.joiningDate}</p>
           <p className="text-gray-800">Address : {clientDetails.address}</p>
         </div>
       </div>
 
       {/* Client Pitchers Table */}
-      <p className="font-bold text-xl">Customer Pitchers</p>
+      <p className="font-bold text-xl">Customer Purchases</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
@@ -139,24 +136,24 @@ const ClientProfile = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(clientDetailsData) &&
-            clientDetailsData.length > 0 ? (
-              clientDetailsData.map((pitcher, index) => (
+            {Array.isArray(clientSearchDetailsData) &&
+            clientSearchDetailsData.length > 0 ? (
+              clientSearchDetailsData.map((purchase, index) => (
                 <tr
                   key={index}
                   className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                 >
-                  <td className="py-2 px-4 text-center">{pitcher.workId}</td>
+                  <td className="py-2 px-4 text-center">{purchase.workId}</td>
                   <td className="py-2 px-4 text-center">
-                    {pitcher.productType}
+                    {purchase.productType}
                   </td>
                   <td className="py-2 px-4 text-center">
-                    {pitcher.vehicleNumber}
+                    {purchase.vehicleNumber}
                   </td>
-                  <td className="py-2 px-4 text-center">{pitcher.quantity}</td>
-                  <td className="py-2 px-4 text-center">{pitcher.amount}</td>
+                  <td className="py-2 px-4 text-center">{purchase.quantity}</td>
+                  <td className="py-2 px-4 text-center">{purchase.paidAmount}</td>
                   <td className="py-2 px-4 text-center">
-                    {pitcher.paymentStatus}
+                    {purchase.paymentStatus}
                   </td>
                   <td className="py-2 px-4 text-center">View</td>
                 </tr>
