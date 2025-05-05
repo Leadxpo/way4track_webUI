@@ -41,6 +41,8 @@ const TableWithDateFilter = ({
   const requestData = location.state?.requestData || {};
   const [columnNames, setColumnNames] = useState([]);
   const [branchFilter, setBranchFilter] = useState('');
+  const [requestList, setRequestList] = useState([]);
+  
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -166,51 +168,7 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
-  // const getRequestsData = useCallback(async () => {
-  //   try {
-  //     const requestBody = {
-  //       companyCode: initialAuthState?.companyCode,
-  //       unitCode: initialAuthState?.unitCode,
-  //       role: localStorage.getItem('role'),
-  //     };
-
-  //     // Add staffId if role is Technician or Sales Man
-  //     if (
-  //       requestBody.role === 'Technician' ||
-  //       requestBody.role === 'Sales Man'
-  //     ) {
-  //       requestBody.staffId = localStorage.getItem('userId');
-  //     }
-
-  //     // Add branchName only if defined
-  //     if (requestData.branchName) {
-  //       requestBody.branchName = requestData.branchName;
-  //     }
-
-  //     const response = await ApiService.post(
-  //       '/requests/getRequestsBySearch',
-  //       requestBody
-  //     );
-  // console.log("yyyyyy request",response);
-  //     // Check if response contains data and update state
-  //     if (response?.length) {
-  //       setFilteredData(response); // Ensure you're setting the correct data
-  //     } else {
-  //       console.warn(
-  //         'Request failed:',
-  //         response?.data?.message || 'No data found'
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching request details:', error);
-  //     // Optionally, handle errors by setting an error state or notifying the user
-  //   }
-  // }, [
-  //   requestData.branchName,
-  //   initialAuthState?.companyCode,
-  //   initialAuthState?.unitCode,
-  // ]);
-  
+ 
   const getRequestsData = useCallback(async () => {
     try {
       const requestBody = {
@@ -235,16 +193,20 @@ const TableWithDateFilter = ({
         requestBody
       );
   
-      console.log("yyyyyy request", response);
+      console.log("yyyyyy request request raiseeee", response);
   
       if (response?.length) {
         const cleanedData = response.map((item) => ({
           requestNumber: item.requestNumber,
           branchName: item.branchName,
+          branchId:item.req_branch_id,
           requestType: item.requestType,
           status: item.status,
+
         }));
-  
+
+        console.log(";;;;;",cleanedData);
+        setRequestList(cleanedData);
         setFilteredData(cleanedData);
       } else {
         console.warn(
@@ -376,15 +338,17 @@ const TableWithDateFilter = ({
   };
 
   const handleBranchFilter = (e) => { 
-    const selectedBranch = e.target.value; 
+    console.log("ghhhhhh",e.target.value);
+    const selectedBranch =e.target.value; 
     setBranchFilter(selectedBranch);
   
-    if (!data || !Array.isArray(data)) return;
+    if (!requestList || !Array.isArray(requestList)) return;
   
-    const filtered = data.filter(item => 
-      !selectedBranch || item.branchName === selectedBranch
+    const filtered = requestList.filter(item => 
+      !selectedBranch || item.branchId
+      === Number(selectedBranch)
     );
-  
+   console.log("0000000>>>>>",filtered);
     setFilteredData(filtered);
   };
 
@@ -516,29 +480,34 @@ const TableWithDateFilter = ({
               ))}
             </select>
           ) : (
-            
-            <select
-              value={branchFilter}
-              onChange={handleBranchFilter}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="" disabled>
-                Select a Branch
-              </option>
-              {branches.map((branch) => (
-                <option key={branch.id} value={branch.id}>
-                  {branch.branchName}
-                </option>
-              ))}
-            </select>
+
+            <div className="flex items-center space-x-2 mb-4">
+  <label className="text-gray-700 font-bold whitespace-nowrap">
+    Search by Branch :
+  </label>
+  <select
+    value={branchFilter}
+    onChange={handleBranchFilter}
+    className="h-12 w-[250px] border border-gray-300 rounded-md px-3 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+  >
+    <option value="">All Branches</option>
+    {branches.map((branch) => (
+      <option key={branch.id} value={branch.id}>
+        {branch.branchName}
+      </option>
+    ))}
+  </select>
+</div>
           )}
         </div>
+        {false&&
+        
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
         >
           <FaSearch className="mr-2" /> Search
-        </button>
+        </button>}
       </div>}
 
       {/* Table Row */}

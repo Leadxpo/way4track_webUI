@@ -311,7 +311,7 @@ navigate("/sub-staff-details");
   onClick={handleSubmit}
 >
 
-  Add
+  Submit
 </button>
 
 
