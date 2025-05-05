@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import ApiService from "../services/ApiService"; // Adjust path as needed
 
 // Google Maps Container Style
 const mapContainerStyle = {
@@ -7,25 +8,49 @@ const mapContainerStyle = {
   height: "500px",
 };
 
-// Default Center Position
+// Default Center Position (can adjust later to fit markers dynamically)
 const center = {
-  lat: 12.9716, // Example: Bangalore, India
+  lat: 12.9716,
   lng: 77.5946,
 };
 
-// List of Marker Coordinates
-const locations = [
-  { id: 1, name: "Fuel Station A", lat: 12.9716, lng: 77.5946 },
-  { id: 2, name: "Fuel Station B", lat: 12.2958, lng: 76.6394 },
-  { id: 3, name: "Fuel Station C", lat: 13.0827, lng: 80.2707 },
-];
-
 const GoogleMapComponent = () => {
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post("/branch/getBranchNamesDropDown");
+        if (response.status) {
+          const branchData = response.data;
+
+          // Optional: Filter out invalid data (missing lat/lng)
+          const validLocations = branchData.filter(
+            (branch) => branch.latitude && branch.longitude
+          );
+
+          setBranches(validLocations);
+          console.log("Fetched Branches with locations:", validLocations);
+        } else {
+          console.error("Failed to fetch branches");
+        }
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
   return (
     <LoadScript googleMapsApiKey="AIzaSyCmiyc8iXq1KDOmW_-yWsjALkQVY1z8krw">
       <GoogleMap mapContainerStyle={mapContainerStyle} zoom={6} center={center}>
-        {locations.map((location) => (
-          <Marker key={location.id} position={{ lat: location.lat, lng: location.lng }} />
+        {branches.map((branch, index) => (
+          <Marker
+            key={index}
+            position={{ lat: parseFloat(branch.latitude), lng: parseFloat(branch.longitude) }}
+            label={branch.branch_name}
+          />
         ))}
       </GoogleMap>
     </LoadScript>

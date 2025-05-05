@@ -1,6 +1,6 @@
 import ProfitsGraph from '../../components/ProfitsGraph';
 import TotalCountCard from '../../components/TotalCountCard';
-import AnalysisCard from '../../components/AnalysisCard'
+import AnalysisCard from '../../components/AnalysisCard';
 import AnalysisCardBarChart from '../../components/AnalysisCardBarChart';
 import CashCard from '../../components/CashCard';
 import Table from '../../components/Table';
@@ -13,8 +13,8 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { EstimatePDF } from '../../components/EstimatePdf';
 import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
-import { FaFileDownload } from "react-icons/fa";
-import GoogleMapComponent from "../../components/googleMap";
+import { FaFileDownload } from 'react-icons/fa';
+import GoogleMapComponent from '../../components/googleMap';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -27,6 +27,8 @@ const Home = () => {
   const [branchFilter, setBranchFilter] = useState('');
   const location = useLocation();
   const [branches, setBranches] = useState([]);
+  const [branchesDataDammy, setBranchesDataDammy] = useState([]);
+
   const [solidLiquidData, setSolidLiquidData] = useState({});
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   const [totalProductDetails, setTotalProductDetails] = useState({});
@@ -38,6 +40,7 @@ const Home = () => {
   const [totalPayable, setTotalPayable] = useState([]);
   const [totalPurchases, setTotalPurchases] = useState([]);
   const [branchdetails, setBranchDetails] = useState([]);
+  
   const [cardData, setCardData] = useState([
     {
       id: 1,
@@ -114,16 +117,13 @@ const Home = () => {
     },
   ]);
 
-
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post(
-          '/dashboards/getSalesBreakdown'
-        );
+        const response = await ApiService.post('/dashboards/getSalesBreakdown');
         if (response.status) {
           setBranches(response.data); // Set branches to state
-
+          console.log('===== Hello =======>', branches);
         } else {
           console.error('Failed to fetch branches');
         }
@@ -135,38 +135,30 @@ const Home = () => {
     fetchBranches();
   }, []);
 
-
-
   const handleCardClick = (cardType) => {
-  let dataSource;
-  switch (cardType) {
-    case 'Total Sales':
-      dataSource = totalProducts;
-      break;
-    case 'Payables':
-      dataSource = totalPayable;
-      break;
-    case 'Receivables':
-      dataSource = totalReceivables;
-      break;
-    case 'Total Purchases':
-      dataSource = totalPurchases;
-      break;
-    default:
-      dataSource = [];
-  }
+    let dataSource;
+    switch (cardType) {
+      case 'Total Sales':
+        dataSource = totalProducts;
+        break;
+      case 'Payables':
+        dataSource = totalPayable;
+        break;
+      case 'Receivables':
+        dataSource = totalReceivables;
+        break;
+      case 'Total Purchases':
+        dataSource = totalPurchases;
+        break;
+      default:
+        dataSource = [];
+    }
 
-  setSelectedCard(cardType);
-  setTableData(dataSource);
-  setFilteredData(dataSource);
-  setTableColumns(
-    Object.keys(dataSource[0] || {}));
-  
-
-
-};
-
-
+    setSelectedCard(cardType);
+    setTableData(dataSource);
+    setFilteredData(dataSource);
+    setTableColumns(Object.keys(dataSource[0] || {}));
+  };
 
   // Handle status filter change
   const handleStatusChange = (e) => {
@@ -183,8 +175,6 @@ const Home = () => {
     // Implement your date-based filtering here
     console.log('Filtering with:', { dateFrom, dateTo });
   };
-
-  
 
   const fetchTotalSalesCount = async () => {
     try {
@@ -211,7 +201,7 @@ const Home = () => {
       alert('Failed to fetch total Sales count.');
     }
   };
-  
+
   const fetchPurchaseCount = async () => {
     try {
       const response = await ApiService.post('/dashboards/getPurchaseCount', {
@@ -221,8 +211,11 @@ const Home = () => {
         userName: initialAuthState.userName,
       });
       console.log(response.data);
-      const count = typeof response.data === 'object' ? response.data.last30DaysPurchases : response.data;
-  
+      const count =
+        typeof response.data === 'object'
+          ? response.data.last30DaysPurchases
+          : response.data;
+
       setCardData((prevData) =>
         prevData.map((item) =>
           item.id === 4
@@ -238,7 +231,7 @@ const Home = () => {
       alert('Failed to fetch total Purchase.');
     }
   };
-  
+
   const fetchPayableCount = async () => {
     try {
       const response = await ApiService.post('/dashboards/getAmountDetails', {
@@ -263,7 +256,7 @@ const Home = () => {
       alert('Failed to fetch total Payable.');
     }
   };
-  
+
   const fetchRecievableCount = async () => {
     try {
       const response = await ApiService.post('/dashboards/getAmountDetails', {
@@ -288,9 +281,7 @@ const Home = () => {
       alert('Failed to fetch total Receivable count.');
     }
   };
-  
 
- 
   const fetchSalesData = async () => {
     try {
       const payload = {
@@ -365,17 +356,17 @@ const Home = () => {
         unitCode: initialAuthState.unitCode,
         role: localStorage.getItem('role'),
       };
-  
+
       // Conditionally add staffId only if role is 'Technician' or 'Sales Man'
       if (payload.role === 'Technician' || payload.role === 'Sales Man') {
         payload.staffId = localStorage.getItem('userId');
       }
-  
+
       const response = await ApiService.post(
         '/dashboards/getReceivableAmountForTable', // Assuming this is the correct endpoint
         payload
       );
-  
+
       if (response.status) {
         setTotalReceivables(response.data); // Replace this with your state handler
       } else {
@@ -386,9 +377,6 @@ const Home = () => {
       alert('Failed to fetch receivable data.');
     }
   };
-  
-
-
 
   const fetchPurchaseData = async () => {
     try {
@@ -478,8 +466,6 @@ const Home = () => {
       console.error('error in fetching total sales details');
     }
   };
-
-
 
   const getAnalysis = async () => {
     try {
@@ -610,6 +596,27 @@ const Home = () => {
     fetchPurchaseData();
   }, []);
 
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown'
+        );
+        if (response.status) {
+          const branchData = response.data;
+          setBranchesDataDammy(branchData); // set to state
+          console.log('Fetched Branches:', branchData); // correct way to log
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
   return (
     <div className="flex flex-col space-y-16">
       {/* first section */}
@@ -622,60 +629,82 @@ const Home = () => {
           />
         </div>
 
-        <div className="flex mt-4">
-          <div className="w-full">
-            {branches.map((branch, index) => (
-              <div key={index} className="grid grid-cols-6  py-1">
-                <div className="flex items-center ">
+        <div className="flex flex-wrap mt-4 w-full">
+          {/* Left: Branch Sales Data */}
+          <div className="w-full md:w-2/3">
+            {branchesDataDammy.map((branch, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-6 gap-x-1 items-center py-1 px-1 border-b"
+              >
+                {/* Branch Info */}
+                <div className="flex items-center space-x-1">
                   <img
                     src="logo-name-square.png"
                     alt="Branch Logo"
-                    className="w-16 h-16 object-cover"
+                    className="w-10 h-10 object-cover"
                   />
-                  <div className="text-xs">
-                    <p className="text-gray-800 font-semibold">Branch</p>
-                    <p className="text-green-700 font-semibold">
+                  <div className="text-[10px] leading-none">
+                    <p className="text-gray-800 font-bold">Branch</p>
+                    <p className="text-green-700 font-bold">
                       {branch.branchName}
                     </p>
                   </div>
                 </div>
-                <div className="text-left text-xs">
-                  <p className="text-gray-600 font-bold">Rectifications</p>
+
+                {/* Rectifications */}
+                <div className="text-[10px] text-center leading-tight">
+                  <p className="text-gray-500 font-bold">Rectifications</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.serviceSales}
+                    {branch.serviceSales || 0}
                   </p>
                 </div>
-                <div className="text-left text-xs ">
-                  <p className="text-gray-600 font-bold">Renewals</p>
+
+                {/* Renewals */}
+                <div className="text-[10px] text-center leading-tight">
+                  <p className="text-gray-500 font-bold">Renewals</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.productSales}
+                    {branch.renewals || 0}
                   </p>
                 </div>
-                <div className="text-left text-xs">
-                  <p className="text-gray-600 font-bold">Replacement</p>
+
+                {/* Replacement */}
+                <div className="text-[10px] text-center leading-tight">
+                  <p className="text-gray-500 font-bold">Replacement</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.productSales}
+                    {branch.replacements || 0}
                   </p>
                 </div>
-                <div className="text-left text-xs">
-                  <p className="text-gray-600 font-bold">Products Sales</p>
+
+                {/* Products Sales */}
+                <div className="text-[10px] text-center leading-tight">
+                  <p className="text-gray-500 font-bold">Products Sales</p>
                   <p className="text-gray-800 font-bold">
-                    {branch.productSales}
+                    {branch.productSales || 0}
                   </p>
                 </div>
-                <div className="text-left text-xs">
-                  <p className="text-gray-600 font-bold">Total Sales</p>
-                  <p className="text-gray-800 font-bold">{branch.totalSales}</p>
+
+                {/* Total Sales */}
+                <div className="text-[10px] text-center leading-tight">
+                  <p className="text-gray-500 font-bold">Total Sales</p>
+                  <p className="text-gray-800 font-bold">
+                    {branch.totalSales || 0}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="w-1/2 flex justify-center items-center">
+          {/* Right: Google Map */}
+          <div className="w-full md:w-1/3 flex justify-center items-start ">
             <GoogleMapComponent />
           </div>
         </div>
       </div>
+
+
+
+
 
       <div className="flex items-center justify-center space-x-10">
         <CashCard
@@ -692,28 +721,29 @@ const Home = () => {
         />
       </div>
 
-
-
       {/* third section - profits graphs */}
       <div className="flex space-x-4 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
-  {branchesData.map((branchData, index) => (
-    <ProfitsGraph key={index} branchData={branchData} />
+        {branchesData.map((branchData, index) => (
+          <ProfitsGraph key={index} branchData={branchData} />
+        ))}
+      </div>
+
+     {/* fourth section */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
+  {cardData.map((card) => (
+    <div key={card.id} onClick={() => handleCardClick(card.title)}>
+      <TotalCountCard data={card} />
+    </div>
   ))}
 </div>
 
 
-      {/* fourth section */}
-      <div className="flex justify-between space-x-4 mt-12">
-        {cardData.map((card) => (
-          <div onClick={() => handleCardClick(card.title)}>
-            <TotalCountCard data={card} />
-          </div>
-        ))}
-      </div>
-
       {/* fifth section - analysis card*/}
       <div className="mt-6">
-        {selectedCard === 'Payables' || selectedCard === 'Total Purchases'  || selectedCard === 'Receivables'  || selectedCard === 'Total Sales'? (
+        {selectedCard === 'Payables' ||
+        selectedCard === 'Total Purchases' ||
+        selectedCard === 'Receivables' ||
+        selectedCard === 'Total Sales' ? (
           <div className="flex mb-4">
             <div className="flex-grow mr-2">
               <input
@@ -744,7 +774,7 @@ const Home = () => {
                 className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
               >
                 <option value="">All Branches</option>
-                {branches.map((branch) => (
+                {branchesDataDammy.map((branch) => (
                   <option key={branch.id} value={branch.branchName}>
                     {branch.branchName}
                   </option>
@@ -765,10 +795,6 @@ const Home = () => {
         ) : null}
         <div className="mt-8">
           <Table columns={tableColumns} data={tableData} />
-         
-
-
-         
         </div>
       </div>
       {/* sixth section - table */}

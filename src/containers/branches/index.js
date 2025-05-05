@@ -102,7 +102,7 @@ const Branches = () => {
           className={`px-4 py-2 text-white rounded-md transition 
             ${permissions.add ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-branch')}
-          //  disabled={!permissions.add}
+           disabled={!permissions.add}
         >
           Add Branch
         </button>
@@ -183,7 +183,7 @@ const Branches = () => {
                 <button
                   className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => handleMoreDetails(branch)}
-                  //  disabled={!permissions.view}
+                   disabled={!permissions.view}
                 >
                   More Details
                 </button>

@@ -44,6 +44,7 @@ const BranchList = () => {
             address: staff.address?.trim() || "",
             uanNumber: staff.uanNumber?.trim() || "",
             esicNumber: staff.esicNumber?.trim() || "",
+            joiningDate: staff.joiningDate?.trim() || "",
             bloodGroup: staff.bloodGroup?.trim() || "",
             bankName: staff.bankName?.trim() || "",
             accountNumber: staff.accountNumber?.trim() || "",
@@ -373,7 +374,7 @@ const BranchList = () => {
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              {[ "Employ Id", "Employ Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
+              {[ "Employee ID", "Employee Name", "Designation", "Branch", "Phone Number", "Joining Date", "Salary", "Pdf"].map((head, index) => (
                 <th key={index} className="p-3 text-left">{head}</th>
               ))}
             </tr>

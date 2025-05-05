@@ -33,6 +33,11 @@ const SubDealerDetails = () => {
   const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   const [productData, setProductData] = useState([]);
   const [works, setWorks] = useState([]);
+  const [searchText, setSearchText] = useState("");
+const [filteredStaff, setFilteredStaff] = useState([]);
+const [filteredProduct, setFilteredProduct] = useState([]);
+const [filteredWorks, setFilteredWorks] = useState([]);
+
 
 
 
@@ -122,6 +127,8 @@ const SubDealerDetails = () => {
               aadharNumber: response.data.aadharNumber,
               address: response.data.address,
               branchId: response.data.branchId,
+              branchName: response.data.branchName,
+
               id: response.data.id
             }
           )
@@ -265,195 +272,81 @@ const SubDealerDetails = () => {
   };
 
 
-  // privews payments
+  useEffect(() => {
+    const search = searchText.toLowerCase();
+  
+    // Filter Staff
+    setFilteredStaff(
+      subDealerStaffDetailsData.filter(item =>
+        item.name?.toLowerCase().includes(search)
+      )
+    );
+  
+    // Filter Products
+    setFilteredProduct(
+      productData.filter(item =>
+        item.productName?.toLowerCase().includes(search)
+      )
+    );
+  
+    // Filter Works
+    setFilteredWorks(
+      works.filter(item =>
+        item.staffName?.toLowerCase().includes(search)
+      )
+    );
+  }, [searchText, subDealerStaffDetailsData, productData, works]);
+  
 
-  // Total Payments Data Export
-  const formatPaymentsExcelData = (data) => {
+  const formatStaffData = (data) => {
     return data.map((item) => ({
-      "Payment ID": item.paymentId,
-      "Employee ID": item.staffId,
-      "Employee Name": item.staffName,
-      "Total Payments": item.totalPayments || 0,
+      "Staff ID": item.staffId,
+      "Staff Name": item.name,
+      "Phone": item.phoneNumber,
+      "Email": item.email,
+      "Address": item.address,
     }));
   };
-
-  // Received Amount Data Export
-  const formatReceivedExcelData = (data) => {
+  
+  const formatProductData = (data) => {
     return data.map((item) => ({
-      "Receipt ID": item.receiptId,
-      "Employee ID": item.staffId,
-      "Employee Name": item.staffName,
-      "Received Amount": item.receivedAmount || 0,
+      "Product ID": item.productId,
+      "Product Name": item.productName,
+      "Quantity": item.quantity,
+      "Assigned Date": item.assignedDate,
     }));
   };
-
-  // Pending Amount Data Export
-  const formatPendingExcelData = (data) => {
+  
+  const formatWorkData = (data) => {
     return data.map((item) => ({
-      "Employee ID": item.staffId,
-      "Employee Name": item.staffName,
-      "Pending Amount": (item.totalPayments - item.receivedAmount) || 0, // Calculated field
+      "Work ID": item.workId,
+      "Staff Name": item.staffName,
+      "Task": item.taskName,
+      "Assigned Date": item.assignedDate,
+      "Status": item.status,
     }));
   };
-
-
-  // Handle Payments Preview
-  const handlePaymentsPreview = () => {
-    if (filteredTotalPayments.length === 0) {
-      alert("No payment data available to preview.");
+  
+  const handlePreviewDownload = () => {
+    let formattedData;
+  
+    if (activeTable === "Staff Details") {
+      formattedData = formatStaffData(filteredStaff);
+    } else if (activeTable === "Product Details") {
+      formattedData = formatProductData(filteredProduct);
+    } else if (activeTable === "Work Details") {
+      formattedData = formatWorkData(filteredWorks);
+    }
+  
+    if (!formattedData || formattedData.length === 0) {
+      alert("No data available to preview/download.");
       return;
     }
-
-    const formattedData = formatPaymentsExcelData(filteredTotalPayments);
+  
     setPreviewData(formattedData);
-    setIsPreviewOpen(true);
+    setIsPreviewOpen(true); // Show preview modal
   };
-
-  // Handle Received Amount Preview
-  const handleReceivedPreview = () => {
-    if (filteredPayments.length === 0) {
-      alert("No received amount data available to preview.");
-      return;
-    }
-
-    const formattedData = formatReceivedExcelData(filteredPayments);
-    setPreviewData(formattedData);
-    setIsPreviewOpen(true);
-  };
-
-  // Handle Pending Amount Preview
-  const handlePendingPreview = () => {
-    if (filteredPendingAmount.length === 0) {
-      alert("No pending amount data available to preview.");
-      return;
-    }
-
-    const formattedData = formatPendingExcelData(filteredPendingAmount);
-    setPreviewData(formattedData);
-    setIsPreviewOpen(true);
-  };
-
-
-
-  // Total Payments
-
-  const TotalPayments = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getAllPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
-      if (response?.status && Array.isArray(response.data)) {
-        setTotalPayments(response.data);
-      } else {
-        setTotalPayments([]); // Prevent undefined
-      }
-    } catch (error) {
-      console.error('Error fetching request data:', error);
-      setRequestBranchWiseData([]); // Handle errors gracefully
-    }
-  };
-
-  useEffect(() => {
-    TotalPayments();
-  }, []);
-
-  // Filtering payments based on search query
-  const filteredTotalPayments = Array.isArray(totalPayments)
-    ? totalPayments.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
-
-
-  // Received Payments
-
-  const ReceivedPayments = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getSucessPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
-      if (response?.status && Array.isArray(response.data)) {
-        setReceivedPayments(response.data);
-      } else {
-        setReceivedPayments([]); // Prevent undefined
-      }
-    } catch (error) {
-      console.error('Error fetching received payments:', error);
-      setReceivedPayments([]); // Handle errors gracefully
-    }
-  };
-
-  useEffect(() => {
-    ReceivedPayments();
-  }, []);
-
-  // Filtering received payments based on search query
-  const filteredPayments = Array.isArray(productData)
-    ? productData.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
-
-
-  // Pending Amount
-
-  const PendingAmount = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getPendingPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
-      if (response?.status && Array.isArray(response.data)) {
-        setPendingAmount(response.data);
-      } else {
-        setPendingAmount([]); // Prevent undefined
-      }
-    } catch (error) {
-      console.error('Error fetching pending amount data:', error);
-      setPendingAmount([]); // Handle errors gracefully
-    }
-  };
-
-  useEffect(() => {
-    PendingAmount();
-  }, []);
-
-  // Filtering pending amounts based on search query
-  const filteredPendingAmount = Array.isArray(works)
-    ? works.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
-
+  
 
   const fetchSubDealerStaffDetailsData = async () => {
     try {
@@ -513,20 +406,19 @@ const SubDealerDetails = () => {
           <p className="text-gray-800 font-semibold">Email : {subDealer.
             emailId
           }</p>
-          <p className="text-gray-800 font-semibold">
-            SubDealer Branch : {subDealer.branchName
-            }
-          </p>
-          <p className="text-gray-800 font-semibold">
+         <p className="text-gray-800 font-semibold">
+  SubDealer Branch : {subDealer.branchName}
+</p>
+
+          {/* <p className="text-gray-800 font-semibold">
             Date of Birth : {subDealer.dob}
-          </p>
+          </p> */}
 
           <p className="text-gray-800 font-semibold">
             Gst Number : {subDealer.gstNumber}
           </p>
 
-          <p className="text-gray-800 font-semibold">Address : {subDealer.
-            address}</p>
+          <p className="text-gray-800 font-semibold">Address : {subDealer.address}</p>
         </div>
       </div>
 
@@ -544,74 +436,76 @@ const SubDealerDetails = () => {
       </div>
 
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 mt-10">
-        {paymentStatus.map((stat, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-xl shadow-md w-full sm:w-80 text-center cursor-pointer ${stat.color}`}
-            onClick={() => toggleTable(stat.label)}
-          >
-            <button
-              className="mt-2 px-4 py-1.5 text-black rounded-lg font-bold hover:bg-blue-100"
-              onClick={() => toggleTable(stat.label)}
-            >
-              {stat.label}
-            </button>
-            <div className={`text-3xl font-bold ${stat.textColor} mt-4`}>{stat.value}</div>
-          </div>
+     {/* Stats Section */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6 mt-10">
+  {paymentStatus.map((stat, index) => (
+    <div
+      key={index}
+      className={`p-4 rounded-xl shadow-md w-64 text-center cursor-pointer ${stat.color}`}
+      onClick={() => toggleTable(stat.label)}
+    >
+      <button
+        className="mt-2 px-4 py-1.5 text-black rounded-lg font-bold hover:bg-blue-100"
+        onClick={() => toggleTable(stat.label)}
+      >
+        {stat.label}
+      </button>
+      <div className={`text-3xl font-bold ${stat.textColor} mt-4`}>{stat.value}</div>
+    </div>
+  ))}
+</div>
+
+
+
+     {/* Payments Table - Visible only if showTable is true */}
+{activeTable === "Staff Details" && (
+  <div>
+    <h2 className="text-2xl font-bold mb-4 text-red-400">Staff Details</h2>
+    <div className="flex justify-between mb-4">
+      <input
+        type="text"
+        placeholder="Search by Staff Name..."
+        className="border p-2 rounded w-1/3"
+        value={searchTotal}
+        onChange={(e) => setSearchTotal(e.target.value)}
+      />
+
+      <button
+        onClick={handlePreviewDownload}
+        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+      >
+        <FaFileDownload className="mr-2" /> Preview & Download
+      </button>
+    </div>
+
+    <table className="w-full border-collapse border border-gray-300">
+      <thead>
+        <tr className="bg-red-300 text-white">
+          <th className="p-2 border">Staff Id</th>
+          <th className="p-2 border">Staff Name</th>
+          <th className="p-2 border">Phone Number</th>
+          <th className="p-2 border">email</th>
+          <th className="p-2 border">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {subDealerStaffDetailsData
+          ?.filter((staff) =>
+            staff.name.toLowerCase().includes(searchTotal.toLowerCase())
+          )
+          .map((staff, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+              <td className="p-2 border text-center">{staff.staffId}</td>
+              <td className="p-2 border text-center">{staff.name}</td>
+              <td className="p-2 border text-center">{staff.phoneNumber}</td>
+              <td className="p-2 border text-center">{staff.email}</td>
+              <td className="p-2 border text-center">{staff.address}</td>
+            </tr>
         ))}
-      </div>
-
-
-
-      {/* Payments Table - Visible only if showTable is true */}
-      {activeTable === "Staff Details" && (
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-red-400">Staff Details</h2>
-          {/* <div className="flex justify-between mb-4">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border p-2 rounded w-1/3"
-              value={searchTotal}
-              onChange={(e) => setSearchTotal(e.target.value)}
-            />
-          
-                   <button
-                     onClick={handlePaymentsPreview}
-                     className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
-                   >
-                     <FaFileDownload className="mr-2" /> Preview & Download
-                   </button>
-          </div> */}
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-red-300 text-white">
-                <th className="p-2 border">Staff Id</th>
-                <th className="p-2 border">Staff Name</th>
-                <th className="p-2 border">Phone Number</th>
-
-                <th className="p-2 border">email</th>
-                <th className="p-2 border">Address</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subDealerStaffDetailsData?.map((staff, index) => (
-                <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-                  <td className="p-2 border text-center">{staff.staffId}</td>
-                  <td className="p-2 border text-center">{staff.name}</td>
-                  <td className="p-2 border text-center">{staff.phoneNumber}</td>
-                  <td className="p-2 border text-center">{staff.email}</td>
-                  <td className="p-2 border text-center">{staff.address}</td>
-
-
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      </tbody>
+    </table>
+  </div>
+)}
 
 
       {/* Receved Payments Table */}
@@ -628,7 +522,7 @@ const SubDealerDetails = () => {
             />
             {/* Preview & Download Button */}
             <button
-              onClick={handleReceivedPreview}
+              onClick={handlePreviewDownload}
               className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
             >
               <FaFileDownload className="mr-2" /> Preview & Download
@@ -646,7 +540,7 @@ const SubDealerDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.map((payment, index) => (
+              {filteredProduct.map((payment, index) => (
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
                   <td className="p-2 border text-center">{payment.staffId}</td>
                   <td className="p-2 border text-center">{payment.staffName}</td>
@@ -680,7 +574,7 @@ const SubDealerDetails = () => {
             />
             {/* Preview & Download Button */}
             <button
-              onClick={handlePendingPreview}
+              onClick={handlePreviewDownload}
               className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
             >
               <FaFileDownload className="mr-2" /> Preview & Download
@@ -698,7 +592,7 @@ const SubDealerDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPendingAmount.map((payment, index) => (
+              {filteredWorks.map((payment, index) => (
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
                   <td className="p-2 border text-center">{payment.staffId}</td>
                   <td className="p-2 border text-center">{payment.staffName}</td>
