@@ -73,10 +73,14 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
         break;
     }
   }, []);
+
   const handleLogout = () => {
-    localStorage.clear();
-    handleLogoutFlag();
-    navigate('/login');
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.clear();
+      handleLogoutFlag();
+      navigate('/login');
+    }
   };
 
   const handleClick = (item) => {

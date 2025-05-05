@@ -105,17 +105,6 @@ export default function AddProductType() {
           />
         </div>
 
-        {/* <div>
-          <label className="block text-sm font-medium">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded-md"
-          ></textarea>
-        </div> */}
-
         <div>
           <label className="block text-sm font-medium">Type</label>
           <select
@@ -130,28 +119,6 @@ export default function AddProductType() {
             <option value="APPLICATION">Application</option>
           </select>
         </div>
-
-        {/* <div>
-          <label className="block text-sm font-medium">Product Photo</label>
-          <input
-            type="file"
-            name="photo"
-            onChange={handleFileChange}
-            accept="image/*"
-            className="w-full"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Blog Image</label>
-          <input
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-            accept="image/*"
-            className="w-full"
-          />
-        </div> */}
 
         <button
           type="submit"

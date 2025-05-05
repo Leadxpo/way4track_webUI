@@ -118,8 +118,8 @@ const AddRequestRaise = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor:formData.requestFor,
-        // fromDate:formData.fromDate,
-        // toDate:formData.toDate,
+        fromDate:formData.fromDate,
+        toDate:formData.toDate,
       };
 
 
@@ -129,6 +129,7 @@ const AddRequestRaise = () => {
         payload
       );
       if (response.status) {
+        alert('Request saved successfully');
         navigate('/requests');
       } else {
         alert('failed to raise request');

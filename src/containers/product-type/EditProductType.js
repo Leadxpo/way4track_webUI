@@ -6,21 +6,17 @@ export default function EditProductType() {
   const location = useLocation();
   const navigate = useNavigate();
   const productType = location.state?.productType;
-
+  console.log("productType ---->productType",productType);
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    photo: null,
-    image: null,
+   type:""
   });
 
   useEffect(() => {
     if (productType) {
       setFormData({
         name: productType?.name || "",
-        description: productType?.description || "",
-        photo: productType?.productPhoto || null,
-        image: productType?.blogImage || null,
+        type:productType?.type || "",
       });
     }
   }, [productType]);
@@ -30,33 +26,21 @@ export default function EditProductType() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files.length > 0 ? files[0] : null,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("companyCode", initialAuthState.companyCode);
-    data.append("unitCode", initialAuthState.unitCode);
-    data.append("description", formData.description);
-    data.append("id", productType.id);
-
-   data.append("photo", formData.photo);
-    data.append("image", formData.image);
-
+    const data ={name:formData.name,
+      companyCode: initialAuthState.companyCode,unitCode:initialAuthState.unitCode,type:formData.type,id:productType.id
+    };
     try {
-      await ApiService.post("/productType/handleProductTypeDetails", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res=await ApiService.post("/productType/handleProductTypeDetails", data, {
+        headers: { 'Content-Type': 'application/json' }
       });
-      alert("Product Type updated successfully!");
-      navigate("/product-type");
+      if(res.status){
+        alert("Product Type updated successfully!");
+        navigate("/product-type");
+      }
+      
+      
     } catch (error) {
       console.error("Error updating product type:", error);
       alert("Failed to update product type.");
@@ -80,42 +64,24 @@ export default function EditProductType() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
+          <label className="block text-sm font-medium">Type</label>
+          <select
+            name="type"
+            value={formData.type}
             onChange={handleChange}
             required
             className="w-full p-2 border rounded-md"
-          ></textarea>
+          >
+            <option value="">Select an option</option>
+            <option value="PRODUCT">Product</option>
+            <option value="APPLICATION">Application</option>
+          </select>
         </div>
 
-        {/* <div>
-          <label className="block text-sm font-medium">Product Photo</label>
-          <input type="file" name="photo" value={formData.photo} onChange={handleFileChange} accept="image/*" className="w-full" />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Blog Image</label>
-          <input type="file" name="image" value={formData.image} onChange={handleFileChange} accept="image/*" className="w-full" />
-        </div> */}
-
-<div>
-  <label className="block text-sm font-medium">Product Photo</label>
-  
-  <input type="file" name="photo" onChange={handleFileChange} accept="image/*" className="w-full" />
-
-</div>
-
-<div>
-  <label className="block text-sm font-medium">Blog Image</label>
-
-  <input type="file" name="image" onChange={handleFileChange} accept="image/*" className="w-full" />
-
-</div>
-
-
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-2 rounded-md"
+        >
           Update
         </button>
       </form>

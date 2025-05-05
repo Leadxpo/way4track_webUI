@@ -177,40 +177,6 @@ const BackendSupportHome = () => {
     fetchMemberRecords();
   };
 
-  //   useEffect(() => {
-
-  //     fetchRecords();
-  //   }, []);
-
-  // const handleStatusChange = async (item, newStatus) => {
-  //   console.log(item, 'item');
-  //   try {
-  //     setRecords((prevRecords) =>
-  //       prevRecords.map((record) =>
-  //         record.id === item.id ? { ...record, workStatus: newStatus } : record
-  //       )
-  //     );
-
-  //     const response = await ApiService.post(
-  //       '/technician/handleTechnicianDetails',
-  //       {
-  //         id: item.id,
-  //         workStatus: newStatus,
-  //         staffId: item.staffId,
-  //         backEndStaffRelation: Number(userId),
-  //         companyCode: initialAuthState.companyCode,
-  //         unitCode: initialAuthState.unitCode,
-  //       }
-  //     );
-
-  //     console.log('Status updated successfully:', response.data);
-
-  //     await fetchRecords();
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //   }
-  // };
-
   const handleStatusChange = async (item, newStatus) => {
     console.log(item, 'item');
     try {
