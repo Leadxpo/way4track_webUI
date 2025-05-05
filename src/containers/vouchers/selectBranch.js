@@ -6,15 +6,15 @@ import { initialAuthState } from '../../services/ApiService';
 const SelectBranch = () => {
   const navigate = useNavigate();
 
-  const [branches,setBranches]=useState([]);
+  const [branches, setBranches] = useState([]);
 
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleBranchClick = (Id, Name) => {
-    localStorage.setItem("branchId", Id);
+    localStorage.setItem('branchId', Id);
     setIsPopupOpen(true);
-};
+  };
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -33,42 +33,43 @@ const SelectBranch = () => {
 
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`, {
-        state: {
-            selectedBranch: selectedBranch  
-        }
+      state: {
+        selectedBranch: selectedBranch,
+      },
     });
-    console.log("1234567", item);
-};
+    console.log('1234567', item);
+  };
 
-    // Fetch branch data from API
-    useEffect(() => {
-      const fetchBranches = async () => {
-        try {
-          const response = await ApiService.post(
-            '/branch/getBranchNamesDropDown', {
-                      companyCode: initialAuthState?.companyCode,
-                      unitCode: initialAuthState?.unitCode,
-                    }
-          );
-          if (response.status) {
-            setBranches(response.data); // Set branches to state
-          } else {
-            console.error('Failed to fetch branches');
+  // Fetch branch data from API
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post(
+          '/branch/getBranchNamesDropDown',
+          {
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
           }
-        } catch (error) {
-          console.error('Error fetching branches:', error);
+        );
+        if (response.status) {
+          setBranches(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
         }
-      };
-  
-      fetchBranches();
-    }, []);
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
 
   return (
     <div className="p-10">
       {branches?.map((branch) => (
         <div key={branch.id}>
           <p
-            onClick={() => handleBranchClick(branch.id,branch.branchName)}
+            onClick={() => handleBranchClick(branch.id, branch.branchName)}
             style={{
               backgroundColor: '#12A651',
               color: '#FFFFFF',

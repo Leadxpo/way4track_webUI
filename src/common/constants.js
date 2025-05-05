@@ -63,11 +63,11 @@ export const menuOptions = {
       icon: <img src="./day_book.png" />,
       route: '/day-book',
     },
-    {
-      name: 'Analysis',
-      icon: <img src="./analysis.png" />,
-      route: '/analysis',
-    },
+    // {
+    //   name: 'Analysis',
+    //   icon: <img src="./analysis.png" />,
+    //   route: '/analysis',
+    // },
     // { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
     {
       name: 'Payments',
@@ -130,7 +130,6 @@ export const menuOptions = {
       icon: <img src="./payroll.png" />,
       route: '/dispatch',
     },
-
   ],
   'sub dealer': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/sub-dealer-home' },
@@ -233,7 +232,7 @@ export const menuOptions = {
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'warehouse': [
+  warehouse: [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -304,11 +303,11 @@ export const menuOptions = {
       icon: <img src="./request_raise.png" />,
       route: '/requests',
     },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
     {
       name: 'Work Allocation',
@@ -328,13 +327,19 @@ export const menuOptions = {
       icon: <img src="./home.png" />,
       route: '/customer-care-home',
     },
-    { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/appointment-table' }
-
+    {
+      name: 'Tickets',
+      icon: <img src="./tickets.png" />,
+      route: '/appointment-table',
+    },
   ],
 
-  'om': [
-    { name: 'Custom Home', icon: <img src="./home.png" />, route: '/custom-home' }
-
+  om: [
+    {
+      name: 'Custom Home',
+      icon: <img src="./home.png" />,
+      route: '/custom-home',
+    },
   ],
   'sales man': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
@@ -349,11 +354,11 @@ export const menuOptions = {
       icon: <img src="./request_raise.png" />,
       route: '/requests',
     },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
     {
       name: 'Work Allocation',
@@ -397,11 +402,11 @@ export const menuOptions = {
       route: '/requests',
     },
     { name: 'Tracker', icon: <img src="./tracker.png" />, route: '/tracker' },
-    {
-      name: 'Vouchers',
-      icon: <img src="./vouchers.png" />,
-      route: '/vouchers',
-    },
+    // {
+    //   name: 'Vouchers',
+    //   icon: <img src="./vouchers.png" />,
+    //   route: '/vouchers',
+    // },
     { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
     {
       name: 'Sales Visits',
