@@ -15,14 +15,14 @@ const ProfitsGraph = ({ branchData }) => {
     if (!branchData?.data?.length) return '0.00';
     return (
       branchData.data.reduce(
-        (acc, item) => acc + Number(item.profitorLoss),
+        (acc, item) => acc + Number(item.salesAmount),
         0
       ) / branchData.data.length
     ).toFixed(2);
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 w-[340px] min-w-[320px] max-w-[400px] p-4">
+    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 w-[340px] min-w-[320px] max-w-[600px] p-4">
       {/* Chart with Gradient Background */}
       <div
         className="rounded-xl p-4"

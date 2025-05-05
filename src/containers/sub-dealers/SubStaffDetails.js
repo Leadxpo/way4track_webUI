@@ -20,11 +20,6 @@ const SubStaffDetails = () => {
   const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
    const [searchTerm, setSearchTerm] = useState("");
-    const [search, setSearch] = useState("");
-    const [searchTotal, setSearchTotal] = useState("");
-    const [searchReceved, setSearchReceved] = useState("");
-    const [searchPending, setSearchPending] = useState("");
-    const [activeTable, setActiveTable] = useState(null);
     const [previewData, setPreviewData] = useState([]);
     const [modalData, setModalData] = useState([]);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -32,8 +27,8 @@ const SubStaffDetails = () => {
     const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
 
 
-    // const SubStaffId=Number(localStorage.getItem("id"));
-    const SubStaffId=6;
+    const SubStaffId=Number(localStorage.getItem("id"));
+    // const SubStaffId=6;
     useEffect(() => {
  
       const fetchSubDealerDetails = async () => {

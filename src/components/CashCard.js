@@ -13,12 +13,12 @@ const CashCard = ({ title, amount, details, branchWiseDetails }) => {
 
       {/* Right Side */}
       <div>
-        {/* {branchWiseDetails.map((branch) => (
+        {branchWiseDetails.map((branch) => (
           <p className="text-lg font-medium whitespace-nowrap">
             {branch.branchName}:{' '}
             {title == 'Solid Cash' ? branch.solidCash : branch.liquidCash}/-
           </p>
-        ))} */}
+        ))}
       </div>
     </div>
   );
