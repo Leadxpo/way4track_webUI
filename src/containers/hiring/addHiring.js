@@ -26,7 +26,7 @@ const AddHiring = () => {
     phoneNumber: '',
     email: '',
     address: '',
-    drivingLicence: "",
+    drivingLicence: "No",
     drivingLicenceNumber: "",
     joiningDate: "",
     noticePeriod: "",

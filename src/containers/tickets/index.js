@@ -113,7 +113,7 @@ const Tickets = () => {
           <input
             type="text"
             name="name"
-            placeholder="Search by Name"
+            placeholder="Search"
             value={searchData.name}
             onChange={handleInputChange}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"

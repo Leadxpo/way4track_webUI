@@ -6,7 +6,7 @@ export default function EditProductType() {
   const location = useLocation();
   const navigate = useNavigate();
   const productType = location.state?.productType;
-
+  console.log("productType ---->productType",productType);
   const [formData, setFormData] = useState({
     name: '',
     type: '',
@@ -18,10 +18,8 @@ export default function EditProductType() {
   useEffect(() => {
     if (productType) {
       setFormData({
-        name: productType?.name || '',
-        type: productType?.type || '',
-        // photo: productType?.productPhoto || null,
-        // image: productType?.blogImage || null,
+        name: productType?.name || "",
+        type:productType?.type || "",
       });
     }
   }, [productType]);
@@ -29,14 +27,6 @@ export default function EditProductType() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files.length > 0 ? files[0] : null,
-    }));
   };
 
   const handleSubmit = async (e) => {
