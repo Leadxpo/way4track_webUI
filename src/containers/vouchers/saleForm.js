@@ -6,39 +6,42 @@ const SaleForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const [ledger,setLedger] =useState([]);
-  const [formData, setFormData] = useState(
-    {date:null,
-      day:"",
-      partyName: "", 
-      ledgerId:"",
-      voucherType:"SALES",
-      supplierInvoiceNumber:"",
-      supplierLocation:"",
-      purchaseGst:"",
-      amount:"",
-      SGST:9,
+  const [ledger, setLedger] = useState([]);
+  const [formData, setFormData] = useState({
+    date: null,
+    day: '',
+    partyName: '',
+    ledgerId: '',
+    voucherType: 'SALES',
+    supplierInvoiceNumber: '',
+    supplierLocation: '',
+    purchaseGst: '',
+    amount: '',
+    SGST: 9,
     CGST: 9,
     TDS: null,
     IGST: null,
-    TCS:null,
-      productDetails:[{productName: "",
+    TCS: null,
+    productDetails: [
+      {
+        productName: '',
+        type: '',
         quantity: null,
         rate: null,
-        totalCost: null
-       }],
-       purpose:""
+        totalCost: null,
+      },
+    ],
+    purpose: '',
+  });
 
-    }
-  );
- 
+  console.log(formData.productDetails, 'Product Details');
 
   const taxData = [
     { name: 'CGST', percent: '9%' },
-    { name: 'SGST', percent: '9%'},
-    { name: 'IGST', percent: '9%'},
-    { name: 'TDS', percent: '18%'},
-    { name: 'TCS', percent: '2%'},
+    { name: 'SGST', percent: '9%' },
+    { name: 'IGST', percent: '9%' },
+    { name: 'TDS', percent: '18%' },
+    { name: 'TCS', percent: '2%' },
   ];
 
   const handleInputChange = (e) => {
@@ -50,35 +53,31 @@ const SaleForm = () => {
   };
 
   const handleLedgerChange = (e) => {
-  const selectedId = Number(e.target.value); // Convert string to number
-  const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
-  if (selectedLedger) {
-    setFormData((prev) => ({
-      ...prev,
-      partyName: selectedLedger.name,
-      ledgerId: selectedLedger.id
-    }));
-  }
-  console.log("formdata",formData)
-
-};
-
-  
+    const selectedId = Number(e.target.value); // Convert string to number
+    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+    if (selectedLedger) {
+      setFormData((prev) => ({
+        ...prev,
+        partyName: selectedLedger.name,
+        ledgerId: selectedLedger.id,
+      }));
+    }
+    console.log('formdata', formData);
+  };
 
   const handleDateChange = (e) => {
     const value = e.target.value;
-  
-    const dayName = new Date(value).toLocaleDateString("en-US", {
-      weekday: "long",
+
+    const dayName = new Date(value).toLocaleDateString('en-US', {
+      weekday: 'long',
     });
-  
+
     setFormData((prev) => ({
       ...prev,
       date: value,
-      day: dayName, 
+      day: dayName,
     }));
   };
-  
 
   const branchData = [
     'Purchase',
@@ -90,7 +89,6 @@ const SaleForm = () => {
     'DebitNote',
     'CreditNote',
   ];
-
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -124,7 +122,6 @@ const SaleForm = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-
   const handleBranchClick = () => {
     setIsPopupOpen(true);
   };
@@ -138,40 +135,48 @@ const SaleForm = () => {
       ...prevData,
       productDetails: [
         ...prevData.productDetails,
-        { productName: "", quantity: null, rate: null, totalCost: null }
-      ]
+        {
+          productName: '',
+          type: '',
+          quantity: null,
+          rate: null,
+          totalCost: null,
+        },
+      ],
     }));
   };
 
   const handleTaxType = (e) => {
     const value = e.target.value;
     setSelectedTaxType(value);
-  
+
     setFormData((prevData) => ({
       ...prevData,
-      CGST: value === "CGST" ? 9 : null,
-      SGST: value === "CGST" ? 9 : null,
-      IGST: value === "IGST" ? 9 : null,
-      TDS: value === "TDS" ? 18 : null,
-      TCS: value === "TDS" ? 2 : null,
+      CGST: value === 'CGST' ? 9 : null,
+      SGST: value === 'CGST' ? 9 : null,
+      IGST: value === 'IGST' ? 9 : null,
+      TDS: value === 'TDS' ? 18 : null,
+      TCS: value === 'TDS' ? 2 : null,
     }));
   };
 
   const handleRemoveEntry = (indexToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
-      productDetails: prevData.productDetails.filter((_, index) => index !== indexToRemove),
+      productDetails: prevData.productDetails.filter(
+        (_, index) => index !== indexToRemove
+      ),
     }));
   };
 
   const handleEntryChange = (index, field, value) => {
     const updatedProductDetails = [...formData.productDetails];
     updatedProductDetails[index][field] = value;
-  
+
     const quantity = updatedProductDetails[index].quantity || 0;
     const rate = updatedProductDetails[index].rate || 0;
     updatedProductDetails[index].totalCost = (quantity * rate).toFixed(2); // Keep it 2 decimals
-  
+
     setFormData((prevData) => ({
       ...prevData,
       productDetails: updatedProductDetails,
@@ -187,76 +192,68 @@ const SaleForm = () => {
     // navigate('/receipt-form')
   };
 
+  // Fetch branch data from API
+  useEffect(() => {
+    const fetchLedgers = async () => {
+      try {
+        const response = await ApiService.post('/ledger/getLedgerDetails', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        console.log('fedgrfdtrgxfsdf', response);
+        if (response.status) {
+          setLedger(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
 
-  
-
-      // Fetch branch data from API
-      useEffect(() => {
-        const fetchLedgers = async () => {
-          try {
-            const response = await ApiService.post(
-              '/ledger/getLedgerDetails', {
-                        companyCode: initialAuthState?.companyCode,
-                        unitCode: initialAuthState?.unitCode,
-                      }
-            );
-            console.log("fedgrfdtrgxfsdf",response)
-            if (response.status) {
-              setLedger(response.data); // Set branches to state
-            } else {
-              console.error('Failed to fetch branches');
-            }
-          } catch (error) {
-            console.error('Error fetching branches:', error);
-          }
-        };
-    
-        fetchLedgers();
-      }, []);
+    fetchLedgers();
+  }, []);
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const payloadObject = {
       date: formData.date,
       day: formData.day,
-      branchId: Number(localStorage.getItem("branchId")),
+      branchId: Number(localStorage.getItem('branchId')),
       ledgerId: Number(formData?.ledgerId),
       voucherType: formData.voucherType,
       invoiceId: formData.supplierInvoiceNumber,
       supplierLocation: formData.supplierLocation,
       voucherGST: formData.purchaseGst,
-      amount:Number(
-        selectedTaxType==="CGST" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
-          ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
-        ) : selectedTaxType==="IGST" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
-        ) : selectedTaxType==="TDS" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
-          ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
-        ) : (
-          totalAmount
-        ))
-      ,
+      amount: Number(
+        selectedTaxType === 'CGST'
+          ? totalAmount +
+              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+          : selectedTaxType === 'IGST'
+            ? totalAmount +
+              (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+            : selectedTaxType === 'TDS'
+              ? totalAmount +
+                (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+              : totalAmount
+      ),
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
         rate: Number(item.rate),
         totalCost: Number(item.totalCost),
       })),
-      CGST:formData.CGST ,
-      SGST:formData.SGST,
-      IGST:formData.IGST,
-      TDS:formData.TDS,
-      TCS:formData.TCS,
+      CGST: formData.CGST,
+      SGST: formData.SGST,
+      IGST: formData.IGST,
+      TDS: formData.TDS,
+      TCS: formData.TCS,
       purpose: formData.purpose,
       companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode
+      unitCode: initialAuthState.unitCode,
     };
-    
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -266,7 +263,7 @@ const SaleForm = () => {
 
       if (response.status) {
         alert('Sale voucher created successfully!');
-        navigate("/vouchers");
+        navigate('/vouchers');
         // return response.data;
       } else {
         alert('Failed to create sale voucher details.');
@@ -370,7 +367,6 @@ const SaleForm = () => {
           placeholder="Date:"
           value={formData.date}
           name="date"
-
           onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
@@ -384,7 +380,6 @@ const SaleForm = () => {
             fontWeight: '500',
           }}
         />
-
 
         <input
           type="text"
@@ -404,30 +399,29 @@ const SaleForm = () => {
           }}
         />
 
-
-      <select
-        value={formData.ledgerId}
-        onChange={handleLedgerChange}
-        name="partyName"
-        className="w-full border rounded p-2"
-        style={{
-          height: '45px',
-          backgroundColor: '#FFFFFF',
-          color: '#000000',
-          borderRadius: '8px',
-          borderWidth: '1px',
-          borderColor: '#A2A2A2',
-          fontSize: '20px',
-          fontWeight: '500',
-        }}
-      >
-        <option value="">Select Party Name</option>
-        {ledger?.map((party) => (
-          <option key={party.id} value={party.id}>
-            {party.name}
-          </option>
-        ))}
-      </select>
+        <select
+          value={formData.ledgerId}
+          onChange={handleLedgerChange}
+          name="partyName"
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <option value="">Select Party Name</option>
+          {ledger?.map((party) => (
+            <option key={party.id} value={party.id}>
+              {party.name}
+            </option>
+          ))}
+        </select>
 
         <input
           type="text"
@@ -519,6 +513,7 @@ const SaleForm = () => {
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
+          type="button"
         >
           +
         </button>
@@ -532,7 +527,6 @@ const SaleForm = () => {
               alignItems: 'center',
             }}
           >
-            {/* Input Fields */}
             <div
               className="flex flex-1 gap-2"
               style={{
@@ -550,8 +544,24 @@ const SaleForm = () => {
                 }
                 className="w-1/4 border rounded p-2"
               />
-                  <input
-                  type="number"
+              <select
+                name="type"
+                value={entry.type}
+                onChange={(e) =>
+                  handleEntryChange(index, 'type', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              >
+                <option value="">Select Type</option>
+                <option value="Rectifications">Rectifications</option>
+                <option value="Renewables">Renewables</option>
+                <option value="ProductSales">ProductSales</option>
+                <option value="ServiceSales">ServiceSales</option>
+                <option value="Others">Others</option>
+              </select>
+
+              <input
+                type="number"
                 placeholder="Quantity:"
                 name="quantity"
                 value={entry.quantity}
@@ -560,9 +570,9 @@ const SaleForm = () => {
                 }
                 className="w-1/4 border rounded p-2"
               />
-             
+
               <input
-              type="number"
+                type="number"
                 placeholder="Rate:"
                 value={entry.rate}
                 name="rate"
@@ -572,18 +582,15 @@ const SaleForm = () => {
                 className="w-1/4 border rounded p-2"
               />
 
-<input  type="number"
+              <input
+                type="number"
                 placeholder="Amount:"
                 value={entry.totalCost}
                 name="totalCost"
-                
                 className="w-1/4 border rounded p-2"
               />
-          
             </div>
-            
 
-            {/* Button - always reserve space */}
             <div
               className="w-[30px] flex justify-center items-center ml-2"
               style={{
@@ -611,8 +618,8 @@ const SaleForm = () => {
         ))}
       </div>
       <div>
-              <p>Total Amount:{totalAmount}</p>
-              </div>
+        <p>Total Amount:{totalAmount}</p>
+      </div>
       {/* Invoices */}
       <div className="space-y-4">
         {/* Dropdown at the top */}
@@ -640,64 +647,63 @@ const SaleForm = () => {
                 <span className="font-bold">{tax.name}</span>
                 {/* <span className="font-semibold">{tax.percent}</span> */}
                 <input
-                type="number"
-                placeholder={`${tax.name} Percentage:`}
-                value={formData[tax.name]}
-                name={tax.name}
-                onChange={handleInputChange}
-                className="w-1/4 border rounded p-2"
-              />
+                  type="number"
+                  placeholder={`${tax.name} Percentage:`}
+                  value={formData[tax.name]}
+                  name={tax.name}
+                  onChange={handleInputChange}
+                  className="w-1/4 border rounded p-2"
+                />
                 <span className="font-semibold">
-  Amount: ₹{(totalAmount * (1 + parseFloat(formData[tax.name] || 0) / 100)).toFixed(2)}
-</span>       
+                  Amount: ₹
+                  {(
+                    totalAmount *
+                    (1 + parseFloat(formData[tax.name] || 0) / 100)
+                  ).toFixed(2)}
+                </span>
               </div>
-
-            
             </div>
           </div>
         ))}
       </div>
+      <div></div>
       <div>
-              </div>
-              <div>
-              <p>Total Amount (Including Tax) :{
-  selectedTaxType==="CGST" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
-    ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
-  ) : selectedTaxType==="IGST" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
-  ) : selectedTaxType==="TDS" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
-    ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
-  ) : (
-    totalAmount
-  )
-}</p>
-              </div>
+        <p>
+          Total Amount (Including Tax) :
+          {selectedTaxType === 'CGST'
+            ? totalAmount +
+              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            : selectedTaxType === 'IGST'
+              ? totalAmount +
+                (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+              : selectedTaxType === 'TDS'
+                ? totalAmount +
+                  (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                  (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+                : totalAmount}
+        </p>
+      </div>
       <div className="mt-4 w-full border rounded p-2">
-  <label className="block mb-1 font-medium">Description:</label>
-  <textarea
-  name="purpose"
-    value={formData.purpose}
-    onChange={handleInputChange}
-    className="w-full border rounded p-2"
-    rows="3"
-    placeholder="Enter description or notes..."
-  />
-</div>
+        <label className="block mb-1 font-medium">Description:</label>
+        <textarea
+          name="purpose"
+          value={formData.purpose}
+          onChange={handleInputChange}
+          className="w-full border rounded p-2"
+          rows="3"
+          placeholder="Enter description or notes..."
+        />
+      </div>
 
-
-<div className="mt-6 text-center">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
-            >
-              Submit
-            </button>
-          </div>
+      <div className="mt-6 text-center">
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 };
