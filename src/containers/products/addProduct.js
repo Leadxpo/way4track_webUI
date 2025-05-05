@@ -339,11 +339,13 @@ const AddProductForm = () => {
             value={formData.productTypeId}
           >
             <option value="">Select a product type</option>
-            {productTypes.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
+            {productTypes
+              .filter((type) => type.type === 'PRODUCT')
+              .map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
           </select>
           {errors.productTypeId && (
             <p className="text-red-500 text-sm mt-1">{errors.productTypeId}</p>

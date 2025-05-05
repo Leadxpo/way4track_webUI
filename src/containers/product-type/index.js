@@ -168,7 +168,7 @@ const ProductType = () => {
                       />
                     </td>
                     <td className="px-6 py-4">{item.description}</td> */}
-                    <td className="px-6 py-4 text-center relative dropdown-container">
+                    <td className="px-6 py-4 text-left relative dropdown-container">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -180,7 +180,10 @@ const ProductType = () => {
                       </button>
 
                       {dropdownOpen === item.id && (
-                        <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
+                        <div
+                          className="absolute right-5 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50"
+                          style={{ marginRight: '10px' }}
+                        >
                           <ul className="text-left">
                             <li
                               className="p-2 hover:bg-gray-100 cursor-pointer"
