@@ -33,7 +33,7 @@ ticketNumber
         setFormData({
           problem: ticketData.problem || "",
           date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
-          
+          designationRelation:ticketData.designationRelation.designation,
 ticketNumber
 : ticketData.
           ticketNumber
@@ -61,7 +61,7 @@ ticketNumber
       <h2 className="text-xl font-bold mb-4">View Ticket</h2>
       <div>
           <label className="block text-sm font-medium">
-ticketNumber
+Ticket Number
 </label>
           <input
             type="text"
@@ -83,7 +83,16 @@ ticketNumber
             className="w-full p-2 border rounded-md"
           />
         </div>
-
+        <div>
+          <label className="block text-sm font-medium">Designation Relation</label>
+          <input
+            type="text"
+            name="problem"
+            value={formData.designationRelation}
+            required
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium">Date</label>
           <input

@@ -40,7 +40,7 @@ const Home = () => {
   const [totalPayable, setTotalPayable] = useState([]);
   const [totalPurchases, setTotalPurchases] = useState([]);
   const [branchdetails, setBranchDetails] = useState([]);
-  
+
   const [cardData, setCardData] = useState([
     {
       id: 1,
@@ -200,9 +200,9 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 1
             ? {
-                ...item,
-                count: response.data.SalesAmount ?? 0, // assuming it's a number
-              }
+              ...item,
+              count: response.data.SalesAmount ?? 0, // assuming it's a number
+            }
             : item
         )
       );
@@ -230,9 +230,9 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 4
             ? {
-                ...item,
-                count: count ?? 0,
-              }
+              ...item,
+              count: count ?? 0,
+            }
             : item
         )
       );
@@ -255,9 +255,9 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 2
             ? {
-                ...item,
-                count: response.data.PayableAmount ?? 0,
-              }
+              ...item,
+              count: response.data.PayableAmount ?? 0,
+            }
             : item
         )
       );
@@ -280,9 +280,9 @@ const Home = () => {
         prevData.map((item) =>
           item.id === 3
             ? {
-                ...item,
-                count: response.data.ReceivableAmount ?? 0,
-              }
+              ...item,
+              count: response.data.ReceivableAmount ?? 0,
+            }
             : item
         )
       );
@@ -713,22 +713,22 @@ const Home = () => {
         ))}
       </div>
 
-     {/* fourth section */}
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
-  {cardData.map((card) => (
-    <div key={card.id} onClick={() => handleCardClick(card.title)}>
-      <TotalCountCard data={card} />
-    </div>
-  ))}
-</div>
+      {/* fourth section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
+        {cardData.map((card) => (
+          <div key={card.id} onClick={() => handleCardClick(card.title)}>
+            <TotalCountCard data={card} />
+          </div>
+        ))}
+      </div>
 
 
       {/* fifth section - analysis card*/}
       <div className="mt-6">
         {selectedCard === 'Payables' ||
-        selectedCard === 'Total Purchases' ||
-        selectedCard === 'Receivables' ||
-        selectedCard === 'Total Sales' ? (
+          selectedCard === 'Total Purchases' ||
+          selectedCard === 'Receivables' ||
+          selectedCard === 'Total Sales' ? (
           <div className="flex mb-4">
             <div className="flex-grow mr-2">
               <input

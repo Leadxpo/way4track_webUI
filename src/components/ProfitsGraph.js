@@ -18,7 +18,7 @@ const ProfitsGraph = ({ branchData }) => {
         (acc, item) => acc + Number(item.salesAmount),
         0
       ) / branchData.data.length
-    ).toFixed(2);
+    ).toFixed(2); 
   };
 
   return (
