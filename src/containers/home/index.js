@@ -120,10 +120,17 @@ const Home = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await ApiService.post('/dashboards/getSalesBreakdown');
+        const payload = {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          date: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
+        };
+  
+        const response = await ApiService.post('/dashboards/getSalesBreakdown', payload);
+  
         if (response.status) {
           setBranches(response.data); // Set branches to state
-          console.log('===== Hello =======>', branches);
+          // console.log('===== Hello =======>', response.data);
         } else {
           console.error('Failed to fetch branches');
         }
@@ -131,9 +138,12 @@ const Home = () => {
         console.error('Error fetching branches:', error);
       }
     };
-
+  
     fetchBranches();
   }, []);
+  
+
+
 
   const handleCardClick = (cardType) => {
     let dataSource;
@@ -173,7 +183,7 @@ const Home = () => {
 
   const handleSearch = () => {
     // Implement your date-based filtering here
-    console.log('Filtering with:', { dateFrom, dateTo });
+    // console.log('Filtering with:', { dateFrom, dateTo });
   };
 
   const fetchTotalSalesCount = async () => {
@@ -184,7 +194,7 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      console.log(response.data);
+      // console.log(response.data);
       setTotalProductDetails(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
@@ -210,7 +220,7 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      console.log(response.data);
+      // console.log(response.data);
       const count =
         typeof response.data === 'object'
           ? response.data.last30DaysPurchases
@@ -240,7 +250,7 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      console.log(response.data);
+      // console.log(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
           item.id === 2
@@ -265,7 +275,7 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      console.log(response.data);
+      // console.log(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
           item.id === 3
@@ -304,12 +314,12 @@ const Home = () => {
 
       if (response.status) {
         const filteredData = response.data.map((item) => ({
-          productId: item.id,
-          productName: item.productName || 'N/A',
-          productDescription: item.productDescription || 'N/A',
-          vendorName: item.vendorName || (item.vendorId?.name ?? 'N/A'),
-          imeiNumber: item.imeiNumber || 'N/A',
-          presentStock: item.quantity || 0, // Assuming stock is quantity
+          date: item.date?.split('T')[0],
+          branchName: item.branchName || 'N/A',
+          voucherId: item.voucherId || 'N/A',
+          purpose: item.purpose || (item.vendorId?.name ?? 'N/A'),
+          amount: item.amount || 'N/A',
+          paymentType: item.paymentType || 0, // Assuming stock is quantity
         }));
         setTotalProducts(filteredData);
       } else {
@@ -396,7 +406,7 @@ const Home = () => {
       );
 
       if (response.status) {
-        console.log(response.data, 'purchase');
+        // console.log(response.data, 'purchase');
         setTotalPurchases(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch ticket details.');
@@ -435,7 +445,7 @@ const Home = () => {
         }
       );
       if (response.status) {
-        console.log(response.data, 'OOOOOOOOOOOOOOOOOOOO');
+        // console.log(response.data, 'OOOOOOOOOOOOOOOOOOOO');
         setBranchWiseSolidLiquidData(response.data);
       } else {
         alert(
@@ -457,7 +467,7 @@ const Home = () => {
         }
       );
       if (response.status) {
-        console.log(response.data, '{{{{{{{{{{{{{{{{{{{{{{{{');
+        // console.log(response.data, '{{{{{{{{{{{{{{{{{{{{{{{{');
         setBranchDetails(response.data);
       } else {
         alert(response.data.message || 'Failed to fetch total sales details.');
@@ -470,80 +480,57 @@ const Home = () => {
   const getAnalysis = async () => {
     try {
       const date = new Date();
-      const formattedYear = date.getFullYear(); // Extract the year
-
-      const response = await ApiService.post(
-        '/dashboards/getBranchWiseMonthlySales',
-        {
-          date: formattedYear, // Send only the year  
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
-      );
+      const formattedYear = date.getFullYear();
+  
+      const response = await ApiService.post('/dashboards/getBranchWiseMonthlySales', {
+        date: formattedYear,
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
+  
       if (response.status) {
         const allMonths = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December',
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
         ];
-        console.log("rrr",response.data)
-        const formattedData = response.data.map((branch, index) => {
-          // Create a lookup for existing months in the branch data
-          const existingMonths = new Set(
-            branch.data.map((entry) => entry.month)
-          );
-          // Ensure all 12 months are present
+  
+        // Group data by branchName
+        const groupedByBranch = {};
+        response.data.forEach(entry => {
+          const branch = entry.branchName.trim();
+          if (!groupedByBranch[branch]) {
+            groupedByBranch[branch] = [];
+          }
+          groupedByBranch[branch].push(entry);
+        });
+  
+        // Format each branch's data
+        const formattedData = Object.entries(groupedByBranch).map(([branchName, entries], index) => {
           const completeData = allMonths.map((monthName, i) => {
-            const existingEntry = branch.data.find(
-              (entry) => entry.month === i + 1
-            );
-
-            if (existingEntry) {
-              const { creditAmount, debitAmount } = existingEntry;
-              const total = Math.abs(creditAmount) + Math.abs(debitAmount);
-              const percentage =
-                total !== 0 ? ((creditAmount - debitAmount) / total) * 100 : 0;
-
-              return {
-                month: existingEntry.monthName,
-                profitorLoss: percentage.toFixed(2), // Shows positive for profit, negative for loss
-              };
-            }
-
+            const match = entries.find(e => e.month === i + 1);
             return {
               month: monthName,
-              profitorLoss: '0.00', // Set to 0% for missing months
+              salesAmount: match ? match.TotalSalesAmount.toFixed(2) : '0.00'
             };
           });
-
+  
           return {
-            branch: branch.branchName,
+            branch: branchName,
             background: getBackgroundColor(index),
-            data: completeData,
+            data: completeData
           };
         });
-
-        console.log('branches charts---', formattedData);
+  
         setBranchesData(formattedData);
+        setBranches(formattedData)
       } else {
-        alert(
-          response.data.internalMessage || 'Failed to fetch analysis details.'
-        );
+        alert(response.data.internalMessage || 'Failed to fetch analysis details.');
       }
     } catch (e) {
       console.error('Error fetching analysis details:', e);
     }
   };
-
+  
   // Function to get a background color based on index
   const getBackgroundColor = (index) => {
     const colors = [
@@ -603,7 +590,7 @@ const Home = () => {
         if (response.status) {
           const branchData = response.data;
           setBranchesDataDammy(branchData); // set to state
-          console.log('Fetched Branches:', branchData); // correct way to log
+          // console.log('Fetched Branches:', branchData); // correct way to log
         } else {
           console.error('Failed to fetch branches');
         }
@@ -630,7 +617,7 @@ const Home = () => {
         <div className="flex flex-wrap mt-4 w-full">
           {/* Left: Branch Sales Data */}
           <div className="w-full md:w-2/3">
-            {branchesDataDammy.map((branch, index) => (
+            {branches.map((branch, index) => (
               <div
                 key={index}
                 className="grid grid-cols-6 gap-x-1 items-center py-1 px-1 border-b"
@@ -785,16 +772,24 @@ const Home = () => {
             >
               <FaSearch className="mr-2" /> Search
             </button>
+        
 
             <button className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
               <FaFileDownload className="mr-2" /> Download Excel
             </button>
           </div>
+
+
         ) : null}
         <div className="mt-8">
-          <Table columns={tableColumns} data={tableData} />
+{
+// console.log("table Data>",tableColumns)
+}
+          <Table columnNames={tableColumns} columns={tableColumns} data={tableData} />
         </div>
       </div>
+
+
       {/* sixth section - table */}
       {/* <AnalysisCard
             bartitle1={'No. of Credits'}

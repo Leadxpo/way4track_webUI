@@ -26,14 +26,14 @@ export default function EditTicket() {
         unitCode: initialAuthState?.unitCode,
       });
   
-      console.log("fetch ticket details: fetchTicketById", response.data);
+      console.log("fetch ticket details: fetchTicketById ticket pen", response.data);
   
       if (response.status && response.data) {
         const ticketData = response.data;
         setFormData({
           problem: ticketData.problem || "",
           date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
-          addressingDepartment: ticketData.addressingDepartment || "",
+          designationRelation:ticketData.designationRelation.id,
           workStatus: ticketData.workStatus || "",
           description: ticketData.description || "",
         });
@@ -138,7 +138,7 @@ export default function EditTicket() {
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-1">Addressing Department</label>
+          <label className="block font-medium mb-1">Designation Relation</label>
           <select
             name="designation_id"
             value={formData.designationRelation || ""}

@@ -20,11 +20,6 @@ const SubStaffDetails = () => {
   const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
    const [searchTerm, setSearchTerm] = useState("");
-    const [search, setSearch] = useState("");
-    const [searchTotal, setSearchTotal] = useState("");
-    const [searchReceved, setSearchReceved] = useState("");
-    const [searchPending, setSearchPending] = useState("");
-    const [activeTable, setActiveTable] = useState(null);
     const [previewData, setPreviewData] = useState([]);
     const [modalData, setModalData] = useState([]);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -32,8 +27,8 @@ const SubStaffDetails = () => {
     const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
 
 
-    // const SubStaffId=Number(localStorage.getItem("id"));
-    const SubStaffId=6;
+    const SubStaffId=Number(localStorage.getItem("id"));
+    // const SubStaffId=6;
     useEffect(() => {
  
       const fetchSubDealerDetails = async () => {
@@ -298,11 +293,11 @@ const handleSearch = () => {
             Phone number : {subDealerDetails.phone}
           </p>
           <p className="text-gray-800 font-semibold">Email : {subDealerDetails.email}</p>
-          <p className="text-gray-800 font-semibold">
+          {/* <p className="text-gray-800 font-semibold">
             SubDealer Branch : {subDealerDetails.
 branch||"-"
 }
-          </p>
+          </p> */}
 
           <p className="text-gray-800 font-semibold">
             Gst Number : {subDealerDetails.gstNumber||"-"}
@@ -370,7 +365,8 @@ branch||"-"
               </tr>
             </thead>
             <tbody>
-              {previewData?.map((payment, index) => (
+              {previewData?.length>0?
+              previewData?.map((payment, index) => (
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
                   <td className="p-2 border text-center">{payment.staffId}</td>
                   <td className="p-2 border text-center">{payment.
@@ -404,7 +400,14 @@ email
                                         )}
                                       </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    No Sub Dealer Staff found
+                  </td>
+                </tr>
+              
+              )}
             </tbody>
           </table>
         </div>

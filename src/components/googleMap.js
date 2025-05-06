@@ -5,7 +5,7 @@ import ApiService from "../services/ApiService"; // Adjust path as needed
 // Google Maps Container Style
 const mapContainerStyle = {
   width: "100%",
-  height: "500px",
+  height: "400px",
 };
 
 // Default Center Position (can adjust later to fit markers dynamically)
