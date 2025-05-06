@@ -304,13 +304,13 @@ const CeoBackendSupportPayments = () => {
   const convertToIST = (utcDate) => {
     if (!utcDate) return null;
     const date = new Date(utcDate);
-    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }); // Convert to IST
+    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
   };
 
   const calculateDuration = (startDate, endDate) => {
     const start = new Date(startDate);
-    const end = endDate ? new Date(endDate) : new Date(); // Use current time if endDate is missing
-    const diffMs = end - start; // Difference in milliseconds
+    const end = endDate ? new Date(endDate) : new Date();
+    const diffMs = end - start;
 
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));

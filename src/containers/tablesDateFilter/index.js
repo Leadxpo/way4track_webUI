@@ -42,7 +42,7 @@ const TableWithDateFilter = ({
   const [columnNames, setColumnNames] = useState([]);
   const [branchFilter, setBranchFilter] = useState('');
   const [requestList, setRequestList] = useState([]);
-  
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -62,14 +62,13 @@ const TableWithDateFilter = ({
     fetchBranches();
   }, []);
 
-
-  const [searchSubdealer, setSearchSubdealer] = useState("");
+  const [searchSubdealer, setSearchSubdealer] = useState('');
   const [subdealerList, setSubdealerList] = useState([]);
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
-  
-    if (searchQuery === "") {
+
+    if (searchQuery === '') {
       setFilteredData(subdealerList); // Reset to original data
     } else {
       const filteredData = subdealerList.filter((item) =>
@@ -80,7 +79,6 @@ const TableWithDateFilter = ({
       setFilteredData(filteredData);
     }
   };
-  
 
   const getVendorData = useCallback(async () => {
     try {
@@ -168,7 +166,6 @@ const TableWithDateFilter = ({
     }
   }, [dateFrom, dateTo, statusFilter]);
 
- 
   const getRequestsData = useCallback(async () => {
     try {
       const requestBody = {
@@ -176,36 +173,35 @@ const TableWithDateFilter = ({
         unitCode: initialAuthState?.unitCode,
         role: localStorage.getItem('role'),
       };
-  
+
       if (
         requestBody.role === 'Technician' ||
         requestBody.role === 'Sales Man'
       ) {
         requestBody.staffId = localStorage.getItem('userId');
       }
-  
+
       if (requestData.branchName) {
         requestBody.branchName = requestData.branchName;
       }
-  
+
       const response = await ApiService.post(
         '/requests/getRequestsBySearch',
         requestBody
       );
-  
-      console.log("yyyyyy request request raiseeee", response);
-  
+
+      console.log('yyyyyy request request raiseeee', response);
+
       if (response?.length) {
         const cleanedData = response.map((item) => ({
           requestNumber: item.requestNumber,
           branchName: item.branchName,
-          branchId:item.req_branch_id,
+          branchId: item.req_branch_id,
           requestType: item.requestType,
           status: item.status,
-
         }));
 
-        console.log(";;;;;",cleanedData);
+        console.log(';;;;;', cleanedData);
         setRequestList(cleanedData);
         setFilteredData(cleanedData);
       } else {
@@ -337,22 +333,19 @@ const TableWithDateFilter = ({
     setFilteredData(filtered);
   };
 
-  const handleBranchFilter = (e) => { 
-    console.log("ghhhhhh",e.target.value);
-    const selectedBranch =e.target.value; 
+  const handleBranchFilter = (e) => {
+    console.log('ghhhhhh', e.target.value);
+    const selectedBranch = e.target.value;
     setBranchFilter(selectedBranch);
-  
+
     if (!requestList || !Array.isArray(requestList)) return;
-  
-    const filtered = requestList.filter(item => 
-      !selectedBranch || item.branchId
-      === Number(selectedBranch)
+
+    const filtered = requestList.filter(
+      (item) => !selectedBranch || item.branchId === Number(selectedBranch)
     );
-   console.log("0000000>>>>>",filtered);
+    console.log('0000000>>>>>', filtered);
     setFilteredData(filtered);
   };
-
-
 
   const handleSearch = async () => {
     switch (type) {
@@ -416,99 +409,102 @@ const TableWithDateFilter = ({
         )}
       </div>
 
-{type==="sub_dealers"&&
-      <div className="flex mb-4">
-              <div className="flex-grow mx-2">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Search by Subdealer Id or Name"
-                  value={searchSubdealer}
-                  onChange={(e)=>setSearchSubdealer(e.target.value)}
-                  className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
-                />
-              </div>
-              <button
-                onClick={handleSearchSubdealer}
-                className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-              >
-                <FaSearch className="mr-2" /> Search
-              </button>
-            </div>}
-
-      {/* Filters Row */}
-      {type==="sub_dealers"?"":
-      <div className="flex mb-4">
-        {showDateFilters && (
-          <div className="flex-grow mr-2">
-            <input
-              type="date"
-              id="dateFrom"
-              value={dateFrom}
-              placeholder="From"
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-              style={{ paddingLeft: '8px' }}
-            />
-          </div>
-        )}
-        {showDateFilters && (
+      {type === 'sub_dealers' && (
+        <div className="flex mb-4">
           <div className="flex-grow mx-2">
             <input
-              type="date"
-              id="dateTo"
-              value={dateTo}
-              placeholder="To"
-              onChange={(e) => setDateTo(e.target.value)}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-              style={{ paddingLeft: '8px' }}
+              type="text"
+              name="name"
+              placeholder="Search by Subdealer Id or Name"
+              value={searchSubdealer}
+              onChange={(e) => setSearchSubdealer(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
             />
           </div>
-        )}
-        <div className="flex-grow mx-2">
-          {showStatusFilter ? (
-            <select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="">All Statuses</option>
-              {statuses.map((status, index) => (
-                <option key={index} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          ) : (
+          <button
+            onClick={handleSearchSubdealer}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
+        </div>
+      )}
 
-            <div className="flex items-center space-x-2 mb-4">
-  <label className="text-gray-700 font-bold whitespace-nowrap">
-    Search by Branch :
-  </label>
-  <select
-    value={branchFilter}
-    onChange={handleBranchFilter}
-    className="h-12 w-[250px] border border-gray-300 rounded-md px-3 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600"
-  >
-    <option value="">All Branches</option>
-    {branches.map((branch) => (
-      <option key={branch.id} value={branch.id}>
-        {branch.branchName}
-      </option>
-    ))}
-  </select>
-</div>
+      {/* Filters Row */}
+      {type === 'sub_dealers' ? (
+        ''
+      ) : (
+        <div className="flex mb-4">
+          {showDateFilters && (
+            <div className="flex-grow mr-2">
+              <input
+                type="date"
+                id="dateFrom"
+                value={dateFrom}
+                placeholder="From"
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+          {showDateFilters && (
+            <div className="flex-grow mx-2">
+              <input
+                type="date"
+                id="dateTo"
+                value={dateTo}
+                placeholder="To"
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+          <div className="flex-grow mx-2">
+            {showStatusFilter ? (
+              <select
+                value={statusFilter}
+                onChange={handleStatusChange}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              >
+                <option value="">All Statuses</option>
+                {statuses.map((status, index) => (
+                  <option key={index} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="flex items-center space-x-2 mb-4">
+                <label className="text-gray-700 font-bold whitespace-nowrap">
+                  Search by Branch :
+                </label>
+                <select
+                  value={branchFilter}
+                  onChange={handleBranchFilter}
+                  className="h-12 w-[250px] border border-gray-300 rounded-md px-3 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                >
+                  <option value="">All Branches</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+          {false && (
+            <button
+              onClick={handleSearch}
+              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+            >
+              <FaSearch className="mr-2" /> Search
+            </button>
           )}
         </div>
-        {false&&
-        
-        <button
-          onClick={handleSearch}
-          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-        >
-          <FaSearch className="mr-2" /> Search
-        </button>}
-      </div>}
+      )}
 
       {/* Table Row */}
       <div className="mt-8">
@@ -522,6 +518,7 @@ const TableWithDateFilter = ({
           showEdit={true} // Ensure Edit button is always visible
           showDelete={true} // Ensure Delete button is always visible
           showDetails={true} // Ensure Details button is always visible
+          showActionColumn={type !== 'payments'}
           editText={editText} // Custom edit button text
           deleteText={deleteText} // Custom delete button text
           detailsText={detailsText} // Custom details button text

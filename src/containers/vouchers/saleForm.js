@@ -108,6 +108,10 @@ const SaleForm = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
 
+  const [gstNumber, setGstNumber] = useState('');
+  const [gstData, setGstData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const filteredTaxData = taxData.filter((tax) => {
     if (selectedTaxType === 'CGST') {
       return tax.name === 'CGST' || tax.name === 'SGST';
@@ -215,6 +219,7 @@ const SaleForm = () => {
 
     fetchLedgers();
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -275,6 +280,36 @@ const SaleForm = () => {
       console.error('Error create sale voucher details:', error);
       alert('An error occurred while create sale voucher details.');
       return null;
+    }
+  };
+
+  const handleFetchGSTData = async () => {
+    if (!gstNumber) {
+      alert('Please enter a GST number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        'https://appyflow.in/api/verifyGST',
+        {
+          key_secret: 'JqwMCeWBEDNCjxmEhUYSeMoluSB2',
+          gstNo: gstNumber,
+        }
+      );
+
+      if (response?.data) {
+        setGstData(response.data);
+      } else {
+        alert('No data found');
+        setGstData(null);
+      }
+    } catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -480,7 +515,7 @@ const SaleForm = () => {
           }}
         />
 
-        <input
+        {/* <input
           type="text"
           placeholder="Purchase GST:"
           value={formData.purchaseGst}
@@ -497,7 +532,42 @@ const SaleForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
+
+        <div className="w-full max-w-md">
+          <input
+            type="text"
+            placeholder="Enter GST Number"
+            value={gstNumber}
+            onChange={(e) => setGstNumber(e.target.value)}
+            className="w-full border rounded p-2"
+            style={{
+              height: '45px',
+              backgroundColor: '#FFFFFF',
+              color: '#000000',
+              borderRadius: '8px',
+              borderWidth: '1px',
+              borderColor: '#A2A2A2',
+              fontSize: '20px',
+              fontWeight: '500',
+            }}
+          />
+
+          <button
+            onClick={handleFetchGSTData}
+            className="bg-blue-600 text-white px-4 py-2 rounded mt-3"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Get GST Details'}
+          </button>
+
+          {gstData && (
+            <div className="mt-4 bg-gray-100 p-3 rounded shadow">
+              <h3 className="font-semibold mb-2">GST Details:</h3>
+              <pre className="text-sm">{JSON.stringify(gstData, null, 2)}</pre>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Entries */}

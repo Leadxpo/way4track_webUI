@@ -11,6 +11,8 @@ const Vouchers = () => {
   const [voucherName, setVoucherName] = useState('');
   const [selectedVoucherType, setSelectedVoucherType] = useState('');
   const [popupData, setPopupData] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
 
   const handleSearch = () => {
     const filtered = voucherList.filter((item) => {
@@ -75,14 +77,25 @@ const Vouchers = () => {
     setPopupData(null);
   };
 
-  const handleMoreDetails = (item) => {
-    navigate('/voucher-details', { state: { item } });
-    setPopupData(null);
-  };
+  // const handleMoreDetails = (item) => {
+  //   navigate('/voucher-details', { state: { item } });
+  //   setPopupData(null);
+  // };
 
   const voucherTypes = Array.from(
     new Set(voucherList.map((v) => v.voucherType))
   );
+
+  const handleMoreDetails = (item) => {
+    setSelectedVoucher(item);
+    setShowModal(true);
+    setPopupData(null);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedVoucher(null);
+  };
 
   return (
     <div className="p-6">
@@ -132,22 +145,22 @@ const Vouchers = () => {
           style={{
             top: `${popupData.position.top}px`,
             left: `${popupData.position.left}px`,
-            height: '82px',
+            height: '42px',
             width: '105px',
             borderRadius: '5px',
             backgroundColor: '#F1F1F1',
           }}
         >
-          <button
+          {/* <button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
             style={{ fontSize: '13px', color: '#000000', fontWeight: '400' }}
             onClick={() => handleEdit(popupData.item)}
           >
             Edit
-          </button>
+          </button> */}
 
           {/* Horizontal Line */}
-          <hr className="border-gray-300 my-1" />
+          {/* <hr className="border-gray-300 my-1" /> */}
 
           <button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
@@ -170,6 +183,7 @@ const Vouchers = () => {
               <th className="p-3">Amount</th>
               <th className="p-3">Payment Mode</th>
               <th className="p-3">Payment Status</th>
+              <th className="p-3">Action</th>
             </tr>
           </thead>
 
@@ -183,17 +197,51 @@ const Vouchers = () => {
                 <td className="p-3">{voucher.amount}</td>
                 <td className="p-3">{voucher.paymentMode}</td>
                 <td className="p-3">{voucher.paymentStatus}</td>
-                {/* <td
+                <td
                   className="px-4 py-2 text-center"
                   onClick={(e) => handleActionClick(e, voucher)}
                 >
                   <FaEllipsisV className="cursor-pointer" />
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {showModal && selectedVoucher && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-2xl font-bold text-gray-600 hover:text-gray-800"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-bold mb-4">Voucher Details</h3>
+            <p>
+              <strong>Voucher ID:</strong> {selectedVoucher.voucherId}
+            </p>
+            <p>
+              <strong>Branch:</strong> {selectedVoucher.branch}
+            </p>
+            <p>
+              <strong>Voucher Type:</strong> {selectedVoucher.paymentType}
+            </p>
+            <p>
+              <strong>Generation Date:</strong> {selectedVoucher.generationDate}
+            </p>
+            <p>
+              <strong>Amount:</strong> ₹{selectedVoucher.amount}
+            </p>
+            <p>
+              <strong>Payment Mode:</strong> {selectedVoucher.paymentMode}
+            </p>
+            <p>
+              <strong>Payment Status:</strong> {selectedVoucher.paymentStatus}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -638,7 +638,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/attendance-upload" element={<AttendanceUpload />} />
           <Route path="/attendance-details" element={<AttendanceDetails />} />
-          <Route path="/attendance-edi" element={<EditAttendance />} />
+          <Route path="/attendance-edit" element={<EditAttendance />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>
