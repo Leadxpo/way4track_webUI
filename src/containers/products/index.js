@@ -382,6 +382,7 @@ const Products = () => {
       </div>
 
       {role !== 'CEO' &&
+        role !== 'Accountant' &&
         role !== 'Sub Dealer' &&
         role !== 'Warehouse Manager' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
@@ -426,6 +427,7 @@ const Products = () => {
         )}
 
       {role !== 'CEO' &&
+        role !== 'Accountant' &&
         role !== 'Branch Manager' &&
         role !== 'Warehouse Manager' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
@@ -471,7 +473,9 @@ const Products = () => {
           </div>
         )}
 
-      {(role === 'CEO' || role === 'Warehouse Manager') && (
+      {(role === 'CEO' ||
+        role === 'Warehouse Manager' ||
+        role === 'Accountant') && (
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
           {role !== 'Technician' && role !== 'Sales Man' && (
             <>

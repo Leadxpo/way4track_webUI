@@ -45,6 +45,8 @@ const BranchManagerHome = () => {
 
 
 
+
+
   const getBranchDetailsById = async (branchId) => {
     try {
       const response = await ApiService.post("/branch/getBranchDetailsById", { id: branchId });
@@ -69,64 +71,6 @@ const BranchManagerHome = () => {
 
 
 
-  useEffect(() => {
-    fetchPaymentStatus();
-  }, []);
-
-  const fetchPaymentStatus = async () => {
-    try {
-      const payload = {
-        companyCode: localStorage.getItem("companyCode"),
-        unitCode: localStorage.getItem("unitCode"),
-        role: localStorage.getItem("role"),
-      };
-
-      if (payload.role === "Branch Manager") {
-        payload.branchName = localStorage.getItem("branchName");
-      }
-
-      let response;
-      if (payload.branch) {
-        response = await ApiService.post(
-          "/technician/getPaymentStatusPayments",
-          payload
-        );
-      }
-
-      if (response?.status) {
-        setPaymentData({
-          totalPayment: response.data?.totalPayment || 0,
-          totalPendingPayment: response.data?.totalPendingPayment || 0,
-          totalSuccessPayment: response.data?.totalSuccessPayment || 0,
-        });
-      } else {
-        alert(response?.message || "Failed to fetch payment details.");
-      }
-    } catch (error) {
-      console.error("Error fetching payment details:", error);
-    }
-  };
-
-  const paymentStatus = [
-    {
-      label: "Total Payment",
-      value: paymentData.totalPayment,
-      color: "bg-red-300",
-      textColor: "text-red-700",
-    },
-    {
-      label: "Received Amount",
-      value: paymentData.totalSuccessPayment,
-      color: "bg-green-300",
-      textColor: "text-green-700",
-    },
-    {
-      label: "Pending Amount",
-      value: paymentData.totalPendingPayment,
-      color: "bg-purple-300",
-      textColor: "text-purple-700",
-    },
-  ];
 
 
   useEffect(() => {
@@ -242,11 +186,33 @@ const BranchManagerHome = () => {
 
 
 
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+  
 
-
-  // Total Payments
-
-  const TotalPayments = async () => {
+  const paymentStatus = [
+    {
+      label: "Total Payment",
+      value: paymentData.totalPayment,
+      color: "bg-red-300",
+      textColor: "text-red-700",
+    },
+    {
+      label: "Received Amount",
+      value: paymentData.totalSuccessPayment,
+      color: "bg-green-300",
+      textColor: "text-green-700",
+    },
+    {
+      label: "Pending Amount",
+      value: paymentData.totalPendingPayment,
+      color: "bg-purple-300",
+      textColor: "text-purple-700",
+    },
+  ];
+  
+  const fetchPayments = async () => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
@@ -256,114 +222,56 @@ const BranchManagerHome = () => {
       if (payload.role === 'Branch Manager') {
         payload.branchName = localStorage.getItem('branchName');
       }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getAllPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
+  
+      const response = await ApiService.post("/technician/getBackendSupportWorkAllocation", payload);
       if (response?.status && Array.isArray(response.data)) {
-        setTotalPayments(response.data);
-        console.log("get all payments",response.data)
+        const activePayments = response.data.filter(item => item.workStatus === 'activate');
+        setTotalPayments(activePayments);
+  
+        const received = activePayments.filter(item => item.paymentStatus === 'COMPLETED');
+        setReceivedPayments(received);
+  
+        const pending = activePayments.filter(item => item.paymentStatus === 'PENDING');
+        setPendingAmount(pending);
+  
+        // Set counts for UI
+        setPaymentData({
+          totalPayment: activePayments.length,
+          totalSuccessPayment: received.length,
+          totalPendingPayment: pending.length
+        });
       } else {
-        setTotalPayments([]); // Prevent undefined
+        setTotalPayments([]);
+        setReceivedPayments([]);
+        setPendingAmount([]);
+        setPaymentData({ totalPayment: 0, totalSuccessPayment: 0, totalPendingPayment: 0 });
       }
     } catch (error) {
-      console.error('Error fetching request data:', error);
-      setRequestBranchWiseData([]); // Handle errors gracefully
+      console.error('Error fetching combined payment data:', error);
+      setTotalPayments([]);
+      setReceivedPayments([]);
+      setPendingAmount([]);
+      setPaymentData({ totalPayment: 0, totalSuccessPayment: 0, totalPendingPayment: 0 });
     }
   };
-
-  useEffect(() => {
-    TotalPayments();
-  }, []);
-
-  // Filtering payments based on search query
-  const filteredTotalPayments = Array.isArray(totalPayments)
-    ? totalPayments.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
-
-
-  // Received Payments
-
-  const ReceivedPayments = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getSucessPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
-      if (response?.status && Array.isArray(response.data)) {
-        setReceivedPayments(response.data);
-      } else {
-        setReceivedPayments([]); // Prevent undefined
-      }
-    } catch (error) {
-      console.error('Error fetching received payments:', error);
-      setReceivedPayments([]); // Handle errors gracefully
-    }
-  };
-
-  useEffect(() => {
-    ReceivedPayments();
-  }, []);
-
-  // Filtering received payments based on search query
-  const filteredPayments = Array.isArray(receivedPayments)
-    ? receivedPayments.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
+  
+  // Filtered lists
+  const filteredTotalPayments = totalPayments.filter(p =>
+    (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
+    (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
+  );
+  
+const filteredPayments = receivedPayments.filter(p =>
+  (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
+    (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
+  );
+  
 
 
-  // Pending Amount
-
-  const PendingAmount = async () => {
-    try {
-      const payload = {
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem('role'),
-      };
-      if (payload.role === 'Branch Manager') {
-        payload.branchName = localStorage.getItem('branchName');
-      }
-      let response;
-      if (payload.branchName) {
-        response = await ApiService.post("/technician/getPendingPaymentsForTable", payload);
-      }
-      // Ensure response.data is always an array
-      if (response?.status && Array.isArray(response.data)) {
-        setPendingAmount(response.data);
-      } else {
-        setPendingAmount([]); // Prevent undefined
-      }
-    } catch (error) {
-      console.error('Error fetching pending amount data:', error);
-      setPendingAmount([]); // Handle errors gracefully
-    }
-  };
-
-  useEffect(() => {
-    PendingAmount();
-  }, []);
-
-  // Filtering pending amounts based on search query
-  const filteredPendingAmount = Array.isArray(pendingAmount)
-    ? pendingAmount.filter((payment) =>
-      payment?.technicianName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    : [];
-
+const filteredPendingAmount = pendingAmount.filter(p =>
+  (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
+  (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
+);
 
 
 
@@ -748,8 +656,6 @@ const BranchManagerHome = () => {
               <tr className="bg-red-300 text-white">
                 <th className="p-2 border">Staff Id</th>
                 <th className="p-2 border">Staff Name</th>
-                {/* <th className="p-2 border">Date of Payment</th>
-                <th className="p-2 border">Invoice ID</th> */}
                 <th className="p-2 border">Amount</th>
                 <th className="p-2 border">Status</th>
               </tr>
@@ -760,9 +666,7 @@ const BranchManagerHome = () => {
                   <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
                     <td className="p-2 border text-center">{payment.staffId}</td>
                     <td className="p-2 border text-center">{payment.staffName}</td>
-                    {/* <td className="p-2 border text-center">{payment.date}</td>
-                  <td className="p-2 border text-center">{payment.invoice}</td> */}
-                    <td className="p-2 border text-center">{payment.totalPayment}</td>
+                    <td className="p-2 border text-center">{payment.amount}</td>
                     <td className="p-2 border text-center">
                       <span
                         className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETE"
@@ -772,7 +676,7 @@ const BranchManagerHome = () => {
                             : "bg-red-500"
                           }`}
                       >
-                        {payment.status}
+                        {payment.paymentStatus}
                       </span>
                     </td>
                   </tr>
@@ -822,12 +726,12 @@ const BranchManagerHome = () => {
                     <td className="p-2 border text-center">{payment.staffName}</td>
                     {/* <td className="p-2 border text-center">{payment.date}</td>
               <td className="p-2 border text-center">{payment.invoice}</td> */}
-                    <td className="p-2 border text-center">{payment.totalPayment}</td>
+                    <td className="p-2 border text-center">{payment.amount}</td>
                     <td className="p-2 border text-center">
                       <span className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETE" ? "bg-green-500" :
                         payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
                         }`}>
-                        {payment.status}
+                        {payment.paymentStatus}
                       </span>
                     </td>
                   </tr>
@@ -861,8 +765,6 @@ const BranchManagerHome = () => {
               <tr className="bg-violet-500 text-white">
                 <th className="p-2 border">Staff Id</th>
                 <th className="p-2 border">Staff Name</th>
-                {/* <th className="p-2 border">Date of Payment</th>
-            <th className="p-2 border">Invoice ID</th> */}
                 <th className="p-2 border">Amount</th>
                 <th className="p-2 border">Status</th>
               </tr>
@@ -873,16 +775,14 @@ const BranchManagerHome = () => {
                   <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
                     <td className="p-2 border text-center">{payment.staffId}</td>
                     <td className="p-2 border text-center">{payment.staffName}</td>
-                    {/* <td className="p-2 border text-center">{payment.invoice}</td> */}
-                    <td className="p-2 border text-center">{payment.totalPayment}</td>
-                    {/* <td className="p-2 border text-center">{payment.paymentStatus}</td> */}
+                    <td className="p-2 border text-center">{payment.amount}</td>
                     <td className="p-2 border text-center">
                       <span className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETED" ? "bg-green-500" :
                         payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
                         }`}>
+                    {payment.paymentStatus}
                       </span>
                     </td>
-                    {payment.status}
                   </tr>
                 ))}
             </tbody>

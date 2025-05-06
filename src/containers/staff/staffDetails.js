@@ -164,10 +164,16 @@ const StaffDetails = () => {
             designation: staff.designation || '',
             department: staff.department || '',
             monthlySalary: staff.monthlySalary || '',
+            mailAllocation: staff.mailAllocation || '',
             officeEmail: staff.officeEmail || '',
             officePhoneNumber: staff.officePhoneNumber || '',
             bikeAllocation: staff.bikeAllocation || '',
+            bikeNumber: staff.bikeNumber || '',
             mobileAllocation: staff.mobileAllocation || '',
+            drivingLicence: staff.drivingLicence || '',
+            drivingLicenceNumber: staff.drivingLicenceNumber || '',
+            officePhoneNumber: staff.officePhoneNumber || '',
+            mobileBrand: staff.mobileBrand || '',
             terminationDate: staff.terminationDate || '',
             resignationDate: staff.resignationDate || '',
             finalSettlementDate: staff.finalSettlementDate || '',
@@ -349,62 +355,90 @@ const StaffDetails = () => {
         }
       >
         <div className="flex flex-col gap-y-3">
-          {Object.entries(formData.employerDetails).map(([key, value]) =>
-            key === 'password' ? (
-              <div
-                key={key}
-                className="flex items-center p-2 rounded gap-4 justify-between bg-white-100 shadow"
-              >
-                <div className="flex items-center gap-3 flex-1 justify-between mr-3">
-                  <div>
-                    <strong className="text-gray-700 mr-2 min-w-[160px]">
-                      {key.replace(/([A-Z])/g, ' $1').trim()}:
-                    </strong>
-                    {isEditingPassword ? (
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        className="border p-1 rounded w-full"
-                        value={editedPassword}
-                        onChange={(e) => setEditedPassword(e.target.value)}
-                      />
-                    ) : (
-                      <span className="text-sm font-mono">
-                        {showPassword ? value : '•'.repeat(value.length)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="text-gray-700 text-sm mr-3"
-                      title={showPassword ? 'Hide Password' : 'Show Password'}
-                    >
-                      {showPassword ? (
-                        <IoIosEye size={18} />
+          {Object.entries(formData.employerDetails).map(([key, value]) => {
+            if (key === 'password') {
+              return (
+                <div
+                  key={key}
+                  className="flex items-center p-2 rounded gap-4 justify-between bg-white-100 shadow"
+                >
+                  <div className="flex items-center gap-3 flex-1 justify-between mr-3">
+                    <div>
+                      <strong className="text-gray-700 mr-2 min-w-[160px]">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}:
+                      </strong>
+                      {isEditingPassword ? (
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          className="border p-1 rounded w-full"
+                          value={editedPassword}
+                          onChange={(e) => setEditedPassword(e.target.value)}
+                        />
                       ) : (
-                        <IoIosEyeOff size={18} />
+                        <span className="text-sm font-mono">
+                          {showPassword ? value : '•'.repeat(value.length)}
+                        </span>
                       )}
-                    </button>
-
-                    <button
-                      onClick={() => setIsConfirmModalOpen(true)}
-                      className="text-blue-600 hover:underline text-xs"
-                    >
-                      Edit
-                    </button>
+                    </div>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="text-gray-700 text-sm mr-3"
+                        title={showPassword ? 'Hide Password' : 'Show Password'}
+                      >
+                        {showPassword ? (
+                          <IoIosEye size={18} />
+                        ) : (
+                          <IoIosEyeOff size={18} />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setIsConfirmModalOpen(true)}
+                        className="text-blue-600 hover:underline text-xs"
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
+              );
+            }
+
+            // Skip bikeNumber if bikeAllocation is not 'Yes'
+            if (
+              key === 'bikeNumber' &&
+              formData.employerDetails.bikeAllocation !== 'Yes'
+            )
+              return null;
+
+            if (
+              key === 'officeEmail' &&
+              formData.employerDetails.mailAllocation !== 'Yes'
+            )
+              return null;
+
+            if (
+              key === 'drivingLicenceNumber' &&
+              formData.employerDetails.drivingLicence !== 'Yes'
+            )
+              return null;
+
+            // Skip officePhone and mobileBrand if mobileAllocation is not 'Yes'
+            if (
+              (key === 'officePhone' || key === 'mobileBrand') &&
+              formData.employerDetails.mobileAllocation !== 'Yes'
+            )
+              return null;
+
+            return (
               <div key={key} className="items-center p-2 rounded">
                 <strong className="text-gray-700 mr-2 min-w-[160px]">
                   {key.replace(/([A-Z])/g, ' $1').trim()}:
                 </strong>
                 <span>{value}</span>
               </div>
-            )
-          )}
+            );
+          })}
 
           {isConfirmModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">

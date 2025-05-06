@@ -96,7 +96,7 @@ const BackendSupportHome = () => {
 
   const [workRecords, setWorkRecords] = useState([]);
   const [workRecordsCount, setWorkRecordsCount] = useState([]);
-  const [branchesWorkRecordsCount, setBranchesWorkRecordsCount] = useState([]);
+  const [branchesRecords, setBranchesWorkRecordsCount] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardKey, setSelectedCardKey] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -104,6 +104,59 @@ const BackendSupportHome = () => {
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [searchPhone, setSearchPhone] = useState('');
   const backendId = Number(localStorage.getItem('id'));
+  const [branchesWorkRecordsCount, setBranchesRecordsCount] = useState([]);
+  console.log(branchesWorkRecordsCount, 'count');
+
+  useEffect(() => {
+    const getBranchesWorkRecordsCount = (workRecords) => {
+      const branchMap = {};
+
+      workRecords.forEach((record) => {
+        const branch = record.branchName || 'Unknown';
+
+        if (!branchMap[branch]) {
+          branchMap[branch] = {
+            branchName: branch,
+            totalInstallWork: 0,
+            totalAcceptWork: 0,
+            totalActivateWork: 0,
+            totalPendingWork: 0,
+            totalCompletedWork: 0,
+          };
+        }
+
+        const status = record.workStatus?.toLowerCase();
+
+        if (status === 'install') {
+          branchMap[branch].totalInstallWork += 1;
+        } else if (record.backSupporterId === backendId) {
+          switch (status) {
+            case 'accept':
+              branchMap[branch].totalAcceptWork += 1;
+              break;
+            case 'activate':
+              branchMap[branch].totalActivateWork += 1;
+              break;
+            case 'pending':
+              branchMap[branch].totalPendingWork += 1;
+              break;
+            case 'completed':
+              branchMap[branch].totalCompletedWork += 1;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+      return Object.values(branchMap);
+    };
+
+    if (workRecords.length > 0) {
+      const transformed = getBranchesWorkRecordsCount(workRecords);
+      setBranchesRecordsCount(transformed);
+    }
+  }, [workRecords, backendId]);
 
   const totalWorkRecordsCount = {
     totalInstallWork: workRecords.filter(
