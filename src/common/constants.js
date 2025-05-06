@@ -89,13 +89,13 @@ export const menuOptions = {
     },
     {
       name: 'Backend Support',
-      icon: <img src="./purchase.png" />,
+      icon: <img src="./backend-support.png" />,
       route: '/backend-support',
     },
-    { name: 'Service', icon: <img src="./products.png" />, route: '/service' },
+    { name: 'Service', icon: <img src="./service.png" />, route: '/service' },
     {
       name: 'Vehicle',
-      icon: <img src="./products.png" />,
+      icon: <img src="./transport.png" />,
       route: '/vehicle',
     },
     // newly added options
@@ -441,12 +441,12 @@ export const menuOptions = {
     },
     {
       name: 'Works',
-      icon: <img src="./performance.png" />,
+      icon: <img src="./backend-work.png" />,
       route: '/backend-support-works',
     },
     {
       name: 'Payments',
-      icon: <img src="./performance.png" />,
+      icon: <img src="./payments.png" />,
       route: '/backend-support-payments',
     },
   ],
