@@ -6,11 +6,13 @@ export default function EditProductType() {
   const location = useLocation();
   const navigate = useNavigate();
   const productType = location.state?.productType;
-  console.log("productType ---->productType",productType);
+  console.log('productType ---->productType', productType);
   const [formData, setFormData] = useState({
     name: '',
     type: '',
-    id: null,
+    id: productType.id,
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
     // photo: null,
     // image: null,
   });
@@ -18,8 +20,11 @@ export default function EditProductType() {
   useEffect(() => {
     if (productType) {
       setFormData({
-        name: productType?.name || "",
-        type:productType?.type || "",
+        name: productType?.name || '',
+        type: productType?.type || '',
+        id: productType.id,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
       });
     }
   }, [productType]);
@@ -32,22 +37,25 @@ export default function EditProductType() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append('id', productType.id);
-    data.append('name', formData.name);
-    data.append('companyCode', initialAuthState.companyCode);
-    data.append('unitCode', initialAuthState.unitCode);
-    data.append('type', formData.type);
+    const data = { ...formData };
+    // data.append('id', productType.id);
+    // data.append('name', formData.name);
+    // data.append('companyCode', initialAuthState.companyCode);
+    // data.append('unitCode', initialAuthState.unitCode);
+    // data.append('type', formData.type);
 
     // data.append('photo', formData.photo);
     // data.append('image', formData.image);
 
     try {
-      await ApiService.post('/productType/handleProductTypeDetails', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Product Type updated successfully!');
-      navigate('/product-type');
+      const response = await ApiService.post(
+        '/productType/handleProductTypeDetails',
+        data
+      );
+      if (response.status) {
+        alert('Product Type updated successfully!');
+        navigate('/product-type');
+      }
     } catch (error) {
       console.error('Error updating product type:', error);
       alert('Failed to update product type.');

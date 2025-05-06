@@ -550,23 +550,43 @@ const ViewBackendWorkDetails = () => {
                       <p className="text-sm">{remark.desc}</p>
 
                       {isImage && (
-                        <img
-                          src={remark.image}
-                          alt="attached"
-                          className="mt-2 rounded max-w-full max-h-[200px]"
-                          style={{ width: '200px', height: '80px' }}
-                        />
+                        <a
+                          href={remark.image}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={remark.image}
+                            alt="attached"
+                            className="mt-2 rounded max-w-full max-h-[200px] hover:opacity-90 transition"
+                            style={{
+                              width: '200px',
+                              height: '80px',
+                              cursor: 'pointer',
+                            }}
+                          />
+                        </a>
                       )}
 
                       {isVideo && (
-                        <video
-                          controls
-                          className="mt-2 rounded max-w-full max-h-[250px]"
-                          style={{ width: '250px', height: '200px' }}
+                        <a
+                          href={remark.video}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <source src={remark.video} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
+                          <video
+                            muted
+                            className="mt-2 rounded max-w-full max-h-[250px] hover:opacity-90 transition"
+                            style={{
+                              width: '250px',
+                              height: '200px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <source src={remark.video} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        </a>
                       )}
                     </div>
                     <span className="text-xs text-gray-500 mt-1">
