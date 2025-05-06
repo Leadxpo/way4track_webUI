@@ -52,7 +52,10 @@ const PDFFile = ({ data }) => (
           { label: 'Branch Name', value: data.branchName },
           { label: 'Client Name', value: data.clientName },
           { label: 'Phone Number', value: data.phoneNumber },
+          { label: 'IMEI Number', value: data.imeiNumber },
           { label: 'Sim Number', value: data.simNumber },
+          { label: 'Start Date', value: data.startDate },
+          { label: 'End Date', value: data.endDate },
           { label: 'Vehicle Type', value: data.vehicleType },
           { label: 'Date', value: data.date },
           {
@@ -117,31 +120,31 @@ const BackendSupportWorks = () => {
   }, []);
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(workRecords);
+    const worksheet = XLSX.utils.json_to_sheet(filteredRecords);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'WorkRecords');
-    XLSX.writeFile(workbook, 'WorkRecords.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'FilteredWorkRecords');
+    XLSX.writeFile(workbook, `WorkRecords_${activeTab}.xlsx`);
   };
 
-  const filteredRecords = workRecords.filter((item) => {
-    console.log(item, 'Itemmmm');
-    const matchesSearch = Object.values(item).some((value) =>
-      value
-        ? value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        : false
-    );
+  // const filteredRecords = workRecords.filter((item) => {
+  //   console.log(item, 'Itemmmm');
+  //   const matchesSearch = Object.values(item).some((value) =>
+  //     value
+  //       ? value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  //       : false
+  //   );
 
-    const matchesDate =
-      (!startDate || new Date(item.date) >= new Date(startDate)) &&
-      (!endDate || new Date(item.date) <= new Date(endDate));
+  //   const matchesDate =
+  //     (!startDate || new Date(item.date) >= new Date(startDate)) &&
+  //     (!endDate || new Date(item.date) <= new Date(endDate));
 
-    const matchesTab =
-      activeTab === 'all' ||
-      (activeTab === 'activated' && item.workStatus === 'activate') ||
-      (activeTab === 'accepted' && item.workStatus === 'accept');
+  //   const matchesTab =
+  //     activeTab === 'all' ||
+  //     (activeTab === 'activated' && item.workStatus === 'activate') ||
+  //     (activeTab === 'accepted' && item.workStatus === 'accept');
 
-    return matchesSearch && matchesDate && matchesTab;
-  });
+  //   return matchesSearch && matchesDate && matchesTab;
+  // });
 
   // const applyFilters = () => {
   //   const filtered = workRecords.filter((item) => {
@@ -164,6 +167,36 @@ const BackendSupportWorks = () => {
 
   //   setFilteredRecords(filtered);
   // };
+
+  const normalizeDate = (d) => {
+    const date = new Date(d);
+    date.setHours(0, 0, 0, 0);
+    return date;
+  };
+
+  const filteredRecords = workRecords.filter((item) => {
+    const matchesSearch = Object.values(item).some((value) =>
+      value
+        ? value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        : false
+    );
+
+    // Use `startDate` for filtering
+    const itemDate = item.startDate ? normalizeDate(item.startDate) : null;
+    const start = startDate ? normalizeDate(startDate) : null;
+    const end = endDate ? normalizeDate(endDate) : null;
+
+    const matchesDate =
+      (!start || (itemDate && itemDate >= start)) &&
+      (!end || (itemDate && itemDate <= end));
+
+    const matchesTab =
+      activeTab === 'all' ||
+      (activeTab === 'activated' && item.workStatus === 'activate') ||
+      (activeTab === 'accepted' && item.workStatus === 'accept');
+
+    return matchesSearch && matchesDate && matchesTab;
+  });
 
   const convertToIST = (utcDate) => {
     if (!utcDate) return null;

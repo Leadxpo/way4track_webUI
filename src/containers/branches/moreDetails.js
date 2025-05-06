@@ -439,7 +439,7 @@ const BranchDetails = () => {
             {/* Basic Details */}
             <div className="grid grid-cols-2 gap-4">
               <p>
-                <strong>Employ ID:</strong> {selectedStaff.staffId}
+                <strong>Employee ID:</strong> {selectedStaff.staffId}
               </p>
               <p>
                 <strong>Name:</strong> {selectedStaff.name}

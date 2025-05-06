@@ -103,8 +103,25 @@ const BackendSupportHome = () => {
   const [memberWorkRecords, setMemberWorkRecords] = useState(null);
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [searchPhone, setSearchPhone] = useState('');
+  const backendId = Number(localStorage.getItem('id'));
 
-  console.log(selectedCardKey, 'selectedLocation');
+  const totalWorkRecordsCount = {
+    totalInstallWork: workRecords.filter(
+      (item) => item.workStatus === 'install'
+    ).length,
+    totalAcceptWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'accept' && item.backSupporterId === backendId
+    ).length,
+    totalPendingWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'pending' && item.backSupporterId === backendId
+    ).length,
+    totalActivateWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'activate' && item.backSupporterId === backendId
+    ).length,
+  };
 
   // Fetch records from an API
 
@@ -258,7 +275,7 @@ const BackendSupportHome = () => {
                 .includes(searchPhone.toLowerCase())
           )
         : [];
-  console.log(filteredCards,"filtered cart list data install")
+  console.log(filteredCards, 'filtered cart list data install');
 
   return (
     <div className="p-6">
@@ -308,7 +325,7 @@ const BackendSupportHome = () => {
                 {item.title}
               </h4>
               <p className="text-4xl font-bold text-blue-600 mt-6 text-center">
-                {workRecordsCount?.[item.key] || 0}
+                {totalWorkRecordsCount?.[item.key] || 0}
               </p>
             </div>
 

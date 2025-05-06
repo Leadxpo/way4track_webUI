@@ -8,7 +8,10 @@ const Analysis = () => {
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   const [totalCredit, setTotalCredit] = useState({ sales: 0, services: 0 });
   const [totalDebit, setTotalDebit] = useState({ salaries: 0, expenses: 0 });
+  if(creditDebitPercent){
 
+    console.log("========rrrrrr======>",creditDebitPercent)
+  }
   // Handle popup visibility
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
@@ -16,18 +19,25 @@ const Analysis = () => {
 
   const getProductTypeCreditAndDebitPercentages = async () => {
     try {
+      // const currentDate = new Date().toISOString();
+      const currentYear = new Date().getFullYear().toString(); 
       const response = await ApiService.post(
         '/dashboards/getBranchWiseYearlySales',
         {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
+          date: currentYear,
         }
       );
-      if (response?.status && Array.isArray(response.data)) {
-        setCreditDebitPercent(response.data);
-
-        // Calculate total credit and debit amounts
-        const totalCredit = response.data.reduce(
+  
+      console.log("==========sssss12025======>", response);
+  
+      const dataArray = response?.data || [];
+  
+      if (response?.status && Array.isArray(dataArray)) {
+        setCreditDebitPercent(dataArray);
+  
+        const totalCredit = dataArray.reduce(
           (acc, item) => {
             acc.sales += item.salesTotalCreditAmount || 0;
             acc.services += item.servicesTotalCreditAmount || 0;
@@ -35,8 +45,8 @@ const Analysis = () => {
           },
           { sales: 0, services: 0 }
         );
-
-        const totalDebit = response.data.reduce(
+  
+        const totalDebit = dataArray.reduce(
           (acc, item) => {
             acc.salaries += item.salariesTotalDebitAmount || 0;
             acc.expenses += item.expensesTotalDebitAmount || 0;
@@ -44,7 +54,7 @@ const Analysis = () => {
           },
           { salaries: 0, expenses: 0 }
         );
-
+  
         setTotalCredit(totalCredit);
         setTotalDebit(totalDebit);
       } else {
@@ -55,11 +65,11 @@ const Analysis = () => {
       setCreditDebitPercent([]);
     }
   };
-
   useEffect(() => {
     getProductTypeCreditAndDebitPercentages();
-  }, []);
+  }, []);  
 
+  
   return (
     <div className="mx-32">
       <AnalysisCardBarChart

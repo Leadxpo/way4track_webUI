@@ -11,6 +11,11 @@ import {
 import ApiService from '../services/ApiService';
 import { initialAuthState } from '../services/ApiService';
 
+const monthNames = [
+  '', 'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
   const [chartData, setChartData] = useState([]);
   const [credits, setCredits] = useState([]);
@@ -18,96 +23,41 @@ const AnalysisCardBarChart = ({ togglePopup, creditDebitPercent }) => {
 
   const getAnalysis = async () => {
     try {
-      const date = new Date();
-      // const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(
-      //   date.getMonth() + 1
-      // ).padStart(2, '0')}/${date.getFullYear()}`;
-      const formattedDate = date.getFullYear();
+      const date = new Date().getFullYear();
       const response = await ApiService.post(
-        '/dashboards/getMonthWiseBalance',
+        '/dashboards/getOverAllYearlySales',
         {
-          date: formattedDate,
+          date,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
       );
 
       if (response.status) {
-        // const fetchedData = {
-        //   status: true,
-        //   errorCode: 200,
-        //   internalMessage: 'Data retrieved successfully',
-        //   data: [
-        //     {
-        //       year: 2025,
-        //       month: 1,
-        //       monthName: 'January',
-        //       creditAmount: 280500,
-        //       debitAmount: 0,
-        //       balanceAmount: 280500,
-        //     },
-        //     {
-        //       year: 2025,
-        //       month: 2,
-        //       monthName: 'February',
-        //       creditAmount: 14000,
-        //       debitAmount: 0,
-        //       balanceAmount: 14000,
-        //     },
-        //   ],
-        // };
         const fetchedData = response.data;
+
+        console.log("88888888888>", fetchedData);
+
         // Format data for the chart
-        const formattedChartData = fetchedData.data.map((item) => ({
-          name: item.monthName,
-          balance: item.balanceAmount, // Using balanceAmount for the chart
+        const formattedChartData = fetchedData.map((item) => ({
+          name: monthNames[item.month],
+          balance: item.TotalSalesAmount || 0,
         }));
 
         setChartData(formattedChartData);
 
-        // Compute total credits & debits
-        const totalCreditAmount = fetchedData.data.reduce(
-          (sum, item) => sum + item.creditAmount,
-          0
-        );
-        const totalDebitAmount = fetchedData.data.reduce(
-          (sum, item) => sum + item.debitAmount,
-          0
-        );
-
+        // Since credit/debit not in response, we just show static placeholders
         setCredits([
           {
-            label: 'Products',
-            percentage:
-              ((fetchedData.data[0]?.creditAmount || 0) / totalCreditAmount) *
-              100,
-          },
-          {
-            label: 'Sales',
-            percentage:
-              ((fetchedData.data[1]?.creditAmount || 0) / totalCreditAmount) *
-              100,
-          },
-          {
-            label: 'Services',
-            percentage:
-              ((fetchedData.data[2]?.creditAmount || 0) / totalCreditAmount) *
-              100,
+            label: 'Total Sales',
+            percentage: 100,
           },
         ]);
 
         setDebits([
           {
-            label: 'Salaries',
-            percentage:
-              ((fetchedData.data[0]?.debitAmount || 0) / totalDebitAmount) *
-              100,
-          },
-          {
-            label: 'Expenses',
-            percentage:
-              ((fetchedData.data[1]?.debitAmount || 0) / totalDebitAmount) *
-              100,
+            label: 'Expenses (N/A)',
+            percentage: 0,
           },
         ]);
       } else {
