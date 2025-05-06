@@ -377,7 +377,7 @@ const BackendSupportPayments = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Work Records</h2>
+        <h2 className="text-xl font-bold">Payment Records</h2>
         <input
           type="text"
           placeholder="Search by Phone Number"
