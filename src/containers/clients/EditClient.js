@@ -371,7 +371,7 @@ const handleChange = useCallback(
           <input
             type="date"
             name="joiningDate"
-            value={formData.joiningDate}
+           value={formData.joiningDate?.split('T')[0]}
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
