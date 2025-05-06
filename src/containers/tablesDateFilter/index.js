@@ -194,6 +194,9 @@ const TableWithDateFilter = ({
 
       if (response?.length) {
         const cleanedData = response.map((item) => ({
+          requestId:item.
+          requestId
+          ,
           requestNumber: item.requestNumber,
           branchName: item.branchName,
           branchId: item.req_branch_id,

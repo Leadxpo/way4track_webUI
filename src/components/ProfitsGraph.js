@@ -22,8 +22,8 @@ const ProfitsGraph = ({ branchData }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 w-[340px] min-w-[320px] max-w-[600px] p-4">
-      {/* Chart with Gradient Background */}
+<div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 w-[500px] min-w-[500px] max-w-[600px] p-4">
+{/* Chart with Gradient Background */}
       <div
         className="rounded-xl p-4"
         style={{

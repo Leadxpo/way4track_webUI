@@ -232,7 +232,7 @@ export const menuOptions = {
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  warehouse: [
+  'warehouse manager': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -334,13 +334,6 @@ export const menuOptions = {
     },
   ],
 
-  om: [
-    {
-      name: 'Custom Home',
-      icon: <img src="./home.png" />,
-      route: '/custom-home',
-    },
-  ],
   'sales man': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
     {
@@ -990,10 +983,6 @@ export const formattedPaths = {
       name: 'Performance',
       icon: <img src="./performance.png" />,
     },
-  },
-
-  om: {
-    '/custom-home': { name: 'Home', icon: <img src="./home.png" /> },
   },
 };
 
