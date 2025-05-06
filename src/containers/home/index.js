@@ -15,6 +15,9 @@ import { TbWashDryP } from 'react-icons/tb';
 import Analysis from '../analysis';
 import { FaFileDownload } from 'react-icons/fa';
 import GoogleMapComponent from '../../components/googleMap';
+import * as XLSX from "xlsx";
+import { saveAs } from 'file-saver';
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -40,6 +43,8 @@ const Home = () => {
   const [totalPayable, setTotalPayable] = useState([]);
   const [totalPurchases, setTotalPurchases] = useState([]);
   const [branchdetails, setBranchDetails] = useState([]);
+  const [branchesData, setBranchesData] = useState([]);
+
 
   const [cardData, setCardData] = useState([
     {
@@ -73,47 +78,6 @@ const Home = () => {
       count: 80,
       // growth: '+30%',
       bgColor: 'linear-gradient(180deg, #12A350 0%, #0B803D 50%, #055E2B 100%)',
-    },
-  ]);
-  const [branchesData, setBranchesData] = useState([
-    {
-      branch: 'Branch 1',
-      background:
-        'linear-gradient(180deg, #CE0000 0%, #D50000 50%, #C00000 75%, #B50000 87.5%, #A70000 93.75%, #8F0404 100%)',
-      data: [
-        { month: 'Jan', profit: 20 },
-        { month: 'Feb', profit: 30 },
-        { month: 'Mar', profit: 25 },
-      ],
-    },
-    {
-      branch: 'Branch 2',
-      background:
-        'linear-gradient(180deg, #12A651 0%, #0C7338 50%, #0A5A2C 75%, #084D25 87.5%, #084622 93.75%, #074321 96.87%, #074220 98.44%, #07401F 100%)',
-      data: [
-        { month: 'Jan', profit: 40 },
-        { month: 'Feb', profit: 35 },
-        { month: 'Mar', profit: 50 },
-      ],
-    },
-    {
-      branch: 'Branch 3',
-      background: 'linear-gradient(180deg, #000000 0%, #272727 100%)',
-      data: [
-        { month: 'Jan', profit: 30 },
-        { month: 'Feb', profit: 45 },
-        { month: 'Mar', profit: 40 },
-      ],
-    },
-    {
-      branch: 'Branch 4',
-      background:
-        'linear-gradient(180deg, #0033CB 0%, #002698 50%, #00207F 75%, #001C72 87.5%, #001B6C 93.75%, #001965 100%)',
-      data: [
-        { month: 'Jan', profit: 50 },
-        { month: 'Feb', profit: 55 },
-        { month: 'Mar', profit: 60 },
-      ],
     },
   ]);
 
@@ -181,10 +145,7 @@ const Home = () => {
     setFilteredData(filtered);
   };
 
-  const handleSearch = () => {
-    // Implement your date-based filtering here
-    // console.log('Filtering with:', { dateFrom, dateTo });
-  };
+
 
   const fetchTotalSalesCount = async () => {
     try {
@@ -602,6 +563,51 @@ const Home = () => {
     fetchBranches();
   }, []);
 
+  const handleDownloadExcel = () => {
+    if (!tableData || tableData.length === 0) {
+      alert("No data to download");
+      return;
+    }
+  
+    const worksheet = XLSX.utils.json_to_sheet(tableData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+  
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+  
+    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(fileData, "report.xlsx");
+  };
+  
+  const handleSearch = () => {
+    let filtered = [...filteredData]; // filteredData is set during handleCardClick
+  
+    filtered = filtered.filter((item) => {
+      const itemDate = new Date(item.date); // Replace 'date' with the actual key in your data
+      const fromDate = dateFrom ? new Date(dateFrom) : null;
+      const toDate = dateTo ? new Date(dateTo) : null;
+  
+      const isWithinDateRange =
+        (!fromDate || itemDate >= fromDate) &&
+        (!toDate || itemDate <= toDate);
+  
+      const matchesBranch =
+        !branchFilter || item.branch === branchFilter; // Replace 'branch' with actual key
+  
+      return isWithinDateRange && matchesBranch;
+    });
+  
+    setTableData(filtered);
+  };
+  
+
+
+
+
+
   return (
     <div className="flex flex-col space-y-16">
       {/* first section */}
@@ -706,12 +712,15 @@ const Home = () => {
         />
       </div>
 
-      {/* third section - profits graphs */}
-      <div className="flex space-x-4 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
-        {branchesData.map((branchData, index) => (
-          <ProfitsGraph key={index} branchData={branchData} />
-        ))}
-      </div>
+     {/* third section - profits graphs */}
+<div className="flex space-x-2 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
+  {branchesData.map((branchData, index) => (
+    <div key={index} className="min-w-[500px]"> {/* Adjust width as needed */}
+      <ProfitsGraph branchData={branchData} />
+    </div>
+  ))}
+</div>
+
 
       {/* fourth section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
@@ -774,16 +783,16 @@ const Home = () => {
             </button>
         
 
-            <button className="flex items-center bg-green-700 text-white px-2 py-2  rounded-md mx-2 shadow hover:bg-green-500">
-              <FaFileDownload className="mr-2" /> Download Excel
-            </button>
+            <button
+  onClick={handleDownloadExcel}
+  className="flex items-center bg-green-700 text-white px-2 py-2 rounded-md mx-2 shadow hover:bg-green-500"
+>
+  <FaFileDownload className="mr-2" /> Download Excel
+</button>
           </div>
-
-
         ) : null}
         <div className="mt-8">
 {
-// console.log("table Data>",tableColumns)
 }
           <Table columnNames={tableColumns} columns={tableColumns} data={tableData} />
         </div>
