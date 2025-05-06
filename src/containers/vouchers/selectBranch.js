@@ -94,40 +94,14 @@ const SelectBranch = () => {
       ))}
 
       {isPopupOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#fff',
-              padding: '20px',
-              borderRadius: '8px',
-              width: '50%',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            }}
-          >
-            {/* <h2>{selectedBranch} - Details</h2> */}
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[99999]">
+          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg relative z-[100000]">
             <ul>
               {branchData.map((item, index) => (
                 <li
                   key={index}
                   onClick={() => handleItemClick(item)}
-                  style={{
-                    marginBottom: '15px',
-                    marginLeft: '20px',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                  }}
+                  className="mb-4 ml-5 text-lg font-semibold cursor-pointer"
                 >
                   {item}
                 </li>
@@ -135,16 +109,7 @@ const SelectBranch = () => {
             </ul>
             <button
               onClick={handleClosePopup}
-              style={{
-                backgroundColor: '#12A651',
-                color: '#FFFFFF',
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                marginTop: '20px',
-                marginLeft: '20px',
-              }}
+              className="mt-5 ml-5 bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
             >
               Close
             </button>

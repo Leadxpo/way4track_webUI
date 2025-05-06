@@ -284,6 +284,7 @@ const SaleForm = () => {
   };
 
   const handleFetchGSTData = async () => {
+    const gstNumber = formData.purchaseGst;
     if (!gstNumber) {
       alert('Please enter a GST number');
       return;
@@ -299,12 +300,16 @@ const SaleForm = () => {
         }
       );
 
-      if (response?.data) {
-        setGstData(response.data);
-      } else {
-        alert('No data found');
-        setGstData(null);
-      }
+      console.log(response, 'response gst');
+
+      setGstData(response);
+
+      // if (response?.data) {
+      //   setGstData(response.data);
+      // } else {
+      //   alert('No data found');
+      //   setGstData(null);
+      // }
     } catch (error) {
       console.error('GST Fetch Error:', error);
       alert('Error fetching GST data');
@@ -534,37 +539,101 @@ const SaleForm = () => {
           }}
         /> */}
 
-        <div className="w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Enter GST Number"
-            value={gstNumber}
-            onChange={(e) => setGstNumber(e.target.value)}
-            className="w-full border rounded p-2"
-            style={{
-              height: '45px',
-              backgroundColor: '#FFFFFF',
-              color: '#000000',
-              borderRadius: '8px',
-              borderWidth: '1px',
-              borderColor: '#A2A2A2',
-              fontSize: '20px',
-              fontWeight: '500',
-            }}
-          />
+        <div className="">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Purchase GST:"
+              name="purchaseGst"
+              value={formData.purchaseGst}
+              onChange={handleInputChange}
+              className="w-full border rounded pr-36 pl-3 py-2"
+              style={{
+                height: '45px',
+                backgroundColor: '#FFFFFF',
+                color: '#000000',
+                borderRadius: '8px',
+                borderWidth: '1px',
+                borderColor: '#A2A2A2',
+                fontSize: '20px',
+                fontWeight: '500',
+              }}
+            />
 
-          <button
-            onClick={handleFetchGSTData}
-            className="bg-blue-600 text-white px-4 py-2 rounded mt-3"
-            disabled={loading}
-          >
-            {loading ? 'Loading...' : 'Get GST Details'}
-          </button>
+            <button
+              onClick={handleFetchGSTData}
+              type="button"
+              disabled={loading}
+              className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
+            >
+              {loading ? '...' : 'Get'}
+            </button>
+          </div>
 
           {gstData && (
-            <div className="mt-4 bg-gray-100 p-3 rounded shadow">
-              <h3 className="font-semibold mb-2">GST Details:</h3>
-              <pre className="text-sm">{JSON.stringify(gstData, null, 2)}</pre>
+            <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                GST Details
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700 text-sm">
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Company Name:
+                  </label>
+                  <p>{gstData.taxpayerInfo.tradeNam}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    GST Number:
+                  </label>
+                  <p>{gstData.taxpayerInfo.gstin}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Type Of Company:
+                  </label>
+                  <p>{gstData.taxpayerInfo.dty}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Incorporate Type:
+                  </label>
+                  <p>{gstData.taxpayerInfo.ctb}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">Status:</label>
+                  <p>{gstData.taxpayerInfo.sts}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Pan Number:
+                  </label>
+                  <p>{gstData.taxpayerInfo.panNo}</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="font-semibold text-gray-600">
+                    Address:
+                  </label>
+                  <p className="leading-relaxed">
+                    {gstData.taxpayerInfo.pradr.addr.bno &&
+                      `${gstData.taxpayerInfo.pradr.addr.bno}, `}
+                    {gstData.taxpayerInfo.pradr.addr.st &&
+                      `${gstData.taxpayerInfo.pradr.addr.st}, `}
+                    {gstData.taxpayerInfo.pradr.addr.loc &&
+                      `${gstData.taxpayerInfo.pradr.addr.loc}, `}
+                    {gstData.taxpayerInfo.pradr.addr.dst &&
+                      `${gstData.taxpayerInfo.pradr.addr.dst}, `}
+                    {gstData.taxpayerInfo.pradr.addr.stcd} -{' '}
+                    {gstData.taxpayerInfo.pradr.addr.pncd}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex',marginTop: "10px" }}>
+                <label className="font-semibold text-gray-600">State:</label>
+                <p>{gstData.taxpayerInfo.pradr.addr.stcd}</p>
+              </div>
             </div>
           )}
         </div>
