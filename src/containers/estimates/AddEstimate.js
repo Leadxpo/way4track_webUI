@@ -284,6 +284,7 @@ const handleService = (index, e) => {
       return new File([pdfBlob], "estimate.pdf", { type: "application/pdf" });
     };
   
+    console.log("pdfData pdfData pdfData",pdfData);
     try {
       const pdfFile = await generatePdf(pdfData); // Generate PDF File
       

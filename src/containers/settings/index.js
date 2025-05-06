@@ -147,7 +147,12 @@ const Settings = () => {
   };
 
   const handleSaveChanges = async () => {
-    console.log("staffData.permissions rrrr",staffData?.permissions)
+    console.log("deigi digi digi",{
+      staffId: staffData.staffId,
+      permissions: staffData.permissions, // Ensure you're sending the updated permissions
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    })
     try {
       const response = await ApiService.post(
         '/permissions/handlePermissionDetails',

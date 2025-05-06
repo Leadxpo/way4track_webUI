@@ -18,7 +18,7 @@ const AddRequestRaise = () => {
     branch: '',
     requestFor:'',
     description:'',
-    products:[{ product: '', amount: '' }],
+    products:[{ product: '', quantity: '' }],
     createdDate:'',
     status:'',
     fromDate:null,
@@ -146,13 +146,13 @@ const AddRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+  const [rows, setRows] = useState([{ product: "", quantity: "" }]);
 
  // Function to handle adding a new product row
 const addRow = () => {
   setFormData((prevData) => ({
     ...prevData,
-    products: [...prevData.products, { product: '', amount: '' }],
+    products: [...prevData.products, { product: '', quantity: '' }],
   }));
 };
 
@@ -176,7 +176,28 @@ const handleInputProductChange = (index, field, value) => {
   });
 };
 
+const [productTypes, setProductTypes] = useState([]);
 
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
+      if (response.data) {
+        setProductTypes(response.data);
+        console.log('qazwsxedc', response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
 
 
   return (
@@ -318,24 +339,40 @@ const handleInputProductChange = (index, field, value) => {
     <div className="flex-1">
       <label className="font-semibold">Product:</label>
       <div className="flex items-center border rounded-md p-2 bg-gray-100">
-        <input
+        {/* <input
           type="text"
           value={row.product}
           onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
           placeholder="Enter Product"
           className="w-full bg-transparent outline-none"
-        />
+        /> */}
+        <select
+            name="productTypeId"
+            className="border p-2 rounded-md w-full"
+            // onChange={handleInputChange}
+            onChange={(e) => { handleInputProductChange(index, "product", e.target.value)}}
+            value={row.product}
+          >
+            <option value="">Select a product type</option>
+            {productTypes
+              .filter((type) => type.type === 'PRODUCT')
+              .map((type) => (
+                <option key={type.id} value={type.name}>
+                  {type.name}
+                </option>
+              ))}
+          </select>
       </div>
     </div>
 
-    {/* Amount Field */}
+    {/* quantity Field */}
     <div className="flex-1">
-      <label className="font-semibold">Amount:</label>
+      <label className="font-semibold">Quantity:</label>
       <input
         type="number"
-        value={row.amount}
-        onChange={(e) => handleInputProductChange(index, "amount", e.target.value)}
-        placeholder="Enter Amount"
+        value={row.quantity}
+        onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
+        placeholder="Enter quantity"
         className="w-full border rounded-md p-2 bg-gray-100"
       />
     </div>

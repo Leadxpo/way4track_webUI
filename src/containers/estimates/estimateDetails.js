@@ -205,7 +205,7 @@ const EstimateDetails = () => {
               <th className=" px-4 py-2 text-center">quantity</th>
               <th className=" px-4 py-2 text-center">Rate</th>
               <th className=" px-4 py-2 text-center">Amount</th>
-              <th className=" px-4 py-2 text-center">Action</th>
+              {/* <th className=" px-4 py-2 text-center">Action</th> */}
             </tr>
           </thead>
           <tbody className="rounded-md">
@@ -218,7 +218,7 @@ const EstimateDetails = () => {
                 <td className=" px-4 py-2 text-center">
                   {product.totalAmount}
                 </td>
-                <td className="px-4 py-2 text-center">
+                {/* <td className="px-4 py-2 text-center">
                   <button
                     className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
                     onClick={() =>
@@ -245,7 +245,7 @@ const EstimateDetails = () => {
                   >
                     Work Allocation
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
