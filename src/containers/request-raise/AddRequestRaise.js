@@ -18,7 +18,7 @@ const AddRequestRaise = () => {
     branch: '',
     requestFor:'',
     description:'',
-    products:[{ product: '', quantity: '' }],
+    products:[{ productType: '', quantity: 0 }],
     createdDate:'',
     status:'',
     fromDate:null,
@@ -36,7 +36,6 @@ const AddRequestRaise = () => {
       if (response.status) {
         setStaffData(response.data);
 
-        console.log("fetchStaffData fetchStaffData",response.data)
       } else {
         console.error('Error fetching staff data');
       }
@@ -123,7 +122,6 @@ const AddRequestRaise = () => {
       };
 
 
-      console.log("payload request 1234",payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -146,13 +144,13 @@ const AddRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", quantity: "" }]);
+  const [rows, setRows] = useState([{ productType: "", quantity: 0 }]);
 
  // Function to handle adding a new product row
 const addRow = () => {
   setFormData((prevData) => ({
     ...prevData,
-    products: [...prevData.products, { product: '', quantity: '' }],
+    products: [...prevData.products, { productType: '', quantity: 0 }],
   }));
 };
 
@@ -189,7 +187,6 @@ const [productTypes, setProductTypes] = useState([]);
       );
       if (response.data) {
         setProductTypes(response.data);
-        console.log('qazwsxedc', response.data);
       } else {
         console.error('Invalid API response');
       }
@@ -350,8 +347,8 @@ const [productTypes, setProductTypes] = useState([]);
             name="productTypeId"
             className="border p-2 rounded-md w-full"
             // onChange={handleInputChange}
-            onChange={(e) => { handleInputProductChange(index, "product", e.target.value)}}
-            value={row.product}
+            onChange={(e) => { handleInputProductChange(index, "productType", e.target.value)}}
+            value={row.productType}
           >
             <option value="">Select a product type</option>
             {productTypes
@@ -371,7 +368,7 @@ const [productTypes, setProductTypes] = useState([]);
       <input
         type="number"
         value={row.quantity}
-        onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
+        onChange={(e) => handleInputProductChange(index, "quantity", parseInt(e.target.value))}
         placeholder="Enter quantity"
         className="w-full border rounded-md p-2 bg-gray-100"
       />

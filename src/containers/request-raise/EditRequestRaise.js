@@ -21,7 +21,7 @@ const EditRequestRaise = () => {
     requestTo: '', branch: '',
     requestFor: '',
     description: '',
-    products: [{ product: '', amount: '' }],
+    products:[{ productType: '', quantity: 0 }],
     createdDate: '',
     status: '',
     fromDate: "",
@@ -148,6 +148,7 @@ const EditRequestRaise = () => {
       const payload = {
 
         id: requestData.requestId,
+        requestId: requestData.requestNumber,
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),
@@ -156,7 +157,7 @@ const EditRequestRaise = () => {
         description: formData.description,
         status: "pending",
         products: formData.requestType === "products" ? formData.products : null,
-        subDealerId: formData.subDealerId || 1,
+        subDealerId: formData.subDealerId ? formData.subDealerId :null,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor: formData.requestFor,
@@ -188,13 +189,13 @@ const EditRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+  const [rows, setRows] = useState([{ productType: '', quantity: 0  }]);
 
   // Function to handle adding a new product row
   const addRow = () => {
     setFormData((prevData) => ({
       ...prevData,
-      products: [...prevData.products, { product: '', amount: '' }],
+      products: [...prevData.products, { productType: '', quantity: 0  }],
     }));
   };
 
@@ -224,36 +225,37 @@ const EditRequestRaise = () => {
       fetchRequestRaiseById();
     }
   }, [requestData.requestId]);
-
-
-
+  
   const fetchRequestRaiseById = async () => {
     if (!requestData.requestId) return;
-
+  
     try {
       const response = await ApiService.post('/requests/getRequestDetails', {
         id: requestData.requestId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
-
+  
       if (response.status) {
-        console.log("10th class", response.data)
         const data = response.data;
+  
         setFormData({
-          id: data.requestId || '',
+          requestId: data.requestId || '',
           requestType: data.requestType || '',
           description: data.description || '',
           requestFor: data.requestFor || '',
-          fromDate: data?.fromDate || '',
-          toDate: data?.toDate || '',
-          requestTo:data?.requestTo.id
-          ,
-          branch:data?.branchId
-          .id,
-          
-          products: data.products || '',
-
+          fromDate: data.fromDate || '',
+          toDate: data.toDate || '',
+          requestFrom: data.requestFrom || '',
+          requestTo: data.requestTo?.id || '',
+          branch: data.branchId?.id || '',
+          status: data.status || '',
+          createdDate: data.createdDate || '',
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          products: Array.isArray(data.products) && data.products.length > 0
+            ? data.products
+            : [{ productType: '', quantity: 0 }],
         });
       } else {
         console.error('Error fetching request details');
@@ -262,8 +264,7 @@ const EditRequestRaise = () => {
       console.error('Error fetching request details:', error);
     }
   };
-
-
+  
 
 
   return (
@@ -400,8 +401,8 @@ const EditRequestRaise = () => {
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
                       <input
                         type="text"
-                        value={row.product}
-                        onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
+                        value={row.productType}
+                        onChange={(e) => handleInputProductChange(index, "productType", e.target.value)}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
                       />
@@ -413,8 +414,8 @@ const EditRequestRaise = () => {
                     <label className="font-semibold">Amount:</label>
                     <input
                       type="number"
-                      value={row.amount}
-                      onChange={(e) => handleInputProductChange(index, "amount", e.target.value)}
+                      value={row.quantity}
+                      onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
                       placeholder="Enter Amount"
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />
