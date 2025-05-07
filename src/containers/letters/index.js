@@ -3635,7 +3635,7 @@ const Letters = () => {
     branchManagerOfferLetter: {
       component: <BranchManagerOfferLetter employee={formData} />,
       fileName: "branchManagerOffer_letter.pdf",
-      label: "Download Branch Manager Offer Letterr",
+      label: "Download Branch Manager Offer Letter",
     },
 
     accountantOfferLetter: {

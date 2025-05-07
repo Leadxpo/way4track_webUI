@@ -138,8 +138,6 @@ const EditRequestRaise = () => {
 
     if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
       const { id, name } = userProfile?.Data[0];
-      console.log("ID:", id);
-      console.log("Name:", name);
     } else {
       console.log("User profile data not found.");
     }
@@ -164,9 +162,6 @@ const EditRequestRaise = () => {
         fromDate: formData.fromDate,
         toDate: formData.toDate,
       };
-
-
-      console.log("payload request 1234", payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -411,12 +406,12 @@ const EditRequestRaise = () => {
 
                   {/* Amount Field */}
                   <div className="flex-1">
-                    <label className="font-semibold">Amount:</label>
+                    <label className="font-semibold">Quantity:</label>
                     <input
                       type="number"
                       value={row.quantity}
                       onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
-                      placeholder="Enter Amount"
+                      placeholder="Enter Quantity"
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />
                   </div>

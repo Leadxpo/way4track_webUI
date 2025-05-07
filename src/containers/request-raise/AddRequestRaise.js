@@ -336,13 +336,6 @@ const [productTypes, setProductTypes] = useState([]);
     <div className="flex-1">
       <label className="font-semibold">Product:</label>
       <div className="flex items-center border rounded-md p-2 bg-gray-100">
-        {/* <input
-          type="text"
-          value={row.product}
-          onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
-          placeholder="Enter Product"
-          className="w-full bg-transparent outline-none"
-        /> */}
         <select
             name="productTypeId"
             className="border p-2 rounded-md w-full"
