@@ -274,9 +274,9 @@ const RequestDetails = () => {
           </div>
 
 
-          {formData.requestType === "products" ? (
+          {formData?.requestType === "products" ? (
             <>
-              {formData?.products.map((row, index) => (
+              {formData?.products?.map((row, index) => (
                 <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
 
                   {/* Product Field */}
@@ -285,7 +285,7 @@ const RequestDetails = () => {
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
                       <input
                         type="text"
-                        value={row.product}
+                        value={row?.product}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
                       />
@@ -297,7 +297,7 @@ const RequestDetails = () => {
                     <label className="font-semibold">Amount:</label>
                     <input
                       type="number"
-                      value={row.amount}
+                      value={row?.amount}
                       placeholder="Enter Amount"
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />

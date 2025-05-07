@@ -329,7 +329,7 @@ const [productTypes, setProductTypes] = useState([]);
 
           {formData.requestType === "products" ? (
   <>
-   {formData.products.map((row, index) => (
+   {formData?.products?.map((row, index) => (
   <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
     
     {/* Product Field */}
