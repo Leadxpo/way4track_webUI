@@ -348,7 +348,7 @@ const [productTypes, setProductTypes] = useState([]);
             className="border p-2 rounded-md w-full"
             // onChange={handleInputChange}
             onChange={(e) => { handleInputProductChange(index, "productType", e.target.value)}}
-            value={row.product}
+            value={row.productType}
           >
             <option value="">Select a product type</option>
             {productTypes
