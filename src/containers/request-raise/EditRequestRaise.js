@@ -148,6 +148,7 @@ const EditRequestRaise = () => {
       const payload = {
 
         id: requestData.requestId,
+        requestId: requestData.requestNumber,
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),
@@ -156,7 +157,7 @@ const EditRequestRaise = () => {
         description: formData.description,
         status: "pending",
         products: formData.requestType === "products" ? formData.products : null,
-        subDealerId: formData.subDealerId || 1,
+        subDealerId: formData.subDealerId ? formData.subDealerId :null,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor: formData.requestFor,
