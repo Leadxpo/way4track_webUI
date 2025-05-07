@@ -18,7 +18,7 @@ const AddRequestRaise = () => {
     branch: '',
     requestFor:'',
     description:'',
-    products:[{ product: '', quantity: '' }],
+    products:[{ productType: '', quantity: '' }],
     createdDate:'',
     status:'',
     fromDate:null,
@@ -36,7 +36,6 @@ const AddRequestRaise = () => {
       if (response.status) {
         setStaffData(response.data);
 
-        console.log("fetchStaffData fetchStaffData",response.data)
       } else {
         console.error('Error fetching staff data');
       }
@@ -123,7 +122,6 @@ const AddRequestRaise = () => {
       };
 
 
-      console.log("payload request 1234",payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -146,13 +144,13 @@ const AddRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", quantity: "" }]);
+  const [rows, setRows] = useState([{ productType: "", quantity: "" }]);
 
  // Function to handle adding a new product row
 const addRow = () => {
   setFormData((prevData) => ({
     ...prevData,
-    products: [...prevData.products, { product: '', quantity: '' }],
+    products: [...prevData.products, { productType: '', quantity: '' }],
   }));
 };
 
@@ -189,7 +187,6 @@ const [productTypes, setProductTypes] = useState([]);
       );
       if (response.data) {
         setProductTypes(response.data);
-        console.log('qazwsxedc', response.data);
       } else {
         console.error('Invalid API response');
       }
