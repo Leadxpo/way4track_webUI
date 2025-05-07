@@ -264,7 +264,7 @@ const AddProductForm = () => {
           )}
         </div>
 
-        {vendors.length > 0 && (
+        {/* {vendors.length > 0 && (
           <div>
             <p className="font-semibold mb-1">Vendor</p>
             <select
@@ -283,7 +283,7 @@ const AddProductForm = () => {
               ))}
             </select>
           </div>
-        )}
+        )} */}
         {/* <a
           href="https://storage.googleapis.com/way4track-application/productAssign_photos/assigned_products_xl_format.xlsx"
           download
