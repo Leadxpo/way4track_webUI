@@ -12,7 +12,7 @@ const WarehouseManagerBranch = () => {
     const getProductDetailsByBranch = async () => {
       try {
         const response = await ApiService.post(
-          '/dashboards/getProductDetailsByBranch',
+          '/products/getProductDetailsByBranch',
           {
             // id: assetDetailsFromState.id,
             companyCode: initialAuthState.companyCode,
