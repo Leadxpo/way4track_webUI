@@ -207,6 +207,7 @@ const BankDetailsDashboard = () => {
       </div>
       <Table
         columns={bankData?.length ? Object.keys(bankData[0]) : []}
+        columnNames={bankData?.length ? Object.keys(bankData[0]) : []}
         data={bankData.map((item, index) => ({
           key: item.ac_id,
           ac_id: index + 1, // Replacing ID with index
