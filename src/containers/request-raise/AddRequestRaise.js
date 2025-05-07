@@ -18,7 +18,7 @@ const AddRequestRaise = () => {
     branch: '',
     requestFor:'',
     description:'',
-    products:[{ productType: '', quantity: '' }],
+    products:[{ productType: '', quantity: 0 }],
     createdDate:'',
     status:'',
     fromDate:null,
@@ -144,13 +144,13 @@ const AddRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ productType: "", quantity: "" }]);
+  const [rows, setRows] = useState([{ productType: "", quantity: 0 }]);
 
  // Function to handle adding a new product row
 const addRow = () => {
   setFormData((prevData) => ({
     ...prevData,
-    products: [...prevData.products, { productType: '', quantity: '' }],
+    products: [...prevData.products, { productType: '', quantity: 0 }],
   }));
 };
 
@@ -347,7 +347,7 @@ const [productTypes, setProductTypes] = useState([]);
             name="productTypeId"
             className="border p-2 rounded-md w-full"
             // onChange={handleInputChange}
-            onChange={(e) => { handleInputProductChange(index, "product", e.target.value)}}
+            onChange={(e) => { handleInputProductChange(index, "productType", e.target.value)}}
             value={row.product}
           >
             <option value="">Select a product type</option>
@@ -368,7 +368,7 @@ const [productTypes, setProductTypes] = useState([]);
       <input
         type="number"
         value={row.quantity}
-        onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
+        onChange={(e) => handleInputProductChange(index, "quantity", parseInt(e.target.value))}
         placeholder="Enter quantity"
         className="w-full border rounded-md p-2 bg-gray-100"
       />
