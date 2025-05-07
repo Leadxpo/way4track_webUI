@@ -221,6 +221,7 @@ const TableWithDateFilter = ({
     initialAuthState?.companyCode,
     initialAuthState?.unitCode,
   ]);
+  
   const getPaymentsData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getPaymentData', {
