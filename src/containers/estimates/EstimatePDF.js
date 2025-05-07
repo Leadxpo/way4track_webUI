@@ -456,7 +456,7 @@ export const EstimatePDF = ({ data }) => (
             <Text style={estStyles.totalBlockLeftText2}>
               
             </Text>
-            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+            {/* <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
             <Text style={estStyles.totalBlockLeftText1}>
               Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
             </Text>
@@ -471,7 +471,23 @@ export const EstimatePDF = ({ data }) => (
             </Text>
             <Text style={estStyles.totalBlockLeftText1}>
               - IFSC: HDFC0001319
-            </Text>
+            </Text> */}
+            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment Mode: By Cash / NEFT / RTGS / Cheque
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  A/c No: 131905001314
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh - 530003
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  IFSC: HDFC0001319
+</Text>
           </View>
 
           {/* Right Side: Signature and Totals */}

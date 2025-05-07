@@ -279,7 +279,7 @@ const HiringDetails = () => {
                 </div>
                 {expandedLevels[index] && (
                   <div className="p-4 grid grid-cols-2 gap-4">
-                    <label>
+                    {/* <label>
                       <span>Type:</span>
                       <input
                         type="text"
@@ -287,13 +287,13 @@ const HiringDetails = () => {
                         value={level.type || ''}
                         disabled
                       />
-                    </label>
+                    </label> */}
                     <label>
                       <span>Date of Interview:</span>
                       <input
                         type="date"
                         className="w-full border px-4 py-2 rounded-md"
-                        value={level.dateOfConductor || ''}
+                        value={level.dateOfConductor ? level.dateOfConductor.split('T')[0] : ''}
                         disabled
                       />
                     </label>
