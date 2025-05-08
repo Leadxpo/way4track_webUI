@@ -27,6 +27,7 @@ const Home = () => {
   const [selectedCard, setSelectedCard] = useState('Total Products');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear().toString());
   const [branchFilter, setBranchFilter] = useState('');
   const location = useLocation();
   const [branches, setBranches] = useState([]);
@@ -35,9 +36,7 @@ const Home = () => {
   const [solidLiquidData, setSolidLiquidData] = useState({});
   const [creditDebitPercent, setCreditDebitPercent] = useState([]);
   const [totalProductDetails, setTotalProductDetails] = useState({});
-  const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState(
-    []
-  );
+  const [bracnhWiseSolidLiquidData, setBranchWiseSolidLiquidData] = useState([]);
   const [totalReceivables, setTotalReceivables] = useState({});
   const [totalProducts, setTotalProducts] = useState([]);
   const [totalPayable, setTotalPayable] = useState([]);
@@ -81,20 +80,21 @@ const Home = () => {
     },
   ]);
 
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
         const payload = {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
-          date: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
+          date: currentYear, // Format: YYYY-MM-DD
         };
-  
+
         const response = await ApiService.post('/dashboards/getSalesBreakdown', payload);
-  
+
         if (response.status) {
           setBranches(response.data); // Set branches to state
-          // console.log('===== Hello =======>', response.data);
+
         } else {
           console.error('Failed to fetch branches');
         }
@@ -102,10 +102,10 @@ const Home = () => {
         console.error('Error fetching branches:', error);
       }
     };
-  
+
     fetchBranches();
   }, []);
-  
+
 
 
 
@@ -139,10 +139,10 @@ const Home = () => {
     const selectedBranch = e.target.value;
     setBranchFilter(selectedBranch);
 
-    const filtered = tableData.filter(
-      (item) => selectedBranch === '' || item.Branch === selectedBranch
-    );
-    setFilteredData(filtered);
+    // const filtered = tableData.filter(
+    //   (item) => selectedBranch === '' || item.Branch === selectedBranch
+    // );
+    // setFilteredData(filtered);
   };
 
 
@@ -155,7 +155,6 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      // console.log(response.data);
       setTotalProductDetails(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
@@ -211,7 +210,6 @@ const Home = () => {
         userId: initialAuthState.userId,
         userName: initialAuthState.userName,
       });
-      // console.log(response.data);
       setCardData((prevData) =>
         prevData.map((item) =>
           item.id === 2
@@ -442,19 +440,19 @@ const Home = () => {
     try {
       const date = new Date();
       const formattedYear = date.getFullYear();
-  
+
       const response = await ApiService.post('/dashboards/getBranchWiseMonthlySales', {
         date: formattedYear,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-  
+
       if (response.status) {
         const allMonths = [
           'January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December'
         ];
-  
+
         // Group data by branchName
         const groupedByBranch = {};
         response.data.forEach(entry => {
@@ -464,7 +462,7 @@ const Home = () => {
           }
           groupedByBranch[branch].push(entry);
         });
-  
+
         // Format each branch's data
         const formattedData = Object.entries(groupedByBranch).map(([branchName, entries], index) => {
           const completeData = allMonths.map((monthName, i) => {
@@ -474,16 +472,15 @@ const Home = () => {
               salesAmount: match ? match.TotalSalesAmount.toFixed(2) : '0.00'
             };
           });
-  
+
           return {
             branch: branchName,
             background: getBackgroundColor(index),
             data: completeData
           };
         });
-  
+
         setBranchesData(formattedData);
-        setBranches(formattedData)
       } else {
         alert(response.data.internalMessage || 'Failed to fetch analysis details.');
       }
@@ -491,7 +488,7 @@ const Home = () => {
       console.error('Error fetching analysis details:', e);
     }
   };
-  
+
   // Function to get a background color based on index
   const getBackgroundColor = (index) => {
     const colors = [
@@ -510,7 +507,7 @@ const Home = () => {
       const response = await ApiService.post(
         '/dashboards/getBranchWiseYearlySales',
         {
-          date: formattedYear,
+          date: currentYear,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
@@ -568,41 +565,40 @@ const Home = () => {
       alert("No data to download");
       return;
     }
-  
+
     const worksheet = XLSX.utils.json_to_sheet(tableData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-  
+
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
     });
-  
+
     const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(fileData, "report.xlsx");
   };
-  
+
   const handleSearch = () => {
     let filtered = [...filteredData]; // filteredData is set during handleCardClick
-  
+
     filtered = filtered.filter((item) => {
       const itemDate = new Date(item.date); // Replace 'date' with the actual key in your data
       const fromDate = dateFrom ? new Date(dateFrom) : null;
       const toDate = dateTo ? new Date(dateTo) : null;
-  
+
       const isWithinDateRange =
         (!fromDate || itemDate >= fromDate) &&
         (!toDate || itemDate <= toDate);
-  
+
       const matchesBranch =
-        !branchFilter || item.branch === branchFilter; // Replace 'branch' with actual key
-  
+        !branchFilter || item.branchName === branchFilter; // Replace 'branch' with actual key
+
       return isWithinDateRange && matchesBranch;
     });
-  
     setTableData(filtered);
   };
-  
+
 
 
 
@@ -623,67 +619,79 @@ const Home = () => {
         <div className="flex flex-wrap mt-4 w-full">
           {/* Left: Branch Sales Data */}
           <div className="w-full md:w-2/3">
-            {branches.map((branch, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-6 gap-x-1 items-center py-1 px-1 border-b"
-              >
-                {/* Branch Info */}
-                <div className="flex items-center space-x-1">
-                  <img
-                    src="logo-name-square.png"
-                    alt="Branch Logo"
-                    className="w-10 h-10 object-cover"
-                  />
-                  <div className="text-[10px] leading-none">
-                    <p className="text-gray-800 font-bold">Branch</p>
-                    <p className="text-green-700 font-bold">
-                      {branch.branchName}
-                    </p>
+            {branches.map((branch, index) => {
+              console.log("branch", branch)
+              return (
+                <div
+                  key={index}
+                  className="grid grid-cols-6 gap-x-1 items-center py-1 px-1 border-b"
+                >
+                  {/* Branch Info */}
+                  <div className="flex items-center space-x-1">
+                    <img
+                      src="logo-name-square.png"
+                      alt="Branch Logo"
+                      className="w-10 h-10 object-cover"
+                    />
+                    <div className="text-[10px] leading-none">
+                      <p className="text-gray-800 font-bold">Branch</p>
+                      <p className="text-green-700 font-bold">
+                        {branch.branchName}
+                      </p>
+                    </div>
+                  </div>
+                  <div  className=" grid grid-cols-11 gap-x-1 items-center py-1 px-1 " style={{width:"800%"}}>
+
+                    {/* Rectifications */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Rectifications</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.rectificationsAmount || 0}
+                      </p>
+                    </div>
+
+                    {/* Renewals */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Renewals</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.renewablesAmount || 0}
+                      </p>
+                    </div>
+
+                    {/* Replacement */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Replacement</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.replacementsAmount || 0}
+                      </p>
+                    </div>
+
+                    {/* Products Sales */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Products Sales</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.productSalesAmount || 0}
+                      </p>
+                    </div>
+                    {/* Products Sales */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Service Sales</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.serviceSalesAmount || 0}
+                      </p>
+                    </div>
+
+                    {/* Total Sales */}
+                    <div className="text-[10px] text-center leading-tight">
+                      <p className="text-gray-500 font-bold">Total Sales</p>
+                      <p className="text-gray-800 font-bold">
+                        {branch.totalSalesAmount || 0}
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                {/* Rectifications */}
-                <div className="text-[10px] text-center leading-tight">
-                  <p className="text-gray-500 font-bold">Rectifications</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.serviceSales || 0}
-                  </p>
-                </div>
-
-                {/* Renewals */}
-                <div className="text-[10px] text-center leading-tight">
-                  <p className="text-gray-500 font-bold">Renewals</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.renewals || 0}
-                  </p>
-                </div>
-
-                {/* Replacement */}
-                <div className="text-[10px] text-center leading-tight">
-                  <p className="text-gray-500 font-bold">Replacement</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.replacements || 0}
-                  </p>
-                </div>
-
-                {/* Products Sales */}
-                <div className="text-[10px] text-center leading-tight">
-                  <p className="text-gray-500 font-bold">Products Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.productSales || 0}
-                  </p>
-                </div>
-
-                {/* Total Sales */}
-                <div className="text-[10px] text-center leading-tight">
-                  <p className="text-gray-500 font-bold">Total Sales</p>
-                  <p className="text-gray-800 font-bold">
-                    {branch.totalSales || 0}
-                  </p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Right: Google Map */}
@@ -692,9 +700,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-
-
 
 
       <div className="flex items-center justify-center space-x-10">
@@ -712,14 +717,14 @@ const Home = () => {
         />
       </div>
 
-     {/* third section - profits graphs */}
-<div className="flex space-x-2 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
-  {branchesData.map((branchData, index) => (
-    <div key={index} className="min-w-[500px]"> {/* Adjust width as needed */}
-      <ProfitsGraph branchData={branchData} />
-    </div>
-  ))}
-</div>
+      {/* third section - profits graphs */}
+      <div className="flex space-x-2 mt-10 overflow-x-auto scroll-smooth px-4 py-2">
+        {branchesData.map((branchData, index) => (
+          <div key={index} className="min-w-[500px]"> {/* Adjust width as needed */}
+            <ProfitsGraph branchData={branchData} />
+          </div>
+        ))}
+      </div>
 
 
       {/* fourth section */}
@@ -781,19 +786,19 @@ const Home = () => {
             >
               <FaSearch className="mr-2" /> Search
             </button>
-        
+
 
             <button
-  onClick={handleDownloadExcel}
-  className="flex items-center bg-green-700 text-white px-2 py-2 rounded-md mx-2 shadow hover:bg-green-500"
->
-  <FaFileDownload className="mr-2" /> Download Excel
-</button>
+              onClick={handleDownloadExcel}
+              className="flex items-center bg-green-700 text-white px-2 py-2 rounded-md mx-2 shadow hover:bg-green-500"
+            >
+              <FaFileDownload className="mr-2" /> Download Excel
+            </button>
           </div>
         ) : null}
         <div className="mt-8">
-{
-}
+          {
+          }
           <Table columnNames={tableColumns} columns={tableColumns} data={tableData} />
         </div>
       </div>

@@ -21,7 +21,7 @@ const RequestDetails = () => {
     requestTo: '', branch: '',
     requestFor: '',
     description: '',
-    products: [{ product: '', amount: '' }],
+    products: [{ productType: '', quantity: 0}],
     createdDate: '',
     status: '',
     fromDate: "",
@@ -108,13 +108,13 @@ const RequestDetails = () => {
 
 
 
-  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+  const [rows, setRows] = useState([{ productType: '', quantity: 0 }]);
 
   // Function to handle adding a new product row
   const addRow = () => {
     setFormData((prevData) => ({
       ...prevData,
-      products: [...prevData.products, { product: '', amount: '' }],
+      products: [...prevData.products, { productType: '', quantity: 0}],
     }));
   };
 
@@ -274,9 +274,9 @@ const RequestDetails = () => {
           </div>
 
 
-          {formData.requestType === "products" ? (
+          {formData?.requestType === "products" ? (
             <>
-              {formData?.products.map((row, index) => (
+              {formData?.products?.map((row, index) => (
                 <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
 
                   {/* Product Field */}
@@ -285,7 +285,7 @@ const RequestDetails = () => {
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
                       <input
                         type="text"
-                        value={row.product}
+                        value={row.productType}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
                       />
@@ -294,10 +294,10 @@ const RequestDetails = () => {
 
                   {/* Amount Field */}
                   <div className="flex-1">
-                    <label className="font-semibold">Amount:</label>
+                    <label className="font-semibold">Quantity:</label>
                     <input
                       type="number"
-                      value={row.amount}
+                      value={row.quantity}
                       placeholder="Enter Amount"
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />

@@ -72,19 +72,21 @@ const AddEditBankDetails = () => {
         : '/account/createAccount';
       const response = await ApiService.post(endpoint, payload);
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'account updated successfully!'
             : 'account created successfully!'
         );
-        navigate('/bank-details');
+        // navigate('/bank-details');
+        navigate('/bank-details-dashboard');
+        
       } else {
-        alert('Failed to save appointment details. Please try again.');
+        alert('Failed to save account details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving appointment details:', error);
-      alert('Failed to save appointment details. Please try again.');
+      console.error('Error saving account details:', error);
+      alert('Failed to save account details. Please try again.');
     }
   };
 

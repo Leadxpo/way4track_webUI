@@ -116,8 +116,8 @@ const changeServeProd = (index, e) => {
   };
   const fetchProducts = async () => {
     try {
-      const res = await ApiService.post('/products/getAllproductDetails');
-      console.log("++====",res.data)
+      const res = await ApiService.post('/productType/getProductTypeNamesDropDown');
+      console.log("++==== producttttttt yyyy",res.data)
       setProducts(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -174,7 +174,7 @@ const changeServeProd = (index, e) => {
   console.log(value);
 
   const selectedProduct = products.find(
-    (product) => product.productType.trim() === value.trim()
+    (product) => product.name.trim() === value.trim()
   );
 
   if (!selectedProduct) {
@@ -591,8 +591,8 @@ const handleService = (index, e) => {
         >
           <option value="">Select Product</option>
           {products.map((product) => (
-            <option key={product?.id} value={product?.productType}>
-              {product?.productType}
+            <option key={product?.id} value={product?.name}>
+              {product?.name}
             </option>
           ))}
         </select>
