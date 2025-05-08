@@ -126,6 +126,11 @@ export const menuOptions = {
       route: '/payroll',
     },
     {
+      name: 'Orders',
+      icon: <img src="./home.png" />,
+      route: '/all-orders',
+    },
+    {
       name: 'Dispatch',
       icon: <img src="./payroll.png" />,
       route: '/dispatch',
@@ -264,6 +269,7 @@ export const menuOptions = {
     //   icon: <img src="./product_assign.png" />,
     //   route: '/products_assign',
     // },
+    
     {
       name: 'Dispatch',
       icon: <img src="./home.png" />,
