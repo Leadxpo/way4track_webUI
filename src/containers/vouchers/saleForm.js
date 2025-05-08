@@ -583,6 +583,7 @@ const SaleForm = () => {
               {loading ? '...' : 'Get'}
             </button>
           </div>
+
           {errors.purchaseGst && (
             <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
           )}

@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { FaPlus, FaFileExcel } from 'react-icons/fa';
-import * as XLSX from "xlsx";
-import { FaFileDownload } from "react-icons/fa";
+import * as XLSX from 'xlsx';
+import { FaFileDownload } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 const SubDealerDetails = () => {
@@ -12,18 +12,20 @@ const SubDealerDetails = () => {
 
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  console.log("==========Idddddd====+++++", subDealerDetailsFromState)
+  console.log('==========Idddddd====+++++', subDealerDetailsFromState);
 
-  const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState([]);
+  const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState(
+    []
+  );
   const [subDealer, setSubDealer] = useState({});
   const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [search, setSearch] = useState("");
-  const [searchTotal, setSearchTotal] = useState("");
-  const [searchReceved, setSearchReceved] = useState("");
-  const [searchPending, setSearchPending] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState('');
+  const [searchTotal, setSearchTotal] = useState('');
+  const [searchReceved, setSearchReceved] = useState('');
+  const [searchPending, setSearchPending] = useState('');
   const [activeTable, setActiveTable] = useState(null);
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -33,13 +35,11 @@ const SubDealerDetails = () => {
   const [requestBranchWiseData, setRequestBranchWiseData] = useState([]);
   const [productData, setProductData] = useState([]);
   const [works, setWorks] = useState([]);
-  const [searchText, setSearchText] = useState("");
-const [filteredStaff, setFilteredStaff] = useState([]);
-const [filteredProduct, setFilteredProduct] = useState([]);
-const [filteredWorks, setFilteredWorks] = useState([]);
-
-
-
+  const [searchText, setSearchText] = useState('');
+  const [filteredStaff, setFilteredStaff] = useState([]);
+  const [filteredProduct, setFilteredProduct] = useState([]);
+  const [filteredWorks, setFilteredWorks] = useState([]);
+  const [subDealerStock, setSubDealerStock] = useState([]);
 
   useEffect(() => {
     const fetchSubDealerDetails = async () => {
@@ -106,32 +106,32 @@ const [filteredWorks, setFilteredWorks] = useState([]);
   useEffect(() => {
     const fetchSubDealers = async () => {
       try {
-        const response = await ApiService.post('/subdealer/getSubDealerDetailById', {
-          subDealerId: subDealerDetailsFromState.SubDealerId,
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerDetailById',
+          {
+            subDealerId: subDealerDetailsFromState.SubDealerId,
 
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode
-        });
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
         if (response.status) {
-          console.log("kk", response.data)
-          setSubDealer(
+          console.log('kk', response.data);
+          setSubDealer({
+            name: response.data.name,
+            subDealerPhoneNumber: response.data.subDealerPhoneNumber,
+            alternatePhoneNumber: response.data.alternatePhoneNumber,
+            gstNumber: response.data.gstNumber,
+            startingDate: response.data.startingDate,
+            emailId: response.data.emailId,
+            password: response.data.password,
+            aadharNumber: response.data.aadharNumber,
+            address: response.data.address,
+            branchId: response.data.branchId,
+            branchName: response.data.branchName,
 
-            {
-              name: response.data.name,
-              subDealerPhoneNumber: response.data.subDealerPhoneNumber,
-              alternatePhoneNumber: response.data.alternatePhoneNumber,
-              gstNumber: response.data.gstNumber,
-              startingDate: response.data.startingDate,
-              emailId: response.data.emailId,
-              password: response.data.password,
-              aadharNumber: response.data.aadharNumber,
-              address: response.data.address,
-              branchId: response.data.branchId,
-              branchName: response.data.branchName,
-
-              id: response.data.id
-            }
-          )
+            id: response.data.id,
+          });
           //   s(response.data);
         } else {
           console.error('Failed to fetch SubDealers');
@@ -169,34 +169,53 @@ const [filteredWorks, setFilteredWorks] = useState([]);
     getProductsPhotos();
   }, [subDealerDetailsFromState.SubDealerId]);
 
+  // useEffect(() => {
+  //   const getProductsData = async () => {
+  //     try {
+  //       const response = await ApiService.post(
+  //         '/dashboards/getProductsAssignmentSummaryBySubDealer',
+  //         {
+  //           subDealerId: subDealerDetailsFromState.SubDealerId,
+  //           companyCode: initialAuthState.companyCode,
+  //           unitCode: initialAuthState.unitCode,
+  //         }
+  //       );
+  //       if (response.status) {
+  //         // Ensure vendor details data is an array
+  //         setProductData(response.data || []);
+  //       } else {
+  //         setProductData([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching vendor details data:', error);
+  //       alert('Failed to fetch vendor details data.');
+  //     }
+  //   };
+  //   getProductsData();
+  // }, [subDealerDetailsFromState.SubDealerId]);
 
   useEffect(() => {
-    const getProductsData = async () => {
-      try {
-        const response = await ApiService.post(
-          '/dashboards/getProductsAssignmentSummaryBySubDealer',
-          {
-            subDealerId: subDealerDetailsFromState.SubDealerId,
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-        if (response.status) {
-          // Ensure vendor details data is an array
-          setProductData(response.data || []);
-        } else {
-          setProductData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching vendor details data:', error);
-        alert('Failed to fetch vendor details data.');
+    fetchAllProductStock();
+  }, []);
+
+  const fetchAllProductStock = async () => {
+    try {
+      const response = await ApiService.post('/products/productAssignDetails', {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+      if (response.data) {
+        setSubDealerStock(response.data.subDealerDetails);
+
+        console.log('qazwsxedc', response.data);
+      } else {
+        console.error('Invalid API response');
       }
-    };
-    getProductsData();
-  }, [subDealerDetailsFromState.SubDealerId]);
-
-
-
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
 
   useEffect(() => {
     const getWorks = async () => {
@@ -223,30 +242,23 @@ const [filteredWorks, setFilteredWorks] = useState([]);
     getWorks();
   }, [subDealerDetailsFromState.SubDealerId]);
 
-
-
-
-
-
-
   const paymentStatus = [
     {
-      label: "Staff Details",
-      color: "bg-red-300",
-      textColor: "text-red-700",
+      label: 'Staff Details',
+      color: 'bg-red-300',
+      textColor: 'text-red-700',
     },
     {
-      label: "Product Details",
-      color: "bg-green-300",
-      textColor: "text-green-700",
+      label: 'Product Details',
+      color: 'bg-green-300',
+      textColor: 'text-green-700',
     },
     {
-      label: "Work Details",
-      color: "bg-purple-300",
-      textColor: "text-purple-700",
+      label: 'Work Details',
+      color: 'bg-purple-300',
+      textColor: 'text-purple-700',
     },
   ];
-
 
   const toggleTable = (label) => {
     setActiveTable(activeTable === label ? null : label);
@@ -254,99 +266,100 @@ const [filteredWorks, setFilteredWorks] = useState([]);
 
   const handleDownload = () => {
     if (!previewData || previewData.length === 0) {
-      alert("No data available to download.");
+      alert('No data available to download.');
       return;
     }
 
     try {
       const worksheet = XLSX.utils.json_to_sheet(previewData);
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Branch_Staff");
-      XLSX.writeFile(workbook, "Filtered_Branch_Staff.xlsx");
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Branch_Staff');
+      XLSX.writeFile(workbook, 'Filtered_Branch_Staff.xlsx');
 
       setIsPreviewOpen(false); // Close modal after download
     } catch (error) {
-      console.error("Error generating Excel file:", error);
-      alert("Failed to generate the Excel file. Please try again.");
+      console.error('Error generating Excel file:', error);
+      alert('Failed to generate the Excel file. Please try again.');
     }
   };
-
 
   useEffect(() => {
     const search = searchText.toLowerCase();
-  
+
     // Filter Staff
     setFilteredStaff(
-      subDealerStaffDetailsData.filter(item =>
+      subDealerStaffDetailsData.filter((item) =>
         item.name?.toLowerCase().includes(search)
       )
     );
-  
+
     // Filter Products
+    // setFilteredProduct(
+    //   productData.filter((item) =>
+    //     item.productName?.toLowerCase().includes(search)
+    //   )
+    // );
+
     setFilteredProduct(
-      productData.filter(item =>
-        item.productName?.toLowerCase().includes(search)
+      subDealerStock.filter(
+        (item) => item.subDealerId === subDealerDetailsFromState.SubDealerId
       )
     );
-  
+
     // Filter Works
     setFilteredWorks(
-      works.filter(item =>
-        item.staffName?.toLowerCase().includes(search)
-      )
+      works.filter((item) => item.staffName?.toLowerCase().includes(search))
     );
   }, [searchText, subDealerStaffDetailsData, productData, works]);
-  
 
   const formatStaffData = (data) => {
     return data.map((item) => ({
-      "Staff ID": item.staffId,
-      "Staff Name": item.name,
-      "Phone": item.phoneNumber,
-      "Email": item.email,
-      "Address": item.address,
+      'Staff ID': item.staffId,
+      'Staff Name': item.name,
+      Phone: item.phoneNumber,
+      Email: item.email,
+      Address: item.address,
     }));
   };
-  
+
   const formatProductData = (data) => {
     return data.map((item) => ({
-      "Product ID": item.productId,
-      "Product Name": item.productName,
-      "Quantity": item.quantity,
-      "Assigned Date": item.assignedDate,
+      'Product ID': item.productId,
+      'Product Name': item.productName,
+      Quantity: item.quantity,
+      'Assigned Date': item.assignedDate,
     }));
   };
-  
+
   const formatWorkData = (data) => {
     return data.map((item) => ({
-      "Work ID": item.workId,
-      "Staff Name": item.staffName,
-      "Task": item.taskName,
-      "Assigned Date": item.assignedDate,
-      "Status": item.status,
+      'Work ID': item.workId,
+      'Staff Name': item.staffName,
+      Task: item.taskName,
+      'Assigned Date': item.assignedDate,
+      Status: item.status,
     }));
   };
-  
+
   const handlePreviewDownload = () => {
     let formattedData;
-  
-    if (activeTable === "Staff Details") {
+
+    if (activeTable === 'Staff Details') {
       formattedData = formatStaffData(filteredStaff);
-    } else if (activeTable === "Product Details") {
+    } else if (activeTable === 'Product Details') {
       formattedData = formatProductData(filteredProduct);
-    } else if (activeTable === "Work Details") {
+    } else if (activeTable === 'Work Details') {
       formattedData = formatWorkData(filteredWorks);
     }
-  
+
     if (!formattedData || formattedData.length === 0) {
-      alert("No data available to preview/download.");
+      alert('No data available to preview/download.');
       return;
     }
-  
+
     setPreviewData(formattedData);
     setIsPreviewOpen(true); // Show preview modal
   };
-  
 
   const fetchSubDealerStaffDetailsData = async () => {
     try {
@@ -364,7 +377,7 @@ const [filteredWorks, setFilteredWorks] = useState([]);
         //   const filteredData = data
         //     .filter(item => item.subDealerId && item.subDealerId.id === subDealerDetailsFromState.SubDealerId)
         //     .map(({ subDealerId, ...rest }) => rest);
-        console.log("hhhhh", data);
+        console.log('hhhhh', data);
         setSubDealerStaffDetailsData(data);
         // setPreviewData(filteredData);
       } else {
@@ -375,15 +388,9 @@ const [filteredWorks, setFilteredWorks] = useState([]);
     }
   };
 
-
   useEffect(() => {
-
     fetchSubDealerStaffDetailsData();
   }, [subDealerDetailsFromState.SubDealerId]);
-
-
-
-
 
   return (
     <div className="p-6 space-y-8">
@@ -400,15 +407,14 @@ const [filteredWorks, setFilteredWorks] = useState([]);
             Sub Dealer Name : {subDealer.name}
           </p>
           <p className="text-gray-800 font-semibold">
-            Phone number : {subDealer.subDealerPhoneNumber
-            }
+            Phone number : {subDealer.subDealerPhoneNumber}
           </p>
-          <p className="text-gray-800 font-semibold">Email : {subDealer.
-            emailId
-          }</p>
-         <p className="text-gray-800 font-semibold">
-  SubDealer Branch : {subDealer.branchName}
-</p>
+          <p className="text-gray-800 font-semibold">
+            Email : {subDealer.emailId}
+          </p>
+          <p className="text-gray-800 font-semibold">
+            SubDealer Branch : {subDealer.branchName}
+          </p>
 
           {/* <p className="text-gray-800 font-semibold">
             Date of Birth : {subDealer.dob}
@@ -418,100 +424,110 @@ const [filteredWorks, setFilteredWorks] = useState([]);
             Gst Number : {subDealer.gstNumber}
           </p>
 
-          <p className="text-gray-800 font-semibold">Address : {subDealer.address}</p>
+          <p className="text-gray-800 font-semibold">
+            Address : {subDealer.address}
+          </p>
         </div>
       </div>
-
 
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold"></h1>
         <button
           className="bg-yellow-400 text-black px-5 py-2  rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
-          onClick={() => navigate('/add-subdeler-staff', { state: { subDealerId: subDealer.id } })}
-
-
+          onClick={() =>
+            navigate('/add-subdeler-staff', {
+              state: { subDealerId: subDealer.id },
+            })
+          }
         >
           <FaPlus /> Create Sub Dealer Staff
         </button>
       </div>
 
-
-     {/* Stats Section */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6 mt-10">
-  {paymentStatus.map((stat, index) => (
-    <div
-      key={index}
-      className={`p-4 rounded-xl shadow-md w-64 text-center cursor-pointer ${stat.color}`}
-      onClick={() => toggleTable(stat.label)}
-    >
-      <button
-        className="mt-2 px-4 py-1.5 text-black rounded-lg font-bold hover:bg-blue-100"
-        onClick={() => toggleTable(stat.label)}
-      >
-        {stat.label}
-      </button>
-      <div className={`text-3xl font-bold ${stat.textColor} mt-4`}>{stat.value}</div>
-    </div>
-  ))}
-</div>
-
-
-
-     {/* Payments Table - Visible only if showTable is true */}
-{activeTable === "Staff Details" && (
-  <div>
-    <h2 className="text-2xl font-bold mb-4 text-red-400">Staff Details</h2>
-    <div className="flex justify-between mb-4">
-      <input
-        type="text"
-        placeholder="Search by Staff Name..."
-        className="border p-2 rounded w-1/3"
-        value={searchTotal}
-        onChange={(e) => setSearchTotal(e.target.value)}
-      />
-
-      <button
-        onClick={handlePreviewDownload}
-        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
-      >
-        <FaFileDownload className="mr-2" /> Preview & Download
-      </button>
-    </div>
-
-    <table className="w-full border-collapse border border-gray-300">
-      <thead>
-        <tr className="bg-red-300 text-white">
-          <th className="p-2 border">Staff Id</th>
-          <th className="p-2 border">Staff Name</th>
-          <th className="p-2 border">Phone Number</th>
-          <th className="p-2 border">email</th>
-          <th className="p-2 border">Address</th>
-        </tr>
-      </thead>
-      <tbody>
-        {subDealerStaffDetailsData
-          ?.filter((staff) =>
-            staff.name.toLowerCase().includes(searchTotal.toLowerCase())
-          )
-          .map((staff, index) => (
-            <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-              <td className="p-2 border text-center">{staff.staffId}</td>
-              <td className="p-2 border text-center">{staff.name}</td>
-              <td className="p-2 border text-center">{staff.phoneNumber}</td>
-              <td className="p-2 border text-center">{staff.email}</td>
-              <td className="p-2 border text-center">{staff.address}</td>
-            </tr>
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6 mt-10">
+        {paymentStatus.map((stat, index) => (
+          <div
+            key={index}
+            className={`p-4 rounded-xl shadow-md w-64 text-center cursor-pointer ${stat.color}`}
+            onClick={() => toggleTable(stat.label)}
+          >
+            <button
+              className="mt-2 px-4 py-1.5 text-black rounded-lg font-bold hover:bg-blue-100"
+              onClick={() => toggleTable(stat.label)}
+            >
+              {stat.label}
+            </button>
+            <div className={`text-3xl font-bold ${stat.textColor} mt-4`}>
+              {stat.value}
+            </div>
+          </div>
         ))}
-      </tbody>
-    </table>
-  </div>
-)}
+      </div>
 
+      {/* Payments Table - Visible only if showTable is true */}
+      {activeTable === 'Staff Details' && (
+        <div>
+          <h2 className="text-2xl font-bold mb-4 text-red-400">
+            Staff Details
+          </h2>
+          <div className="flex justify-between mb-4">
+            <input
+              type="text"
+              placeholder="Search by Staff Name..."
+              className="border p-2 rounded w-1/3"
+              value={searchTotal}
+              onChange={(e) => setSearchTotal(e.target.value)}
+            />
+
+            <button
+              onClick={handlePreviewDownload}
+              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+            >
+              <FaFileDownload className="mr-2" /> Preview & Download
+            </button>
+          </div>
+
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-red-300 text-white">
+                <th className="p-2 border">Staff Id</th>
+                <th className="p-2 border">Staff Name</th>
+                <th className="p-2 border">Phone Number</th>
+                <th className="p-2 border">email</th>
+                <th className="p-2 border">Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subDealerStaffDetailsData
+                ?.filter((staff) =>
+                  staff.name.toLowerCase().includes(searchTotal.toLowerCase())
+                )
+                .map((staff, index) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}
+                  >
+                    <td className="p-2 border text-center">{staff.staffId}</td>
+                    <td className="p-2 border text-center">{staff.name}</td>
+                    <td className="p-2 border text-center">
+                      {staff.phoneNumber}
+                    </td>
+                    <td className="p-2 border text-center">{staff.email}</td>
+                    <td className="p-2 border text-center">{staff.address}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Receved Payments Table */}
-      {activeTable === "Product Details" && (
+      {activeTable === 'Product Details' && (
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-green-400">Product Details</h2>
+          <h2 className="text-2xl font-bold mb-4 text-green-400">
+            Product Details
+          </h2>
           <div className="flex justify-between mb-4">
             <input
               type="text"
@@ -531,29 +547,42 @@ const [filteredWorks, setFilteredWorks] = useState([]);
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-green-400 text-white">
-                <th className="p-2 border">product Id</th>
+                {/* <th className="p-2 border">product Id</th> */}
                 <th className="p-2 border">product Name</th>
                 {/* <th className="p-2 border">Date of Payment</th>
             <th className="p-2 border">Invoice ID</th> */}
                 <th className="p-2 border">Present Stock</th>
-                <th className="p-2 border">Status</th>
+                {/* <th className="p-2 border">Status</th> */}
               </tr>
             </thead>
             <tbody>
               {filteredProduct.map((payment, index) => (
-                <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-                  <td className="p-2 border text-center">{payment.staffId}</td>
-                  <td className="p-2 border text-center">{payment.staffName}</td>
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}
+                >
+                  {/* <td className="p-2 border text-center">{payment.staffId}</td> */}
+                  <td className="p-2 border text-center">
+                    {payment.productName}
+                  </td>
                   {/* <td className="p-2 border text-center">{payment.date}</td>
               <td className="p-2 border text-center">{payment.invoice}</td> */}
-                  <td className="p-2 border text-center">{payment.totalPayment}</td>
                   <td className="p-2 border text-center">
-                    <span className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETE" ? "bg-green-500" :
-                        payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
-                      }`}>
+                    {payment.presentStock}
+                  </td>
+                  {/* <td className="p-2 border text-center">
+                    <span
+                      className={`px-2 py-1 rounded text-white ${
+                        payment.status === 'COMPLETE'
+                          ? 'bg-green-500'
+                          : payment.status === 'PENDING'
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
+                      }`}
+                    >
                       {payment.status}
                     </span>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -561,9 +590,11 @@ const [filteredWorks, setFilteredWorks] = useState([]);
         </div>
       )}
       {/* Pending Amount */}
-      {activeTable === "Work Details" && (
+      {activeTable === 'Work Details' && (
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-violet-500">Work Details</h2>
+          <h2 className="text-2xl font-bold mb-4 text-violet-500">
+            Work Details
+          </h2>
           <div className="flex justify-between mb-4">
             <input
               type="text"
@@ -593,17 +624,29 @@ const [filteredWorks, setFilteredWorks] = useState([]);
             </thead>
             <tbody>
               {filteredWorks.map((payment, index) => (
-                <tr key={index} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}
+                >
                   <td className="p-2 border text-center">{payment.staffId}</td>
-                  <td className="p-2 border text-center">{payment.staffName}</td>
+                  <td className="p-2 border text-center">
+                    {payment.staffName}
+                  </td>
                   {/* <td className="p-2 border text-center">{payment.invoice}</td> */}
-                  <td className="p-2 border text-center">{payment.totalPayment}</td>
+                  <td className="p-2 border text-center">
+                    {payment.totalPayment}
+                  </td>
                   {/* <td className="p-2 border text-center">{payment.paymentStatus}</td> */}
                   <td className="p-2 border text-center">
-                    <span className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETED" ? "bg-green-500" :
-                        payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
-                      }`}>
-                    </span>
+                    <span
+                      className={`px-2 py-1 rounded text-white ${
+                        payment.status === 'COMPLETED'
+                          ? 'bg-green-500'
+                          : payment.status === 'PENDING'
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
+                      }`}
+                    ></span>
                   </td>
                   {payment.status}
                 </tr>
@@ -612,7 +655,6 @@ const [filteredWorks, setFilteredWorks] = useState([]);
           </table>
         </div>
       )}
-
 
       {/* Preview Modal */}
       {isPreviewOpen && (
@@ -624,15 +666,24 @@ const [filteredWorks, setFilteredWorks] = useState([]);
                 <thead className="bg-gray-200 text-gray-700">
                   <tr>
                     {Object.keys(previewData[0]).map((key, index) => (
-                      <th key={index} className="p-2 text-left border">{key}</th>
+                      <th key={index} className="p-2 text-left border">
+                        {key}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {previewData.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                    <tr
+                      key={index}
+                      className={
+                        index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+                      }
+                    >
                       {Object.values(row).map((value, i) => (
-                        <td key={i} className="p-2 border">{value}</td>
+                        <td key={i} className="p-2 border">
+                          {value}
+                        </td>
                       ))}
                     </tr>
                   ))}
@@ -657,12 +708,6 @@ const [filteredWorks, setFilteredWorks] = useState([]);
           </div>
         </div>
       )}
-
-
-
-
-
-
     </div>
   );
 };

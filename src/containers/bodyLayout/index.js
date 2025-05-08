@@ -158,7 +158,6 @@ import AddSubDealerStaff from '../sub-dealers/subDelarStaff';
 import SubDelarStaff from '../sub-dealers/subDelarStaff';
 import SubDealerNotifications from '../notifications/sub-dealer-home-notifications';
 
-
 import BackendSupportPayments from '../backendSupport/backendSupportPayments';
 import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPayments';
 import AddTicket from '../tickets/AddTicket';
@@ -178,6 +177,8 @@ import EditClient from '../clients/EditClient';
 import AddEditSubDealer from '../sub-dealers/addSubDealer';
 import EditSubDealer from '../sub-dealers/EditSubDealer';
 import CustomHome from '../home/CustomHome';
+
+import WebsiteOrders from '../websiteOrders/websiteOrders';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -383,23 +384,24 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/profile')}
             />
-            {role==="CEO"&&
-            <FaCog
-              className="text-xl text-gray-600 cursor-pointer"
-              onClick={() => navigate('/settings')}
-            />}
-            
-          <div>
-          {role==="Sub Dealer"?
-            <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
-          :
-            <FaBell
-              className="text-xl text-gray-600 cursor-pointer"
-              onClick={() => navigate('/notifications')}
-            />}
+            {role === 'CEO' && (
+              <FaCog
+                className="text-xl text-gray-600 cursor-pointer"
+                onClick={() => navigate('/settings')}
+              />
+            )}
+
+            <div>
+              {role === 'Sub Dealer' ? (
+                <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
+              ) : (
+                <FaBell
+                  className="text-xl text-gray-600 cursor-pointer"
+                  onClick={() => navigate('/notifications')}
+                />
+              )}
             </div>
           </div>
-         
         </div>
       </div>
 
@@ -413,7 +415,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-product-type" element={<AddProductType />} />
           <Route path="/edit-product-type" element={<EditProductType />} />
           <Route path="/show-product-type" element={<ShowProductType />} />
-
           <Route path="/products" element={<Products />} />
           <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/product-details" element={<ProductDetails />} />
@@ -469,9 +470,7 @@ const BodyLayout = ({ children }) => {
             path="/edit-work-allocation"
             element={<EditWorkAllocation />}
           />
-
           <Route path="/sales_visit" element={<SalesVisit />} />
-
           <Route path="/sales-visit-details" element={<SalesVisitDetails />} />
           <Route
             path="/create-work-allocation"
@@ -480,7 +479,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/select-branch" element={<SelectBranch />} />
           <Route path="/receipt-form" element={<ReceiptForm />} />
           <Route path="/report-account" element={<ReportAccount />} />
-
           <Route path="/forms/Purchase" element={<PurchaseForm />} />
           <Route path="/forms/Payments" element={<PaymentForm />} />
           <Route path="/forms/Sale" element={<SaleForm />} />
@@ -489,7 +487,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/forms/Contra" element={<ContraForm />} />
           <Route path="/forms/DebitNote" element={<DebitNoteForm />} />
           <Route path="/forms/CreditNote" element={<CreditNoteForm />} />
-
           <Route path="/ledger" element={<Ledger />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/add-ticket" element={<AddTicket />} />
@@ -509,7 +506,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-branch" element={<AddBranchForm />} />
           <Route path="/branch-details" element={<BranchDetails />} />
           {/* <Route path="/add-staff" element={<AddEditEmployeeForm />} /> */}
-
           {/* <Route path="/edit-staff" element={<ViewStaffDetails />} /> */}
           <Route path="/add-staff" element={<AddStaffForm />} />
           <Route
@@ -525,19 +521,20 @@ const BodyLayout = ({ children }) => {
             path="/edit-staff-employer"
             element={<EditEmployerDetails />}
           />
-
           {/* <Route path="/edit-staff" element={<AddEditEmployeeForm />} /> */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/add-vendor" element={<AddEditVendor />} />
           <Route path="/delete-vendor" element={<DeleteVendor />} />
-          <Route path="/add-sub-dealer" element={<AddSubDealer/>} />
-          <Route path="/edit-sub-dealer" element={<EditSubDealer/>} />
+          <Route path="/add-sub-dealer" element={<AddSubDealer />} />
+          <Route path="/edit-sub-dealer" element={<EditSubDealer />} />
           <Route path="/add-product" element={<AddProductForm />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/sub-dealer-notifications" element={<SubDealerNotifications />} />
+          <Route
+            path="/sub-dealer-notifications"
+            element={<SubDealerNotifications />}
+          />
           <Route path="/vendor-profile" element={<VendorProfile />} />
           <Route path="/delete-sub-dealer" element={<DeleteSubDealer />} />
-          
           <Route path="/sub-staff-details" element={<SubStaffDetails />} />
           <Route path="/sub-dealer-profile" element={<SubDealerDetails />} />
           <Route path="/day-book" element={<DayBook />} />
@@ -550,7 +547,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-vehicle" element={<AddVehicle />} />
           <Route path="/edit-vehicle" element={<EditVehicle />} />
           <Route path="/payroll" element={<Payroll />} />
-          <Route path="/payrolls" element={<Payrolls/>} />
+          <Route path="/payrolls" element={<Payrolls />} />
           <Route path="/payroll-details" element={<PayrollDetails />} />
           <Route path="/in-hand-product" element={<InHandProductsForm />} />
           <Route path="/tracker" element={<Tracker />} />
@@ -559,9 +556,9 @@ const BodyLayout = ({ children }) => {
           <Route path="/appointment-details" element={<AppointmentDetails />} />
           {/* telecaller */}
           <Route path="/appointment-table" element={<AppointmentTable />} />
-          <Route path="/create-appointment" element={<AddAppointment/>} />
+          <Route path="/create-appointment" element={<AddAppointment />} />
           <Route path="/edit-appointment" element={<EditAppointment />} />
-          <Route path="/view-appointment" element={<ViewAppointment/>} />
+          <Route path="/view-appointment" element={<ViewAppointment />} />
           EditAppointment
           <Route path="/edit-designation" element={<EditDesignation />} />
           <Route
@@ -572,7 +569,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-amount" element={<AddAmount />} />
           <Route path="/bank-details" element={<BankDetails />} />
           <Route path="/custom-home" element={<CustomHome />} />
-          
           {/* <Route path="/ticket-assign" element={<TicketAssign />} /> */}
           <Route path="/customer-care-home" element={<CustomerCareHome />} />
           <Route
@@ -610,29 +606,22 @@ const BodyLayout = ({ children }) => {
             path="/work-view-details"
             element={<ViewBackendWorkDetails />}
           />
-
           <Route
             path="/work-view-payments"
             element={<CeoBackendSupportPayments />}
           />
-
           <Route path="/backend-support" element={<CeoBackendSupportHome />} />
           <Route
             path="/backend-work-details/:id"
             element={<FilteredWorkStatusDetails />}
           />
-
           <Route path="/groups" element={<Groups />} />
           <Route path="/add-groups" element={<AddGroups />} />
           <Route path="/more-details-groups" element={<moreDetailsGroups />} />
           <Route path="/add-subdeler-staff" element={<SubDelarStaff />} />
-
-
-
-
-          <Route path="/add-sub-staff" element={<PersonnelDetails/>} />
-          <Route path="/edit-sub-staff" element={<EditSubStaff/>} />
-          <Route path="/view-sub-staff" element={<ViewSubStaff/>} />
+          <Route path="/add-sub-staff" element={<PersonnelDetails />} />
+          <Route path="/edit-sub-staff" element={<EditSubStaff />} />
+          <Route path="/view-sub-staff" element={<ViewSubStaff />} />
           <Route path="/add-designation" element={<AddDesignation />} />
           <Route path="/add-ledger" element={<AddLedger />} />
           <Route path="/letters" element={<Letters />} />
@@ -640,6 +629,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/attendance-upload" element={<AttendanceUpload />} />
           <Route path="/attendance-details" element={<AttendanceDetails />} />
           <Route path="/attendance-edit" element={<EditAttendance />} />
+          <Route path="/all-orders" element={<WebsiteOrders />} />
           {/* Add more routes as needed */}
         </Routes>
       </div>
