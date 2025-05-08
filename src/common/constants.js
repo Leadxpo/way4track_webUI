@@ -29,11 +29,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/product-type',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
@@ -172,11 +172,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
@@ -259,11 +259,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Dispatch',
       icon: <img src="./home.png" />,
@@ -384,11 +384,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,

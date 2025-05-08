@@ -64,11 +64,17 @@ const Products = () => {
   const [selected, setSelected] = useState(() => {
     const role = localStorage.getItem('role'); // adjust the key if needed
     if (role === 'Branch Manager') return 'branchstock';
-    if (role === 'Sub Dealer') return 'subDealerStock';
+    if (role === 'sub dealer') return 'subDealerStock';
     // if (role === 'subDealer') return 'subDealerStock';
     if (role === 'CEO') return '';
     return ''; // default fallback
   });
+
+  const localStorageBranchName = localStorage.getItem('branchName');
+  const localStorageSubdealerId = localStorage.getItem('userId');
+  const localStorageStaffId = localStorage.getItem('userId');
+
+  console.log(localStorageSubdealerId, 'local storage sub dealer id');
 
   const [branchStock, setBranchStock] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -80,6 +86,7 @@ const Products = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [stock, setStock] = useState(null);
   const [allProductsStock, setAllProductsStock] = useState(null);
+  const [unassignedData, setUnassignedData] = useState([]);
   // if (branchStock) {
   //   console.log('++++++++ R', branchStock);
   // }
@@ -99,16 +106,35 @@ const Products = () => {
   });
 
   const navigate = useNavigate();
-  const [selectedBranch, setSelectedBranch] = useState('');
+  const loggedinRoll = localStorage.getItem('role');
+  const [selectedBranch, setSelectedBranch] = useState(
+    loggedinRoll === 'Branch Manager' ? localStorageBranchName : ''
+  );
+
+  const [searchData, setSearchData] = useState({
+    productName: '',
+    branchName: '',
+    staffName: '',
+    subDealerName: '',
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSearchData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const [isGridView, setIsGridView] = useState(true);
   const [products, setProducts] = useState([]);
   const [branches, setBranches] = useState([]);
   const [permissions, setPermissions] = useState({});
-  const [searchData, setSearchData] = useState({
-    productId: '',
-    productName: '',
-    location: '',
-  });
+  // const [searchData, setSearchData] = useState({
+  //   productId: '',
+  //   productName: '',
+  //   location: '',
+  // });
   const [productCounts, setProductCounts] = useState({
     totalAssignedQty: 0,
     totalInHandsQty: 0,
@@ -212,26 +238,128 @@ const Products = () => {
     }
   }, [searchData, initialAuthState.companyCode, initialAuthState.unitCode]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSearchData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setSearchData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // const handleSearch = () => {
+  //   const searchQuery = searchData.name.toLowerCase().trim();
+
+  //   if (searchQuery === '') {
+  //     setBranchStock(branchStock); // Reset to original data
+  //   } else {
+  //     const filteredData = branchStock.filter((item) =>
+  //       item.name.toLowerCase().includes(searchQuery)
+  //     );
+  //     setBranchStock(filteredData);
+  //   }
+  // };
+
+  // const handleSearch = () => {
+  //   const productSearch = searchData.productName?.toLowerCase() ?? '';
+
+  //   if (selected === 'branchstock') {
+  //     const branchSearch = searchData.branchName?.toLowerCase() ?? '';
+  //     const filtered = branchStock.filter(
+  //       (item) =>
+  //         (item?.productName ?? '').toLowerCase().includes(productSearch) &&
+  //         (item?.branchName ?? '').toLowerCase().includes(branchSearch)
+  //     );
+  //     setFilteredBranchStock(filtered);
+  //   }
+
+  //   if (selected === 'handstock') {
+  //     const staffSearch = searchData.staffName?.toLowerCase() ?? '';
+  //     const filtered = handStock.filter(
+  //       (item) =>
+  //         (item?.productName ?? '').toLowerCase().includes(productSearch) &&
+  //         (item?.staffName ?? '').toLowerCase().includes(staffSearch)
+  //     );
+  //     setInHandStock(filtered); // if you have a separate `filteredInHandStock`, use that
+  //   }
+
+  //   if (selected === 'subDealerStock') {
+  //     const dealerSearch = searchData.subDealerName?.toLowerCase() ?? '';
+  //     const filtered = subDealerStock.filter(
+  //       (item) =>
+  //         (item?.productName ?? '').toLowerCase().includes(productSearch) &&
+  //         (item?.subDealerName ?? '').toLowerCase().includes(dealerSearch)
+  //     );
+  //     setFilteredSubdealerStock(filtered);
+  //   }
+  // };
+
+  // const filteredBranchStock = selectedBranch
+  //   ? branchStock.filter((item) => item.branchName === selectedBranch)
+  //   : branchStock;
+
+  // const filteredSubdealerStock =
+  //   loggedinRoll === 'sub dealer'
+  //     ? subDealerStock.filter(
+  //         (item) => item.subDealerId === localStorageSubdealerId
+  //       )
+  //     : subDealerStock;
+
+  // console.log(filteredSubdealerStock, 'filtered stockkkkk');
+
+  // const filteredStaffStock = selectedBranch
+  //   ? branchStock.filter((item) => item.branchName === selectedBranch)
+  //   : branchStock;
+
+  const filteredStock = stock?.filter((item) =>
+    item?.productName
+      ?.toLowerCase()
+      .includes(searchData.productName.toLowerCase())
+  );
+
+  const filteredBranchStock = branchStock.filter(
+    (item) =>
+      item?.productName
+        ?.toLowerCase()
+        .includes(searchData.productName.toLowerCase()) &&
+      item?.branchName
+        ?.toLowerCase()
+        .includes(searchData.branchName.toLowerCase())
+  );
+
+  const filteredInHandStock = inHandStock.filter(
+    (item) =>
+      item?.productName
+        ?.toLowerCase()
+        .includes(searchData.productName.toLowerCase()) &&
+      item?.staffName
+        ?.toLowerCase()
+        .includes(searchData.staffName.toLowerCase())
+  );
+
+  const filteredSubdealerStock = subDealerStock.filter(
+    (item) =>
+      item?.productName
+        ?.toLowerCase()
+        .includes(searchData.productName.toLowerCase()) &&
+      item?.subDealerName
+        ?.toLowerCase()
+        .includes(searchData.subDealerName.toLowerCase()) &&
+      (loggedinRoll === 'sub dealer'
+        ? item?.subDealerId === localStorageSubdealerId
+        : true)
+  );
 
   const handleSearch = () => {
-    const searchQuery = searchData.name.toLowerCase().trim();
-
-    if (searchQuery === '') {
-      setBranchStock(branchStock); // Reset to original data
-    } else {
-      const filteredData = branchStock.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery)
-      );
-      setBranchStock(filteredData);
-    }
+    console.log('Search triggered with:', searchData);
   };
+
+  // Choose which data to display based on the selected stock type
+  const displayedData =
+    selected === 'branchstock'
+      ? filteredBranchStock
+      : selected === 'handstock'
+        ? filteredInHandStock
+        : filteredSubdealerStock;
 
   useEffect(() => {
     getSearchDetailProduct();
@@ -258,6 +386,25 @@ const Products = () => {
   const role = localStorage.getItem('role');
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
+  };
+
+  const getUassignedProducts = async () => {
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    };
+
+    const response = await ApiService.post(
+      '/products/getSearchDetailProduct',
+      payload
+    );
+
+    if (response.status) {
+      setUnassignedData(response.data);
+      console.log(response.data, 'unassigned proucts');
+    } else {
+      alert('feiled');
+    }
   };
 
   const fetchAllProductStock = async () => {
@@ -329,11 +476,22 @@ const Products = () => {
     fetchAllProductStock();
     fetchStock();
     fetchSubDealerDropDown();
+    getUassignedProducts();
   }, []);
 
   // console.log(branchList, 'kisyd');
 
-  const totalBranchStock = branchStock.reduce((total, item) => {
+  const totalUnassignedStock = unassignedData.reduce((total, item) => {
+    const present = parseInt(item.notAssignedStock || '0', 10);
+    // const hand = parseInt(item.handStock || '0', 10);
+    return total + present;
+  }, 0);
+
+  // console.log(tableData, 'table');
+
+  console.log(totalUnassignedStock, 'total un assigned stock');
+
+  const totalBranchStock = filteredBranchStock.reduce((total, item) => {
     const present = parseInt(item.presentStock || '0', 10);
     const hand = parseInt(item.handStock || '0', 10);
     return total + present + hand;
@@ -344,7 +502,7 @@ const Products = () => {
     return total + hand;
   }, 0);
 
-  const totalSubDealerStock = subDealerStock.reduce((total, item) => {
+  const totalSubDealerStock = filteredSubdealerStock.reduce((total, item) => {
     const present = parseInt(item.presentStock || '0', 10);
 
     return total + present;
@@ -356,6 +514,17 @@ const Products = () => {
         <h2 className="text-3xl font-bold text-gray-900">Products</h2>
 
         <div className="flex items-center space-x-4">
+          {['ceo', 'warehouse manager', 'accountant'].includes(
+            loggedinRoll.toLowerCase()
+          ) && (
+            <button
+              className="flex items-center space-x-2 bg-yellow-400 hover:bg-yellow-800 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out"
+              onClick={() => setSelected('')}
+            >
+              <span className="font-medium">Refresh</span>
+            </button>
+          )}
+
           <button
             className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
               permissions.add
@@ -391,10 +560,9 @@ const Products = () => {
           </button>
         </div>
       </div>
-
       {role !== 'CEO' &&
         role !== 'Accountant' &&
-        role !== 'Sub Dealer' &&
+        role !== 'sub dealer' &&
         role !== 'Warehouse Manager' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
             {role !== 'CEO' && role !== 'Sales Man' && (
@@ -436,7 +604,6 @@ const Products = () => {
           </div> */}
           </div>
         )}
-
       {role !== 'CEO' &&
         role !== 'Accountant' &&
         role !== 'Branch Manager' &&
@@ -483,7 +650,6 @@ const Products = () => {
           </div> */}
           </div>
         )}
-
       {(role === 'CEO' ||
         role === 'Warehouse Manager' ||
         role === 'Accountant') && (
@@ -510,7 +676,9 @@ const Products = () => {
                   </select>
                 </div>
                 <div className="text-white text-5xl font-extrabold mt-6">
-                  {totalBranchStock}
+                  {selected === 'branchstock'
+                    ? totalBranchStock
+                    : totalUnassignedStock}
                 </div>
               </div>
             </>
@@ -550,9 +718,9 @@ const Products = () => {
             <div className="flex flex-wrap gap-4 mb-6">
               <input
                 type="text"
-                name="name"
+                name="productName"
                 placeholder="Search by Name"
-                value={searchData.name}
+                value={searchData.productName}
                 onChange={handleInputChange}
                 className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm focus:ring-2 focus:ring-green-500"
               />
@@ -583,8 +751,8 @@ const Products = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {stock?.length > 0 ? (
-                    stock?.map((item, index) => (
+                  {filteredStock?.length > 0 ? (
+                    filteredStock?.map((item, index) => (
                       <tr
                         key={item.id}
                         className={`border-b ${
@@ -646,28 +814,46 @@ const Products = () => {
           <div className="flex flex-wrap gap-4 mb-6">
             <input
               type="text"
-              name="productId"
-              placeholder="Search with ID"
-              value={searchData.productId}
-              onChange={handleInputChange}
-              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
-            />
-            <input
-              type="text"
               name="productName"
-              placeholder="Search with Name"
+              placeholder="Search Product Name"
               value={searchData.productName}
               onChange={handleInputChange}
               className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
             />
-            <input
-              type="text"
-              name="location"
-              placeholder="Search with Location"
-              value={searchData.location}
-              onChange={handleInputChange}
-              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
-            />
+
+            {selected === 'branchstock' && (
+              <input
+                type="text"
+                name="branchName"
+                placeholder="Search Branch Name"
+                value={searchData.branchName}
+                onChange={handleInputChange}
+                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+              />
+            )}
+
+            {selected === 'handstock' && (
+              <input
+                type="text"
+                name="staffName"
+                placeholder="Search Staff Name"
+                value={searchData.staffName}
+                onChange={handleInputChange}
+                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+              />
+            )}
+
+            {selected === 'subDealerStock' && (
+              <input
+                type="text"
+                name="subDealerName"
+                placeholder="Search Sub Dealer Name"
+                value={searchData.subDealerName}
+                onChange={handleInputChange}
+                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+              />
+            )}
+
             <button
               onClick={handleSearch}
               className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800"
@@ -686,7 +872,10 @@ const Products = () => {
                   <th className="px-6 py-3 text-left text-sm font-bold">
                     {selected === 'branchstock' && 'Branch'}
                     {selected === 'subDealerStock' && 'Sub Dealer'}
-                    {selected === 'handstock' && 'Staff ID'}
+                    {selected === 'handstock' && 'Staff Name'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-bold">
+                    Stock
                   </th>
 
                   {/* <th className="px-6 py-3 text-left text-sm font-bold">
@@ -705,28 +894,35 @@ const Products = () => {
               </thead>
               <tbody>
                 {(selected === 'branchstock'
-                  ? branchStock
+                  ? filteredBranchStock
                   : selected === 'subDealerStock'
-                    ? subDealerStock
-                    : inHandStock
+                    ? filteredSubdealerStock
+                    : filteredInHandStock
                 ).map((item, index) => (
                   <tr
                     key={item.id || index}
                     className={`border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-50`}
                   >
-                    {/* Product Name - safely render only if not null */}
                     <td className="px-6 py-4">{item.productName || '-'}</td>
 
-                    {/* Conditional ID or identifier field */}
                     {selected === 'handstock' && (
-                      <td className="px-6 py-4">{item.staffName}</td>
+                      <>
+                        <td className="px-6 py-4">{item.staffName}</td>
+                        <td className="px-6 py-4">{item.handStock}</td>
+                      </>
                     )}
 
                     {selected === 'branchstock' && (
-                      <td className="px-6 py-4">{item.branchName}</td>
+                      <>
+                        <td className="px-6 py-4">{item.branchName}</td>
+                        <td className="px-6 py-4">{item.presentStock}</td>
+                      </>
                     )}
                     {selected === 'subDealerStock' && (
-                      <td className="px-6 py-4">{item.subDealerName}</td>
+                      <>
+                        <td className="px-6 py-4">{item.subDealerName}</td>
+                        <td className="px-6 py-4">{item.presentStock}</td>
+                      </>
                     )}
 
                     {/* Staff Name for in-hand */}
