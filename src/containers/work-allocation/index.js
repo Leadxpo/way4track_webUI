@@ -8,44 +8,6 @@ import { FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 
-const data = [
-  {
-    id: '01',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '5897',
-    amount: '₹2099',
-    paymentStatus: 'success',
-    paymentMode: 'Credit Card',
-  },
-  {
-    id: '02',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Service',
-    vehicleNumber: '6464',
-    amount: '₹2099',
-    paymentStatus: 'success',
-    paymentMode: 'Cash',
-  },
-  {
-    id: '03',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '3234',
-    amount: '₹2099',
-    paymentStatus: 'success',
-    paymentMode: 'Autopay',
-  },
-  {
-    id: '04',
-    workAllocationID: '4376T4RT5TG',
-    type: 'Product',
-    vehicleNumber: '7655',
-    amount: '₹2099',
-    paymentStatus: 'success',
-    paymentMode: 'Net Banking',
-  },
-];
 
 const WorkAllocation = () => {
   const navigate = useNavigate();
@@ -63,7 +25,6 @@ const WorkAllocation = () => {
     staffId: workAllocationData?.assignedTo || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    voucherId: workAllocationData?.voucherId || null,
     install: workAllocationData?.install || false,
     clientId: workAllocationData?.clientId || null,
     otherInformation: workAllocationData?.otherInformation,
@@ -75,7 +36,6 @@ const WorkAllocation = () => {
     useState(initialFormData);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [client, setClient] = useState([]);
-  const [voucher, setVoucher] = useState([]);
   const [staff, setStaff] = useState([]);
   const [permissions, setPermissions] = useState({});
 
@@ -91,10 +51,8 @@ const WorkAllocation = () => {
   const [detailedWorkAllocation, setDetailedWorkAllocation] = useState([]);
   const [searchId, setSearchId] = useState('');
   const [branches, setBranches] = useState([]);
-
-  const productList = ['Product A', 'Product B', 'Product C'];
-
-  console.log(selectedWorkAllocation, 'edit products');
+  const [productTypes, setProductTypes] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
 
   useEffect(() => {
     const perms = getPermissions('work-allocation');
@@ -119,38 +77,6 @@ const WorkAllocation = () => {
     };
     fetchProductList();
   }, []);
-
-  // useEffect(() => {
-  //   if (workAllocationData.id) {
-  //     const fetchClientDetails = async () => {
-  //       console.log('abcdss');
-  //       try {
-  //         const response = await ApiService.post(
-  //           '/work-allocations/getWorkAllocationDetails',
-  //           {
-  //             id: workAllocationData.id,
-  //             companyCode: initialAuthState.companyCode,
-  //             unitCode: initialAuthState.unitCode,
-  //           }
-  //         );
-
-  //         console.log(response.data, 'client data');
-  //         if (response.data?.length > 0) {
-  //           const subDealer = response.data[0];
-  //           setSelectedWorkAllocation({
-  //             ...initialFormData,
-  //             ...subDealer,
-  //             productDetails: subDealer?.productDetails || [],
-  //           });
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching work allocation details:', error);
-  //         alert('Failed to fetch work allocation details.');
-  //       }
-  //     };
-  //     fetchClientDetails();
-  //   }
-  // }, [workAllocationData.workAllocationNumber]);
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -229,49 +155,6 @@ const WorkAllocation = () => {
     }
   };
 
-  // const handleDropdownChange = (e) => {
-  //   const selectedClientId = e.target.value;
-  //   const selectedClient = client.find(
-  //     (clientDetails) =>
-  //       String(clientDetails.clientId) === String(selectedClientId)
-  //   );
-
-  //   setSelectedWorkAllocation((prev) => ({
-  //     ...prev,
-  //     clientId: selectedClientId,
-  //     // clientName: selectedClient?.name || '',
-  //     // phoneNumber: selectedClient?.phoneNumber || '',
-  //   }));
-  // };
-
-  // const handleDropdownChange = (e) => {
-  //   const selectedClientId = Number(e.target.value); // Convert to number
-  //   const selectedClient = client.find(
-  //     (clientDetails) => clientDetails.clientId === selectedClientId
-  //   );
-
-  //   setSelectedWorkAllocation((prev) => ({
-  //     ...prev,
-  //     clientId: selectedClientId, // Now stored as a number
-  //     // clientName: selectedClient?.name || '',
-  //     // phoneNumber: selectedClient?.phoneNumber || '',
-  //   }));
-  // };
-
-  // const handleBranchDropdownChange = (e) => {
-  //   const selectedBranchId = Number(e.target.value); // Convert to number
-  //   const selectedBranch = branch.find(
-  //     (clientDetails) => clientDetails.clientId === selectedClientId
-  //   );
-
-  //   setSelectedWorkAllocation((prev) => ({
-  //     ...prev,
-  //     clientId: selectedClientId, // Now stored as a number
-  //     // clientName: selectedClient?.name || '',
-  //     // phoneNumber: selectedClient?.phoneNumber || '',
-  //   }));
-  // };
-
   const handleDropdownChange = (e) => {
     const { name, value } = e.target;
     const numericValue = Number(value); // Ensure value is a number
@@ -315,26 +198,33 @@ const WorkAllocation = () => {
     fetchClients();
   }, []);
 
-  useEffect(() => {
-    const getVoucherNamesDropDown = async () => {
-      try {
-        const res = await ApiService.post('/voucher/getVoucherNamesDropDown');
-        setVoucher(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch voucher details:', err);
-        setVoucher([]);
-      }
-    };
-    getVoucherNamesDropDown();
-  }, []);
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedWorkAllocation(null);
   };
 
-  const handleOpenMoreDetailsModal = (voucher) => {
-    setSelectedWorkAllocation(voucher);
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      const payload = { companycode: 'WAY4TRACK', unitCode: 'WAY4' };
+
+      try {
+        const [productRes, serviceRes] = await Promise.all([
+          ApiService.post('/productType/getProductTypeNamesDropDown', payload),
+          ApiService.post('/ServiceType/getServiceTypeNamesDropDown', payload),
+        ]);
+
+        setProductTypes(productRes?.data?.data || []);
+        setServiceTypes(serviceRes?.data?.data || []);
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
+    };
+
+    fetchDropdownData();
+  }, []);
+
+  const handleOpenMoreDetailsModal = (workId) => {
+    setSelectedWorkAllocation(workId);
     setIsMoreDetailsModalOpen(true);
   };
 
@@ -429,12 +319,12 @@ const WorkAllocation = () => {
       prev && prev.item.id === item.id
         ? null
         : {
-            item,
-            position: {
-              top: rect.top + window.scrollY + 30,
-              left: rect.left + window.scrollX - 50,
-            },
-          }
+          item,
+          position: {
+            top: rect.top + window.scrollY + 30,
+            left: rect.left + window.scrollX - 50,
+          },
+        }
     );
   };
 
@@ -587,34 +477,6 @@ const WorkAllocation = () => {
                   </div>
                 )}
 
-                {/* Voucher ID */}
-                {voucher.length > 0 && (
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      Voucher ID
-                    </label>
-                    <select
-                      name="voucherId"
-                      value={selectedWorkAllocation?.voucherId || ''}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                      style={{
-                        borderRadius: '6px',
-                        backgroundColor: '#FFFFFF',
-                      }}
-                    >
-                      <option value="" disabled>
-                        Select Voucher
-                      </option>
-                      {voucher.map((voucherItem) => (
-                        <option key={voucherItem.id} value={voucherItem.id}>
-                          {voucherItem.voucherId}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
                 {/* Date */}
                 <div>
                   <label
@@ -656,159 +518,45 @@ const WorkAllocation = () => {
                       color: '#000000',
                     }}
                   >
-                    Service/Product
+                    Product
                   </label>
-                  <select
-                    name="serviceOrProduct"
-                    value={selectedType}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      setSelectedWorkAllocation((prev) => ({
-                        ...prev,
-                        serviceOrProduct: e.target.value,
-                      }));
-                    }}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    style={{
-                      borderRadius: '6px',
-                      backgroundColor: '#FFFFFF',
-                    }}
-                  >
+                  <select placeholder="Select Product" style={{
+                    borderRadius: '6px',
+                    backgroundColor: '#FFFFFF',
+                  }}>
                     <option value="" disabled>
-                      Select an option
-                    </option>
-                    <option value="service">Service</option>
-                    <option value="product">Product</option>
-                  </select>
-                </div>
+                    Select Product
+                  </option>
+                    {productTypes.map((product) => (
+                      <option key={product.id} value={product.name}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>                </div>
 
-                {/* Show input field when "Service" is selected */}
-                {selectedType === 'service' && (
-                  <div
-                    className="flex gap-3"
-                    style={{ width: '66%', marginLeft: '10px' }}
-                  >
-                    <div style={{ width: '100%' }}>
-                      <label
-                        className="block text-gray-700 font-semibold mb-2"
-                        style={{
-                          fontSize: '16px',
-                          fontWeight: '400',
-                          color: '#000000',
-                        }}
-                      >
-                        Enter Service
-                      </label>
-                      <input
-                        type="text"
-                        name="serviceName"
-                        value={selectedWorkAllocation.serviceName}
-                        onChange={(e) =>
-                          setSelectedWorkAllocation({
-                            ...selectedWorkAllocation,
-                            service: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                        style={{
-                          borderRadius: '6px',
-                          backgroundColor: '#FFFFFF',
-                        }}
-                        placeholder="Enter service name"
-                      />
-                    </div>
-                    <div style={{ width: '100%' }}>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        Enter Amount
-                      </label>
-                      <input
-                        type="number"
-                        name="amount"
-                        value={selectedWorkAllocation.amount}
-                        onChange={(e) =>
-                          setSelectedWorkAllocation({
-                            ...selectedWorkAllocation,
-                            amount: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                        style={{
-                          borderRadius: '6px',
-                          backgroundColor: '#FFFFFF',
-                        }}
-                        placeholder="Enter amount"
-                      />
-                    </div>
-                  </div>
-                )}
 
                 {/* Show product dropdown when "Product" is selected */}
-                {selectedType === 'product' && (
-                  <div className="flex gap-3" style={{ width: '66%' }}>
-                    {/* Product Dropdown */}
-                    <div style={{ width: '100%' }}>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        Select Product
-                      </label>
-                      <select
-                        name="productId"
-                        value={selectedWorkAllocation.productId || ''} // Ensure value is a number
-                        onChange={(e) => {
-                          const selectedProductId = Number(e.target.value);
-                          const selectedProduct = productLists.find(
-                            (product) => product.id === selectedProductId
-                          );
-
-                          setSelectedWorkAllocation((prev) => ({
-                            ...prev,
-                            productId: selectedProductId,
-                            productName: selectedProduct
-                              ? selectedProduct.productType
-                              : '',
-                          }));
-                        }}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                        style={{
-                          borderRadius: '6px',
-                          backgroundColor: '#FFFFFF',
-                        }}
-                      >
-                        <option value="" disabled>
-                          Select a product
+                <div className="flex gap-3" style={{ width: '66%' }}>
+                  {/* Product Dropdown */}
+                  <div style={{ width: '100%' }}>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Select Services
+                    </label>
+                    <select placeholder="Select Service" style={{
+                      borderRadius: '6px',
+                      backgroundColor: '#FFFFFF',
+                    }}>
+                      <option value="" disabled>
+                    Select Services
+                  </option>
+                      {serviceTypes.map((service) => (
+                        <option key={service.id} value={service.name}>
+                          {service.name}
                         </option>
-                        {productLists.map((product) => (
-                          <option key={product.id} value={product.id}>
-                            {product.productType}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Amount Input */}
-                    <div style={{ width: '100%' }}>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        Enter Amount
-                      </label>
-                      <input
-                        type="number"
-                        name="amount"
-                        value={selectedWorkAllocation.amount}
-                        onChange={(e) =>
-                          setSelectedWorkAllocation({
-                            ...selectedWorkAllocation,
-                            amount: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                        style={{
-                          borderRadius: '6px',
-                          backgroundColor: '#FFFFFF',
-                        }}
-                        placeholder="Enter amount"
-                      />
-                    </div>
+                      ))}
+                    </select>
                   </div>
-                )}
+                </div>
               </div>
 
               <div>

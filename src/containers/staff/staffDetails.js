@@ -293,10 +293,10 @@ const StaffDetails = () => {
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           {Object.entries(formData.personnelDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2">
+              <strong className="text-gray-700 mr-2" style={{textTransform:'capitalize'}}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value}</span>
+              <span>{value? value :"N/A"}</span>
             </div>
           ))}
         </div>
@@ -339,10 +339,10 @@ const StaffDetails = () => {
         <div className="grid grid-cols-1 gap-y-2">
           {Object.entries(formData.bankDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2">
+              <strong className="text-gray-700 mr-2"  style={{textTransform:'capitalize'}}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value}</span>
+              <span>{value? value :"N/A"}</span>
             </div>
           ))}
         </div>
@@ -364,7 +364,7 @@ const StaffDetails = () => {
                 >
                   <div className="flex items-center gap-3 flex-1 justify-between mr-3">
                     <div>
-                      <strong className="text-gray-700 mr-2 min-w-[160px]">
+                      <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
                         {key.replace(/([A-Z])/g, ' $1').trim()}:
                       </strong>
                       {isEditingPassword ? (
@@ -432,10 +432,10 @@ const StaffDetails = () => {
 
             return (
               <div key={key} className="items-center p-2 rounded">
-                <strong className="text-gray-700 mr-2 min-w-[160px]">
+                <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}:
                 </strong>
-                <span>{value}</span>
+                <span>{value? value :"N/A"}</span>
               </div>
             );
           })}

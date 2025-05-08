@@ -260,7 +260,27 @@ const EditRequestRaise = () => {
     }
   };
   
+  const [productTypes, setProductTypes] = useState([]);
 
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
+      if (response.data) {
+        setProductTypes(response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -296,14 +316,14 @@ const EditRequestRaise = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             >
               <option value="">Select Request Type</option>
-              <option value="assets">Asserts</option>
+              <option value="assets">Assets</option>
               <option value="money">Money</option>
               <option value="products">Product</option>
               <option value="personal">Personal</option>
               <option value="leaveRequest">Leave Request</option>
             </select>
           </div>
-          
+           
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -394,13 +414,30 @@ const EditRequestRaise = () => {
                   <div className="flex-1">
                     <label className="font-semibold">Product:</label>
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
-                      <input
+                    <select
+                        name="productTypeId"
+                        className="border p-2 rounded-md w-full"
+                        // onChange={handleInputChange}
+                        onChange={(e) => { handleInputProductChange(index, "productType", e.target.value) }}
+                        value={row.productType}
+                      >
+                        <option value="">Select a product type</option>
+                        {productTypes
+                          .filter((type) => type.type === 'PRODUCT')
+                          .map((type) => (
+                            <option key={type.id} value={type.name}>
+                              {type.name}
+                            </option>
+                          ))}
+                      </select>
+
+                      {/* <input
                         type="text"
                         value={row.productType}
                         onChange={(e) => handleInputProductChange(index, "productType", e.target.value)}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
-                      />
+                      /> */}
                     </div>
                   </div>
 

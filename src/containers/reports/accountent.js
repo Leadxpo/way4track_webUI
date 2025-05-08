@@ -50,10 +50,8 @@ const Reports = () => {
   const [tdsReport, setTdsReport] = useState([]);
   const [trialBalance, setTrialBalance] = useState([]);
 
-
-
- if(tdsReport){
-  console.log("---====+++",tdsReport)
+  if(tdsReport){
+  console.log("---====+++",tdsReport);
  }
 
     const fetchBranchDropDown = async () => {
@@ -236,7 +234,7 @@ const Reports = () => {
       </div> */}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
-        <p className="text-xl text-white font-bold">Fixed Asserts and Depreciation</p>
+        <p className="text-xl text-white font-bold">Fixed Assets and Depreciation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("fixedassetreport")} />
       </div>
 

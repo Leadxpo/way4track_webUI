@@ -35,8 +35,6 @@ const BranchDetails = () => {
         return;
       }
 
-      console.log('Fetching branch details for ID:', branchDetailsFromState.id);
-
       try {
         const response = await ApiService.post('/branch/getBranchDetailsById', {
           id: branchDetailsFromState.id,
@@ -46,7 +44,8 @@ const BranchDetails = () => {
 
         if (response?.status) {
           setBranchDetails(response.data);
-          console.log('rrr :', branchDetails.staff);
+      console.log('Fetching branch details for ID:', response.data);
+
         } else {
           console.warn('Branch not found:', response);
           alert(
@@ -129,7 +128,7 @@ const BranchDetails = () => {
         </div>
         <div>
           <strong>Address:</strong>
-          <p>{branchDetails.address || 'N/A'}</p>
+          <p>{branchDetails.branchAddress || 'N/A'}</p>
         </div>
         <div>
           <strong>City:</strong>
@@ -142,6 +141,10 @@ const BranchDetails = () => {
         <div>
           <strong>Branch Opening:</strong>
           <p>{branchDetails.branchOpening || 'N/A'}</p>
+        </div>
+        <div>
+          <strong>GST:</strong>
+          <p>{branchDetails.GST || 'N/A'}</p>
         </div>
       </div>
 
@@ -251,8 +254,8 @@ const BranchDetails = () => {
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-300 text-gray-800">
-                <th className="px-4 py-2 text-left">Employ ID</th>
-                <th className="px-4 py-2 text-left">Employ Name</th>
+                <th className="px-4 py-2 text-left">Employee ID</th>
+                <th className="px-4 py-2 text-left">Employee Name</th>
                 <th className="px-4 py-2 text-left">Designation</th>
                 <th className="px-4 py-2 text-left">Phone Number</th>
                 <th className="px-4 py-2 text-center">Action</th>
@@ -384,7 +387,7 @@ const BranchDetails = () => {
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-200">
-                <th className="border p-2">asserts Id</th>
+                <th className="border p-2">assets Id</th>
                 <th className="border p-2">Assets Name</th>
                 <th className="border p-2">Assets Type</th>
                 <th className="border p-2">Date Of Purchase</th>
@@ -597,9 +600,7 @@ const BranchDetails = () => {
                 <strong>Mobile Brand:</strong>{' '}
                 {selectedStaff.mobileBrand || '-'}
               </p>
-              <p>
-                <strong>IMEI Number:</strong> {selectedStaff.imeiNumber || '-'}
-              </p>
+             
             </div>
 
             <hr className="my-4" />

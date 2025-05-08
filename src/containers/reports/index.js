@@ -20,7 +20,8 @@ const Reports = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-      let response = await ApiService.post("/dashboards/getStockSummary", payload);
+      const response = await ApiService.post("/dashboards/getStockSummary", payload);
+      console.log("rrr : ",response)
       setData(response?.data || []);
     } catch (error) {
       console.error("Error fetching branch stock details:", error);

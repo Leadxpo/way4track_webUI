@@ -854,18 +854,18 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
           {/* Card Header - Total Asserts */}
           <h2 className="text-xl font-bold text-center text-green-600 border-b pb-2">
-            Total Asserts: {response.data.totalAsserts}
+            Total Assets: {response.data.totalAsserts}
           </h2>
 
           {/* Card Body - Office & Transport Asserts */}
           <div className="mt-4 space-y-4">
             <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
-              <span className="text-blue-600 font-semibold">Office Asserts</span>
+              <span className="text-blue-600 font-semibold">Office Assets</span>
               <span className="text-blue-600 font-bold text-lg">{response.data.officeAsserts}</span>
             </div>
 
             <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
-              <span className="text-yellow-600 font-semibold">Transport Asserts</span>
+              <span className="text-yellow-600 font-semibold">Transport Assets</span>
               <span className="text-yellow-600 font-bold text-lg">{response.data.transportAsserts}</span>
             </div>
           </div>

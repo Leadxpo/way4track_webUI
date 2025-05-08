@@ -12,8 +12,6 @@ const SubDealerDetails = () => {
 
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  console.log("==========Idddddd====+++++", subDealerDetailsFromState)
-
   const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState([]);
   const [subDealer, setSubDealer] = useState({});
   const [subDealerDetails, setSubDealerDetails] = useState([]);
@@ -415,7 +413,7 @@ const [filteredWorks, setFilteredWorks] = useState([]);
           </p> */}
 
           <p className="text-gray-800 font-semibold">
-            Gst Number : {subDealer.gstNumber}
+            Gst Number : {subDealerDetailsFromState.gstNumber}
           </p>
 
           <p className="text-gray-800 font-semibold">Address : {subDealer.address}</p>

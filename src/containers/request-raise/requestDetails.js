@@ -208,7 +208,7 @@ const RequestDetails = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             >
               <option value="">Select Request Type</option>
-              <option value="assets">Asserts</option>
+              <option value="assets">Assets</option>
               <option value="money">Money</option>
               <option value="products">Product</option>
               <option value="personal">Personal</option>
