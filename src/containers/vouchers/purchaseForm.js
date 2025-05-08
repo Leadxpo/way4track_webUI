@@ -7,6 +7,7 @@ const PurchaseForm = () => {
   const { id } = useParams();
   const location = useLocation();
   const [ledger, setLedger] = useState([]);
+  const [errors, setErrors] = useState({ purchaseGst: '' });
   const [formData, setFormData] = useState({
     date: null,
     day: '',
@@ -38,10 +39,23 @@ const PurchaseForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === 'purchaseGst') {
+      if (value.length > 15) return; // Prevent typing more than 15 chars
+
+      // Update form data
+      setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Validation
+      if (value.length !== 15 && value.length !== 0) {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number must be exactly 15 characters',
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, purchaseGst: '' }));
+      }
+    }
   };
 
   const handleLedgerChange = (e) => {
@@ -535,12 +549,16 @@ const PurchaseForm = () => {
             <button
               onClick={handleFetchGSTData}
               type="button"
-              disabled={loading}
+              disabled={loading || formData.purchaseGst.length !== 15}
               className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
             >
               {loading ? '...' : 'Get'}
             </button>
           </div>
+
+          {errors.purchaseGst && (
+            <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
+          )}
 
           {gstData && (
             <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
