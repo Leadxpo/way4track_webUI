@@ -121,6 +121,9 @@ const Payroll = () => {
     fetchPayrollData(selectedBranch, selectedDate);
   };
 
+  const [staffIdFilter, setStaffIdFilter] = useState('');
+  const [branchFilter, setBranchFilter] = useState('');
+
   // Define the column order explicitly
   const columnOrder = [
     'staffId',
@@ -163,10 +166,24 @@ const Payroll = () => {
     'salaryStatus',
   ];
 
-  const filteredData =
-    selectedBranch === 'All'
-      ? payrollData
-      : payrollData.filter((row) => row.branch === selectedBranch);
+  // const filteredData =
+  //   selectedBranch === 'All'
+  //     ? payrollData
+  //     : payrollData.filter((row) => row.branch === selectedBranch);
+
+  const filteredData = payrollData.filter((row) => {
+    const matchesBranch =
+      selectedBranch === 'All' || row.branch === selectedBranch;
+    const matchesStaffId = row.staffId
+      ?.toLowerCase()
+      .includes(staffIdFilter.toLowerCase());
+    const matchesBranchFilter = row.branch
+      ?.toLowerCase()
+      .includes(branchFilter.toLowerCase());
+
+    return matchesBranch && matchesStaffId && matchesBranchFilter;
+  });
+
   return (
     <div>
       {/* <p className='btn-primary' onClick={()=>navigate('/payroll-details', { state: { paySlipDetails: payrollItem } })}>View</p> */}
@@ -186,11 +203,25 @@ const Payroll = () => {
           </button>
         ))}
       </div>
-      <div className="flex items-center space-x-4 mb-4">
+      <div className="flex flex-wrap gap-4 items-center mb-4">
         <input
           type="date"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <input
+          type="text"
+          placeholder="Filter by Staff ID"
+          value={staffIdFilter}
+          onChange={(e) => setStaffIdFilter(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <input
+          type="text"
+          placeholder="Filter by Branch Name"
+          value={branchFilter}
+          onChange={(e) => setBranchFilter(e.target.value)}
           className="border rounded px-3 py-2"
         />
         <button
