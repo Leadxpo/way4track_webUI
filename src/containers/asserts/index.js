@@ -163,7 +163,7 @@ const Asserts = () => {
           className="text-2xl font-semibold text-gray-800"
           style={{ fontSize: '17px', fontWeight: '500' }}
         >
-          Asserts
+          Assets
         </h2>
 
         {/* Right: Icons and Add Staff Button */}
@@ -194,7 +194,7 @@ const Asserts = () => {
             }}
             onClick={() => navigate('/add-asset')}
           >
-            <span className="text-black mr-2">➕</span> Add Assert
+            <span className="text-black mr-2">➕</span> Add Asset
           </button>
           {/* <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer  ${permissions.add ? 'bg-green-600 ' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}

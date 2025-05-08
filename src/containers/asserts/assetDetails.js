@@ -74,7 +74,7 @@ const AssetDetails = () => {
           }}
           onClick={() => navigate('/add-asset')}
         >
-          <span className="text-black mr-2">➕</span> Add Assert
+          <span className="text-black mr-2">➕</span> Add Asset
         </button>
       </div>
       {/* Header Section */}
