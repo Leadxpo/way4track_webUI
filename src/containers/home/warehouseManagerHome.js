@@ -14,15 +14,38 @@ const WarehouseManagerHome = () => {
   const [requestsData, setRequestsData] = useState([]);
   const [productData, setProductsData] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
+  const [selectedBranch1, setSelectedBranch1] = useState('');
+
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [branches, setBranches] = useState([]);
         
-      
- 
-
   const [userProfile, setUserProfile] = useState(null);
+
+
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
+  
+        if (branchResponse?.status && Array.isArray(branchResponse.data)) {
+          setBranches(branchResponse.data);
+        } else {
+          console.error('Failed to fetch branches or invalid data format');
+          setBranches([]);
+        }
+      } catch (error) {
+        console.error('Error fetching branch names:', error);
+        setBranches([]);
+      }
+    };
+  
+    fetchBranches(); // call the async function
+  }, []);
+  
+
 
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
@@ -81,15 +104,17 @@ const WarehouseManagerHome = () => {
         };
 
         const response = await ApiService.post(
-          '/dashboards/getProductDetailsBy',
+          'products/productAssignDetails',
           payload
         );
         console.log('API Response:', response);
 
         if (response.status && response.data) {
-          setProductsData(response.data);
+          setProductsData(response.data.branchDetails);
+
+          console.log("====================>",response.data.branchDetails)
           if (response.data.length > 0) {
-            setSelectedBranch(response.data[0].branchName); // Auto-select first branch
+            setSelectedBranch(response.data.branchDetails); // Auto-select first branch
           }
         } else {
           setProductsData([]);
@@ -185,7 +210,7 @@ const handlePreview = () => {
 
 
   const handleChange = (event) => {
-    setSelectedBranch(event.target.value);
+    setSelectedBranch1(event.target.value);
     // onSelect(event.target.value);
   };
 
@@ -229,20 +254,20 @@ const handlePreview = () => {
       {/* <label htmlFor="branch" className="block mb-2 font-medium">
         Select Branch:
       </label> */}
-      <select
-        id="branch"
-        value={selectedBranch}
-        onChange={handleChange}
-        className="border rounded px-4 py-2 w-96"
-      >
-        <option value="">-- Select Branch --</option>
-        {branches.map((branch, index) => (
-          <option key={index} value={branch}>
-            {branch}
-          </option>
-        ))}
-      </select>
-    
+     <select
+          id="branch"
+          value={selectedBranch1}
+          onChange={handleChange}
+          className="border rounded px-4 py-2 w-96"
+        >
+          <option value="">-- Select Branch --</option>
+          {branches.map((branch, index) => (
+            <option key={index} value={branch.id}>
+              {branch.branchName} ({branch.branchNumber})
+            </option>
+          ))}
+        </select>
+
         
   <button
     onClick={handlePreview}
@@ -282,18 +307,19 @@ const handlePreview = () => {
 
       <div className="bg-white p-4 rounded-xl shadow-md mb-4 flex gap-4 mt-10">
       <select
-        id="branch"
-        value={selectedBranch}
-        onChange={handleChange}
-        className="border rounded px-4 py-2 w-96"
-      >
-        <option value="">-- Select Branch --</option>
-        {branches.map((branch, index) => (
-          <option key={index} value={branch}>
-            {branch}
-          </option>
-        ))}
-      </select>
+  id="branch"
+  value={selectedBranch}
+  onChange={handleChange}
+  className="border rounded px-4 py-2 w-96"
+>
+  <option value="">-- Select Branch --</option>
+  {branches.map((branch, index) => (
+    <option key={index} value={branch.id}>
+      {branch.branchName} ({branch.branchNumber})
+    </option>
+  ))}
+</select>
+
     
         <input type="date" placeholder="From" className="border p-2 rounded w-1/4" />
         <input type="date" placeholder="To" className="border p-2 rounded w-1/4" />
@@ -332,12 +358,12 @@ const handlePreview = () => {
         productData.map((item, index) => (
           <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
             <td className="p-3">{String(index + 1).padStart(2, "0")}</td>
-            <td className="p-3">{item.product}</td>
-            <td className="p-3">{item.total}</td>
+            <td className="p-3">{item.productName}</td>
+            <td className="p-3">{item.handStock}</td>
             <td className="p-3">{item.assigned}</td>
-            <td className="p-3">{item.remaining}</td>
+            <td className="p-3">{item.presentStock}</td>
             <td className={`p-3 ${item.status === "Out of stock" ? "text-red-500" : "text-green-600"}`}>
-              {item.status}
+              {item.productStatus}
             </td>
             <td className="p-3">
               <button className="p-2 text-gray-600 hover:text-gray-900">⋮</button>
@@ -398,13 +424,6 @@ const handlePreview = () => {
           </div>
         </div>
       )}
-
-
-
-
-
-
-
       
     </div>
   );
