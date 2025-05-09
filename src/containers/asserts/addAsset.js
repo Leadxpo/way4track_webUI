@@ -97,17 +97,14 @@ const AddAsset = () => {
     
 
     try {
-      const endpoint = formData.id
-        ? '/asserts/create'
-        : '/asserts/create'; 
+      const endpoint = '/asserts/create'; 
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      console.log("rrr : ",response)
       if (response.status) {
         alert(
-          formData.id
-            ? 'Asset updated successfully!'
-            : 'Asset added successfully!'
+            'Asset added successfully!'
         );
         navigate('/asserts');
       } else {

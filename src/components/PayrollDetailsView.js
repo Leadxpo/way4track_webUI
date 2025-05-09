@@ -148,7 +148,7 @@ const PayrollDetailsView = ({ payrollData }) => {
                       )
                     : [...payrollArray, response.data];
                 });
-                navigate('-1');
+                navigate('/payrolls');
                 setIsEditing(false); // Only close editing after successful save
               } else {
                 alert(

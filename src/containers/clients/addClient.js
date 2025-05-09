@@ -8,13 +8,12 @@ const AddClient = () => {
 
     name: '',
     phoneNumber:'',
-    gstNumber:'',
+    // gstNumber:'',
     branch:'',
     branchName:'', 
-    dob:'',
     email:'',
     address:'',
-    joiningDate:null,
+    // joiningDate:null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     file:null,
@@ -289,7 +288,7 @@ const handleChange = useCallback(
 
 
          {/* Phone Number */}
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
@@ -299,7 +298,7 @@ const handleChange = useCallback(
               placeholder="Enter Gst Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-          </div>
+          </div> */}
 
 
           {/* Branch */}
@@ -323,17 +322,6 @@ const handleChange = useCallback(
               </div>
             </div>
           )}
-          {/* Date of Birth */}
-          <div>
-            <p className="font-semibold mb-1">Date of Birth</p>
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
           {/* Email ID */}
           <div>
             <p className="font-semibold mb-1">Email ID</p>
@@ -362,7 +350,7 @@ const handleChange = useCallback(
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <p className="font-semibold mb-1">Joining Date</p>
           <input
             type="date"
@@ -371,7 +359,7 @@ const handleChange = useCallback(
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Buttons */}

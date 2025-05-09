@@ -21,7 +21,7 @@ const EditRequestRaise = () => {
     requestTo: '', branch: '',
     requestFor: '',
     description: '',
-    products: [{ product: '', amount: '' }],
+    products:[{ productType: '', quantity: 0 }],
     createdDate: '',
     status: '',
     fromDate: "",
@@ -138,8 +138,6 @@ const EditRequestRaise = () => {
 
     if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
       const { id, name } = userProfile?.Data[0];
-      console.log("ID:", id);
-      console.log("Name:", name);
     } else {
       console.log("User profile data not found.");
     }
@@ -148,6 +146,7 @@ const EditRequestRaise = () => {
       const payload = {
 
         id: requestData.requestId,
+        requestId: requestData.requestNumber,
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),
@@ -155,17 +154,14 @@ const EditRequestRaise = () => {
         branch: Number(formData.branch),
         description: formData.description,
         status: "pending",
-        products: formData.requestType === "products" ? formData.products : null,
-        subDealerId: formData.subDealerId || 1,
+        products: formData.requestType === "products" ? formData?.products : null,
+        subDealerId: formData.subDealerId ? formData.subDealerId :null,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         requestFor: formData.requestFor,
         fromDate: formData.fromDate,
         toDate: formData.toDate,
       };
-
-
-      console.log("payload request 1234", payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
@@ -188,13 +184,13 @@ const EditRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+  const [rows, setRows] = useState([{ productType: '', quantity: 0  }]);
 
   // Function to handle adding a new product row
   const addRow = () => {
     setFormData((prevData) => ({
       ...prevData,
-      products: [...prevData.products, { product: '', amount: '' }],
+      products: [...prevData.products, { productType: '', quantity: 0  }],
     }));
   };
 
@@ -224,36 +220,37 @@ const EditRequestRaise = () => {
       fetchRequestRaiseById();
     }
   }, [requestData.requestId]);
-
-
-
+  
   const fetchRequestRaiseById = async () => {
     if (!requestData.requestId) return;
-
+  
     try {
       const response = await ApiService.post('/requests/getRequestDetails', {
         id: requestData.requestId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
-
+  
       if (response.status) {
-        console.log("10th class", response.data)
         const data = response.data;
+  
         setFormData({
-          id: data.requestId || '',
+          requestId: data.requestId || '',
           requestType: data.requestType || '',
           description: data.description || '',
           requestFor: data.requestFor || '',
-          fromDate: data?.fromDate || '',
-          toDate: data?.toDate || '',
-          requestTo:data?.requestTo.id
-          ,
-          branch:data?.branchId
-          .id,
-          
-          products: data.products || '',
-
+          fromDate: data.fromDate || '',
+          toDate: data.toDate || '',
+          requestFrom: data.requestFrom || '',
+          requestTo: data.requestTo?.id || '',
+          branch: data.branchId?.id || '',
+          status: data.status || '',
+          createdDate: data.createdDate || '',
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          products: Array.isArray(data.products) && data.products.length > 0
+            ? data.products
+            : [{ productType: '', quantity: 0 }],
         });
       } else {
         console.error('Error fetching request details');
@@ -262,9 +259,28 @@ const EditRequestRaise = () => {
       console.error('Error fetching request details:', error);
     }
   };
+  
+  const [productTypes, setProductTypes] = useState([]);
 
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
 
-
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
+      if (response.data) {
+        setProductTypes(response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -300,14 +316,14 @@ const EditRequestRaise = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             >
               <option value="">Select Request Type</option>
-              <option value="assets">Asserts</option>
+              <option value="assets">Assets</option>
               <option value="money">Money</option>
               <option value="products">Product</option>
               <option value="personal">Personal</option>
               <option value="leaveRequest">Leave Request</option>
             </select>
           </div>
-          
+           
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -391,31 +407,48 @@ const EditRequestRaise = () => {
 
           {formData.requestType === "products" ? (
             <>
-              {formData.products.map((row, index) => (
+              {formData?.products?.map((row, index) => (
                 <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
 
                   {/* Product Field */}
                   <div className="flex-1">
                     <label className="font-semibold">Product:</label>
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
-                      <input
+                    <select
+                        name="productTypeId"
+                        className="border p-2 rounded-md w-full"
+                        // onChange={handleInputChange}
+                        onChange={(e) => { handleInputProductChange(index, "productType", e.target.value) }}
+                        value={row.productType}
+                      >
+                        <option value="">Select a product type</option>
+                        {productTypes
+                          .filter((type) => type.type === 'PRODUCT')
+                          .map((type) => (
+                            <option key={type.id} value={type.name}>
+                              {type.name}
+                            </option>
+                          ))}
+                      </select>
+
+                      {/* <input
                         type="text"
-                        value={row.product}
-                        onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
+                        value={row.productType}
+                        onChange={(e) => handleInputProductChange(index, "productType", e.target.value)}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
-                      />
+                      /> */}
                     </div>
                   </div>
 
                   {/* Amount Field */}
                   <div className="flex-1">
-                    <label className="font-semibold">Amount:</label>
+                    <label className="font-semibold">Quantity:</label>
                     <input
                       type="number"
-                      value={row.amount}
-                      onChange={(e) => handleInputProductChange(index, "amount", e.target.value)}
-                      placeholder="Enter Amount"
+                      value={row.quantity}
+                      onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
+                      placeholder="Enter Quantity"
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />
                   </div>

@@ -166,12 +166,12 @@ const Attendance = () => {
                   </button> */}
                     <button
                       onClick={() =>
-                        navigate('/attendance-edi', {
+                        navigate('/attendance-edit', {
                           state: { attendanceDetails: att },
                         })
                       }
                       className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                    >
+                     >
                       Edit Details
                     </button>
                   </td>

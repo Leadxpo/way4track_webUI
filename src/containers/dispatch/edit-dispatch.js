@@ -95,9 +95,9 @@ const EditDispatch = () => {
 
         try {
             const response = await ApiService.post('/dispatch/handleDispatchDetails', formData);
-            if (response.data.status) {
+            if (response.status) {
                 alert('Dispatch updated successfully!');
-                navigate('/appointments');
+                navigate('/dispatch');
             } else {
                 alert('Failed to save dispatch details. Please try again.');
             }

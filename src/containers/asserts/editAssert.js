@@ -155,7 +155,7 @@ const EditAsset = () => {
     <div className="bg-white rounded-2xl p-8">
       {/* Header */}
       <div className="flex items-center space-x-4 mb-8">
-        <h1 className="text-3xl font-bold">Edit Asserts</h1>
+        <h1 className="text-3xl font-bold">Edit Assets</h1>
       </div>
 
 
@@ -229,7 +229,7 @@ const EditAsset = () => {
         )}
       </div>
       <div>
-        <p className="font-semibold mb-1">Assert Name</p>
+        <p className="font-semibold mb-1">Asset Name</p>
         <input
           type="text"
           name="assertsName"
@@ -241,7 +241,7 @@ const EditAsset = () => {
         />
        
 
-        <p className="font-semibold mb-1">Assert Amount</p>
+        <p className="font-semibold mb-1">Asset Amount</p>
         <input
           type="text"
           name="assertsAmount"

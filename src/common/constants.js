@@ -10,7 +10,7 @@ export const menuOptions = {
       icon: <img src="./branch.png" />,
       route: '/branches',
     },
-    { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
+    { name: 'Assets', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Clients', icon: <img src="./clients.png" />, route: '/clients' },
     // { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
@@ -26,14 +26,14 @@ export const menuOptions = {
     },
     {
       name: 'Product Type',
-      icon: <img src="./products.png" />,
+      icon: <img src="./product_type.png" />,
       route: '/product-type',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
@@ -89,13 +89,13 @@ export const menuOptions = {
     },
     {
       name: 'Backend Support',
-      icon: <img src="./purchase.png" />,
+      icon: <img src="./backend-support.png" />,
       route: '/backend-support',
     },
-    { name: 'Service', icon: <img src="./products.png" />, route: '/service' },
+    { name: 'Service', icon: <img src="./service.png" />, route: '/service' },
     {
       name: 'Vehicle',
-      icon: <img src="./products.png" />,
+      icon: <img src="./transport.png" />,
       route: '/vehicle',
     },
     // newly added options
@@ -124,6 +124,11 @@ export const menuOptions = {
       name: 'Payroll',
       icon: <img src="./payroll.png" />,
       route: '/payroll',
+    },
+    {
+      name: 'Orders',
+      icon: <img src="./home.png" />,
+      route: '/all-orders',
     },
     {
       name: 'Dispatch',
@@ -158,7 +163,7 @@ export const menuOptions = {
   accountant: [
     { name: 'Home', icon: <img src="./home.png" />, route: '/home' },
     { name: 'Branches', icon: <img src="./branch.png" />, route: '/branches' },
-    { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
+    { name: 'Assets', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Customer', icon: <img src="./clients.png" />, route: '/clients' },
     { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
@@ -172,11 +177,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
@@ -259,11 +264,12 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
+    
     {
       name: 'Dispatch',
       icon: <img src="./home.png" />,
@@ -370,7 +376,7 @@ export const menuOptions = {
       icon: <img src="./home.png" />,
       route: '/branch-manager-home',
     },
-    { name: 'Asserts', icon: <img src="./asserts.png" />, route: '/asserts' },
+    { name: 'Assets', icon: <img src="./asserts.png" />, route: '/asserts' },
     { name: 'Staff', icon: <img src="./users.png" />, route: '/staff' },
     { name: 'Customer', icon: <img src="./clients.png" />, route: '/clients' },
     { name: 'Vendors', icon: <img src="./vendors.png" />, route: '/vendors' },
@@ -384,11 +390,11 @@ export const menuOptions = {
       icon: <img src="./products.png" />,
       route: '/products',
     },
-    {
-      name: 'Product Assign',
-      icon: <img src="./product_assign.png" />,
-      route: '/products_assign',
-    },
+    // {
+    //   name: 'Product Assign',
+    //   icon: <img src="./product_assign.png" />,
+    //   route: '/products_assign',
+    // },
     {
       name: 'Request Raise',
       icon: <img src="./request_raise.png" />,
@@ -441,12 +447,12 @@ export const menuOptions = {
     },
     {
       name: 'Works',
-      icon: <img src="./performance.png" />,
+      icon: <img src="./backend-work.png" />,
       route: '/backend-support-works',
     },
     {
       name: 'Payments',
-      icon: <img src="./performance.png" />,
+      icon: <img src="./payments.png" />,
       route: '/backend-support-payments',
     },
   ],
@@ -514,7 +520,7 @@ export const formattedPaths = {
     '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/add-product': { name: 'Add Product', icon: <img src="./products.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/edit-estimate': {
@@ -763,7 +769,7 @@ export const formattedPaths = {
     '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/add-product': { name: 'Add Product', icon: <img src="./products.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/add-estimate': {
@@ -889,7 +895,7 @@ export const formattedPaths = {
   },
   'branh manager': {
     '/branch-manager-home': { name: 'Home', icon: <img src="./home.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/staff': { name: 'Staff', icon: <img src="./users.png" /> },
     '/add-staff': { name: 'Add Staff', icon: <img src="./users.png" /> },

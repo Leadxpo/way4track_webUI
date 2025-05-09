@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
 
@@ -9,6 +10,7 @@ const AddInhandProduct = () => {
     productTypeId: 0, // Default as number
     numberOfProducts: 0,
   });
+  const navigate = useNavigate();
 
   const [staffList, setStaffList] = useState([]);
   const [productTypes, setProductTypes] = useState([]);
@@ -150,6 +152,7 @@ const AddInhandProduct = () => {
           productTypeId: 0,
           numberOfProducts: 0,
         });
+        navigate('/products');
       } else {
         alert('Submission failed. Please try again.');
       }

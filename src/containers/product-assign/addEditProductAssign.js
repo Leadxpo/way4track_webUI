@@ -292,7 +292,7 @@ const AddEditProductAssign = () => {
             ? 'Product updated successfully!'
             : 'Product added successfully!'
         );
-        navigate('/products_assign');
+        navigate('/products');
       } else {
         alert('Failed to save product details. Please try again.');
       }
@@ -303,7 +303,7 @@ const AddEditProductAssign = () => {
   };
 
   const handleCancel = () => {
-    navigate('/products_assign');
+    navigate('/products');
   };
 
   // Handle Focus

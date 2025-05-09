@@ -410,30 +410,29 @@ export const EstimatePDF = ({ data }) => (
                   {index + 1}
                 </Text>
                 <Text style={[estStyles.tableRowText, estStyles.secondColumn]}>
-                  {row.productName}
+                  {row.productName}1
                 </Text>
                 <Text style={estStyles.tableRowText}>{row.hsnCode}</Text>
                 <Text style={estStyles.tableRowText}>{row.quantity}</Text>
                 <Text style={estStyles.tableRowText}>
-                  {row.amount / row.quantity}
+                  {row.costPerUnit}
+
                 </Text>
                 <View style={estStyles.subColumnTextContainer}>
                   <Text style={estStyles.subColumnTextRowItem}>9%</Text>
                   <Text style={estStyles.subColumnTextRowItem}>
-                    {(row.amount * 0.09).toFixed(2)}
+                    {(row.totalCost * 0.09).toFixed(2)}
                   </Text>
                 </View>
                 <View style={estStyles.subColumnTextContainer}>
                   <Text style={estStyles.subColumnTextRowItem}>9%</Text>
                   <Text style={estStyles.subColumnTextRowItem}>
-                    {(row.amount * 0.09).toFixed(2)}
+                    {(row.totalCost * 0.09).toFixed(2)}
                   </Text>
                 </View>
                 <Text style={estStyles.tableRowAmtText}>
-                  {row.amount +
-                    (row.amount * 0.09).toFixed(2) +
-                    (row.amount * 0.09).toFixed(2)}
-                </Text>
+  {(row.totalCost + row.totalCost * 0.09 + row.totalCost * 0.09).toFixed(2)}
+</Text>
               </View>
             ))}
         </View>
@@ -457,7 +456,7 @@ export const EstimatePDF = ({ data }) => (
             <Text style={estStyles.totalBlockLeftText2}>
               
             </Text>
-            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+            {/* <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
             <Text style={estStyles.totalBlockLeftText1}>
               Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
             </Text>
@@ -472,7 +471,23 @@ export const EstimatePDF = ({ data }) => (
             </Text>
             <Text style={estStyles.totalBlockLeftText1}>
               - IFSC: HDFC0001319
-            </Text>
+            </Text> */}
+            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment Mode: By Cash / NEFT / RTGS / Cheque
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  A/c No: 131905001314
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh - 530003
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  IFSC: HDFC0001319
+</Text>
           </View>
 
           {/* Right Side: Signature and Totals */}
@@ -490,53 +505,6 @@ export const EstimatePDF = ({ data }) => (
           </View>
         </View>
 
-
-        {/* <View style={estStyles.totalBlock}>
-          <View style={estStyles.totalBlockLeft}>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Items in Total {data.quantity}
-            </Text>
-            <Text style={estStyles.totalBlockLeftText2}>Total In Words</Text>
-            <Text style={estStyles.totalBlockLeftText3}>
-              {toWords.convert(data.totalAmount || 0, { currency: false })}
-            </Text>
-            <Text style={estStyles.totalBlockLeftText2}>Notes</Text>
-            <Text style={estStyles.totalBlockLeftText2}>Looking forward</Text>
-            <Text style={estStyles.totalBlockLeftText2}>
-              Terms & Conditions
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment Mode: By Cash / NEFT / RTGS / Cheque
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - A/c No: 131905001314
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh,
-              530003
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - IFSC: HDFC0001319
-            </Text>
-          </View>
-          <View style={estStyles.totalBlockRight}>
-            <Text style={estStyles.totalBlockRightText}>
-              Total {data.totalAmount}
-            </Text>
-            <Text style={estStyles.totalBlockRightTextBold}>
-              Amount Due {data.totalAmount}
-            </Text>
-          </View>
-        </View>
-
-        <View style={estStyles.signatureBlock}>
-          <Text style={estStyles.signatureText}>Authorized Signature</Text>
-          <Text style={estStyles.signatureTextBottom}>For Sharon Telematics</Text>
-        </View> */}
       </View>
     </Page>
   </Document>

@@ -32,7 +32,7 @@ const AddEditInvoice = () => {
         expiryDate: estimateData.estimateDetails.expiryDate,
         cgstPercentage:(estimateData.CGST * 100) / estimateData.estimateDetails.amount,
         scstPercentage:(estimateData.SCST * 100) / estimateData.estimateDetails.amount,
-        items: estimateData.products.map((product) => ({
+        items: estimateData.products?.map((product) => ({
           name: product.name,
           qauntity: product.quantity,
           rate: product.rate,
