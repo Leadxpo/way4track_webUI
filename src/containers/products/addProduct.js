@@ -254,6 +254,15 @@ const AddProductForm = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8">Add Product</h1>
+      <div className="space-y-4 w-1/2">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          style={{ display: 'flex', alignSelf: 'flex-start' }}
+          onClick={generateExcel}
+        >
+          Download Sample format
+        </button>
+      </div>
 
       <form className="space-y-4 w-1/2">
         <div>
@@ -292,13 +301,6 @@ const AddProductForm = () => {
             Download Sample format
           </button>
         </a> */}
-
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
-          onClick={generateExcel}
-        >
-          Download Sample format
-        </button>
 
         {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
         {renderField('Product Name', 'productName')}

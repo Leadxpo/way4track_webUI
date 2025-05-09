@@ -316,15 +316,19 @@ const Products = () => {
       .includes(searchData.productName.toLowerCase())
   );
 
-  const filteredBranchStock = branchStock.filter(
-    (item) =>
-      item?.productName
-        ?.toLowerCase()
-        .includes(searchData.productName.toLowerCase()) &&
-      item?.branchName
-        ?.toLowerCase()
-        .includes(searchData.branchName.toLowerCase())
-  );
+  const filteredBranchStock = branchStock.filter((item) => {
+    const matchesProduct = item?.productName
+      ?.toLowerCase()
+      .includes(searchData.productName.toLowerCase());
+  
+    const branchToCompare = searchData.branchName || selectedBranch;
+    const matchesBranch = item?.branchName
+      ?.toLowerCase()
+      .includes(branchToCompare.toLowerCase());
+  
+    return matchesProduct && matchesBranch;
+  });
+  
 
   const filteredInHandStock = inHandStock.filter(
     (item) =>
@@ -663,8 +667,10 @@ const Products = () => {
                 <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
                   <select
                     name="branchName"
-                    value={selectedBranch}
-                    onChange={(e) => setSelectedBranch(e.target.value)}
+                    // value={selectedBranch}
+                    // onChange={(e) => setSelectedBranch(e.target.value)}
+                    value={searchData.branchName}
+                    onChange={handleInputChange}
                     className="w-full p-1 text-gray-700 rounded focus:outline-none"
                   >
                     <option value="">Select Branch</option>
@@ -821,7 +827,7 @@ const Products = () => {
               className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
             />
 
-            {selected === 'branchstock' && (
+            {/* {selected === 'branchstock' && (
               <input
                 type="text"
                 name="branchName"
@@ -830,7 +836,7 @@ const Products = () => {
                 onChange={handleInputChange}
                 className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
               />
-            )}
+            )} */}
 
             {selected === 'handstock' && (
               <input
