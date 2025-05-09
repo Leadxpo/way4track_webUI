@@ -4,21 +4,19 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 const EditClient = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const clientData = location.state?.clientDetails || {};
-  console.log( "?????????",clientData);
+  console.log("rrr",clientData)
   const initialFormData = {
     id: clientData?.id || null,
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
-    gstNumber: clientData.gstNumber || '',
+    // gstNumber: clientData.gstNumber || '',
     // clientId: clientData.clientId || '',
-    branch: clientData.branch || '',
-    branchName: clientData.branchName || '', 
-    dob: clientData.dob || '',
+    branch: clientData.branchId || '',
+    branchName: clientData.branch || '', 
     email: clientData.email || '',
     address: clientData.address || '',
-    joiningDate: clientData.joiningDate,
+    // joiningDate: clientData.joiningDate,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     file: clientData?.file || null,
@@ -36,10 +34,14 @@ if(errors)
 }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value });    
+  };
 
-    
-    
+
+  const handleBranchInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("branch : ",value)
+    setFormData({ ...formData, "branch": value });    
   };
 
 
@@ -94,7 +96,7 @@ if(errors)
       const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+  console.log("rrr : ",response);
       if (response.status) {
         alert('Client updated successfully!');
         navigate('/clients');
@@ -113,77 +115,8 @@ if(errors)
   };
 
 
-
-// Phone number validation with API call
-useEffect(() => {
-  const checkPhoneNumber = async () => {
-    if (!/^\d{10}$/.test(formData.phoneNumber)) return;
-
-    try {
-      const response = await ApiService.post(
-        "/client/getClientVerification",
-        { phoneNumber: formData.phoneNumber },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-
-      if (response.status === false) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          phoneNumber: 'Phone number already exists.',
-        }));
-      }
-    } catch (apiError) {
-      console.error('Error checking phone number:', apiError);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        phoneNumber: 'Error validating phone number.',
-      }));
-    }
-  };
-
-  if (formData.phoneNumber) {
-    checkPhoneNumber();
-  }
-}, [formData.phoneNumber]);
-
-
-// Email validation with API call
-useEffect(() => {
-  const checkEmail = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) return;
-
-    try {
-      const response = await ApiService.post(
-        "/client/getClientVerification",
-        { email: formData.email },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-
-      if (response.status === false) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          email: 'Email already exists.',
-        }));
-      }
-    } catch (apiError) {
-      console.error('Error checking email:', apiError);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: 'Error validating email.',
-      }));
-    }
-  };
-
-  if (formData.email) {
-    checkEmail();
-  }
-}, [formData.email]);
-
-
 const validate = (fieldName, value) => {
   let error = '';
-  
-
   // General required field validation
   if (value.trim() === '') {
     error = `${fieldName} is required.`;
@@ -198,8 +131,6 @@ const validate = (fieldName, value) => {
   if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
     error = 'Phone number must be 10 digits.';
   }
-
-
 
   return error;
 };
@@ -226,7 +157,7 @@ const handleChange = useCallback(
 
 
 
-  return (
+return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         {/* Header */}
@@ -293,7 +224,7 @@ const handleChange = useCallback(
 
 
          {/* Phone Number */}
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
@@ -303,7 +234,7 @@ const handleChange = useCallback(
               placeholder="Enter Gst Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-          </div>
+          </div> */}
 
 
           {/* Branch */}
@@ -314,7 +245,7 @@ const handleChange = useCallback(
                 <select
                   name="branch"
                   value={formData.branch}
-                  onChange={handleInputChange}
+                  onChange={handleBranchInputChange}
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
                   <option value="" disabled>Select a Branch</option>
@@ -327,17 +258,6 @@ const handleChange = useCallback(
               </div>
             </div>
           )}
-          {/* Date of Birth */}
-          <div>
-            <p className="font-semibold mb-1">Date of Birth</p>
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
           {/* Email ID */}
           <div>
             <p className="font-semibold mb-1">Email ID</p>
@@ -366,7 +286,7 @@ const handleChange = useCallback(
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <p className="font-semibold mb-1">Joining Date</p>
           <input
             type="date"
@@ -375,7 +295,7 @@ const handleChange = useCallback(
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Buttons */}

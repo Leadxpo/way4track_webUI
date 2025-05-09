@@ -26,7 +26,7 @@ export const menuOptions = {
     },
     {
       name: 'Product Type',
-      icon: <img src="./products.png" />,
+      icon: <img src="./product_type.png" />,
       route: '/product-type',
     },
     // {
@@ -520,7 +520,7 @@ export const formattedPaths = {
     '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/add-product': { name: 'Add Product', icon: <img src="./products.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/edit-estimate': {
@@ -769,7 +769,7 @@ export const formattedPaths = {
     '/edit-staff': { name: 'Edit Staff', icon: <img src="./users.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/add-product': { name: 'Add Product', icon: <img src="./products.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/estimate': { name: 'Estimates', icon: <img src="./estimate.png" /> },
     '/add-estimate': {
@@ -895,7 +895,7 @@ export const formattedPaths = {
   },
   'branh manager': {
     '/branch-manager-home': { name: 'Home', icon: <img src="./home.png" /> },
-    '/asserts': { name: 'Asserts', icon: <img src="./asserts.png" /> },
+    '/asserts': { name: 'Assets', icon: <img src="./asserts.png" /> },
     '/add-assets': { name: 'Add Asset', icon: <img src="./asserts.png" /> },
     '/staff': { name: 'Staff', icon: <img src="./users.png" /> },
     '/add-staff': { name: 'Add Staff', icon: <img src="./users.png" /> },

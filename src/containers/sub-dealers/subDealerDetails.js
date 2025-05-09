@@ -12,11 +12,7 @@ const SubDealerDetails = () => {
 
   const location = useLocation();
   const subDealerDetailsFromState = location.state?.subDealerDetails || {};
-  console.log('==========Idddddd====+++++', subDealerDetailsFromState);
-
-  const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState(
-    []
-  );
+  const [subDealerStaffDetailsData, setSubDealerStaffDetailsData] = useState([]);
   const [subDealer, setSubDealer] = useState({});
   const [subDealerDetails, setSubDealerDetails] = useState([]);
   const [subDealerDetailsData, setSubDealerDetailsData] = useState([]);
@@ -421,7 +417,7 @@ const SubDealerDetails = () => {
           </p> */}
 
           <p className="text-gray-800 font-semibold">
-            Gst Number : {subDealer.gstNumber}
+            Gst Number : {subDealerDetailsFromState.gstNumber}
           </p>
 
           <p className="text-gray-800 font-semibold">
