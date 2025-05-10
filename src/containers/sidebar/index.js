@@ -39,6 +39,46 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
   // Get menu items based on role
   const items = menuOptions[role.toLowerCase()] || [];
 
+
+  useEffect(() => {
+    if (role === 'CEO') {
+      localStorage.setItem('role', 'CEO');
+    } else {
+      localStorage.setItem('role', role);
+      localStorage.setItem('webUI', 'false');
+    }
+  }, [role]);
+
+
+  
+
+  const roleFromStorage = localStorage.getItem('role') || '';
+  const webUI = localStorage.getItem('webUI') === 'true';
+
+  const ceoWebUIMenu = [
+    {
+      name: 'Homeone',
+      icon: <img src="./home.png" />,
+      route: '/homeone',
+    },
+    {
+      name: 'Productsone',
+      icon: <img src="./products.png" />,
+      route: '/productsone',
+    },
+    {
+      name: 'Reportsone',
+      icon: <img src="./reports.png" />,
+      route: '/reportsone',
+    },
+    {
+      name: 'Clientsone',
+      icon: <img src="./clients.png" />,
+      route: '/clientsone',
+    },
+    // You can add more WebUI-specific items here
+  ];
+
   useEffect(() => {
     switch (localStorage.getItem('role')) {
       case 'CEO':
@@ -108,6 +148,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
             </div>
           ))}
         </div>
+     
       </div>
       <div className="px-4 py-6">
         <button

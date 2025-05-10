@@ -1,0 +1,283 @@
+.scroll-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 20px 0;
+  }
+  
+  .scroll-track {
+    display: flex;
+    width: max-content;
+    animation: scroll-left 27s linear infinite alternate;
+  }
+  
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .scroll-card {
+    margin: 0 20px;
+    flex-shrink: 0;
+    width: 140px;
+    height: 120px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .scroll-card img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+  
+  .scroll-card:hover img {
+    filter: grayscale(0%);
+  }
+  
+  .client-heading {
+    color: #00A551;
+    font-weight: bold;
+  }
+  
+  .client-subtext {
+    color: #FFA500;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+
+
+  /* session 1 */
+
+  /* typewriter.css */
+/* typewriter.css */
+
+/* Static 'WAY4TRACK' 3D text effect */
+.way4track-text {
+  font-size: 50px;
+  font-weight: bold;
+  color: black !important; /* Updated color */
+
+  text-align: center;
+  margin-bottom: 20px;
+  animation: shadowGlow 1.5s ease-in-out infinite alternate;
+  font-family: "Roboto Serif", serif !important;
+  
+}
+
+/* Typewriter effect */
+.typewriter-container {
+  text-align: center;
+  font-size: 50px;
+  background-image: linear-gradient(
+    -225deg,
+    #006400 0%,    /* Dark Green */
+    #00A551 29%,   /* Medium Green */
+    #32CD32 67%,   /* Lime Green */
+    #FFD700 100%   /* Golden Yellow */
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* text-fill-color: transparent; */
+  animation: textclip 2s linear infinite;
+  font-weight: bold; /* Make the text bold */
+
+}
+
+/* Text animation for typewriter */
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+
+
+
+.short-desc{
+  font-family: "Roboto Serif", serif !important;
+  font-size: 20px;
+  color: #FFA500; /* Updated color */
+  padding-top: 30px;
+}
+
+
+
+
+/* session 2 */
+.image-container {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+
+
+
+
+.image-wrapper {
+  overflow: hidden;
+  border-radius: 10px;
+  position: relative;
+}
+
+.zoom-img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.image-wrapper:hover .zoom-img {
+  transform: scale(1.1); /* Zoom in on individual image */
+}
+
+
+
+.hover-card:hover .zoom-img {
+  transform: scale(1.1);
+}
+
+.desc-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  transition: background-color 0.4s ease;
+  border-radius: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hover-card:hover .desc-box {
+  background-color: #e0f7fa;
+}
+
+
+
+.image-container {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.zoom-img {
+  transition: transform 0.5s ease;
+  width: 100%;
+  height: auto;
+}
+
+.hover-card:hover .zoom-img {
+  transform: scale(1.1);
+}
+
+.desc-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  transition: background-color 0.4s ease;
+  border-radius: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hover-card:hover .desc-box {
+  background-color: #e0f7fa;
+}
+
+.zoom-img {
+  transition: transform 0.4s ease;
+}
+.image-wrapper:hover .zoom-img {
+  transform: scale(1.1);
+}
+
+.desc-box {
+  padding: 1rem;
+}
+
+.transition-desc {
+  transition: all 0.3s ease;
+}
+
+.highlight-desc {
+  background-color: #f0f8ff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+
+.bg-light-session2 {
+  transition: background-color 0.3s ease;
+  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+  padding: 10px;
+  border-left: 2px solid rgb(148, 148, 221);
+}
+
+
+
+/* session 5 */
+
+.mining-name{
+  font-size: 32px;
+  font-weight: bold;
+  color: #FFA500; /* Updated color */
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+.mining-header{
+  font-size: 24px;
+  font-weight: bold;
+  color: black; /* Updated color */
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+/* session5 */
+.session5-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+
+
+/* sessin7 */
+.session7-wrapper {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.session7-list {
+  background: #fff;
+  /* border: 2px solid #0d6efd; */
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  /* background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%); */
+}
+
+.session7-desc {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.5;
+  text-align: justify;
+}
