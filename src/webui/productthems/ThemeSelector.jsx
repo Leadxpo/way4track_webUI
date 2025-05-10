@@ -1,5 +1,5 @@
 import React from 'react';
-import "../productthems/styles/ThemeSelector.css";
+import './styles/ThemeSelector.css';
 
 function ThemeSelector({ themesData, selectedTheme, handleThemeClick }) {
   return (
@@ -7,7 +7,7 @@ function ThemeSelector({ themesData, selectedTheme, handleThemeClick }) {
       <h2>Select a Theme</h2>
       <div className="theme-options">
         {themesData.map((theme) => (
-          <div 
+          <div
             key={theme.id}
             className={`theme-card ${selectedTheme?.id === theme.id ? 'selected' : ''}`}
             onClick={() => handleThemeClick(theme.id)}

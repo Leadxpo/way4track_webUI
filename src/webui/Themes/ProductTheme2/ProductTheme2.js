@@ -1,7 +1,8 @@
 import React from "react";
 import "./ProductTheme2.css";
 
-const ProductTheme2 = () => {
+const ProductTheme2 = ({data}) => {
+  console.log("rrr:",data)
   const features = [
     {
       icon: "/live_location_tracking.png", // Replace with actual paths to your icons
@@ -62,7 +63,7 @@ const ProductTheme2 = () => {
 
           <div className="right-panel">
             <h1 className="main-title">
-              AIS 140 IRNSS DEVICE for Mining vehicles.
+             {data.name}
             </h1>
             <p className="sub-text">
               AIS 140 IRNSS Device is approved and certified by the Govt. of
