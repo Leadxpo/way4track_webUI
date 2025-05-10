@@ -26,6 +26,7 @@ const AddDispatch = () => {
         staffId: appointmentDetails?.staffId || '',
         clientId: appointmentDetails?.clientId || '',
         subDealerId: appointmentDetails?.subDealerId || '',
+        dispatchBoxImage: appointmentDetails?.dispatchBoxImage || '',
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
     });
@@ -65,9 +66,20 @@ const AddDispatch = () => {
     }, []);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        const payload = new FormData();
+
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                payload.append(key, value);
+            }
+        });
+
         try {
-            const response = await ApiService.post('/dispatch/handleDispatchDetails', formData);
+            const response = await ApiService.post('/dispatch/handleDispatchDetails', payload, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             if (response.status) {
                 alert(formData.id ? 'Dispatch updated successfully!' : 'Dispatch created successfully!');
                 navigate('/dispatch');
@@ -279,6 +291,21 @@ const AddDispatch = () => {
                     name="packageId"
                     value={formData.packageId}
                     onChange={handleChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+            </div>
+            <div className="flex flex-col">
+                <label className="font-semibold mb-2">Package ID:</label>
+                <input
+                    label="Dispatch Box Image"
+                    name="dispatchBoxImage"
+                    type="file"
+                    onChange={(e) =>
+                        setFormData((prev) => ({
+                            ...prev,
+                            dispatchBoxImage: e.target.files[0],
+                        }))
+                    }
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
             </div>
