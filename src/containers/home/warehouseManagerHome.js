@@ -164,13 +164,6 @@ const WarehouseManagerHome = () => {
   }, []);
 
 
-
-
-
-
-
-
-
   const downloadExcel = () => {
     const ws = XLSX.utils.json_to_sheet();
     const wb = XLSX.utils.book_new();

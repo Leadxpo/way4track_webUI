@@ -40,7 +40,6 @@ const fetchPayments = async (selectedStocks) => {
     };
     let response = await ApiService.post('/technician/getBackendSupportWorkAllocation', payload);
     const allData = response?.data || [];
-    console.log("+++++++++++>", allData);
 
     let filtered = [];
     if (selectedStocks === 'Pending Payments') {
@@ -93,7 +92,6 @@ const fetchPayments = async (selectedStocks) => {
 
   const handleSelect = (stock) => {
     setSelectedStock(stock);
-    console.log("======payment==>",selectedStock)
     setIsDropdownOpen(false);
     if (stock === 'Received Payments' || stock === 'Pending Payments') {
       fetchPayments(stock);
