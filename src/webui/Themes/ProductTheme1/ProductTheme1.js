@@ -3,7 +3,7 @@ import React from "react";
 import "./ProductTheme1.css";
 import { productThemeData } from "./productThemeData"; // Adjust path if needed
 
-const ProductTheme1 = ({ data=productThemeData  }) => {
+const ProductTheme1 = ({ data  }) => {
   if (!data) return null; // Prevent render errors if data is undefined
 
   const {
@@ -19,7 +19,7 @@ const ProductTheme1 = ({ data=productThemeData  }) => {
     <div className="tracker-container">
       {/* Header Section */}
       <div className="header-section">
-        <h1 className="title">{header?.name}</h1>
+        <h1 className="title">{data.name}</h1>
         <p className="subtitle">{header?.shortDescription}</p>
       </div>
 
