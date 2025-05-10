@@ -461,10 +461,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -747,10 +746,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -991,10 +989,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1290,10 +1287,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1538,10 +1534,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1888,10 +1883,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2143,10 +2137,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2396,10 +2389,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2647,9 +2639,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
 
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
@@ -2901,10 +2893,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -3168,10 +3159,9 @@ const Letters = () => {
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-
+            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
+            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
            <View style={[styles.section,{marginTop:40}]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>

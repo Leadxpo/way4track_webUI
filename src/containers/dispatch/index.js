@@ -122,8 +122,8 @@ const Dispatch = () => {
                         <thead>
                             <tr className="bg-gray-100 border-b">
                                 <th className="px-6 py-3 text-left text-sm font-bold">ID</th>
-                                <th className="px-6 py-3 text-left text-sm font-bold">Staff Name</th>
-                                <th className="px-6 py-3 text-left text-sm font-bold">Client Name</th>
+                                <th className="px-6 py-3 text-left text-sm font-bold">company Name</th>
+                                <th className="px-6 py-3 text-left text-sm font-bold">Reciver Name</th>
                                 <th className="px-6 py-3 text-left text-sm font-bold">From Address</th>
                                 <th className="px-6 py-3 text-left text-sm font-bold">To Address</th>
                                 <th className="px-6 py-3 text-left text-sm font-bold">Dispatch Date</th>
@@ -138,8 +138,8 @@ const Dispatch = () => {
                                 dispatches.map((item) => (
                                     <tr key={item.id} className="border-b">
                                         <td className="px-6 py-4">{item.id}</td>
-                                        <td className="px-6 py-4">{item.staffName}</td>
-                                        <td className="px-6 py-4">{item.clientName}</td>
+                                        <td className="px-6 py-4">{item.dispatchCompanyName}</td>
+                                        <td className="px-6 py-4">{item.receiverName}</td>
                                         <td className="px-6 py-4">{item.fromAddress}</td>
                                         <td className="px-6 py-4">{item.toAddress}</td>
                                         <td className="px-6 py-4">{item.dispatchDate}</td>

@@ -26,10 +26,10 @@ const Estimates = () => {
         onEdit={handleEdit}
         // onDelete={() => {}}
         onDetails={handleDetails}
-        showStatusFilter={true}
+        showStatusFilter={false}
         showCreateBtn={true}
-        showDelete={permissions.delete}
-        showEdit={permissions.edit}
+        showDelete={false}
+        showEdit={false}
         showDetails={permissions.view}
       />
       {/* <div style={{ height: '100vh', width: '50vw' }}>

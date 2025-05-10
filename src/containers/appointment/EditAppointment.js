@@ -92,7 +92,6 @@ export default function EditAppointment() {
     const navigate = useNavigate();
     const location = useLocation();
     const appointment = location.state?.appointment;
-console.log("wwww+++++",appointment)
   const [formData, setFormData] = useState({
     clientPhonenumber: appointment?.clientPhoneNumber,
     clientName:appointment?.name,
