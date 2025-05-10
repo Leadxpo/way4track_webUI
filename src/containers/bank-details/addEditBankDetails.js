@@ -1,13 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const AddEditBankDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  // const [formData, setFormData] = useState({ branch: '' });
+  const [branches, setBranches] = useState([]);
   // Check if there's bank data passed through location.state
   const bankData = location.state?.bankDetails || {};
+
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
+        if (branchResponse.status) {
+          setBranches(branchResponse.data); // Assuming data is an array of branch names or objects
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+
+
+
+
 
   // Initialize form data with existing bank details if available
   const initialFormData = {
@@ -37,6 +61,7 @@ const AddEditBankDetails = () => {
 
     const payload = {
       ...formData,
+      branchId: formData.branch, 
     };
 
     // const payload = new FormData();
@@ -47,19 +72,21 @@ const AddEditBankDetails = () => {
         : '/account/createAccount';
       const response = await ApiService.post(endpoint, payload);
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'account updated successfully!'
             : 'account created successfully!'
         );
-        navigate('/bank-details');
+        // navigate('/bank-details');
+        navigate('/bank-details-dashboard');
+        
       } else {
-        alert('Failed to save appointment details. Please try again.');
+        alert('Failed to save account details. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving appointment details:', error);
-      alert('Failed to save appointment details. Please try again.');
+      console.error('Error saving account details:', error);
+      alert('Failed to save account details. Please try again.');
     }
   };
 
@@ -148,18 +175,24 @@ const AddEditBankDetails = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          {/* Branch */}
+
           <div>
-            <p className="font-semibold mb-1">Branch</p>
-            <input
-              type="text"
-              name="branch"
-              value={formData.branch}
-              onChange={handleInputChange}
-              placeholder="Enter Branch"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
+  <p className="font-semibold mb-1">Branch</p>
+  <select
+    name="branch"
+    value={formData.branch}
+    onChange={handleInputChange}
+    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+  >
+    <option value="">Select Branch</option>
+    {branches.map((branch) => (
+      <option key={branch.id} value={branch.id}>
+        {branch.branchName}
+      </option>
+    ))}
+  </select>
+</div>
+
           <div>
             <p className="font-semibold mb-1">Amount</p>
             <input

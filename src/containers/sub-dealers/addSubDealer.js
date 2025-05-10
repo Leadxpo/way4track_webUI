@@ -4,35 +4,30 @@ import { useNavigate, useLocation } from 'react-router';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 
-const AddEditSubDealer = () => {
+const AddSubDealer = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  
+  const initialFormData = {
+    id: null,
+    name: '',
+    subDealerPhoneNumber: '',
+    alternatePhoneNumber: '',
+    gstNumber: '',
+    password:'',
+    startingDate:'',
+    emailId:'',
+    aadharNumber:'',
+    address:'',
+    subDealerPhoto:null,
+    branchId:'',
+    companyCode: initialAuthState.companyCode,
+    unitCode: initialAuthState.unitCode,
+  };
 
-  const subDealerData = location.state?.subDealerDetails || {};
-console.log(subDealerData, "<<<<<<< SubDealer Data");
-
-const initialFormData = {
-  id: subDealerData?.id || null, // Ensure single occurrence of id
-  name: subDealerData?.name || '',
-  subDealerPhoneNumber: subDealerData?.subDealerPhoneNumber || '',
-  alternatePhoneNumber: subDealerData?.alternatePhoneNumber || '',
-  gstNumber: subDealerData?.gstNumber || '',
-  password: subDealerData?.password || '', // Ensure password holds actual password
-  startingDate: subDealerData?.startingDate || '',
-  emailId: subDealerData?.emailId || '',
-  aadharNumber: subDealerData?.aadharNumber || '',
-  address: subDealerData?.address || '',
-  subDealerPhoto: subDealerData?.subDealerPhoto || null, // Ensure it's an image/file
-  companyCode: subDealerData?.companyCode || '',
-  unitCode: subDealerData?.unitCode || '',
-  branchName: subDealerData?.branchName || '',
-
-};
-
-
+  const [branches, setBranches] = useState([]);
   const [formData, setFormData] = useState(initialFormData);
   const [errorMessage, setErrorMessage] = useState('');
-  const [image, setImage] = useState(subDealerData?.photo || '');
+  const [image, setImage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,39 +35,27 @@ const initialFormData = {
   };
 
   useEffect(() => {
-    if (
-      location.state?.subDealerDetails ||
-      location.state?.subDealerDetails?.subDealerId
-    ) {
-      const fetchClientDetails = async () => {
-        try {
-          const response = await ApiService.post(
-            '/subdealer/getSubDealerDetails',
-            {
-              subDealerId: subDealerData.subDealerId,
-              companyCode: initialAuthState.companyCode,
-              unitCode: initialAuthState.unitCode,
-            }
-          );
-          const subDealer = response.data?.[0];
-          console.log("+++++++++++++++",subDealer);
-          setFormData((prev) => ({
-            ...prev,
-            ...subDealer,
-          }));
-          setImage(subDealer?.photo || '');
-        } catch (error) {
-          console.error('Error fetching branch details:', error);
-          alert('Failed to fetch branch details.');
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post('/branch/getBranchNamesDropDown');
+        if (response.status) {
+          setBranches(response.data);
+        } else {
+          console.error('Failed to fetch branches');
         }
-      };
-      fetchClientDetails();
-    }
-  }, [location.state?.subDealerDetails]);
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+
 
   const handleSave = async () => {
     const payload = new FormData();
-  
+
     // Append form fields correctly, ensuring no duplicate id
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'id' && value !== null) {
@@ -83,22 +66,19 @@ const initialFormData = {
         payload.append(key, value);
       }
     });
-  
+
     console.log([...payload.entries()], '✅ Corrected Payload Before Sending');
-  
+
     try {
-      const endpoint = formData.id
-        ? '/subdealer/handleSubDealerDetails' // Update sub-dealer
-        : '/subdealer/handleSubDealerDetails'; // Create new sub-dealer
-  
-      const response = await ApiService.post(endpoint, payload, {
+
+      const response = await ApiService.post('/subdealer/handleSubDealerDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
-      console.log(response.data, '✅ API Response');
-  
-      if (response.data && response.data.status) {
-        alert(formData.id ? 'Sub-dealer updated successfully!' : 'Sub-dealer added successfully!');
+
+      console.log(response, '✅ API Response');
+
+      if (response.status) {
+        alert('Sub-dealer added successfully!');
         navigate('/sub_dealers');
       } else {
         alert(response.data.internalMessage || 'Failed to save sub-dealer details. Please try again.');
@@ -108,7 +88,7 @@ const initialFormData = {
       alert('Failed to save sub-dealer details. Please try again.');
     }
   };
-  
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -130,7 +110,7 @@ const initialFormData = {
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {subDealerData.name ? 'Edit Sub Dealer' : 'Add Sub Dealer'}
+            Add Sub Dealer
           </h1>
         </div>
 
@@ -228,6 +208,28 @@ const initialFormData = {
               />
             </div>
           ))}
+                    {/* Branch */}
+                    {branches.length > 0 && (
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-1">Branch</p>
+                <select
+                  name="branchId"
+                  value={formData.branchId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option value="" disabled>Select a Branch</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
         </div>
 
         {errorMessage && (
@@ -253,4 +255,4 @@ const initialFormData = {
   );
 };
 
-export default AddEditSubDealer;
+export default AddSubDealer;

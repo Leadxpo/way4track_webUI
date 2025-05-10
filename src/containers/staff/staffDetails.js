@@ -10,13 +10,13 @@ const StaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   console.log('staff details', state);
-
+  const [staffPhoto, setStaffPhoto] = useState('');
   const userId = localStorage.getItem('userId');
 
   const [formData, setFormData] = useState({
     personnelDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId || '',
       name: 'John Doe',
       dob: '1990-01-01',
       gender: 'Male',
@@ -29,13 +29,13 @@ const StaffDetails = () => {
       drivingLicenceNumber: 'DL-123456789',
       drivingLicence: 'Yes',
       address: '123, Main Street, NY',
-      uanNumber: '100200300400',
-      esicNumber: 'ESIC123456',
+      UANNumber: '100200300400',
+      ESICNumber: 'ESIC123456',
       bloodGroup: 'O+',
     },
     educationDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       qualifications: [
         { qualificationName: 'B.Tech', marksOrCgpa: '8.5 CGPA', file: null },
       ],
@@ -51,8 +51,8 @@ const StaffDetails = () => {
       ],
     },
     bankDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       accountNumber: '123456789012',
       bankName: 'ABC Bank',
       ifscCode: 'ABC12345',
@@ -60,8 +60,8 @@ const StaffDetails = () => {
       accountType: 'savings',
     },
     employerDetails: {
-      id: state.staffDetails.id,
-      staffId: state.staffDetails.staffId,
+      id: state?.staffDetails?.id,
+      staffId: state?.staffDetails?.staffId,
       branch: 'Head Office',
       staffId: 'EMP12345',
       joiningDate: '2020-06-15',
@@ -120,7 +120,7 @@ const StaffDetails = () => {
 
       if (response.errorCode === 200) {
         const staff = response.data;
-
+        setStaffPhoto(staff.staffPhoto);
         setFormData({
           personnelDetails: {
             id: staff.id,
@@ -138,14 +138,16 @@ const StaffDetails = () => {
             panCardNumber: staff.panCardNumber || '',
             drivingLicence: staff.drivingLicence || '',
             address: staff.address || '',
-            uanNumber: staff.uanNumber || '',
-            esicNumber: staff.esicNumber || '',
+            // uanNumber: staff.uanNumber || '',
+            // esicNumber: staff.esicNumber || '',
+            'UAN Number': (staff.uanNumber || '').toUpperCase(),
+            'ESIC Number': (staff.esicNumber || '').toUpperCase(),
             bloodGroup: staff.bloodGroup || '',
           },
           educationDetails: {
             id: staff.id,
             qualifications: staff.qualifications || [],
-            experience: staff.experience || [],
+            experience: staff.experienceDetails || [],
           },
           bankDetails: {
             id: staff.id,
@@ -162,10 +164,16 @@ const StaffDetails = () => {
             designation: staff.designation || '',
             department: staff.department || '',
             monthlySalary: staff.monthlySalary || '',
+            mailAllocation: staff.mailAllocation || '',
             officeEmail: staff.officeEmail || '',
             officePhoneNumber: staff.officePhoneNumber || '',
             bikeAllocation: staff.bikeAllocation || '',
+            bikeNumber: staff.bikeNumber || '',
             mobileAllocation: staff.mobileAllocation || '',
+            drivingLicence: staff.drivingLicence || '',
+            drivingLicenceNumber: staff.drivingLicenceNumber || '',
+            officePhoneNumber: staff.officePhoneNumber || '',
+            mobileBrand: staff.mobileBrand || '',
             terminationDate: staff.terminationDate || '',
             resignationDate: staff.resignationDate || '',
             finalSettlementDate: staff.finalSettlementDate || '',
@@ -268,6 +276,14 @@ const StaffDetails = () => {
     </PDFDownloadLink> */}
       </div>
 
+      <div>
+        <img
+          src={staffPhoto || 'logo-square.png'}
+          alt={staffPhoto}
+          className="rounded-full w-24 h-24 mx-auto mb-4"
+        />
+      </div>
+
       <DetailsCard
         title="Personnel Details"
         onEdit={() =>
@@ -277,10 +293,10 @@ const StaffDetails = () => {
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           {Object.entries(formData.personnelDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2">
+              <strong className="text-gray-700 mr-2" style={{textTransform:'capitalize'}}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value}</span>
+              <span>{value? value :"N/A"}</span>
             </div>
           ))}
         </div>
@@ -301,16 +317,32 @@ const StaffDetails = () => {
       </DetailsCard>
 
       <DetailsCard
+        title="Previous Experience"
+        onEdit={() =>
+          handleEdit('/edit-staff-education', formData.educationDetails)
+        }
+      >
+        {formData.educationDetails.experience.map((exp, index) => (
+          <p key={index}>
+            <strong>Company Name:</strong> {exp.previousCompany},{' '}
+            <strong>Designation:</strong> {exp.previous_designation},{' '}
+            <strong>Experience:</strong> {exp.total_experience},{' '}
+            <strong>Salary:</strong> {exp.previous_salary}
+          </p>
+        ))}
+      </DetailsCard>
+
+      <DetailsCard
         title="Bank Details"
         onEdit={() => handleEdit('/edit-staff-bank', formData.bankDetails)}
       >
         <div className="grid grid-cols-1 gap-y-2">
           {Object.entries(formData.bankDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2">
+              <strong className="text-gray-700 mr-2"  style={{textTransform:'capitalize'}}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value}</span>
+              <span>{value? value :"N/A"}</span>
             </div>
           ))}
         </div>
@@ -323,62 +355,90 @@ const StaffDetails = () => {
         }
       >
         <div className="flex flex-col gap-y-3">
-          {Object.entries(formData.employerDetails).map(([key, value]) =>
-            key === 'password' ? (
-              <div
-                key={key}
-                className="flex items-center p-2 rounded gap-4 justify-between bg-white-100 shadow"
-              >
-                <div className="flex items-center gap-3 flex-1 justify-between mr-3">
-                  <div>
-                    <strong className="text-gray-700 mr-2 min-w-[160px]">
-                      {key.replace(/([A-Z])/g, ' $1').trim()}:
-                    </strong>
-                    {isEditingPassword ? (
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        className="border p-1 rounded w-full"
-                        value={editedPassword}
-                        onChange={(e) => setEditedPassword(e.target.value)}
-                      />
-                    ) : (
-                      <span className="text-sm font-mono">
-                        {showPassword ? value : '•'.repeat(value.length)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="text-gray-700 text-sm mr-3"
-                      title={showPassword ? 'Hide Password' : 'Show Password'}
-                    >
-                      {showPassword ? (
-                        <IoIosEye size={18} />
+          {Object.entries(formData.employerDetails).map(([key, value]) => {
+            if (key === 'password') {
+              return (
+                <div
+                  key={key}
+                  className="flex items-center p-2 rounded gap-4 justify-between bg-white-100 shadow"
+                >
+                  <div className="flex items-center gap-3 flex-1 justify-between mr-3">
+                    <div>
+                      <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
+                        {key.replace(/([A-Z])/g, ' $1').trim()}:
+                      </strong>
+                      {isEditingPassword ? (
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          className="border p-1 rounded w-full"
+                          value={editedPassword}
+                          onChange={(e) => setEditedPassword(e.target.value)}
+                        />
                       ) : (
-                        <IoIosEyeOff size={18} />
+                        <span className="text-sm font-mono">
+                          {showPassword ? value : '•'.repeat(value.length)}
+                        </span>
                       )}
-                    </button>
-
-                    <button
-                      onClick={() => setIsConfirmModalOpen(true)}
-                      className="text-blue-600 hover:underline text-xs"
-                    >
-                      Edit
-                    </button>
+                    </div>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="text-gray-700 text-sm mr-3"
+                        title={showPassword ? 'Hide Password' : 'Show Password'}
+                      >
+                        {showPassword ? (
+                          <IoIosEye size={18} />
+                        ) : (
+                          <IoIosEyeOff size={18} />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setIsConfirmModalOpen(true)}
+                        className="text-blue-600 hover:underline text-xs"
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
+              );
+            }
+
+            // Skip bikeNumber if bikeAllocation is not 'Yes'
+            if (
+              key === 'bikeNumber' &&
+              formData.employerDetails.bikeAllocation !== 'Yes'
+            )
+              return null;
+
+            if (
+              key === 'officeEmail' &&
+              formData.employerDetails.mailAllocation !== 'Yes'
+            )
+              return null;
+
+            if (
+              key === 'drivingLicenceNumber' &&
+              formData.employerDetails.drivingLicence !== 'Yes'
+            )
+              return null;
+
+            // Skip officePhone and mobileBrand if mobileAllocation is not 'Yes'
+            if (
+              (key === 'officePhone' || key === 'mobileBrand') &&
+              formData.employerDetails.mobileAllocation !== 'Yes'
+            )
+              return null;
+
+            return (
               <div key={key} className="items-center p-2 rounded">
-                <strong className="text-gray-700 mr-2 min-w-[160px]">
+                <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}:
                 </strong>
-                <span>{value}</span>
+                <span>{value? value :"N/A"}</span>
               </div>
-            )
-          )}
+            );
+          })}
 
           {isConfirmModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">

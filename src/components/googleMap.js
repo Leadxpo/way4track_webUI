@@ -1,31 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import ApiService from "../services/ApiService"; // Adjust path as needed
 
-// Google Maps Container Style
 const mapContainerStyle = {
   width: "100%",
-  height: "500px",
+  height: "400px",
 };
 
-// Default Center Position
-const center = {
-  lat: 12.9716, // Example: Bangalore, India
-  lng: 77.5946,
+const defaultCenter = {
+  lat: 15.9129, // Approximate center of Andhra Pradesh
+  lng: 79.7400,
 };
-
-// List of Marker Coordinates
-const locations = [
-  { id: 1, name: "Fuel Station A", lat: 12.9716, lng: 77.5946 },
-  { id: 2, name: "Fuel Station B", lat: 12.2958, lng: 76.6394 },
-  { id: 3, name: "Fuel Station C", lat: 13.0827, lng: 80.2707 },
-];
 
 const GoogleMapComponent = () => {
+  const [branches, setBranches] = useState([]);
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post("/branch/getBranchDetails");
+
+        if (response.status) {
+          const rawBranches = response.data;
+
+          // Filter and parse valid lat/lng branches only
+          const validBranches = rawBranches.filter(branch => {
+            const lat = parseFloat(branch.latitude);
+            const lng = parseFloat(branch.longitude);
+            return !isNaN(lat) && !isNaN(lng);
+          });
+
+          setBranches(validBranches);
+
+          // Optionally center the map on the first valid branch
+          if (validBranches.length > 0) {
+            const first = validBranches[0];
+            setMapCenter({
+              lat: parseFloat(first.latitude),
+              lng: parseFloat(first.longitude),
+            });
+          }
+        } else {
+          console.error("Failed to fetch branches");
+        }
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
   return (
     <LoadScript googleMapsApiKey="AIzaSyCmiyc8iXq1KDOmW_-yWsjALkQVY1z8krw">
-      <GoogleMap mapContainerStyle={mapContainerStyle} zoom={6} center={center}>
-        {locations.map((location) => (
-          <Marker key={location.id} position={{ lat: location.lat, lng: location.lng }} />
+      <GoogleMap mapContainerStyle={mapContainerStyle} zoom={7} center={mapCenter}>
+        {branches.map((branch, index) => (
+          <Marker
+            key={index}
+            position={{
+              lat: parseFloat(branch.latitude),
+              lng: parseFloat(branch.longitude),
+            }}
+            label={branch.branchName}
+          />
         ))}
       </GoogleMap>
     </LoadScript>

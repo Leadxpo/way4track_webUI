@@ -96,15 +96,85 @@ const BackendSupportHome = () => {
 
   const [workRecords, setWorkRecords] = useState([]);
   const [workRecordsCount, setWorkRecordsCount] = useState([]);
-  const [branchesWorkRecordsCount, setBranchesWorkRecordsCount] = useState([]);
+  const [branchesRecords, setBranchesWorkRecordsCount] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardKey, setSelectedCardKey] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [memberWorkRecords, setMemberWorkRecords] = useState(null);
   const [expandedCardId, setExpandedCardId] = useState(null);
   const [searchPhone, setSearchPhone] = useState('');
+  const backendId = Number(localStorage.getItem('id'));
+  const [branchesWorkRecordsCount, setBranchesRecordsCount] = useState([]);
+  console.log(branchesWorkRecordsCount, 'count');
 
-  console.log(selectedCardKey, 'selectedLocation');
+  useEffect(() => {
+    const getBranchesWorkRecordsCount = (workRecords) => {
+      const branchMap = {};
+
+      workRecords.forEach((record) => {
+        const branch = record.branchName || 'Unknown';
+
+        if (!branchMap[branch]) {
+          branchMap[branch] = {
+            branchName: branch,
+            totalInstallWork: 0,
+            totalAcceptWork: 0,
+            totalActivateWork: 0,
+            totalPendingWork: 0,
+            totalCompletedWork: 0,
+          };
+        }
+
+        const status = record.workStatus?.toLowerCase();
+
+        if (status === 'install') {
+          branchMap[branch].totalInstallWork += 1;
+        } else if (record.backSupporterId === backendId) {
+          switch (status) {
+            case 'accept':
+              branchMap[branch].totalAcceptWork += 1;
+              break;
+            case 'activate':
+              branchMap[branch].totalActivateWork += 1;
+              break;
+            case 'pending':
+              branchMap[branch].totalPendingWork += 1;
+              break;
+            case 'completed':
+              branchMap[branch].totalCompletedWork += 1;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+      return Object.values(branchMap);
+    };
+
+    if (workRecords.length > 0) {
+      const transformed = getBranchesWorkRecordsCount(workRecords);
+      setBranchesRecordsCount(transformed);
+    }
+  }, [workRecords, backendId]);
+
+  const totalWorkRecordsCount = {
+    totalInstallWork: workRecords.filter(
+      (item) => item.workStatus === 'install'
+    ).length,
+    totalAcceptWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'accept' && item.backSupporterId === backendId
+    ).length,
+    totalPendingWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'pending' && item.backSupporterId === backendId
+    ).length,
+    totalActivateWork: workRecords.filter(
+      (item) =>
+        item.workStatus === 'activate' && item.backSupporterId === backendId
+    ).length,
+  };
 
   // Fetch records from an API
 
@@ -176,40 +246,6 @@ const BackendSupportHome = () => {
     fetchCardRecords();
     fetchMemberRecords();
   };
-
-  //   useEffect(() => {
-
-  //     fetchRecords();
-  //   }, []);
-
-  // const handleStatusChange = async (item, newStatus) => {
-  //   console.log(item, 'item');
-  //   try {
-  //     setRecords((prevRecords) =>
-  //       prevRecords.map((record) =>
-  //         record.id === item.id ? { ...record, workStatus: newStatus } : record
-  //       )
-  //     );
-
-  //     const response = await ApiService.post(
-  //       '/technician/handleTechnicianDetails',
-  //       {
-  //         id: item.id,
-  //         workStatus: newStatus,
-  //         staffId: item.staffId,
-  //         backEndStaffRelation: Number(userId),
-  //         companyCode: initialAuthState.companyCode,
-  //         unitCode: initialAuthState.unitCode,
-  //       }
-  //     );
-
-  //     console.log('Status updated successfully:', response.data);
-
-  //     await fetchRecords();
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //   }
-  // };
 
   const handleStatusChange = async (item, newStatus) => {
     console.log(item, 'item');
@@ -292,6 +328,7 @@ const BackendSupportHome = () => {
                 .includes(searchPhone.toLowerCase())
           )
         : [];
+  console.log(filteredCards, 'filtered cart list data install');
 
   return (
     <div className="p-6">
@@ -341,7 +378,7 @@ const BackendSupportHome = () => {
                 {item.title}
               </h4>
               <p className="text-4xl font-bold text-blue-600 mt-6 text-center">
-                {workRecordsCount?.[item.key] || 0}
+                {totalWorkRecordsCount?.[item.key] || 0}
               </p>
             </div>
 
@@ -404,7 +441,7 @@ const BackendSupportHome = () => {
                   key={i}
                   className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
                 >
-                  {card.staffName ? (
+                  {card.staffName || card.subDealerName ? (
                     <div className="flex flex-col h-full justify-between">
                       <div className="flex justify-between items-center mb-2">
                         <span

@@ -50,6 +50,7 @@ const AddProductForm = () => {
   const [image, setImage] = useState(null);
   const [bulkFile, setBulkFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Fetch vendors
   useEffect(() => {
@@ -96,6 +97,12 @@ const AddProductForm = () => {
 
   // Save product or bulk upload
   const handleSave = async () => {
+    if (!formData.productTypeId) {
+      setErrors({ productTypeId: 'Please select a product type.' });
+      return; // Stop execution if validation fails
+    }
+
+    setErrors({}); // Clear previous errors
     setIsLoading(true);
 
     if (bulkFile) {
@@ -247,6 +254,15 @@ const AddProductForm = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8">Add Product</h1>
+      <div className="space-y-4 w-1/2">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          style={{ display: 'flex', alignSelf: 'flex-start' }}
+          onClick={generateExcel}
+        >
+          Download Sample format
+        </button>
+      </div>
 
       <form className="space-y-4 w-1/2">
         <div>
@@ -257,7 +273,7 @@ const AddProductForm = () => {
           )}
         </div>
 
-        {vendors.length > 0 && (
+        {/* {vendors.length > 0 && (
           <div>
             <p className="font-semibold mb-1">Vendor</p>
             <select
@@ -276,7 +292,7 @@ const AddProductForm = () => {
               ))}
             </select>
           </div>
-        )}
+        )} */}
         {/* <a
           href="https://storage.googleapis.com/way4track-application/productAssign_photos/assigned_products_xl_format.xlsx"
           download
@@ -285,13 +301,6 @@ const AddProductForm = () => {
             Download Sample format
           </button>
         </a> */}
-
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
-          onClick={generateExcel}
-        >
-          Download Sample format
-        </button>
 
         {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
         {renderField('Product Name', 'productName')}
@@ -324,16 +333,25 @@ const AddProductForm = () => {
           <select
             name="productTypeId"
             className="border p-2 rounded-md w-full"
-            onChange={handleInputChange}
+            // onChange={handleInputChange}
+            onChange={(e) => {
+              handleInputChange(e);
+              setErrors((prev) => ({ ...prev, productTypeId: '' })); // Clear error when changed
+            }}
             value={formData.productTypeId}
           >
             <option value="">Select a product type</option>
-            {productTypes.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
+            {productTypes
+              .filter((type) => type.type === 'PRODUCT')
+              .map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
           </select>
+          {errors.productTypeId && (
+            <p className="text-red-500 text-sm mt-1">{errors.productTypeId}</p>
+          )}
         </div>
 
         <div>

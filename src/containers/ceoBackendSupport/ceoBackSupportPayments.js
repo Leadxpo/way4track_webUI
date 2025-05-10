@@ -304,13 +304,13 @@ const CeoBackendSupportPayments = () => {
   const convertToIST = (utcDate) => {
     if (!utcDate) return null;
     const date = new Date(utcDate);
-    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }); // Convert to IST
+    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
   };
 
   const calculateDuration = (startDate, endDate) => {
     const start = new Date(startDate);
-    const end = endDate ? new Date(endDate) : new Date(); // Use current time if endDate is missing
-    const diffMs = end - start; // Difference in milliseconds
+    const end = endDate ? new Date(endDate) : new Date();
+    const diffMs = end - start;
 
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
@@ -450,7 +450,7 @@ const CeoBackendSupportPayments = () => {
                   key={i}
                   className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
                 >
-                  {card.staffName ? (
+                  {card.staffName || card.subDealerName ? (
                     <div className="flex flex-col h-full justify-between">
                       <div className="flex justify-between items-center mb-2">
                         <span

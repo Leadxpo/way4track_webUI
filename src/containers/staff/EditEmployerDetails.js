@@ -39,7 +39,6 @@ const EditEmployerDetails = () => {
 
   // Fetch Branches
   const fetchBranches = async () => {
-
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       if (response.status) {
@@ -79,6 +78,7 @@ const EditEmployerDetails = () => {
       // { label: "Staff ID", name: "staffId", type: "text" },
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
+      { label: 'Designation', name: 'designation', type: 'select' },
 
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
       { label: 'Office Email', name: 'officeEmail', type: 'email' },
@@ -118,7 +118,7 @@ const EditEmployerDetails = () => {
       if (!date || date === '') return null;
       return date;
     };
-  
+
     const payload = {
       id: data.id ?? '',
       // staffId: "SFp-0002",
@@ -132,7 +132,7 @@ const EditEmployerDetails = () => {
       mobileAllocation: data.mobileAllocation ?? '',
       insuranceNumber: data.insuranceNumber ?? '',
       description: data.description ?? '',
-  
+
       // Date fields: actual null if not provided
       joiningDate: formatDate(data.joiningDate),
       terminationDate: formatDate(data.terminationDate),
@@ -141,16 +141,17 @@ const EditEmployerDetails = () => {
       insuranceEligibilityDate: formatDate(data.insuranceEligibilityDate),
       insuranceExpiryDate: formatDate(data.insuranceExpiryDate),
     };
-  
-    console.log("qqqqqqqwwwwwww",payload);
+
+    console.log('qqqqqqqwwwwwww', payload);
     try {
       const endpoint = '/staff/handleStaffDetails';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'application/json' },
       });
-  
+
       if (response.status) {
         alert('Employer details updated successfully!');
+        navigate(-1);
         return response.data;
       } else {
         alert('Failed to update employer details.');
@@ -162,10 +163,6 @@ const EditEmployerDetails = () => {
       return null;
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -211,15 +208,32 @@ const EditEmployerDetails = () => {
       {inputFields.map(({ label, name, type }) => (
         <div className="mb-4" key={name}>
           <label className="block font-medium mb-1">{label}</label>
-          <input
-            type={type}
-            name={name}
-            value={data[name]}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
+          {type === 'select' && name === 'designation' ? (
+            <select
+              name={name}
+              value={data[name]}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">Select {label}</option>
+              {designations.map((designation) => (
+                <option key={designation.id} value={designation.name}>
+                  {designation.designation}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type={type}
+              name={name}
+              value={data[name]}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            />
+          )}
         </div>
       ))}
+
       {/* Branch Dropdown */}
       <div className="mb-4">
         <label className="block font-medium mb-1">Branch Name</label>

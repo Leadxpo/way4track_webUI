@@ -120,13 +120,16 @@ const EstimateDetails = () => {
   };
   return (
     <div>
-      <div className="flex justify-end mb-4 pr-8">
-        <button
+      <div className="flex justify-center mb-4 pr-8">
+        {/* <button
           className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
           onClick={handleConvertInvoice}
         >
           Convert Invoice
-        </button>
+        </button> */}
+        <h3 className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+        >Estimates</h3>
+        <h1></h1>
       </div>
 
       <div className="p-8 max-w-4xl mx-auto shadow-md rounded-md bg-white">
@@ -205,7 +208,7 @@ const EstimateDetails = () => {
               <th className=" px-4 py-2 text-center">quantity</th>
               <th className=" px-4 py-2 text-center">Rate</th>
               <th className=" px-4 py-2 text-center">Amount</th>
-              <th className=" px-4 py-2 text-center">Action</th>
+              {/* <th className=" px-4 py-2 text-center">Action</th> */}
             </tr>
           </thead>
           <tbody className="rounded-md">
@@ -218,7 +221,7 @@ const EstimateDetails = () => {
                 <td className=" px-4 py-2 text-center">
                   {product.totalAmount}
                 </td>
-                <td className="px-4 py-2 text-center">
+                {/* <td className="px-4 py-2 text-center">
                   <button
                     className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
                     onClick={() =>
@@ -245,7 +248,7 @@ const EstimateDetails = () => {
                   >
                     Work Allocation
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

@@ -6,79 +6,93 @@ const SaleForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const [ledger,setLedger] =useState([]);
-  const [formData, setFormData] = useState(
-    {date:null,
-      day:"",
-      partyName: "", 
-      ledgerId:"",
-      voucherType:"SALES",
-      supplierInvoiceNumber:"",
-      supplierLocation:"",
-      purchaseGst:"",
-      amount:"",
-      SGST:9,
+  const [ledger, setLedger] = useState([]);
+  const [errors, setErrors] = useState({ purchaseGst: '' });
+  const [formData, setFormData] = useState({
+    date: null,
+    day: '',
+    partyName: '',
+    ledgerId: '',
+    voucherType: 'SALES',
+    supplierInvoiceNumber: '',
+    supplierLocation: '',
+    purchaseGst: '',
+    amount: '',
+    SGST: 9,
     CGST: 9,
     TDS: null,
     IGST: null,
-    TCS:null,
-      productDetails:[{productName: "",
+    TCS: null,
+    productDetails: [
+      {
+        productName: '',
+        type: '',
+        description: '',
         quantity: null,
         rate: null,
-        totalCost: null
-       }],
-       purpose:""
+        totalCost: null,
+      },
+    ],
+    purpose: '',
+  });
 
-    }
-  );
- 
+  console.log(formData.productDetails, 'Product Details');
 
   const taxData = [
     { name: 'CGST', percent: '9%' },
-    { name: 'SGST', percent: '9%'},
-    { name: 'IGST', percent: '9%'},
-    { name: 'TDS', percent: '18%'},
-    { name: 'TCS', percent: '2%'},
+    { name: 'SGST', percent: '9%' },
+    { name: 'IGST', percent: '9%' },
+    { name: 'TDS', percent: '18%' },
+    { name: 'TCS', percent: '2%' },
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === 'purchaseGst') {
+      if (value.length > 15) return; // Prevent typing more than 15 chars
+
+      // Update form data
+      setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Validation
+      if (value.length !== 15 && value.length !== 0) {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number must be exactly 15 characters',
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, purchaseGst: '' }));
+      }
+    }
   };
 
   const handleLedgerChange = (e) => {
-  const selectedId = Number(e.target.value); // Convert string to number
-  const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
-  if (selectedLedger) {
-    setFormData((prev) => ({
-      ...prev,
-      partyName: selectedLedger.name,
-      ledgerId: selectedLedger.id
-    }));
-  }
-  console.log("formdata",formData)
-
-};
-
-  
+    const selectedId = Number(e.target.value); // Convert string to number
+    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+    if (selectedLedger) {
+      setFormData((prev) => ({
+        ...prev,
+        partyName: selectedLedger.name,
+        ledgerId: selectedLedger.id,
+      }));
+    }
+    console.log('formdata', formData);
+  };
 
   const handleDateChange = (e) => {
     const value = e.target.value;
-  
-    const dayName = new Date(value).toLocaleDateString("en-US", {
-      weekday: "long",
+
+    const dayName = new Date(value).toLocaleDateString('en-US', {
+      weekday: 'long',
     });
-  
+
     setFormData((prev) => ({
       ...prev,
       date: value,
-      day: dayName, 
+      day: dayName,
     }));
   };
-  
 
   const branchData = [
     'Purchase',
@@ -90,7 +104,6 @@ const SaleForm = () => {
     'DebitNote',
     'CreditNote',
   ];
-
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -109,6 +122,10 @@ const SaleForm = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
 
+  const [gstNumber, setGstNumber] = useState('');
+  const [gstData, setGstData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const filteredTaxData = taxData.filter((tax) => {
     if (selectedTaxType === 'CGST') {
       return tax.name === 'CGST' || tax.name === 'SGST';
@@ -124,7 +141,6 @@ const SaleForm = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-
   const handleBranchClick = () => {
     setIsPopupOpen(true);
   };
@@ -138,40 +154,49 @@ const SaleForm = () => {
       ...prevData,
       productDetails: [
         ...prevData.productDetails,
-        { productName: "", quantity: null, rate: null, totalCost: null }
-      ]
+        {
+          productName: '',
+          type: '',
+          description: '',
+          quantity: null,
+          rate: null,
+          totalCost: null,
+        },
+      ],
     }));
   };
 
   const handleTaxType = (e) => {
     const value = e.target.value;
     setSelectedTaxType(value);
-  
+
     setFormData((prevData) => ({
       ...prevData,
-      CGST: value === "CGST" ? 9 : null,
-      SGST: value === "CGST" ? 9 : null,
-      IGST: value === "IGST" ? 9 : null,
-      TDS: value === "TDS" ? 18 : null,
-      TCS: value === "TDS" ? 2 : null,
+      CGST: value === 'CGST' ? 9 : null,
+      SGST: value === 'CGST' ? 9 : null,
+      IGST: value === 'IGST' ? 9 : null,
+      TDS: value === 'TDS' ? 18 : null,
+      TCS: value === 'TDS' ? 2 : null,
     }));
   };
 
   const handleRemoveEntry = (indexToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
-      productDetails: prevData.productDetails.filter((_, index) => index !== indexToRemove),
+      productDetails: prevData.productDetails.filter(
+        (_, index) => index !== indexToRemove
+      ),
     }));
   };
 
   const handleEntryChange = (index, field, value) => {
     const updatedProductDetails = [...formData.productDetails];
     updatedProductDetails[index][field] = value;
-  
+
     const quantity = updatedProductDetails[index].quantity || 0;
     const rate = updatedProductDetails[index].rate || 0;
     updatedProductDetails[index].totalCost = (quantity * rate).toFixed(2); // Keep it 2 decimals
-  
+
     setFormData((prevData) => ({
       ...prevData,
       productDetails: updatedProductDetails,
@@ -187,76 +212,69 @@ const SaleForm = () => {
     // navigate('/receipt-form')
   };
 
+  // Fetch branch data from API
+  useEffect(() => {
+    const fetchLedgers = async () => {
+      try {
+        const response = await ApiService.post('/ledger/getLedgerDetails', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        console.log('fedgrfdtrgxfsdf', response);
+        if (response.status) {
+          setLedger(response.data); // Set branches to state
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
 
-  
+    fetchLedgers();
+  }, []);
 
-      // Fetch branch data from API
-      useEffect(() => {
-        const fetchLedgers = async () => {
-          try {
-            const response = await ApiService.post(
-              '/ledger/getLedgerDetails', {
-                        companyCode: initialAuthState?.companyCode,
-                        unitCode: initialAuthState?.unitCode,
-                      }
-            );
-            console.log("fedgrfdtrgxfsdf",response)
-            if (response.status) {
-              setLedger(response.data); // Set branches to state
-            } else {
-              console.error('Failed to fetch branches');
-            }
-          } catch (error) {
-            console.error('Error fetching branches:', error);
-          }
-        };
-    
-        fetchLedgers();
-      }, []);
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const payloadObject = {
       date: formData.date,
       day: formData.day,
-      branchId: Number(localStorage.getItem("branchId")),
+      branchId: Number(localStorage.getItem('branchId')),
       ledgerId: Number(formData?.ledgerId),
       voucherType: formData.voucherType,
       invoiceId: formData.supplierInvoiceNumber,
       supplierLocation: formData.supplierLocation,
       voucherGST: formData.purchaseGst,
-      amount:Number(
-        selectedTaxType==="CGST" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
-          ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
-        ) : selectedTaxType==="IGST" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
-        ) : selectedTaxType==="TDS" ? (
-          totalAmount +
-          ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
-          ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
-        ) : (
-          totalAmount
-        ))
-      ,
+      amount: Number(
+        selectedTaxType === 'CGST'
+          ? totalAmount +
+              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+          : selectedTaxType === 'IGST'
+            ? totalAmount +
+              (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+            : selectedTaxType === 'TDS'
+              ? totalAmount +
+                (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+              : totalAmount
+      ),
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
         rate: Number(item.rate),
         totalCost: Number(item.totalCost),
       })),
-      CGST:formData.CGST ,
-      SGST:formData.SGST,
-      IGST:formData.IGST,
-      TDS:formData.TDS,
-      TCS:formData.TCS,
+      CGST: formData.CGST,
+      SGST: formData.SGST,
+      IGST: formData.IGST,
+      TDS: formData.TDS,
+      TCS: formData.TCS,
       purpose: formData.purpose,
       companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode
+      unitCode: initialAuthState.unitCode,
     };
-    
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -266,7 +284,8 @@ const SaleForm = () => {
 
       if (response.status) {
         alert('Sale voucher created successfully!');
-        return response.data;
+        navigate('/vouchers');
+        // return response.data;
       } else {
         alert('Failed to create sale voucher details.');
         return null;
@@ -275,6 +294,41 @@ const SaleForm = () => {
       console.error('Error create sale voucher details:', error);
       alert('An error occurred while create sale voucher details.');
       return null;
+    }
+  };
+
+  const handleFetchGSTData = async () => {
+    const gstNumber = formData.purchaseGst;
+    if (!gstNumber) {
+      alert('Please enter a GST number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        'https://appyflow.in/api/verifyGST',
+        {
+          key_secret: 'JqwMCeWBEDNCjxmEhUYSeMoluSB2',
+          gstNo: gstNumber,
+        }
+      );
+
+      console.log(response, 'response gst');
+
+      setGstData(response);
+
+      // if (response?.data) {
+      //   setGstData(response.data);
+      // } else {
+      //   alert('No data found');
+      //   setGstData(null);
+      // }
+    } catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -369,7 +423,6 @@ const SaleForm = () => {
           placeholder="Date:"
           value={formData.date}
           name="date"
-
           onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
@@ -383,7 +436,6 @@ const SaleForm = () => {
             fontWeight: '500',
           }}
         />
-
 
         <input
           type="text"
@@ -403,30 +455,29 @@ const SaleForm = () => {
           }}
         />
 
-
-      <select
-        value={formData.ledgerId}
-        onChange={handleLedgerChange}
-        name="partyName"
-        className="w-full border rounded p-2"
-        style={{
-          height: '45px',
-          backgroundColor: '#FFFFFF',
-          color: '#000000',
-          borderRadius: '8px',
-          borderWidth: '1px',
-          borderColor: '#A2A2A2',
-          fontSize: '20px',
-          fontWeight: '500',
-        }}
-      >
-        <option value="">Select Party Name</option>
-        {ledger?.map((party) => (
-          <option key={party.id} value={party.id}>
-            {party.name}
-          </option>
-        ))}
-      </select>
+        <select
+          value={formData.ledgerId}
+          onChange={handleLedgerChange}
+          name="partyName"
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <option value="">Select Party Name</option>
+          {ledger?.map((party) => (
+            <option key={party.id} value={party.id}>
+              {party.name}
+            </option>
+          ))}
+        </select>
 
         <input
           type="text"
@@ -483,7 +534,7 @@ const SaleForm = () => {
           }}
         />
 
-        <input
+        {/* <input
           type="text"
           placeholder="Purchase GST:"
           value={formData.purchaseGst}
@@ -500,7 +551,110 @@ const SaleForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        />
+        /> */}
+
+        <div className="">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Purchase GST:"
+              name="purchaseGst"
+              value={formData.purchaseGst}
+              onChange={handleInputChange}
+              className="w-full border rounded pr-36 pl-3 py-2"
+              style={{
+                height: '45px',
+                backgroundColor: '#FFFFFF',
+                color: '#000000',
+                borderRadius: '8px',
+                borderWidth: '1px',
+                borderColor: '#A2A2A2',
+                fontSize: '20px',
+                fontWeight: '500',
+              }}
+            />
+
+            <button
+              onClick={handleFetchGSTData}
+              type="button"
+              disabled={loading || formData.purchaseGst.length !== 15}
+              className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
+            >
+              {loading ? '...' : 'Get'}
+            </button>
+          </div>
+
+          {errors.purchaseGst && (
+            <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
+          )}
+
+          {gstData && (
+            <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                GST Details
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700 text-sm">
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Company Name:
+                  </label>
+                  <p>{gstData.taxpayerInfo.tradeNam}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    GST Number:
+                  </label>
+                  <p>{gstData.taxpayerInfo.gstin}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Type Of Company:
+                  </label>
+                  <p>{gstData.taxpayerInfo.dty}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Incorporate Type:
+                  </label>
+                  <p>{gstData.taxpayerInfo.ctb}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">Status:</label>
+                  <p>{gstData.taxpayerInfo.sts}</p>
+                </div>
+                <div>
+                  <label className="font-semibold text-gray-600">
+                    Pan Number:
+                  </label>
+                  <p>{gstData.taxpayerInfo.panNo}</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="font-semibold text-gray-600">
+                    Address:
+                  </label>
+                  <p className="leading-relaxed">
+                    {gstData.taxpayerInfo.pradr.addr.bno &&
+                      `${gstData.taxpayerInfo.pradr.addr.bno}, `}
+                    {gstData.taxpayerInfo.pradr.addr.st &&
+                      `${gstData.taxpayerInfo.pradr.addr.st}, `}
+                    {gstData.taxpayerInfo.pradr.addr.loc &&
+                      `${gstData.taxpayerInfo.pradr.addr.loc}, `}
+                    {gstData.taxpayerInfo.pradr.addr.dst &&
+                      `${gstData.taxpayerInfo.pradr.addr.dst}, `}
+                    {gstData.taxpayerInfo.pradr.addr.stcd} -{' '}
+                    {gstData.taxpayerInfo.pradr.addr.pncd}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', marginTop: '10px' }}>
+                <label className="font-semibold text-gray-600">State:</label>
+                <p>{gstData.taxpayerInfo.pradr.addr.stcd}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Entries */}
@@ -518,6 +672,7 @@ const SaleForm = () => {
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
+          type="button"
         >
           +
         </button>
@@ -531,7 +686,6 @@ const SaleForm = () => {
               alignItems: 'center',
             }}
           >
-            {/* Input Fields */}
             <div
               className="flex flex-1 gap-2"
               style={{
@@ -549,8 +703,34 @@ const SaleForm = () => {
                 }
                 className="w-1/4 border rounded p-2"
               />
-                  <input
-                  type="number"
+              <select
+                name="type"
+                value={entry.type}
+                onChange={(e) =>
+                  handleEntryChange(index, 'type', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              >
+                <option value="">Select Type</option>
+                <option value="Rectifications">Rectifications</option>
+                <option value="Renewables">Renewables</option>
+                <option value="ProductSales">ProductSales</option>
+                <option value="ServiceSales">ServiceSales</option>
+                <option value="Others">Others</option>
+              </select>
+
+              <input
+                placeholder="Description:"
+                name="description"
+                value={entry.description}
+                onChange={(e) =>
+                  handleEntryChange(index, 'description', e.target.value)
+                }
+                className="w-1/4 border rounded p-2"
+              />
+
+              <input
+                type="number"
                 placeholder="Quantity:"
                 name="quantity"
                 value={entry.quantity}
@@ -559,9 +739,9 @@ const SaleForm = () => {
                 }
                 className="w-1/4 border rounded p-2"
               />
-             
+
               <input
-              type="number"
+                type="number"
                 placeholder="Rate:"
                 value={entry.rate}
                 name="rate"
@@ -571,18 +751,15 @@ const SaleForm = () => {
                 className="w-1/4 border rounded p-2"
               />
 
-<input  type="number"
+              <input
+                type="number"
                 placeholder="Amount:"
                 value={entry.totalCost}
                 name="totalCost"
-                
                 className="w-1/4 border rounded p-2"
               />
-          
             </div>
-            
 
-            {/* Button - always reserve space */}
             <div
               className="w-[30px] flex justify-center items-center ml-2"
               style={{
@@ -610,8 +787,8 @@ const SaleForm = () => {
         ))}
       </div>
       <div>
-              <p>Total Amount:{totalAmount}</p>
-              </div>
+        <p>Total Amount:{totalAmount}</p>
+      </div>
       {/* Invoices */}
       <div className="space-y-4">
         {/* Dropdown at the top */}
@@ -639,64 +816,63 @@ const SaleForm = () => {
                 <span className="font-bold">{tax.name}</span>
                 {/* <span className="font-semibold">{tax.percent}</span> */}
                 <input
-                type="number"
-                placeholder={`${tax.name} Percentage:`}
-                value={formData[tax.name]}
-                name={tax.name}
-                onChange={handleInputChange}
-                className="w-1/4 border rounded p-2"
-              />
+                  type="number"
+                  placeholder={`${tax.name} Percentage:`}
+                  value={formData[tax.name]}
+                  name={tax.name}
+                  onChange={handleInputChange}
+                  className="w-1/4 border rounded p-2"
+                />
                 <span className="font-semibold">
-  Amount: ₹{(totalAmount * (1 + parseFloat(formData[tax.name] || 0) / 100)).toFixed(2)}
-</span>       
+                  Amount: ₹
+                  {(
+                    totalAmount *
+                    (1 + parseFloat(formData[tax.name] || 0) / 100)
+                  ).toFixed(2)}
+                </span>
               </div>
-
-            
             </div>
           </div>
         ))}
       </div>
+      <div></div>
       <div>
-              </div>
-              <div>
-              <p>Total Amount (Including Tax) :{
-  selectedTaxType==="CGST" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["CGST"]) || 0)) / 100) +
-    ((totalAmount * (parseFloat(formData["SGST"]) || 0)) / 100)
-  ) : selectedTaxType==="IGST" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["IGST"]) || 0)) / 100)
-  ) : selectedTaxType==="TDS" ? (
-    totalAmount +
-    ((totalAmount * (parseFloat(formData["TDS"]) || 0)) / 100) +
-    ((totalAmount * (parseFloat(formData["TCS"]) || 0)) / 100)
-  ) : (
-    totalAmount
-  )
-}</p>
-              </div>
+        <p>
+          Total Amount (Including Tax) :
+          {selectedTaxType === 'CGST'
+            ? totalAmount +
+              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            : selectedTaxType === 'IGST'
+              ? totalAmount +
+                (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+              : selectedTaxType === 'TDS'
+                ? totalAmount +
+                  (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                  (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+                : totalAmount}
+        </p>
+      </div>
       <div className="mt-4 w-full border rounded p-2">
-  <label className="block mb-1 font-medium">Description:</label>
-  <textarea
-  name="purpose"
-    value={formData.purpose}
-    onChange={handleInputChange}
-    className="w-full border rounded p-2"
-    rows="3"
-    placeholder="Enter description or notes..."
-  />
-</div>
+        <label className="block mb-1 font-medium">Description:</label>
+        <textarea
+          name="purpose"
+          value={formData.purpose}
+          onChange={handleInputChange}
+          className="w-full border rounded p-2"
+          rows="3"
+          placeholder="Enter description or notes..."
+        />
+      </div>
 
-
-<div className="mt-6 text-center">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
-            >
-              Submit
-            </button>
-          </div>
+      <div className="mt-6 text-center">
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 };

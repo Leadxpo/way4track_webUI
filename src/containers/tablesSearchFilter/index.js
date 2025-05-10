@@ -20,6 +20,7 @@ const TableWithSearchFilter = ({
   showEdit = true,
   showDelete = true,
   showDetails = true,
+  showActionColumn=true,
   editText = 'Edit',
   deleteText = 'Delete',
   detailsText = 'More Details',
@@ -65,8 +66,18 @@ const TableWithSearchFilter = ({
         }
       );
 
+      console.log("tttttrrr ",response.data)
+
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
+        // const filteredClients = response.data.map(client => ({
+        //   clientId: client.clientId,
+        //   name: client.name,
+        //   email: client.email,
+        //   phoneNumber: client.phoneNumber,
+        // }));
+  
+        // setFilteredData(filteredClients);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -75,6 +86,32 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch client details.');
     }
   }, [searchID, searchName, clientData?.branchName]);
+
+  // const getHiringSearchDetails = useCallback(async () => {
+  //   try {
+  //     const response = await ApiService.post('/hiring/getHiringSearchDetails', {
+  //       hiringId: searchID,
+  //       candidateName: searchName,
+  //       status: status,
+  //       companyCode: initialAuthState?.companyCode,
+  //       unitCode: initialAuthState?.unitCode,
+  //     });
+  // console.log("jkl",response);
+  //     // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
+  //     if (response.status) {
+  //       console.log(response.data, 'Response Data'); // Log data to verify it
+  //       const filteredData = response.data.map(
+  //         ({ qualifications, ...rest }) => rest
+  //       );
+  //       setFilteredData(filteredData);
+  //     } else {
+  //       alert(response.data.message || 'Failed to fetch client details.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching client details:', error);
+  //     alert('Failed to fetch client details.');
+  //   }
+  // }, [searchID, searchName, status]);
 
   const getHiringSearchDetails = useCallback(async () => {
     try {
@@ -85,13 +122,12 @@ const TableWithSearchFilter = ({
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-
-      // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
+  
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
-        const filteredData = response.data.map(
-          ({ qualifications, ...rest }) => rest
-        );
+        const filteredData = response.data.map(({ qualifications, ...rest }) => ({
+          ...rest,
+          dateOfUpload: rest.dateOfUpload?.split('T')[0], // Extract just the date
+        }));
         setFilteredData(filteredData);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -100,7 +136,9 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName, status]);
+  }, [searchID, searchName, status, initialAuthState]);
+  
+ 
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
@@ -209,6 +247,7 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch vendor details.');
     }
   }, [workData?.serviceOrProduct, searchName, workData?.workAllocationNumber]);
+  
   useEffect(() => {
     switch (type) {
       case 'tickets':
@@ -319,6 +358,20 @@ const TableWithSearchFilter = ({
     );
     setFilteredData(filtered);
   };
+
+
+  const handleHiringSearch = (e) => {
+    const inputName = e.target.value;
+    setStatusFilter(inputName);
+  
+    const filtered = data.filter(
+      (item) =>
+        inputName === '' ||
+        item.candidateName.toLowerCase().includes(inputName.toLowerCase())
+    );
+  
+    setFilteredData(filtered);
+  };
   const handleSearch = async () => {
     switch (type) {
       case 'clients':
@@ -425,6 +478,7 @@ const TableWithSearchFilter = ({
           />
         </div>
         {/* Search by Name */}
+        
         <div className="flex-grow mx-2">
           <input
             type="text"
@@ -438,7 +492,7 @@ const TableWithSearchFilter = ({
               type === 'tickets'
                 ? 'Search with Client Name'
                 : type === 'hiring'
-                  ? 'Search with Hire Name'
+                  ? 'Search with Name'
                   : 'Search with Name'
             }
             onChange={(e) => setSearchName(e.target.value)}
@@ -446,6 +500,7 @@ const TableWithSearchFilter = ({
             style={{ paddingLeft: '8px' }}
           />
         </div>
+        {type==="hiring"&&
         <div className="flex-grow mx-2">
           {showStatusFilter ? (
             // <select
@@ -482,7 +537,7 @@ const TableWithSearchFilter = ({
           ) : (
             <select
               value={statusFilter}
-              onChange={handleStatusChange}
+              onChange={type==="hiring"?handleHiringSearch:handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
               <option value="" disabled>
@@ -495,7 +550,7 @@ const TableWithSearchFilter = ({
               ))}
             </select>
           )}
-        </div>
+        </div>}
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
@@ -517,6 +572,7 @@ const TableWithSearchFilter = ({
           showDetails={showDetails}
           editText={editText}
           deleteText={deleteText}
+          showActionColumn={showActionColumn}
           detailsText={detailsText}
         />
       </div>

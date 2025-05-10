@@ -45,13 +45,24 @@ const Purchase = ({ onEdit, onDetails }) => {
     <div className="p-10">
       <p className="font-bold text-xl">Purchase</p>
       <div className="mt-8">
-        <Table
+        {/* <Table
           columns={columns}
           data={tableData}
           showCreateBtn={false}
           showEdit={false}
           showDelete={false}
           showDetails={false}
+        /> */}
+
+        <Table
+          columns={columns}
+          columnNames={columns}
+          data={tableData}
+          showCreateBtn={false}
+          showEdit={false}
+          showDelete={false}
+          showDetails={false}
+          showActionColumn={false}
         />
       </div>
     </div>

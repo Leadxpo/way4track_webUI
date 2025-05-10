@@ -10,7 +10,7 @@ const AddEditAppointmentForm = () => {
 
   const [formData, setFormData] = useState({
     appointmentType: appointmentDetails?.appointmentType || '',
-    name: appointmentDetails?.name || '',
+    name: appointmentDetails?.appointment_name || '',
     id: appointmentDetails?.id || null,
     status: appointmentDetails?.status || 'pending',
     assignedTo: appointmentDetails?.assignedTo || '',
@@ -141,6 +141,7 @@ const AddEditAppointmentForm = () => {
     const payload = {
       ...formData,
       dateTime: combinedDateTime,
+      // staffId:
     };
 
     try {
@@ -149,9 +150,9 @@ const AddEditAppointmentForm = () => {
         : '/appointment/handleAppointmentDetails';
       const response = await ApiService.post(endpoint, payload);
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
-          formData.id
+          formData?.id
             ? 'Appointment updated successfully!'
             : 'Appointment created successfully!'
         );

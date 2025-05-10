@@ -7,6 +7,8 @@ import * as XLSX from 'xlsx';
 const AddEditProductAssign = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const role = localStorage.getItem('role');
+  console.log(role, 'Role');
 
   // const [imeiList, setImeiList] = useState([]);
   // const [showDropdown1, setShowDropdown1] = useState(false);
@@ -53,6 +55,10 @@ const AddEditProductAssign = () => {
   const [image, setImage] = useState(productAssign?.file || '');
   const [staff, setStaff] = useState([]);
   const [product, setProduct] = useState([]);
+  const [subDealerNames, setSubDealerNames] = useState([]);
+  const [errors, setErrors] = useState({});
+
+  console.log(staff, 'stafrf names');
 
   useEffect(() => {
     const getProductNamesDropDown = async () => {
@@ -66,6 +72,30 @@ const AddEditProductAssign = () => {
       }
     };
     getProductNamesDropDown();
+  }, []);
+
+  useEffect(() => {
+    const fetchSubDealerDropDown = async () => {
+      try {
+        const response = await ApiService.post(
+          '/subdealer/getSubDealerNamesDropDown',
+          {
+            companyCode: initialAuthState.companyCode,
+            unitCode: initialAuthState.unitCode,
+          }
+        );
+        if (response.data) {
+          setSubDealerNames(response.data);
+          console.log(response.data, 'sub delear');
+        } else {
+          console.error('Invalid API:');
+        }
+      } catch (error) {
+        console.error('Error fetching sub delears names:', error);
+      }
+    };
+
+    fetchSubDealerDropDown();
   }, []);
 
   useEffect(() => {
@@ -107,13 +137,31 @@ const AddEditProductAssign = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaff(res.data || []);
+        const branchId = localStorage.getItem('branch_id');
+        console.log(branchId, 'local');
+
+        const res = await ApiService.post('/dashboards/getStaffSearchDetails', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        const allStaff = res.data || [];
+        console.log(allStaff, 'allStaff');
+
+        // Filter staff by branch_id and designation
+        const filteredStaff = allStaff.filter(
+          (staff) =>
+            Number(staff.branch_id) === Number(branchId) &&
+            staff.designation === 'Technician'
+        );
+
+        setStaff(filteredStaff);
+        console.log(filteredStaff, 'Filtered Staff - Technicians');
       } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaff([]);
       }
     };
+
     fetchStaff();
   }, []);
 
@@ -206,7 +254,22 @@ const AddEditProductAssign = () => {
   //   getActiveStatusInHands(record.id);
   // }
 
+  console.log(formData, 'formdata');
+
   const handleSave = async () => {
+    const newErrors = {};
+
+    if (!formData.assignTo) {
+      newErrors.assignTo = 'Please select a branch or subdealer.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
@@ -217,8 +280,8 @@ const AddEditProductAssign = () => {
     });
     try {
       const endpoint = formData.id
-        ? '/product-assign/handleProductDetails'
-        : '/product-assign/handleProductDetails';
+        ? '/products/bulk-upload'
+        : '/products/bulk-upload';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -229,7 +292,7 @@ const AddEditProductAssign = () => {
             ? 'Product updated successfully!'
             : 'Product added successfully!'
         );
-        navigate('/products_assign');
+        navigate('/products');
       } else {
         alert('Failed to save product details. Please try again.');
       }
@@ -240,7 +303,7 @@ const AddEditProductAssign = () => {
   };
 
   const handleCancel = () => {
-    navigate('/products_assign');
+    navigate('/products');
   };
 
   // Handle Focus
@@ -307,6 +370,23 @@ const AddEditProductAssign = () => {
     XLSX.writeFile(workbook, 'SampleProductAssignXlFormat.xlsx');
   };
 
+  const unifiedData = [
+    ...subDealerNames.map((dealer) => ({
+      id: `sub-${dealer.id}`,
+      label: dealer.name,
+      type: 'subdealer',
+      original: dealer,
+    })),
+    ...branches.map((branch) => ({
+      id: `branch-${branch.id}`,
+      label: branch.branchName,
+      type: 'branch',
+      original: branch,
+    })),
+  ];
+
+  console.log(unifiedData, 'UNIFID');
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-2xl w-4/5 max-w-3xl p-8">
@@ -319,18 +399,118 @@ const AddEditProductAssign = () => {
           </h1>
         </div>
 
+        <div className="space-y-4">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+            onClick={generateExcel}
+          >
+            Download Sample format
+          </button>
+          {/* Branch Selection */}
+          {role !== 'Branch Manager' && (
+            <div>
+              <p className="font-semibold mb-1">Assign To</p>
+              <select
+                value={formData.assignTo}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selected = unifiedData.find(
+                    (item) => item.id === selectedId
+                  );
+
+                  if (selected?.type === 'branch') {
+                    setFormData((prev) => ({
+                      ...prev,
+                      assignTo: selected.id,
+                      branchId: selected.id.split('-')[1], // extract numeric ID
+                      staffId: '', // clear staffId
+                      branchOrPerson: 'Branch',
+                    }));
+                  } else if (selected?.type === 'subdealer') {
+                    setFormData((prev) => ({
+                      ...prev,
+                      assignTo: selected.id,
+                      subDealerId: selected.id.split('-')[1], // extract numeric ID
+                      branchId: '', // clear branchId
+                      branchOrPerson: 'Subdealer',
+                    }));
+                  }
+                  setErrors((prev) => ({ ...prev, assignTo: '' }));
+                }}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select Branch or Subdealer</option>
+                {unifiedData.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.type === 'branch'
+                      ? `🏢 Branch: ${item.label}`
+                      : `👤 Subdealer: ${item.label}`}
+                  </option>
+                ))}
+              </select>
+              {errors.assignTo && (
+                <p className="text-red-500 text-sm mt-1">{errors.assignTo}</p>
+              )}
+            </div>
+          )}
+
+          {role === 'Branch Manager' && (
+            <div>
+              <p className="font-semibold mb-1">Select Staff</p>
+              <select
+                name="staffId"
+                value={formData.staffId}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">Select Staff</option>
+                {staff.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.staffName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Product Selection */}
+          {product?.length > 0 && (
+            <div>
+              <p className="font-semibold mb-1">Product Type</p>
+              <select
+                name="product"
+                value={formData.product}
+                onChange={handleProductChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              >
+                <option value="">
+                  Select a product type
+                </option>
+                {product
+                  .filter((pa) => pa.type === 'PRODUCT')
+                  .map((pa) => (
+                    <option key={pa.id} value={pa.id}>
+                      {pa.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          )}
+        </div>
+
         {/* Photo Section */}
-        <div className="flex items-center space-x-2 mb-6">
-          <img
+        <div>
+          <label className="font-semibold mb-1 block">Bulk Upload File</label>
+          {/* <img
             src={image || 'https://i.pravatar.cc/150?img=5'}
             alt="Employee"
             className="w-24 h-24 rounded-full object-cover"
-          />
+          /> */}
           <input
             type="file"
-            accept="image/*"
+            // accept="image/*"
             name="file"
-            className="ml-4 border p-2 rounded"
+            className="border p-2 rounded"
             onChange={handleFileChange}
           />
           {formData.file && (
@@ -347,57 +527,6 @@ const AddEditProductAssign = () => {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-4">
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
-            onClick={generateExcel}
-          >
-            Download Sample format
-          </button>
-          {/* Branch Selection */}
-          {branches.length > 0 && (
-            <div>
-              <p className="font-semibold mb-1">Branch</p>
-              <select
-                name="branchId"
-                value={formData.branchId}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select a Branch
-                </option>
-                {branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.branchName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Product Selection */}
-          {product.length > 0 && (
-            <div>
-              <p className="font-semibold mb-1">Product Type</p>
-              <select
-                name="product"
-                value={formData.product}
-                onChange={handleProductChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select a product type
-                </option>
-                {product.map((pa) => (
-                  <option key={pa.id} value={pa.id}>
-                    {pa.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
 
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import generatePDF, { PurchaseOrderPDF } from '../../common/commonUtils';
@@ -5,7 +6,8 @@ import { MyPDF } from '../../common/commonUtils';
 import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import {EstimatePDF} from './EstimatePDF';
+import { EstimatePDF } from './EstimatePDF';
+// import EstimatePDF from './EstimatePDF';
 
 const AddEstimate = () => {
   const navigate = useNavigate();
@@ -49,22 +51,49 @@ const AddEstimate = () => {
   };
   // Populate form state for edit mode
   const [formData, setFormData] = useState(initialFormState);
-  const [serveProd, setServeProd] = useState("");
+//   const [serveProd, setServeProd] = useState("");
   
-  const changeServeProd = (index, e) => { 
-    setServeProd(e.target.value);
+//   const changeServeProd = (index, e) => { 
+//     setServeProd(e.target.value);
     
-    setFormData((prevData) => ({
-      ...prevData,
-      items: prevData.items.map((item, i) =>
-        i === index ? { ...item, productId: '',
-        name: '',
-        quantity: '',
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       items: prevData.items.map((item, i) =>
+//         i === index ? { ...item, productId: '',
+//         name: '',
+//         quantity: '',
+//         rate: '',
+//         amount: '',
+//         hsnCode: '',} : item
+//       ),
+//     }));
+// };
+
+
+
+const [serveProd, setServeProd] = useState(Array(formData.items.length).fill(""));
+
+const changeServeProd = (index, e) => {
+  const value = e.target.value;
+
+  // Update serveProd for the specific row
+  setServeProd((prev) => {
+    const updatedServeProd = [...prev];
+    updatedServeProd[index] = value;
+    return updatedServeProd;
+  });
+
+  // Update only the productId and name for the specific row
+  setFormData((prevData) => ({
+    ...prevData,
+    items: prevData.items.map((item, i) =>
+      i === index ? { ...item, productId: "", name: "",quantity: '',
         rate: '',
         amount: '',
-        hsnCode: '',} : item
-      ),
-    }));
+        hsnCode: '', } : item
+    )
+  }));
+
 };
 
   const [clients, setClients] = useState([]);
@@ -87,8 +116,8 @@ const AddEstimate = () => {
   };
   const fetchProducts = async () => {
     try {
-      const res = await ApiService.post('/products/getAllproductDetails');
-      console.log("++====",res.data)
+      const res = await ApiService.post('/productType/getProductTypeNamesDropDown');
+      console.log("++==== producttttttt yyyy",res.data)
       setProducts(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -126,6 +155,18 @@ const AddEstimate = () => {
     
   };
 
+
+  
+
+  const handleRateChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedItems = [...formData.items];
+    updatedItems[index][name] = value;
+    updatedItems[index]['quantity'] = '';
+    updatedItems[index]['amount'] = '';
+    setFormData((prevData) => ({ ...prevData, items: updatedItems }));
+    
+  };
   
 
   const handleProductItemChange = (index, e) => {
@@ -133,7 +174,7 @@ const AddEstimate = () => {
   console.log(value);
 
   const selectedProduct = products.find(
-    (product) => product.productType.trim() === value.trim()
+    (product) => product.name.trim() === value.trim()
   );
 
   if (!selectedProduct) {
@@ -243,6 +284,7 @@ const handleService = (index, e) => {
       return new File([pdfBlob], "estimate.pdf", { type: "application/pdf" });
     };
   
+    console.log("pdfData pdfData pdfData",pdfData);
     try {
       const pdfFile = await generatePdf(pdfData); // Generate PDF File
       
@@ -427,8 +469,8 @@ const handleService = (index, e) => {
                 <span className="col-span-1 font-semibold"></span>
               </div>
 
-                {/* Items Rows */}
-{formData.items &&
+                
+{/* {formData.items &&
   formData.items.map((item, index) => (
     <div
       key={index}
@@ -436,11 +478,10 @@ const handleService = (index, e) => {
     >
       <span className="col-span-1">{index + 1}</span>
 
-      {/* Type Selection */}
       <select
         name="type"
-        value={serveProd} // Bind value to state
-        onChange={(e)=>changeServeProd(index,e)} // Update state correctly
+        value={serveProd} 
+        onChange={(e)=>changeServeProd(index,e)} 
         className="col-span-2 p-2 border rounded-md w-full"
       >
         <option value="">Select Type</option>
@@ -448,7 +489,7 @@ const handleService = (index, e) => {
         <option value="product">Product</option>
       </select>
 
-      {/* Product or Service Selection */}
+      
       {serveProd === "product" ? (
         <select
           name="name"
@@ -474,7 +515,7 @@ const handleService = (index, e) => {
         />
       )}
 
-      {/* Rate Input */}
+
       <input
         type="text"
         name="rate"
@@ -493,7 +534,97 @@ const handleService = (index, e) => {
           className="col-span-2 p-2 border rounded-md w-full"
         />
 
-      
+ 
+      <input
+        type="number"
+        name="amount"
+        value={item.amount}
+        onChange={(e) => handleItemChange(index, e)}
+        placeholder="Amount"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      <input
+        type="text"
+        name="hsnCode"
+        value={item.hsnCode}
+        onChange={(e) => handleItemChange(index, e)}
+        placeholder="HSN code"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      <button
+        type="button"
+        onClick={() => removeItem(index)}
+        className="bg-gray-100 rounded-md w-fit p-2"
+      >
+        -
+      </button>
+    </div>
+  ))} */}
+
+
+{formData.items &&
+  formData.items.map((item, index) => (
+    <div key={index} className="grid grid-cols-12 gap-2 items-center p-2 border-t">
+      <span className="col-span-1">{index + 1}</span>
+
+      {/* Type Selection */}
+      <select
+        name="type"
+        value={serveProd[index] || ""}
+        onChange={(e) => changeServeProd(index, e)}
+        className="col-span-2 p-2 border rounded-md w-full"
+      >
+        <option value="">Select Type</option>
+        <option value="service">Service</option>
+        <option value="product">Product</option>
+      </select>
+
+      {/* Product or Service Selection */}
+      {serveProd[index] === "product" ? (
+        <select
+          name="name"
+          value={item.name}
+          onChange={(e) => handleProductItemChange(index, e)}
+          className="col-span-2 p-2 border rounded-md w-full"
+        >
+          <option value="">Select Product</option>
+          {products.map((product) => (
+            <option key={product?.id} value={product?.name}>
+              {product?.name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          name="name"
+          value={item.name}
+          onChange={(e) => handleService(index, e)}
+          placeholder="Service"
+          className="col-span-2 p-2 border rounded-md w-full"
+        />
+      )}
+
+      {/* Rate Input */}
+      <input
+        type="text"
+        name="rate"
+        value={item.rate}
+        onChange={(e) => handleRateChange(index, e)}
+        placeholder="Rate"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
+
+      <input
+        type="text"
+        name="quantity"
+        value={item.quantity}
+        onChange={(e) => handleProductItemQuantityChange(index, e)}
+        placeholder="Quantity"
+        className="col-span-2 p-2 border rounded-md w-full"
+      />
 
       {/* Amount Input */}
       <input

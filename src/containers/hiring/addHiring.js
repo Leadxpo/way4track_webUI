@@ -26,7 +26,7 @@ const AddHiring = () => {
     phoneNumber: '',
     email: '',
     address: '',
-    drivingLicence: "",
+    drivingLicence: "No",
     drivingLicenceNumber: "",
     joiningDate: "",
     noticePeriod: "",
@@ -393,7 +393,7 @@ const AddHiring = () => {
         <div className="flex justify-between mt-4">
           <button
             onClick={handleSubmit}
-            className="bg-green-700 text-white p-4 rounded-md"
+            className="bg-green-700 text-white px-4 py-2 rounded-md"
           >
             Submit
           </button>

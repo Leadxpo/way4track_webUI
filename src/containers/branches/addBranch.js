@@ -143,7 +143,7 @@ const AddBranchForm = () => {
             ? 'Branch updated successfully!'
             : 'Branch added successfully!'
         );
-        navigate('/branches');
+        navigate(-1);
       } else {
         alert('Failed to save branch details. Please try again.');
       }
@@ -219,7 +219,7 @@ const AddBranchForm = () => {
               <option value="SubDealer">Sub Dealer</option>
               <option value="Technician">Technician</option>
               <option value="SalesMan">Sales Man</option>
-              <option value="CallCenter">Call Center</option>
+              <option value="CallCenter">Tele caller</option>
               <option value="Warehouse Manager">Warehouse Manager</option>
             </select>
           </div> */}
@@ -355,7 +355,7 @@ const AddBranchForm = () => {
 
         <div className="mt-8 flex justify-end space-x-4">
           <button
-            onClick={() => navigate('/branches')}
+            onClick={() => navigate(-1)}
             className="px-6 py-2 bg-gray-500 text-white rounded-lg"
           >
             Cancel

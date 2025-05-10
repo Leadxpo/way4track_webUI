@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
@@ -12,9 +11,10 @@ const Attendance = () => {
 
   const [profiles, setProfiles] = useState([]);
   const [staffId, setStaffId] = useState(employeeData.staffId || '');
-  const [fromDate, setFromDate] = useState(new Date().toISOString().split('T')[0]);
+  const [fromDate, setFromDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
   const [toDate, setToDate] = useState(new Date().toISOString().split('T')[0]);
-
 
   const [branchName, setBranchName] = useState(branchData.branchName || '');
 
@@ -41,7 +41,6 @@ const Attendance = () => {
     }
   };
 
-
   useEffect(() => {
     fetchAttendanceDetails();
   }, [fromDate, toDate]);
@@ -64,7 +63,9 @@ const Attendance = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* From Date */}
           <div className="flex flex-col">
-            <label className="text-xs font-medium text-gray-700 mb-1">From Date</label>
+            <label className="text-xs font-medium text-gray-700 mb-1">
+              From Date
+            </label>
             <input
               type="date"
               value={fromDate}
@@ -75,7 +76,9 @@ const Attendance = () => {
 
           {/* To Date */}
           <div className="flex flex-col">
-            <label className="text-xs font-medium text-gray-700 mb-1">To Date</label>
+            <label className="text-xs font-medium text-gray-700 mb-1">
+              To Date
+            </label>
             <input
               type="date"
               value={toDate}
@@ -86,7 +89,9 @@ const Attendance = () => {
 
           {/* Staff ID */}
           <div className="flex flex-col">
-            <label className="text-xs font-medium text-gray-700 mb-1">Staff ID</label>
+            <label className="text-xs font-medium text-gray-700 mb-1">
+              Staff ID
+            </label>
             <input
               type="text"
               value={staffId}
@@ -98,7 +103,9 @@ const Attendance = () => {
 
           {/* Branch Name */}
           <div className="flex flex-col">
-            <label className="text-xs font-medium text-gray-700 mb-1">Branch Name</label>
+            <label className="text-xs font-medium text-gray-700 mb-1">
+              Branch Name
+            </label>
             <input
               type="text"
               value={branchName}
@@ -118,10 +125,8 @@ const Attendance = () => {
           >
             Search
           </button>
-
         </div>
       </div>
-
 
       <table className="w-full border-collapse border border-gray-300">
         <thead>
@@ -137,35 +142,42 @@ const Attendance = () => {
           </tr>
         </thead>
         <tbody>
-
-          {profiles.map((att) => {
-            console.log(att)
-            return(
-            <tr key={att.id} className="text-center">
-              <td className="border p-2">{att.staffId}</td>
-              <td className="border p-2">{att.staffName.trim()}</td>
-              <td className="border p-2">{att.branchName}</td>
-              <td className="border p-2">{new Date(att.day).toLocaleDateString()}</td>
-              <td className="border p-2">{att.inTimeRemark}</td>
-              <td className="border p-2">{att.outTimeRemark}</td>
-              <td className="border p-2">{att.status}</td>
-              <td className="border p-2">
-                {/* <button
+          {[...profiles]
+            .sort((a, b) => String(a.day).localeCompare(String(b.day)))
+            .map((att) => {
+              console.log(att);
+              return (
+                <tr key={att.id} className="text-center">
+                  <td className="border p-2">{att.staffId}</td>
+                  <td className="border p-2">{att.staffName.trim()}</td>
+                  <td className="border p-2">{att.branchName}</td>
+                  <td className="border p-2">
+                    {new Date(att.day).toLocaleDateString()}
+                  </td>
+                  <td className="border p-2">{att.inTimeRemark}</td>
+                  <td className="border p-2">{att.outTimeRemark}</td>
+                  <td className="border p-2">{att.status}</td>
+                  <td className="border p-2">
+                    {/* <button
                     onClick={() => navigate('/attendance-details', { state: { attendanceDetails: att } })}
                     className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-blue-600"
                   >
                     More Details
                   </button> */}
-                <button
-                  onClick={() => navigate('/attendance-edi', { state: { attendanceDetails: att } })}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                >
-                  Edit Details
-                </button>
-              </td>
-            </tr>
-          )})
-          }
+                    <button
+                      onClick={() =>
+                        navigate('/attendance-edit', {
+                          state: { attendanceDetails: att },
+                        })
+                      }
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
+                     >
+                      Edit Details
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

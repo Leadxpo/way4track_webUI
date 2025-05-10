@@ -22,7 +22,7 @@ const Tickets = () => {
         companyCode:initialAuthState?.companyCode,
           unitCode:initialAuthState?.unitCode,
       });
-      console.log("fetch ticketss",response);
+      console.log("fetch ticketss &&&&&&",response);
       if (response.status) {
         setTicket(response.data || []);
         setAllTickets(response.data || []); // Store original data
@@ -113,7 +113,7 @@ const Tickets = () => {
           <input
             type="text"
             name="name"
-            placeholder="Search by Name"
+            placeholder="Search By Ticket No."
             value={searchData.name}
             onChange={handleInputChange}
             className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
@@ -135,9 +135,10 @@ const Tickets = () => {
             <thead>
               <tr className="border-b bg-blue-500 text-white text-left">
                 <th className="px-6 py-3 text-left text-sm font-bold">Ticket No.</th>
+
+                <th className="px-6 py-3 text-left text-sm font-bold">Date</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Problem</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Addressing Department</th>
-                
                 <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
               </tr>
             </thead>
@@ -146,10 +147,10 @@ const Tickets = () => {
                 ticket.map((item, index) => (
                   <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
                     
-                    <td className="px-6 py-4">{item.ticketNumber}</td>
-                    <td className="px-6 py-4">{item.problem}</td>
-                    <td className="px-6 py-4">{item.addressingDepartment}</td>
-
+                    <td className="px-6 py-4 ">{item.ticketNumber}</td>
+                    <td className="px-6 py-4">{item.date.split('T')[0]}</td>
+                    <td className="px-6 py-4 ">{item.problem}</td>
+                    <td className="px-6 py-4 ">{item.de_designation}</td>
                     <td className="px-6 py-4 relative dropdown-container">
                       <button
                         onClick={(e) => {

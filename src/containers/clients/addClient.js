@@ -1,33 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const AddEditClient = () => {
+const AddClient = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const clientData = location.state?.clientDetails || {};
-  console.log(clientData, "?????????")
+  
   const initialFormData = {
-    id: clientData?.id || null,
-    name: clientData.name || '',
-    phoneNumber: clientData.phoneNumber || '',
-    gstNumber: clientData.gstNumber || '',
-    // clientId: clientData.clientId || '',
-    branch: clientData.branch || '',
-    branchName: clientData.branchName || '', 
-    dob: clientData.dob || '',
-    email: clientData.email || '',
-    address: clientData.address || '',
-    joiningDate: clientData.joiningDate,
+
+    name: '',
+    phoneNumber:'',
+    // gstNumber:'',
+    branch:'',
+    branchName:'', 
+    email:'',
+    address:'',
+    // joiningDate:null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    file: clientData?.file || null,
+    file:null,
   };
   
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
-  const [image, setImage] = useState(clientData?.file || '');
+  const [image, setImage] = useState('');
   const [errors, setErrors] = useState({});
 
 if(errors)
@@ -90,15 +85,13 @@ if(errors)
         payload.append(key, value);
       }
     });
-    console.log(payload, "_____")
     try {
-      const endpoint = formData.id ? '/client/handleClientDetails' : '/client/handleClientDetails';
-      const response = await ApiService.post(endpoint, payload, {
+      const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
       if (response.status) {
-        alert(formData.id ? 'Client updated successfully!' : 'Client added successfully!');
+        alert('Client added successfully!');
         navigate('/clients');
       } else {
         alert('Failed to save client details. Please try again.');
@@ -234,7 +227,7 @@ const handleChange = useCallback(
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {clientData.id ? 'Edit Customer' : 'Add Customer'}
+           Add Customer
           </h1>
         </div>
         {/* Photo Section */}
@@ -295,7 +288,7 @@ const handleChange = useCallback(
 
 
          {/* Phone Number */}
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
@@ -305,7 +298,7 @@ const handleChange = useCallback(
               placeholder="Enter Gst Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-          </div>
+          </div> */}
 
 
           {/* Branch */}
@@ -329,17 +322,6 @@ const handleChange = useCallback(
               </div>
             </div>
           )}
-          {/* Date of Birth */}
-          <div>
-            <p className="font-semibold mb-1">Date of Birth</p>
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
           {/* Email ID */}
           <div>
             <p className="font-semibold mb-1">Email ID</p>
@@ -368,7 +350,7 @@ const handleChange = useCallback(
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <p className="font-semibold mb-1">Joining Date</p>
           <input
             type="date"
@@ -377,7 +359,7 @@ const handleChange = useCallback(
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Buttons */}
@@ -400,4 +382,4 @@ const handleChange = useCallback(
   );
 };
 
-export default AddEditClient;
+export default AddClient;

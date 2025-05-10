@@ -84,7 +84,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'CEO':
         navigate('/home');
         break;
-      case 'Call Center':
+      case 'Tele caller':
         navigate('/customer-care-home');
         break;
       case 'Accountant':
@@ -113,10 +113,14 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
         break;
     }
   }, []);
+
   const handleLogout = () => {
-    localStorage.clear();
-    handleLogoutFlag();
-    navigate('/login');
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.clear();
+      handleLogoutFlag();
+      navigate('/login');
+    }
   };
 
   const handleClick = (item) => {

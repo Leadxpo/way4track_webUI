@@ -30,7 +30,7 @@ const Staff = () => {
     'Staff Name',
     'Designation',
     'Phone Number',
-    'Email',
+    // 'Email',
     'Branch Name',
     'Branch Number',
     'Branch Address',
@@ -47,16 +47,18 @@ const Staff = () => {
     // 'Longitude',
     // 'CIN',
     // 'GST',
-    
+
     // 'Branch Name',
   ];
+
+  console.log(columns, 'Staff table columns');
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
       const response = await ApiService.post(
         '/dashboards/getStaffSearchDetails',
         {
-          staffId: staffId,
+          // staffId: staffId,
           branchName: selectedBranch,
           staffName: staffName,
           companyCode: initialAuthState?.companyCode,
@@ -66,7 +68,7 @@ const Staff = () => {
 
       if (response.status) {
         const rawData = response.data || [];
-
+        console.log('rrttttt', rawData);
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
           id: 'ID',
@@ -74,7 +76,7 @@ const Staff = () => {
           staffName: 'Staff Name',
           designation: 'Designation',
           phoneNumber: 'Phone Number',
-          branch_email: 'Email',
+          branch_email: 'Branch Email',
           branch_name: 'Branch Name',
           branch_branch_number: 'Branch Number',
           branch_branch_address: 'Branch Address',
@@ -86,7 +88,6 @@ const Staff = () => {
           branch_branch_opening: 'Branch Opening',
           branch_CIN: 'CIN',
           branch_GST: 'GST',
-          
         };
 
         // Reorder the columns based on `columnNames`
@@ -131,8 +132,23 @@ const Staff = () => {
   };
 
   const handleSearch = async () => {
-    await getStaffSearchDetails();
+    let filteredProfiles = profiles;
+
+    if (staffId.trim() !== '') {
+      filteredProfiles = filteredProfiles.filter((profile) =>
+        profile['Staff ID']?.toLowerCase().includes(staffId.toLowerCase())
+      );
+    }
+
+    if (staffName.trim() !== '') {
+      filteredProfiles = filteredProfiles.filter((profile) =>
+        profile['Staff Name']?.toLowerCase().includes(staffName.toLowerCase())
+      );
+    }
+
+    setProfiles(filteredProfiles);
   };
+
   // Initial API calls
   useEffect(() => {
     const perms = getPermissions('staff');
@@ -174,8 +190,8 @@ const Staff = () => {
 
     try {
       const response = await ApiService.post('/staff/handleStaffDetails', {
-        id:row.ID,
-        staffStatus:"INACTIVE",
+        id: row.ID,
+        staffStatus: 'INACTIVE',
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
@@ -334,7 +350,13 @@ const Staff = () => {
         showEdit={true}
         showDetails={true}
         onDetails={handleMoreDetails}
-        data={Array.isArray(profiles) ? profiles : []}
+        data={
+          Array.isArray(profiles)
+            ? [...profiles].sort((a, b) =>
+                String(a.staffId).localeCompare(String(b.staffId))
+              )
+            : []
+        }
       />
       {/* )}{' '} */}
     </div>
@@ -410,7 +432,8 @@ const Table = ({
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
-  console.log(columns, '|||||||||||||||');
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [showRowPopup, setShowRowPopup] = useState(false);
   return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
@@ -446,6 +469,10 @@ const Table = ({
                 <tr
                   key={rowIndex}
                   className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  // onClick={() => {
+                  //   setSelectedRowData(row);
+                  //   setShowRowPopup(true);
+                  // }}
                 >
                   {columns.map((column, colIndex) => (
                     <td
@@ -454,7 +481,15 @@ const Table = ({
                         checkColumn(column)
                           ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
                           : ''
-                      }`}
+                      } ${column === 'Staff ID' ? 'cursor-pointer hover:underline text-blue-600 hover:bg-blue-500 hover:text-white' : ''}`}
+                      onClick={
+                        column === 'Staff ID'
+                          ? () => {
+                              setSelectedRowData(row);
+                              setShowRowPopup(true);
+                            }
+                          : undefined
+                      }
                     >
                       {row[column] || '-'}
                     </td>
@@ -508,6 +543,28 @@ const Table = ({
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {showRowPopup && selectedRowData && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96 p-4 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={() => setShowRowPopup(false)}
+            >
+              ×
+            </button>
+            <h2 className="text-lg font-semibold mb-2">Staff Details</h2>
+            <div className="space-y-2">
+              {columns.map((column, index) => (
+                <div key={index} className="flex justify-between text-sm">
+                  <span className="font-medium">{column}:</span>
+                  <span>{selectedRowData[column] || '-'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -13,21 +13,94 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profiles, setProfiles] = useState([]);
 
+  // const getStaffPermissions = async () => {
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/permissions/getStaffPermissions',
+  //       {
+  //         staffId: staffId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+  //     if (response.status) {
+  //       const staff = response.data?.[0];
+  //       console.log("ttttt roleee",staff);
+  //       setMockData(staff); // Save entire data for all staff
+  //       console.log(staff, '_________________');
+  //       setStaffData(staff || null); // Initial staff data from the first response
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching staff details:', error);
+  //     alert('Failed to fetch staff details.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const getStaffPermissions = async () => {
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/permissions/getStaffPermissions',
+  //       {
+  //         staffId: staffId,
+  //         companyCode: initialAuthState.companyCode,
+  //         unitCode: initialAuthState.unitCode,
+  //       }
+  //     );
+  
+  //     if (response.status) {
+  //       const staff = response.data?.[0];
+  
+  //       // ✅ Parse and clean permissions
+  //       if (staff.permissions && typeof staff.permissions === "string") {
+  //         try {
+  //           const parsedPermissions = JSON.parse(staff.permissions);
+  //           staff.permissions = parsedPermissions.map(({ delete: _, ...rest }) => rest); // remove "delete"
+  //         } catch (e) {
+  //           console.error("Failed to parse permissions:", e);
+  //           staff.permissions = [];
+  //         }
+  //       }
+  
+  //       console.log("ttttt roleee", staff);
+  //       setMockData(staff);
+  //       setStaffData(staff || null);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching staff details:', error);
+  //     alert('Failed to fetch staff details.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  
   const getStaffPermissions = async () => {
+    setIsLoading(true);
     try {
-      const response = await ApiService.post(
-        '/permissions/getStaffPermissions',
-        {
-          staffId: staffId,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
+      const response = await ApiService.post('/permissions/getStaffPermissions', {
+        staffId: staffId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+  
       if (response.status) {
-        const staff = response.data?.[0];
-        setMockData(staff); // Save entire data for all staff
-        console.log(staff, '_________________');
-        setStaffData(staff || null); // Initial staff data from the first response
+        const staff = response.data?.[0]; // Access the first object
+  
+        // If permissions is a string, parse it to an array of objects
+        if (staff && staff.permissions) {
+          try {
+            staff.permissions = JSON.parse(staff.permissions); // Parse if it's a string
+          } catch (e) {
+            console.error('Error parsing permissions:', e);
+          }
+        }
+  
+        console.log("Staff role data with parsed permissions:", staff);
+        setMockData(staff);
+        setStaffData(staff || null);
+      } else {
+        alert("Failed to fetch staff permissions. Please try again.");
       }
     } catch (error) {
       console.error('Error fetching staff details:', error);
@@ -36,6 +109,7 @@ const Settings = () => {
       setIsLoading(false);
     }
   };
+  
 
   const handleSearch = async () => {
     try {
@@ -73,6 +147,12 @@ const Settings = () => {
   };
 
   const handleSaveChanges = async () => {
+    console.log("deigi digi digi",{
+      staffId: staffData.staffId,
+      permissions: staffData.permissions, // Ensure you're sending the updated permissions
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    })
     try {
       const response = await ApiService.post(
         '/permissions/handlePermissionDetails',
@@ -142,9 +222,9 @@ const Settings = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {staffData.permissions &&
-                    staffData.permissions.length > 0 ? (
-                      staffData.permissions.map((permission, index) => (
+                    {staffData?.permissions &&
+                      staffData?.permissions?.length > 0 ? (
+                      staffData?.permissions.map((permission, index) => (
                         <tr key={index} className="border-t">
                           <td className="p-2">{permission.name}</td>
                           <td className="p-2 text-center">
@@ -211,44 +291,36 @@ const Settings = () => {
                   alt="Staff"
                   className="w-32 h-32 rounded-full mb-4 object-cover shadow-lg"
                 />
-                <div className="text-left mb-6 space-y-4">
-                  <p>
-                    <span className="font-bold">Name:</span>{' '}
-                    {staffData.staffName}
-                  </p>
-                  <p>
-                    <span className="font-bold">Number:</span>{' '}
-                    {staffData.phoneNumber}
-                  </p>
-                  <p>
-                    <span className="font-bold">Staff ID:</span>{' '}
-                    {staffData.staffId}
-                  </p>
-                  <p>
-                    <span className="font-bold">Designation:</span>{' '}
-                    {staffData.designation}
-                  </p>
-                  <p>
-                    <span className="font-bold">Branch:</span>{' '}
-                    {staffData.branchName}
-                  </p>
-                  <p>
-                    <span className="font-bold">Date Of Birth:</span>{' '}
-                    {staffData.dob}
-                  </p>
-                  <p>
-                    <span className="font-bold">Email ID:</span>{' '}
-                    {staffData.email}
-                  </p>
-                  <p>
-                    <span className="font-bold">Aadhar Number:</span>{' '}
-                    {staffData.aadharNumber}
-                  </p>
-                  <p>
-                    <span className="font-bold">Address:</span>{' '}
-                    {staffData.address}
-                  </p>
-                </div>
+             <div className="mb-6 space-y-4 text-left">
+  <p>
+    <span className="font-bold">Name:</span> {staffData.staffName}
+  </p>
+  <p>
+    <span className="font-bold">Number:</span> {staffData.phoneNumber}
+  </p>
+  <p>
+    <span className="font-bold">Staff ID:</span> {staffData.staffId}
+  </p>
+  <p>
+    <span className="font-bold">Designation:</span> {staffData.designation}
+  </p>
+  <p>
+    <span className="font-bold">Branch:</span> {staffData.branchName}
+  </p>
+  <p>
+    <span className="font-bold">Date Of Birth:</span> {staffData.dob}
+  </p>
+  <p>
+    <span className="font-bold">Email ID:</span> {staffData.email}
+  </p>
+  <p>
+    <span className="font-bold">Aadhar Number:</span> {staffData.aadharNumber}
+  </p>
+  <p className="break-words max-w-xs">
+    <span className="font-bold">Address:</span> {staffData.address}
+  </p>
+</div>
+
                 <button
                   className="bg-green-700 text-white px-6 py-2 rounded-lg"
                   onClick={handleSaveChanges}

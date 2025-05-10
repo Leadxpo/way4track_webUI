@@ -7,7 +7,7 @@ const AssertCard = ({ asset }) => {
   return (
     <div
       className="bg-white rounded-lg shadow-md p-4 flex flex-row items-center"
-      style={{ height: '150px', width: '350px', borderRadius: '22px' }}
+      style={{ height: '150px',  borderRadius: '22px' }}
     >
       <img
         src={asset.assetPhoto}

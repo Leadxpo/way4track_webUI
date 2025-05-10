@@ -7,12 +7,12 @@ export default function EditTicket() {
   const navigate = useNavigate();
 
   const ticket = location.state?.ticket;
-
+  console.log("eeeeee",ticket);
   const [designations, setDesignations] = useState([]);
 
   const [formData, setFormData] = useState({
     problem: "",
-    date: new Date().toISOString().split("T")[0],
+    date: null,
     addressingDepartment: "",
     workStatus: "",
     description: "",
@@ -25,15 +25,15 @@ export default function EditTicket() {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-      
-      console.log("fetch ticket details:", response);
-
-      if (response.status && response.data.length > 0) {
-        const ticketData = response.data[0]; // Since data is an array with one object
+  
+      console.log("fetch ticket details: fetchTicketById ticket pen", response.data);
+  
+      if (response.status && response.data) {
+        const ticketData = response.data;
         setFormData({
           problem: ticketData.problem || "",
           date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
-          addressingDepartment: ticketData.addressingDepartment || "",
+          designationRelation:ticketData.designationRelation.id,
           workStatus: ticketData.workStatus || "",
           description: ticketData.description || "",
         });
@@ -44,6 +44,7 @@ export default function EditTicket() {
       console.error("Error fetching ticket:", error);
     }
   };
+  
 
     // Fetch all designations
     const getDesignations = useCallback(async () => {
@@ -137,7 +138,7 @@ export default function EditTicket() {
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-1">Addressing Department</label>
+          <label className="block font-medium mb-1">Designation Relation</label>
           <select
             name="designation_id"
             value={formData.designationRelation || ""}

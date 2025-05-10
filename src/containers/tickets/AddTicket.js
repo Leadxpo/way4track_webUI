@@ -30,7 +30,7 @@ export default function AddTicket() {
     const payload = {
       problem: formData.problem,
       date: formattedDate, 
-      addressingDepartment: formData.addressingDepartment,
+      // addressingDepartment: formData.addressingDepartment,
       designationRelation:formData.designationRelation,
       workStatus: formData.workStatus,
       description: formData.description,
@@ -124,7 +124,7 @@ export default function AddTicket() {
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-1">Addressing Department</label>
+          <label className="block font-medium mb-1">Designation Relation</label>
           <select
             name="designation_id"
             value={formData.designationRelation || ""}

@@ -10,35 +10,60 @@ const EditRequestRaise = () => {
   const [staffData, setStaffData] = useState([]);
   const [subDealer, setSubDealer] = useState([]);
   const [branch, setBranch] = useState([]);
+
+  const requestData = location.state?.requestDetails || {};
+  console.log("rrr edit",requestData);
   
-    const requestData = location.state?.requestDetails || {};
- 
 
   const [formData, setFormData] = useState({
-    requestType:'',
-    requestFrom:'',
-    requestTo:'',    branch: '',
-    requestFor:'',
-    description:'',
-    products:[{ product: '', amount: '' }],
-    createdDate:'',
-    status:'',
-    fromDate:"",
-    toDate:"",
+    requestType: '',
+    requestFrom: '',
+    requestTo: '', branch: '',
+    requestFor: '',
+    description: '',
+    products:[{ productType: '', quantity: 0 }],
+    createdDate: '',
+    status: '',
+    fromDate: "",
+    toDate: "",
     // subDealerId: Number(requestData.subDealerId) || '',
-    requestId:'',
+    requestId: '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
-  
-  
+
+
+  // const fetchRequestRaise = async () => {
+  //   try {
+  //     const response = await ApiService.post('/requests/getRequestDetails',{id:
+  //       requestData.requestId,
+  //       companyCode: initialAuthState.companyCode,
+  //       unitCode: initialAuthState.unitCode});
+        
+  //     if (response.status) {
+  //       // setRequestRaiseDetail(response.data);
+
+  //       console.log("fetchStaffData fetchStaffData", response.data)
+  //     } else {
+  //       console.error('Error fetching staff data');
+  //     }
+  //   } catch (e) {
+  //     console.error('Error fetching staff data', e);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchRequestRaise();
+  // }, []);
+
+  // getRequestDetails
   const fetchStaffData = async () => {
     try {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
       if (response.status) {
         setStaffData(response.data);
 
-        console.log("fetchStaffData fetchStaffData",response.data)
+        console.log("fetchStaffData fetchStaffData", response.data)
       } else {
         console.error('Error fetching staff data');
       }
@@ -102,50 +127,47 @@ const EditRequestRaise = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
 
-  
 
-  
+
+
+
 
   const handleSave = async () => {
-  const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
 
-if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
-    const { id, name } = userProfile?.Data[0];
-    console.log("ID:", id);
-    console.log("Name:", name);
-} else {
-    console.log("User profile data not found.");
-}
+    if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
+      const { id, name } = userProfile?.Data[0];
+    } else {
+      console.log("User profile data not found.");
+    }
 
     try {
       const payload = {
 
-       id: requestData.requestId,
+        id: requestData.requestId,
+        requestId: requestData.requestNumber,
         requestType: formData.requestType,
         requestTo: Number(formData.requestTo),
         // requestFrom: Number(formData.requestFrom),
-        requestFrom:Number(9),
+        requestFrom: Number(9),
         branch: Number(formData.branch),
         description: formData.description,
         status: "pending",
-        products:formData.requestType==="products"?formData.products:null,
-        subDealerId: formData.subDealerId || 1,
+        products: formData.requestType === "products" ? formData?.products : null,
+        subDealerId: formData.subDealerId ? formData.subDealerId :null,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        requestFor:formData.requestFor,
-        fromDate:formData.fromDate,
-        toDate:formData.toDate,
+        requestFor: formData.requestFor,
+        fromDate: formData.fromDate,
+        toDate: formData.toDate,
       };
-
-
-      console.log("payload request 1234",payload);
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         payload
       );
       if (response.status) {
+        alert('Request updated successfully');
         navigate('/requests');
       } else {
         alert('failed to raise request');
@@ -162,81 +184,103 @@ if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
   };
 
 
-  const [rows, setRows] = useState([{ product: "", amount: "" }]);
+  const [rows, setRows] = useState([{ productType: '', quantity: 0  }]);
 
- // Function to handle adding a new product row
-const addRow = () => {
-  setFormData((prevData) => ({
-    ...prevData,
-    products: [...prevData.products, { product: '', amount: '' }],
-  }));
-};
+  // Function to handle adding a new product row
+  const addRow = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      products: [...prevData.products, { productType: '', quantity: 0  }],
+    }));
+  };
 
-// Function to remove a product row
-const removeRow = (index) => {
-  setFormData((prevData) => {
-    if (prevData.products.length > 1) {
-      const updatedProducts = prevData.products.filter((_, i) => i !== index);
-      return { ...prevData, products: updatedProducts };
-    }
-    return prevData;
-  });
-};
-
-
-const handleInputProductChange = (index, field, value) => {
-  setFormData((prevData) => {
-    const updatedProducts = [...prevData.products];
-    updatedProducts[index][field] = value;
-    return { ...prevData, products: updatedProducts };
-  });
-};
-
-
-useEffect(() => {
-  if (requestData.requestId) {
-    fetchRequestRaiseById();
-  }
-}, [requestData.requestId]);
-
-
-
-const fetchRequestRaiseById = async () => {
-  if (!requestData.requestId) return;
-
-  try {
-    const response = await ApiService.post('/requests/getRequestDetails', {
-      id: requestData.requestId,
-      companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode,
+  // Function to remove a product row
+  const removeRow = (index) => {
+    setFormData((prevData) => {
+      if (prevData.products.length > 1) {
+        const updatedProducts = prevData.products.filter((_, i) => i !== index);
+        return { ...prevData, products: updatedProducts };
+      }
+      return prevData;
     });
+  };
 
-    if (response.status) {
-      console.log("10th class", response.data)
-      const data = response.data;
-      setFormData({
-        id: data.requestId || '',
-        requestType: data.requestType || '',
-        description: data.description || '',
-        requestFor: data.requestFor || '',
-        fromDate: data?.fromDate || '',
-        toDate: data?.toDate || '',
-        requestTo: "",
-        branch: "",
-        
-products:data.products || '',
 
-      });
-    } else {
-      console.error('Error fetching request details');
+  const handleInputProductChange = (index, field, value) => {
+    setFormData((prevData) => {
+      const updatedProducts = [...prevData.products];
+      updatedProducts[index][field] = value;
+      return { ...prevData, products: updatedProducts };
+    });
+  };
+
+
+  useEffect(() => {
+    if (requestData.requestId) {
+      fetchRequestRaiseById();
     }
-  } catch (error) {
-    console.error('Error fetching request details:', error);
-  }
-};
+  }, [requestData.requestId]);
+  
+  const fetchRequestRaiseById = async () => {
+    if (!requestData.requestId) return;
+  
+    try {
+      const response = await ApiService.post('/requests/getRequestDetails', {
+        id: requestData.requestId,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+  
+      if (response.status) {
+        const data = response.data;
+  
+        setFormData({
+          requestId: data.requestId || '',
+          requestType: data.requestType || '',
+          description: data.description || '',
+          requestFor: data.requestFor || '',
+          fromDate: data.fromDate || '',
+          toDate: data.toDate || '',
+          requestFrom: data.requestFrom || '',
+          requestTo: data.requestTo?.id || '',
+          branch: data.branchId?.id || '',
+          status: data.status || '',
+          createdDate: data.createdDate || '',
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+          products: Array.isArray(data.products) && data.products.length > 0
+            ? data.products
+            : [{ productType: '', quantity: 0 }],
+        });
+      } else {
+        console.error('Error fetching request details');
+      }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+    }
+  };
+  
+  const [productTypes, setProductTypes] = useState([]);
 
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
 
-
+  const fetchProductTypes = async () => {
+    try {
+      const response = await ApiService.post(
+        '/productType/getProductTypeDetails'
+      );
+      if (response.data) {
+        setProductTypes(response.data);
+      } else {
+        console.error('Invalid API response');
+      }
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+    } finally {
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -251,42 +295,35 @@ products:data.products || '',
         {/* Form Fields */}
         <div className="space-y-4">
           {/* Form field for Name */}
-          <div>
+          {/* <div>
             <p className="font-semibold mb-1">Request Type</p>
             <select
         name="requestType"
         value={formData.requestType}
-        // onChange={handleInputChange}
+        onChange={handleInputChange}
         className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
       >
-        {/* <option value="">Select Request Type</option>
-        <option value="assets">Asserts</option>
-        <option value="money">Money</option>
-        <option value="products">Product</option>
-        <option value="personal">Personal</option>
-        <option value="leaveRequest">Leave Request</option> */}
+        
       </select>
-          </div>
-          {/* <div>
-            <div className="flex flex-col">
-              <label className="font-semibold mb-2">Request By:</label>
-              <select
-                name="requestFrom"
-                value={formData.requestFrom}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select Request By
-                </option>
-                {staffData.map((staffMember) => (
-                  <option key={staffMember.id} value={staffMember.id}>
-                    {staffMember.name}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div> */}
+
+          <div>
+            <p className="font-semibold mb-1">Request Type</p>
+            <select
+              name="requestType"
+              value={formData.requestType}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select Request Type</option>
+              <option value="assets">Assets</option>
+              <option value="money">Money</option>
+              <option value="products">Product</option>
+              <option value="personal">Personal</option>
+              <option value="leaveRequest">Leave Request</option>
+            </select>
+          </div>
+           
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -309,7 +346,7 @@ products:data.products || '',
           </div>
           <div>
             {/* {subDealer.length > 0 && ( */}
-              {/* <div className="flex flex-col">
+            {/* <div className="flex flex-col">
                 <label className="font-semibold mb-2">
                   Request To subDealer:
                 </label>
@@ -369,89 +406,106 @@ products:data.products || '',
 
 
           {formData.requestType === "products" ? (
-  <>
-   {formData.products.map((row, index) => (
-  <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
-    
-    {/* Product Field */}
-    <div className="flex-1">
-      <label className="font-semibold">Product:</label>
-      <div className="flex items-center border rounded-md p-2 bg-gray-100">
-        <input
-          type="text"
-          value={row.product}
-          onChange={(e) => handleInputProductChange(index, "product", e.target.value)}
-          placeholder="Enter Product"
-          className="w-full bg-transparent outline-none"
-        />
-      </div>
-    </div>
+            <>
+              {formData?.products?.map((row, index) => (
+                <div key={index} className="flex items-center space-x-4 mb-3 bg-white p-3 shadow-md rounded-md w-full max-w-2xl">
 
-    {/* Amount Field */}
-    <div className="flex-1">
-      <label className="font-semibold">Amount:</label>
-      <input
-        type="number"
-        value={row.amount}
-        onChange={(e) => handleInputProductChange(index, "amount", e.target.value)}
-        placeholder="Enter Amount"
-        className="w-full border rounded-md p-2 bg-gray-100"
-      />
-    </div>
+                  {/* Product Field */}
+                  <div className="flex-1">
+                    <label className="font-semibold">Product:</label>
+                    <div className="flex items-center border rounded-md p-2 bg-gray-100">
+                    <select
+                        name="productTypeId"
+                        className="border p-2 rounded-md w-full"
+                        // onChange={handleInputChange}
+                        onChange={(e) => { handleInputProductChange(index, "productType", e.target.value) }}
+                        value={row.productType}
+                      >
+                        <option value="">Select a product type</option>
+                        {productTypes
+                          .filter((type) => type.type === 'PRODUCT')
+                          .map((type) => (
+                            <option key={type.id} value={type.name}>
+                              {type.name}
+                            </option>
+                          ))}
+                      </select>
 
-    {/* Add Row Button - Only in the first row */}
-    {index === 0 && (
-      <button onClick={addRow} className="bg-green-500 text-white p-2 rounded-md shadow-md flex items-center mt-2">
-        <FaPlus className="mr-1" />
-      </button>
-    )}
+                      {/* <input
+                        type="text"
+                        value={row.productType}
+                        onChange={(e) => handleInputProductChange(index, "productType", e.target.value)}
+                        placeholder="Enter Product"
+                        className="w-full bg-transparent outline-none"
+                      /> */}
+                    </div>
+                  </div>
 
-    {/* Delete Button - Only for additional rows */}
-    {index !== 0 && (
-      <button onClick={() => removeRow(index)} className="text-red-500 p-2">
-        <FaTrash />
-      </button>
-    )}
-  </div>
-))}
+                  {/* Amount Field */}
+                  <div className="flex-1">
+                    <label className="font-semibold">Quantity:</label>
+                    <input
+                      type="number"
+                      value={row.quantity}
+                      onChange={(e) => handleInputProductChange(index, "quantity", e.target.value)}
+                      placeholder="Enter Quantity"
+                      className="w-full border rounded-md p-2 bg-gray-100"
+                    />
+                  </div>
 
-  </>
-) :
- (
-  <div>
-    <p className="font-semibold mb-1">Request For</p>
-    <input
-      type="text"
-      name="requestFor"
-      value={formData.requestFor}
-      onChange={handleInputChange}
-      placeholder="Enter Request For"
-      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-    />
-  </div>
-)}
+                  {/* Add Row Button - Only in the first row */}
+                  {index === 0 && (
+                    <button onClick={addRow} className="bg-green-500 text-white p-2 rounded-md shadow-md flex items-center mt-2">
+                      <FaPlus className="mr-1" />
+                    </button>
+                  )}
 
-{formData?.requestType === "leaveRequest"&&(<><div className="mt-4">
-    <p className="font-semibold mb-1">Leave From Date</p>
-    <input
-      type="date"
-      name="fromDate"
-      value={formData.fromDate.slice(0, 10) || ""}
-      onChange={handleInputChange}
-      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-    />
-</div>
+                  {/* Delete Button - Only for additional rows */}
+                  {index !== 0 && (
+                    <button onClick={() => removeRow(index)} className="text-red-500 p-2">
+                      <FaTrash />
+                    </button>
+                  )}
+                </div>
+              ))}
 
-<div className="mt-4">
-    <p className="font-semibold mb-1">Leave To Date</p>
-    <input
-      type="date"
-      name="toDate"
-      value={formData.toDate.slice(0, 10) || ""}
-      onChange={handleInputChange}
-      className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-    />
-</div></>)}
+            </>
+          ) :
+            (
+              <div>
+                <p className="font-semibold mb-1">Request For</p>
+                <input
+                  type="text"
+                  name="requestFor"
+                  value={formData.requestFor}
+                  onChange={handleInputChange}
+                  placeholder="Enter Request For"
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+              </div>
+            )}
+
+          {formData?.requestType === "leaveRequest" && (<><div className="mt-4">
+            <p className="font-semibold mb-1">Leave From Date</p>
+            <input
+              type="date"
+              name="fromDate"
+              value={formData.fromDate.slice(0, 10) || ""}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+
+            <div className="mt-4">
+              <p className="font-semibold mb-1">Leave To Date</p>
+              <input
+                type="date"
+                name="toDate"
+                value={formData.toDate.slice(0, 10) || ""}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+              />
+            </div></>)}
 
         </div>
         {/* Buttons */}

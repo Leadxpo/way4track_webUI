@@ -11,7 +11,9 @@ export default function ViewTicket() {
   const [formData, setFormData] = useState({
     problem: "",
     date: new Date().toISOString().split("T")[0],
-    addressingDepartment: "",
+    
+ticketNumber
+: "",
     workStatus: "",
     description: "",
   });
@@ -23,14 +25,19 @@ export default function ViewTicket() {
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-      
-
-      if (response.status && response.data.length > 0) {
-        const ticketData = response.data[0]; // Since data is an array with one object
+  
+      console.log("fetch ticket details: fetchTicketById view", response.data);
+  
+      if (response.status && response.data) {
+        const ticketData = response.data;
         setFormData({
           problem: ticketData.problem || "",
           date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
-          addressingDepartment: ticketData.addressingDepartment || "",
+          designationRelation:ticketData.designationRelation.designation,
+ticketNumber
+: ticketData.
+          ticketNumber
+           || "",
           workStatus: ticketData.workStatus || "",
           description: ticketData.description || "",
         });
@@ -52,6 +59,20 @@ export default function ViewTicket() {
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">View Ticket</h2>
+      <div>
+          <label className="block text-sm font-medium">
+Ticket Number
+</label>
+          <input
+            type="text"
+            name="addressingDepartment"
+            value={formData.
+              ticketNumber
+              }
+            required
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium">Problem</label>
           <input
@@ -62,7 +83,16 @@ export default function ViewTicket() {
             className="w-full p-2 border rounded-md"
           />
         </div>
-
+        <div>
+          <label className="block text-sm font-medium">Designation Relation</label>
+          <input
+            type="text"
+            name="problem"
+            value={formData.designationRelation}
+            required
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium">Date</label>
           <input
@@ -74,16 +104,7 @@ export default function ViewTicket() {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium">Addressing Department</label>
-          <input
-            type="text"
-            name="addressingDepartment"
-            value={formData.addressingDepartment}
-            required
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
+        
 
         <div>
           <label className="block text-sm font-medium">Work Status</label>

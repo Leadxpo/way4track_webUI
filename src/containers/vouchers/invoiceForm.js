@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService';
+import { useNavigate } from 'react-router';
 
 const InvoiceForm = () => {
+  const navigate=useNavigate();
   const initialFormState = {
     title: '',
     ledgerName: '',
@@ -110,6 +112,7 @@ const InvoiceForm = () => {
         voucherFormData
       ); // Adjust the endpoint URL as needed
       console.log('Response:', response);
+      navigate("/vouchers");
       // Handle the response (e.g., show a success message or redirect)
     } catch (error) {
       console.error('Error submitting data:', error);

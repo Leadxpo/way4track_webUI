@@ -101,19 +101,19 @@ const EditAsset = () => {
     try {
       console.log(payload,"payload")
       const endpoint = formData.id
-        ? '/asserts/update' // Use an update endpoint if 'id' exists
+        ? '/asserts/create' // Use an update endpoint if 'id' exists
         : '/asserts/create'; // Use a create endpoint if 'id' is null
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data.status) {
+      if (response.status) {
         alert(
           formData.id
             ? 'Asset updated successfully!'
             : 'Asset added successfully!'
         );
-        navigate('/add-assets');
+        navigate('/asserts');
       } else {
         alert('Failed to save asset details. Please try again.');
       }
@@ -124,7 +124,7 @@ const EditAsset = () => {
   };
 
   const handleCancel = () => {
-    navigate('/add-asset');
+    navigate('/asset-details');
   };
 
   // Handle file input (photo)
@@ -155,7 +155,7 @@ const EditAsset = () => {
     <div className="bg-white rounded-2xl p-8">
       {/* Header */}
       <div className="flex items-center space-x-4 mb-8">
-        <h1 className="text-3xl font-bold">Edit Asserts</h1>
+        <h1 className="text-3xl font-bold">Edit Assets</h1>
       </div>
 
 
@@ -229,7 +229,7 @@ const EditAsset = () => {
         )}
       </div>
       <div>
-        <p className="font-semibold mb-1">Assert Name</p>
+        <p className="font-semibold mb-1">Asset Name</p>
         <input
           type="text"
           name="assertsName"
@@ -241,7 +241,7 @@ const EditAsset = () => {
         />
        
 
-        <p className="font-semibold mb-1">Assert Amount</p>
+        <p className="font-semibold mb-1">Asset Amount</p>
         <input
           type="text"
           name="assertsAmount"

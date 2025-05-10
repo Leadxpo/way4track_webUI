@@ -40,6 +40,8 @@ const TableWithDateFilter = ({
   const subDealerData = location.state?.subDealersData || {};
   const requestData = location.state?.requestData || {};
   const [columnNames, setColumnNames] = useState([]);
+  const [branchFilter, setBranchFilter] = useState('');
+  const [requestList, setRequestList] = useState([]);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -59,6 +61,41 @@ const TableWithDateFilter = ({
 
     fetchBranches();
   }, []);
+
+  const [searchSubdealer, setSearchSubdealer] = useState('');
+  const [searchInvoice, setSearchInvoice] = useState('');
+  const [subdealerList, setSubdealerList] = useState([]);
+  const [invoiceList, setInvoiceList] = useState([]);
+
+  const handleSearchSubdealer = () => {
+    const searchQuery = searchSubdealer.toLowerCase().trim();
+
+    if (searchQuery === '') {
+      setFilteredData(invoiceList); // Reset to original data
+    } else {
+      const filteredData = invoiceList.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        )
+      );
+      setFilteredData(filteredData);
+    }
+  };
+
+  const handleSearchInvoice = () => {
+    const searchQuery = searchInvoice.toLowerCase().trim();
+
+    if (searchQuery === '') {
+      setFilteredData(subdealerList); // Reset to original data
+    } else {
+      const filteredData = subdealerList.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        )
+      );
+      setFilteredData(filteredData);
+    }
+  };
 
   const getVendorData = useCallback(async () => {
     try {
@@ -111,7 +148,7 @@ const TableWithDateFilter = ({
             joiningDate, // Place 'joiningDate' after 'phoneNumber'
           })
         );
-
+        setSubdealerList(formattedData);
         setFilteredData(formattedData);
       } else {
         alert(response.data.message || 'Failed to fetch sub-dealer details.');
@@ -154,7 +191,6 @@ const TableWithDateFilter = ({
         role: localStorage.getItem('role'),
       };
 
-      // Add staffId if role is Technician or Sales Man
       if (
         requestBody.role === 'Technician' ||
         requestBody.role === 'Sales Man'
@@ -162,7 +198,6 @@ const TableWithDateFilter = ({
         requestBody.staffId = localStorage.getItem('userId');
       }
 
-      // Add branchName only if defined
       if (requestData.branchName) {
         requestBody.branchName = requestData.branchName;
       }
@@ -172,9 +207,23 @@ const TableWithDateFilter = ({
         requestBody
       );
 
-      // Check if response contains data and update state
+      console.log('yyyyyy request request raiseeee', response);
+
       if (response?.length) {
-        setFilteredData(response); // Ensure you're setting the correct data
+        const cleanedData = response.map((item) => ({
+          requestId: item.
+            requestId
+          ,
+          requestNumber: item.requestNumber,
+          branchName: item.branchName,
+          branchId: item.req_branch_id,
+          requestType: item.requestType,
+          status: item.status,
+        }));
+
+        console.log(';;;;;', cleanedData);
+        setRequestList(cleanedData);
+        setFilteredData(cleanedData);
       } else {
         console.warn(
           'Request failed:',
@@ -183,7 +232,6 @@ const TableWithDateFilter = ({
       }
     } catch (error) {
       console.error('Error fetching request details:', error);
-      // Optionally, handle errors by setting an error state or notifying the user
     }
   }, [
     requestData.branchName,
@@ -216,7 +264,7 @@ const TableWithDateFilter = ({
 
   const getInvoiceData = useCallback(async () => {
     try {
-      const response = await ApiService.post('/dashboards/getVoucherData', {
+      const response = await ApiService.post('/estimate/getAllEstimateDetails', {
         fromDate: dateFrom,
         toDate: dateTo,
         status: statusFilter,
@@ -226,6 +274,7 @@ const TableWithDateFilter = ({
 
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
+        setInvoiceList(response.data); // Assuming the structure is as expected
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch request details.');
@@ -235,6 +284,7 @@ const TableWithDateFilter = ({
       alert('Failed to fetch request details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
+
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':
@@ -267,7 +317,7 @@ const TableWithDateFilter = ({
         dataSource = filteredData;
         break;
       case 'invoice':
-        dataSource = filteredData;
+        dataSource = filteredData.filter((item) => !!item.invoiceId);
         break;
       case 'payments':
         dataSource = filteredData;
@@ -285,8 +335,12 @@ const TableWithDateFilter = ({
         dataSource = [];
     }
     setPageTitle(pageTitles[type]);
-    setColumns(Object.keys(dataSource[0] || {}));
-    setColumnNames(Object.keys(dataSource[0] || {}));
+    const allKeys = Object.keys(dataSource[0] || {});
+    const visibleKeys = type === 'invoice'
+      ? allKeys.filter(key => key.toLowerCase() !== 'products') // remove 'product' column
+      : allKeys;
+    setColumns(visibleKeys);
+    setColumnNames(visibleKeys);
     setData(dataSource);
     setFilteredData(dataSource);
 
@@ -306,6 +360,19 @@ const TableWithDateFilter = ({
     setFilteredData(filtered);
   };
 
+  const handleBranchFilter = (e) => {
+    const selectedBranch = e.target.value;
+    setBranchFilter(selectedBranch);
+
+    if (!requestList || !Array.isArray(requestList)) return;
+
+    const filtered = requestList.filter(
+      (item) => !selectedBranch || item.branchId === Number(selectedBranch)
+    );
+    console.log('0000000>>>>>', filtered);
+    setFilteredData(filtered);
+  };
+
   const handleSearch = async () => {
     switch (type) {
       case 'vendors':
@@ -317,7 +384,7 @@ const TableWithDateFilter = ({
       case 'estimate':
         await getEstimateData();
         break;
-      case 'requsts':
+      case 'requests':
         await getRequestsData();
         break;
       case 'payments':
@@ -368,72 +435,120 @@ const TableWithDateFilter = ({
         )}
       </div>
 
-      {/* Filters Row */}
-      <div className="flex mb-4">
-        {showDateFilters && (
-          <div className="flex-grow mr-2">
-            <input
-              type="date"
-              id="dateFrom"
-              value={dateFrom}
-              placeholder="From"
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-              style={{ paddingLeft: '8px' }}
-            />
-          </div>
-        )}
-        {showDateFilters && (
+      {type === 'sub_dealers' && (
+        <div className="flex mb-4">
           <div className="flex-grow mx-2">
             <input
-              type="date"
-              id="dateTo"
-              value={dateTo}
-              placeholder="To"
-              onChange={(e) => setDateTo(e.target.value)}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-              style={{ paddingLeft: '8px' }}
+              type="text"
+              name="name"
+              placeholder="Search by Subdealer Id or Name"
+              value={searchSubdealer}
+              onChange={(e) => setSearchSubdealer(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
             />
           </div>
-        )}
-        <div className="flex-grow mx-2">
-          {showStatusFilter ? (
-            <select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="">All Statuses</option>
-              {statuses.map((status, index) => (
-                <option key={index} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="" disabled>
-                Select a Branch
-              </option>
-              {branches.map((branch) => (
-                <option key={branch.id} value={branch.branchName}>
-                  {branch.branchName}
-                </option>
-              ))}
-            </select>
-          )}
+          <button
+            onClick={handleSearchSubdealer}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
         </div>
-        <button
-          onClick={handleSearch}
-          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-        >
-          <FaSearch className="mr-2" /> Search
-        </button>
-      </div>
+      )}
+      {type === 'invoice' && (
+        <div className="flex mb-4">
+          <div className="flex-grow mx-2">
+            <input
+              type="text"
+              name="name"
+              placeholder="Search by Client Id / Name / Branch"
+              value={searchInvoice}
+              onChange={(e) => setSearchInvoice(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
+            />
+          </div>
+          <button
+            onClick={handleSearchInvoice}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
+        </div>
+      )}
+
+      {/* Filters Row */}
+      {type === 'sub_dealers' || type === 'invoice' ? (
+        ''
+      ) : (
+        <div className="flex mb-4">
+          {showDateFilters &&  (
+            <div className="flex-grow mr-2">
+              <input
+                type="date"
+                id="dateFrom"
+                value={dateFrom}
+                placeholder="From"
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+          {showDateFilters && (
+            <div className="flex-grow mx-2">
+              <input
+                type="date"
+                id="dateTo"
+                value={dateTo}
+                placeholder="To"
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+          <div className="flex-grow mx-2">
+            {showStatusFilter ? (
+              <select
+                value={statusFilter}
+                onChange={handleStatusChange}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              >
+                <option value="">All Statuses</option>
+                {statuses.map((status, index) => (
+                  <option key={index} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="flex items-center space-x-2 mb-4">
+                <label className="text-gray-700 font-bold whitespace-nowrap">
+                  Search by Branch :
+                </label>
+                <select
+                  value={branchFilter}
+                  onChange={handleBranchFilter}
+                  className="h-12 w-[250px] border border-gray-300 rounded-md px-3 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+                >
+                  <option value="">All Branches</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+            <button
+              onClick={handleSearch}
+              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+            >
+              <FaSearch className="mr-2" /> Search
+            </button>
+        </div>
+      )}
 
       {/* Table Row */}
       <div className="mt-8">
@@ -444,9 +559,10 @@ const TableWithDateFilter = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onDetails={onDetails}
-          showEdit={true} // Ensure Edit button is always visible
-          showDelete={true} // Ensure Delete button is always visible
-          showDetails={true} // Ensure Details button is always visible
+          showEdit={showEdit} // Ensure Edit button is always visible
+          showDelete={showDelete} // Ensure Delete button is always visible
+          showDetails={showDetails} // Ensure Details button is always visible
+          showActionColumn={type !== 'payments'}
           editText={editText} // Custom edit button text
           deleteText={deleteText} // Custom delete button text
           detailsText={detailsText} // Custom details button text

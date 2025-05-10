@@ -5,191 +5,91 @@ import { initialAuthState } from '../../services/ApiService';
 
 const Analysis = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [creditDebitPercent, setCreditDebitPercent] = useState([]);
-  const [totalCredit, setTotalCredit] = useState({ sales: 0, services: 0 });
-  const [totalDebit, setTotalDebit] = useState({ salaries: 0, expenses: 0 });
+  const [branchSalesData, setBranchSalesData] = useState([]);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear().toString());
 
-  // Handle popup visibility
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
   };
 
-  const getProductTypeCreditAndDebitPercentages = async () => {
+  const fetchBranchWiseSales = async () => {
     try {
-      const response = await ApiService.post(
-        '/dashboards/getBranchWiseYearlySales',
-        {
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
-      );
-      if (response?.status && Array.isArray(response.data)) {
-        setCreditDebitPercent(response.data);
+      const response = await ApiService.post('/dashboards/getBranchWiseYearlySales', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+        date: currentYear,
+      });
 
-        // Calculate total credit and debit amounts
-        const totalCredit = response.data.reduce(
-          (acc, item) => {
-            acc.sales += item.salesTotalCreditAmount || 0;
-            acc.services += item.servicesTotalCreditAmount || 0;
-            return acc;
-          },
-          { sales: 0, services: 0 }
-        );
-
-        const totalDebit = response.data.reduce(
-          (acc, item) => {
-            acc.salaries += item.salariesTotalDebitAmount || 0;
-            acc.expenses += item.expensesTotalDebitAmount || 0;
-            return acc;
-          },
-          { salaries: 0, expenses: 0 }
-        );
-
-        setTotalCredit(totalCredit);
-        setTotalDebit(totalDebit);
+      const dataArray = response?.data || [];
+      if (response?.status && Array.isArray(dataArray)) {
+        setBranchSalesData(dataArray);
       } else {
-        setCreditDebitPercent([]);
+        setBranchSalesData([]);
       }
     } catch (e) {
       console.error('Error fetching analysis details:', e);
-      setCreditDebitPercent([]);
+      setBranchSalesData([]);
     }
   };
 
   useEffect(() => {
-    getProductTypeCreditAndDebitPercentages();
+    fetchBranchWiseSales();
   }, []);
+
+  const totalSales = branchSalesData.reduce((acc, item) => acc + (item.TotalSalesAmount || 0), 0);
+  const totalServices = branchSalesData.reduce((acc, item) => acc + (item.serviceTotalAmount || 0), 0);
+  const totalProducts = branchSalesData.reduce((acc, item) => acc + (item.productTotalAmount || 0), 0);
 
   return (
     <div className="mx-32">
       <AnalysisCardBarChart
         togglePopup={togglePopup}
-        creditDebitPercent={creditDebitPercent}
+        creditDebitPercent={branchSalesData}
+        date={currentYear}
       />
+
       {isPopupVisible && (
         <div className="fixed inset-0 bg-gray-200 bg-opacity-70 flex items-center justify-center rounded-lg">
           <div className="bg-white rounded-lg shadow-lg p-6 w-2/3 h-2/3 overflow-y-auto border border-gray-300">
-            <h2 className="text-center text-green-700 font-bold text-xl mb-2">
-              Total Credit Amount: {totalCredit.sales + totalCredit.services} /-
+            <h2 className="text-center text-green-700 font-bold text-xl mb-4">
+              Branch-Wise Sales Report - {currentYear}
             </h2>
-            <div className="grid grid-cols-2 gap-2">
+
+            <div className="grid grid-cols-3 gap-4 text-center text-sm">
               <div>
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                  Sales: {totalCredit.sales} Rs
-                </h3>
+                <h3 className="text-green-700 font-semibold text-lg mb-2">Total Sales</h3>
+                <p className="text-black font-medium">{totalSales.toFixed(2)} Rs</p>
               </div>
               <div>
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                  Services: {totalCredit.services} Rs
-                </h3>
+                <h3 className="text-green-700 font-semibold text-lg mb-2">Total Services</h3>
+                <p className="text-black font-medium">{totalServices.toFixed(2)} Rs</p>
+              </div>
+              <div>
+                <h3 className="text-green-700 font-semibold text-lg mb-2">Total Products</h3>
+                <p className="text-black font-medium">{totalProducts.toFixed(2)} Rs</p>
               </div>
             </div>
-            <h2 className="text-center text-green-700 font-bold text-xl mt-4 mb-2">
-              Branch-wise Credit Details
+
+            <h2 className="text-center text-green-700 font-bold text-xl mt-6 mb-2">
+              Branch-wise Breakdown
             </h2>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                  Sales
-                </h3>
-                {creditDebitPercent.length > 0 ? (
-                  creditDebitPercent.map((item, index) => (
-                    <div
-                      key={index}
-                      className="border border-green-500 rounded-md p-2 mb-2"
-                    >
-                      <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                        {item.branchName} : {item.salesCreditPercentage}% -{' '}
-                        {item.salesTotalCreditAmount} Rs
-                      </h3>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-600">No data available</p>
-                )}
-              </div>
-              <div>
-                <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                  Services
-                </h3>
-                {creditDebitPercent.length > 0 ? (
-                  creditDebitPercent.map((item, index) => (
-                    <div
-                      key={index}
-                      className="border border-green-500 rounded-md p-2 mb-2"
-                    >
-                      <h3 className="text-center text-green-700 font-semibold text-lg mb-2">
-                        {item.branchName} : {item.servicesCreditPercentage}% -{' '}
-                        {item.servicesTotalCreditAmount} Rs
-                      </h3>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-600">No data available</p>
-                )}
-              </div>
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              {branchSalesData.map((item, index) => (
+                <div
+                  key={index}
+                  className="border border-green-500 rounded-md p-4 shadow-sm"
+                >
+                  <h3 className="text-center text-lg font-semibold text-gray-700 mb-2">
+                    {item.branchName}
+                  </h3>
+                  <p className="text-sm text-gray-600">Sales: {item.TotalSalesAmount} Rs</p>
+                  <p className="text-sm text-gray-600">Services: {item.serviceTotalAmount} Rs</p>
+                  <p className="text-sm text-gray-600">Products: {item.productTotalAmount} Rs</p>
+                </div>
+              ))}
             </div>
-            <h2 className="text-center text-red-700 font-bold text-xl mt-4 mb-2">
-              Total Debit Amount: {totalDebit.salaries + totalDebit.expenses} /-
-            </h2>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                  Salaries: {totalDebit.salaries} Rs
-                </h3>
-              </div>
-              <div>
-                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                  Expenses: {totalDebit.expenses} Rs
-                </h3>
-              </div>
-            </div>
-            <h2 className="text-center text-red-700 font-bold text-xl mt-4 mb-2">
-              Branch-wise Debit Details
-            </h2>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                  Salaries
-                </h3>
-                {creditDebitPercent.length > 0 ? (
-                  creditDebitPercent.map((item, index) => (
-                    <div
-                      key={index}
-                      className="border border-red-500 rounded-md p-2 mb-2"
-                    >
-                      <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                        {item.branchName} : {item.salariesDebitPercentage}% -{' '}
-                        {item.salariesTotalDebitAmount} Rs
-                      </h3>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-600">No data available</p>
-                )}
-              </div>
-              <div>
-                <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                  Expenses
-                </h3>
-                {creditDebitPercent.length > 0 ? (
-                  creditDebitPercent.map((item, index) => (
-                    <div
-                      key={index}
-                      className="border border-red-500 rounded-md p-2 mb-2"
-                    >
-                      <h3 className="text-center text-red-700 font-semibold text-lg mb-2">
-                        {item.branchName} : {item.expensesDebitPercentage}% -{' '}
-                        {item.expensesTotalDebitAmount} Rs
-                      </h3>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-600">No data available</p>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-center mt-4">
+
+            <div className="flex justify-center mt-6">
               <button
                 onClick={togglePopup}
                 className="bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600 transition"

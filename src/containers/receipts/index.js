@@ -14,7 +14,8 @@ const Receipts = () => {
       showEdit={false}
       showDelete={false}
       showDetails={false}
-      // onDetails={handleDetails}
+      showActionColumn={false}
+      onDetails={handleDetails}
     />
   );
 };

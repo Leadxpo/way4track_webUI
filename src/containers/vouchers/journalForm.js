@@ -266,7 +266,8 @@ const JournalForm = () => {
 
       if (response.status) {
         alert('Journal voucher created successfully!');
-        return response.data;
+        navigate("/vouchers");
+        // return response.data;
       } else {
         alert('Failed to create Journal voucher details.');
         return null;

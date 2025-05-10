@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import {
   Page,
@@ -14,17 +16,18 @@ const toWords = new ToWords();
 
 const estStyles = StyleSheet.create({
   page: {
-    paddingTop: 50,
-    paddingLeft: 40,
-    paddingRight: 30,
-    paddingBottom: 50,
+    paddingTop: 30,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 30,
+    
     fontFamily: 'Helvetica',
     border: '1px solid black',
   },
   pageBorder: {
     border: '1px solid black',
     padding: 10,
-    height: '100%',
+    // height: '80%',
     width: '100%',
     boxSizing: 'border-box',
   },
@@ -243,7 +246,7 @@ const estStyles = StyleSheet.create({
   totalBlockLeftText2: {
     fontSize: 10,
     fontFamily: 'Helvetica',
-    paddingTop: 15,
+    paddingTop: 15, marginBottom: 15
   },
   totalBlockLeftText3: {
     fontSize: 10,
@@ -302,7 +305,7 @@ export const EstimatePDF = ({ data }) => (
         <View style={estStyles.header}>
           {/* Left Section: Logo and Company Details */}
           <View style={estStyles.logoContainer}>
-            <Image src="/logo-big-bt.png" style={estStyles.logo} />
+            <Image src="/logo.png" style={estStyles.logo} />
             <View>
               <Text style={estStyles.companyNameBold}>
                 SHARON TELEMATICS PRIVATE LIMITED
@@ -407,35 +410,36 @@ export const EstimatePDF = ({ data }) => (
                   {index + 1}
                 </Text>
                 <Text style={[estStyles.tableRowText, estStyles.secondColumn]}>
-                  {row.productName}
+                  {row.productName}1
                 </Text>
                 <Text style={estStyles.tableRowText}>{row.hsnCode}</Text>
                 <Text style={estStyles.tableRowText}>{row.quantity}</Text>
                 <Text style={estStyles.tableRowText}>
-                  {row.amount / row.quantity}
+                  {row.costPerUnit}
+
                 </Text>
                 <View style={estStyles.subColumnTextContainer}>
                   <Text style={estStyles.subColumnTextRowItem}>9%</Text>
                   <Text style={estStyles.subColumnTextRowItem}>
-                    {(row.amount * 0.09).toFixed(2)}
+                    {(row.totalCost * 0.09).toFixed(2)}
                   </Text>
                 </View>
                 <View style={estStyles.subColumnTextContainer}>
                   <Text style={estStyles.subColumnTextRowItem}>9%</Text>
                   <Text style={estStyles.subColumnTextRowItem}>
-                    {(row.amount * 0.09).toFixed(2)}
+                    {(row.totalCost * 0.09).toFixed(2)}
                   </Text>
                 </View>
                 <Text style={estStyles.tableRowAmtText}>
-                  {row.amount +
-                    (row.amount * 0.09).toFixed(2) +
-                    (row.amount * 0.09).toFixed(2)}
-                </Text>
+  {(row.totalCost + row.totalCost * 0.09 + row.totalCost * 0.09).toFixed(2)}
+</Text>
               </View>
             ))}
         </View>
 
+
         <View style={estStyles.totalBlock}>
+          {/* Left Side: Totals and Bank Details */}
           <View style={estStyles.totalBlockLeft}>
             <Text style={estStyles.totalBlockLeftText1}>
               Items in Total {data.quantity}
@@ -449,7 +453,10 @@ export const EstimatePDF = ({ data }) => (
             <Text style={estStyles.totalBlockLeftText2}>
               Terms & Conditions
             </Text>
-            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+            <Text style={estStyles.totalBlockLeftText2}>
+              
+            </Text>
+            {/* <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
             <Text style={estStyles.totalBlockLeftText1}>
               Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
             </Text>
@@ -460,13 +467,30 @@ export const EstimatePDF = ({ data }) => (
               - A/c No: 131905001314
             </Text>
             <Text style={estStyles.totalBlockLeftText1}>
-              - HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh,
-              530003
+              - HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh, 530003
             </Text>
             <Text style={estStyles.totalBlockLeftText1}>
               - IFSC: HDFC0001319
-            </Text>
+            </Text> */}
+            <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Payment Mode: By Cash / NEFT / RTGS / Cheque
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  A/c No: 131905001314
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh - 530003
+</Text>
+<Text style={estStyles.totalBlockLeftText1}>
+  IFSC: HDFC0001319
+</Text>
           </View>
+
+          {/* Right Side: Signature and Totals */}
           <View style={estStyles.totalBlockRight}>
             <Text style={estStyles.totalBlockRightText}>
               Total {data.totalAmount}
@@ -474,14 +498,13 @@ export const EstimatePDF = ({ data }) => (
             <Text style={estStyles.totalBlockRightTextBold}>
               Amount Due {data.totalAmount}
             </Text>
+            <View style={estStyles.signatureBlock}>
+              <Text style={estStyles.signatureText}>For SHARON TELEMATICS PVT LTD</Text>
+              <Text style={estStyles.signatureTextBottom}>Authorised Signatory</Text>
+            </View>
           </View>
         </View>
 
-        {/* Signature */}
-        <View style={estStyles.signatureBlock}>
-          <Text style={estStyles.signatureText}>Authorized Signature</Text>
-          <Text style={estStyles.signatureTextBottom}>For Sharon Telematics</Text>
-        </View>
       </View>
     </Page>
   </Document>

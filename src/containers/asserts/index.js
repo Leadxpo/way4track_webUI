@@ -15,6 +15,8 @@ const Asserts = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [products, setProducts] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterProducts, setFilterProducts] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [permissions, setPermissions] = useState({});
   const [assetCounts, setAssetCounts] = useState({
@@ -77,7 +79,9 @@ const Asserts = () => {
         });
         if (response.status) {
           // Ensure subDealer details data is an array
+          console.log("rr ggg",response.data);
           setProducts(response.data || []);
+          setFilterProducts(response.data || []);
           console.log(response.data, 'asserts');
         } else {
           setProducts([]);
@@ -141,17 +145,25 @@ const Asserts = () => {
   const handleSearch = async () => {
     await getAssertDataByDate();
   };
+
+  const handleAssertSearch = () => {
+    const filtered = products.filter((product) =>
+      (product.assertsName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      String(product.id).includes(searchTerm)
+    );
+    setFilterProducts(filtered);
+  };
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
   return (
-    <div className="p-8 space-y-6">
+    <div className="space-y-6">
       <div className="flex justify-between items-center py-4 mx-6">
         {/* Left: Staff Details Heading */}
         <h2
           className="text-2xl font-semibold text-gray-800"
           style={{ fontSize: '17px', fontWeight: '500' }}
         >
-          Asserts
+          Assets
         </h2>
 
         {/* Right: Icons and Add Staff Button */}
@@ -182,7 +194,7 @@ const Asserts = () => {
             }}
             onClick={() => navigate('/add-asset')}
           >
-            <span className="text-black mr-2">➕</span> Add Assert
+            <span className="text-black mr-2">➕</span> Add Asset
           </button>
           {/* <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer  ${permissions.add ? 'bg-green-600 ' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
@@ -215,17 +227,19 @@ const Asserts = () => {
       <div style={{ display: 'flex', marginLeft: '30px' }}>
         <input
           type="text"
-          placeholder="Staff ID:"
+          placeholder="Search By Name:"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
           style={{ height: '47px' }}
         />
-        <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
+        <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2" onClick={handleAssertSearch}>
           <FaSearch />
         </button>
       </div>
 
       <div className="p-6 grid grid-cols-3 gap-6">
-        {products.map((asset, index) => (
+        {filterProducts.map((asset, index) => (
           <AssertCard key={index} asset={asset} />
         ))}
       </div>

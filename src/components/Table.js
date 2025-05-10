@@ -61,6 +61,7 @@ const Table = ({
   showEdit = false,
   showDelete = true,
   showDetails = true,
+  showActionColumn = true,
   editText = 'Edit',
   deleteText = 'Delete',
   detailsText = 'More Details',
@@ -69,7 +70,6 @@ const Table = ({
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
-  console.log(columns, '|||||||||||||||');
   return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
@@ -80,6 +80,7 @@ const Table = ({
             <thead className="bg-gray-100 sticky top-0">
               <tr className="bg-blue-500 text-white text-left">
                 {columnNames.map((column, index) => {
+                  console.log("colum",column)
                   const minWidth = Math.max(column.length * 10, 120); // Ensure wider space for longer names
                   return (
                     <th
@@ -90,13 +91,15 @@ const Table = ({
                         minWidth: `${minWidth}px`,
                       }}
                     >
-                      {formatString(column)}
+                      {column}
                     </th>
                   );
                 })}
-                <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                  Action
-                </th>
+                {showActionColumn && (
+                  <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
+                    Action
+                  </th>
+                )}
               </tr>
             </thead>
 
@@ -118,51 +121,53 @@ const Table = ({
                       {row[column] || '-'}
                     </td>
                   ))}
-                  <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
-                    <span
-                      onClick={() => handleActionClick(rowIndex)}
-                      className="cursor-pointer"
-                    >
-                      <FaEllipsisVertical />
-                    </span>
-                    {openRowIndex === rowIndex && (
-                      <div className="absolute top-8 right-0 w-32 bg-white border rounded shadow-lg z-10">
-                        {showEdit && (
-                          <button
-                            onClick={() => {
-                              onEdit(row);
-                              setOpenRowIndex(null);
-                            }}
-                            className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                          >
-                            {editText}
-                          </button>
-                        )}
-                        {showDelete && (
-                          <button
-                            onClick={() => {
-                              onDelete(row);
-                              setOpenRowIndex(null);
-                            }}
-                            className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                          >
-                            {deleteText}
-                          </button>
-                        )}
-                        {showDetails && (
-                          <button
-                            onClick={() => {
-                              onDetails(row);
-                              setOpenRowIndex(null);
-                            }}
-                            className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                          >
-                            {detailsText}
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </td>
+                  {showActionColumn && (
+                    <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
+                      <span
+                        onClick={() => handleActionClick(rowIndex)}
+                        className="cursor-pointer"
+                      >
+                        <FaEllipsisVertical />
+                      </span>
+                      {openRowIndex === rowIndex && (
+                        <div className="absolute top-8 right-0 w-32 bg-white border rounded shadow-lg z-10">
+                          {showEdit && (
+                            <button
+                              onClick={() => {
+                                onEdit(row);
+                                setOpenRowIndex(null);
+                              }}
+                              className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                            >
+                              {editText}
+                            </button>
+                          )}
+                          {showDelete && (
+                            <button
+                              onClick={() => {
+                                onDelete(row);
+                                setOpenRowIndex(null);
+                              }}
+                              className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                            >
+                              {deleteText}
+                            </button>
+                          )}
+                          {showDetails && (
+                            <button
+                              onClick={() => {
+                                onDetails(row);
+                                setOpenRowIndex(null);
+                              }}
+                              className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                            >
+                              {detailsText}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

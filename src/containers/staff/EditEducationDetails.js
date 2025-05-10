@@ -1,10 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
+import { MdFileDownload } from 'react-icons/md';
+
+const urlToBlob = async (url) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return blob;
+};
+
+const blobToFile = (blob, filename) => {
+  return new File([blob], filename, { type: blob.type });
+};
 
 export default function EditEducationDetails() {
   const location = useLocation();
+  const navigate = useNavigate();
   console.log('EducationDetails', location.state);
+  console.log('check0123');
   const [educationDetails, setEducationDetails] = useState([]);
   const [qualification, setQualification] = useState([
     {
@@ -32,9 +45,9 @@ export default function EditEducationDetails() {
       if (qualifications?.length) {
         setQualification(
           qualifications.map((qual) => ({
-            qualificationName: qual.qualificationName || "",
-            marksOrCgpa: qual.marksOrCgpa || "",
-            file: qual.file || null, 
+            qualificationName: qual.qualificationName || '',
+            marksOrCgpa: qual.marksOrCgpa || '',
+            file: qual.file || null,
           }))
         );
       }
@@ -42,11 +55,11 @@ export default function EditEducationDetails() {
       if (experience?.length) {
         setExperience(
           experience.map((exp) => ({
-            previousCompany: exp.previousCompany || "",
-            previous_designation: exp.previous_designation || "",
-            total_experience: exp.total_experience || "",
-            previous_salary: exp.previous_salary || "",
-            letter: exp.letter || "experienceLetter",
+            previousCompany: exp.previousCompany || '',
+            previous_designation: exp.previous_designation || '',
+            total_experience: exp.total_experience || '',
+            previous_salary: exp.previous_salary || '',
+            letter: exp.letter || 'experienceLetter',
             uploadLetters: exp.uploadLetters || null,
           }))
         );
@@ -124,48 +137,76 @@ export default function EditEducationDetails() {
     });
   }, [qualification, experience, setEducationDetails]);
 
+  
+
   const handleSubmit = async () => {
+    console.log('check0');
     try {
       const formData = new FormData();
-      
-      const staffId = location.state?.data?.id; 
-  
+
+      const staffId = location.state?.data?.id;
+
       const qualifications = qualification.map((qual) => ({
         qualificationName: qual.qualificationName,
         marksOrCgpa: qual.marksOrCgpa,
       }));
-  
+
       const experienceDetails = experience.map((exp) => ({
         previousCompany: exp.previousCompany,
         previous_designation: exp.previous_designation,
         total_experience: exp.total_experience,
         previous_salary: exp.previous_salary,
       }));
-  
+
       formData.append('qualifications', JSON.stringify(qualifications));
       formData.append('experienceDetails', JSON.stringify(experienceDetails));
 
-      
-  
       if (staffId) {
         formData.append('id', staffId);
       }
-  
-      qualification.forEach((qual) => {
+
+      // qualification.forEach((qual) => {
+      //   if (qual.file) {
+      //     formData.append('qualificationFiles', qual.file);
+      //   }
+      // });
+
+      // experience.forEach((exp) => {
+      //   if (exp.uploadLetters) {
+      //     formData.append('experience', exp.uploadLetters);
+      //   }
+      // });
+
+      console.log('check1');
+      for (const [i, qual] of qualification.entries()) {
+        console.log('check2');
         if (qual.file) {
-          formData.append('qualificationFiles', qual.file);
+          console.log(qual.file, 'filename');
+          if (typeof qual.file === 'string' && qual.file.startsWith('http')) {
+            const blob = await urlToBlob(qual.file);
+            const file = blobToFile(blob, `qualification_${i}.pdf`);
+            formData.append('qualificationFiles', file);
+          } else {
+            formData.append('qualificationFiles', qual.file);
+          }
         }
-      });
-  
-      experience.forEach((exp) => {
+      }
+
+      for (const [i, exp] of experience.entries()) {
         if (exp.uploadLetters) {
-          formData.append('experience', exp.uploadLetters);
+          if (
+            typeof exp.uploadLetters === 'string' &&
+            exp.uploadLetters.startsWith('http')
+          ) {
+            const blob = await urlToBlob(exp.uploadLetters);
+            const file = blobToFile(blob, `experience_${i}.pdf`);
+            formData.append('experience', file);
+          } else {
+            formData.append('experience', exp.uploadLetters);
+          }
         }
-      });
+      }
 
-
-      
-  
       const response = await ApiService.post(
         '/staff/handleStaffDetails',
         formData,
@@ -173,11 +214,12 @@ export default function EditEducationDetails() {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-  
+
       console.log(response, 'response education details');
-  
+
       if (response.status) {
         alert('Education details updated successfully!');
+        navigate(-1);
         return response.data;
       } else {
         alert('Failed to update education details.');
@@ -189,7 +231,6 @@ export default function EditEducationDetails() {
       return null;
     }
   };
-  
 
   return (
     <div>
@@ -239,11 +280,30 @@ export default function EditEducationDetails() {
                 }
                 // required
               />
-              <input
-                type="file"
-                className="border rounded p-2"
-                onChange={(e) => handleFileChange(index, e)}
-              />
+              <div key={index} className="mb-4">
+                <input
+                  type="file"
+                  className="border rounded p-2"
+                  onChange={(e) => handleFileChange(index, e)}
+                />
+                {qual.file && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <img
+                      src={qual.file}
+                      alt="Preview"
+                      className="h-16 w-16 object-cover border"
+                    />
+                    <a
+                      href={qual.file}
+                      download
+                      className="text-blue-600 hover:underline"
+                    >
+                      {/* Replace with an icon if needed */}
+                      <MdFileDownload className="w-5 h-5" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
 
             {index > 0 && (

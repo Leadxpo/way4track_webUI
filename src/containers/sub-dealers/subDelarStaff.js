@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const PersonnelDetails = () => {
+
+
   const [formData, setFormData] = useState({
     name: '',
     dob: '',
@@ -30,7 +32,7 @@ const [personnelDetails, setPersonnelDetails] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const subDealerDetails = location.state?.subDealerId|| null;
-
+console.log("tggvv vvbbb ",subDealerDetails);
 <PersonnelDetails
 // subId={subDealerDetails}
   personnelDetails={personnelDetails}
@@ -282,7 +284,7 @@ const handleSubmit = async (e) => {
   console.log("unitCode:", unitCode);
   console.log("subDealerId:", subDealerDetails);
 
-  if (!companyCode || !unitCode || !subDealerDetails?.SubDealerId) {
+  if (!companyCode || !unitCode || !subDealerDetails) {
     alert("Missing required metadata (companyCode, unitCode, or subDealerId)");
     return;
   }
@@ -306,7 +308,7 @@ const handleSubmit = async (e) => {
     password: formData.password,
     companyCode: companyCode,
     unitCode: unitCode,
-    subDealerId: subDealerDetails.SubDealerId,
+    subDealerId: subDealerDetails,
   };
 
   try {
@@ -317,6 +319,7 @@ const handleSubmit = async (e) => {
 
     if (response.status) {
       alert("Personnel details submitted successfully!");
+      navigate("/sub-dealer-profile");
     } else {
       alert("Failed to submit personnel details.");
     }
@@ -415,7 +418,8 @@ const handleSubmit = async (e) => {
   className="w-40 p-4 mt-5 text-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg focus:outline-none"
   onClick={handleSubmit}
 >
-  {formData.staffId ? "Update" : "Add"}
+Add
+  {/* {formData.staffId ? "Update" : "Add"} */}
 </button>
 
 
