@@ -7,7 +7,7 @@ const AddEditAppointmentForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const appointmentDetails = location.state?.appointmentDetails || null;
-  console.log("!!!!!!!!",appointmentDetails);
+
   const [formData, setFormData] = useState({
     appointmentType: appointmentDetails?.appointmentType || '',
     name: appointmentDetails?.appointment_name || '',
@@ -141,6 +141,7 @@ const AddEditAppointmentForm = () => {
     const payload = {
       ...formData,
       dateTime: combinedDateTime,
+      // staffId:
     };
 
     try {

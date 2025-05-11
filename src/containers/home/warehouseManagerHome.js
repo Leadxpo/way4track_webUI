@@ -18,6 +18,8 @@ const WarehouseManagerHome = () => {
   
   const [selectedProductBranch, setSelectedProductBranch] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('');
+  const [selectedBranch1, setSelectedBranch1] = useState('');
+
   const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -46,6 +48,30 @@ const WarehouseManagerHome = () => {
 
 
   const [userProfile, setUserProfile] = useState(null);
+
+
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const branchResponse = await ApiService.post('/branch/getBranchNamesDropDown');
+  
+        if (branchResponse?.status && Array.isArray(branchResponse.data)) {
+          setBranches(branchResponse.data);
+        } else {
+          console.error('Failed to fetch branches or invalid data format');
+          setBranches([]);
+        }
+      } catch (error) {
+        console.error('Error fetching branch names:', error);
+        setBranches([]);
+      }
+    };
+  
+    fetchBranches(); // call the async function
+  }, []);
+  
+
 
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
@@ -136,13 +162,6 @@ const WarehouseManagerHome = () => {
 
     fetchProducts();
   }, []);
-
-
-
-
-
-
-
 
 
   const downloadExcel = () => {
@@ -334,19 +353,20 @@ const WarehouseManagerHome = () => {
 
 
       <select
-          id="branch"
-          value={selectedProductBranch}
-          onChange={handleProductSearch}
-          className="border rounded px-4 py-2 w-96"
-        >
-          <option value="">--All Branches --</option>
-          {branches.map((branch, index) => (
-            <option key={branch.id} value={branch.branchName}>
-              {branch.branchName}
-            </option>
-          ))}
-        </select>
+  id="branch"
+  value={selectedBranch}
+  onChange={handleChange}
+  className="border rounded px-4 py-2 w-96"
+>
+  <option value="">-- Select Branch --</option>
+  {branches.map((branch, index) => (
+    <option key={index} value={branch.id}>
+      {branch.branchName} ({branch.branchNumber})
+    </option>
+  ))}
+</select>
 
+    
         <input type="date" placeholder="From" className="border p-2 rounded w-1/4" />
         <input type="date" placeholder="To" className="border p-2 rounded w-1/4" />
         <button

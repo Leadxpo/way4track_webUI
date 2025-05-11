@@ -1,0 +1,42 @@
+.theme-manager {
+  margin-bottom: 3rem;
+}
+
+.content-container {
+  display: flex;
+  margin-top: 2rem;
+  gap: 2rem;
+}
+
+.form-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-container {
+  flex: 1;
+  min-width: 0;
+  position: sticky;
+  top: 2rem;
+  height: calc(100vh - 10rem);
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+@media (max-width: 1024px) {
+  .content-container {
+    flex-direction: column;
+  }
+  
+  .preview-container {
+    position: static;
+    height: auto;
+    margin-top: 2rem;
+  }
+}

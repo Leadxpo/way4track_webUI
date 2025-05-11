@@ -20,6 +20,7 @@ const TableWithSearchFilter = ({
   showEdit = true,
   showDelete = true,
   showDetails = true,
+  showActionColumn=true,
   editText = 'Edit',
   deleteText = 'Delete',
   detailsText = 'More Details',
@@ -571,6 +572,7 @@ const TableWithSearchFilter = ({
           showDetails={showDetails}
           editText={editText}
           deleteText={deleteText}
+          showActionColumn={showActionColumn}
           detailsText={detailsText}
         />
       </div>

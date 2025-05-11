@@ -120,13 +120,16 @@ const EstimateDetails = () => {
   };
   return (
     <div>
-      <div className="flex justify-end mb-4 pr-8">
-        <button
+      <div className="flex justify-center mb-4 pr-8">
+        {/* <button
           className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
           onClick={handleConvertInvoice}
         >
           Convert Invoice
-        </button>
+        </button> */}
+        <h3 className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+        >Estimates</h3>
+        <h1></h1>
       </div>
 
       <div className="p-8 max-w-4xl mx-auto shadow-md rounded-md bg-white">

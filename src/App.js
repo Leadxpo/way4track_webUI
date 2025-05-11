@@ -12,6 +12,9 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem('role') || false
   );
+
+  const homeRole = localStorage.getItem('role');
+  const webUI = localStorage.getItem('webUI');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to handle sidebar visibility
 
   const handleLoginFlag = () => {
@@ -68,20 +71,24 @@ const App = () => {
       ) : (
         <div className="flex min-h-screen">
           {/* Sidebar */}
-          <div
-            className={`bg-gray-800 text-white transition-transform transform z-50 h-screen overflow-y-auto scrollbar-hide
+          {homeRole === 'CEO' && webUI ? (
+            ''
+          ) : (
+            <div
+              className={`bg-gray-800 text-white transition-transform transform z-50 h-screen overflow-y-auto scrollbar-hide
       ${isSidebarOpen ? 'fixed top-0 left-0 w-64 translate-x-0' : 'fixed top-0 left-0 w-64 -translate-x-full'} 
       md:static md:translate-x-0 md:w-64`}
-          >
-            {/* Close button for mobile */}
-            <button
-              className="block md:hidden p-4 text-right text-white"
-              onClick={toggleSidebar}
             >
-              ✕
-            </button>
-            <Sidebar role={role} handleLogoutFlag={handleLogoutFlag} />
-          </div>
+              {/* Close button for mobile */}
+              <button
+                className="block md:hidden p-4 text-right text-white"
+                onClick={toggleSidebar}
+              >
+                ✕
+              </button>
+              <Sidebar role={role} handleLogoutFlag={handleLogoutFlag} />
+            </div>
+          )}
 
           {/* Main Content */}
           <div className="flex-1 h-screen overflow-auto w-full md:w-3/4 bg-white">

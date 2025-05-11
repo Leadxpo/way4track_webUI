@@ -13,7 +13,8 @@ const Receipts = () => {
       showCreateBtn={false}
       showEdit={false}
       showDelete={false}
-      showDetails={true}
+      showDetails={false}
+      showActionColumn={false}
       onDetails={handleDetails}
     />
   );

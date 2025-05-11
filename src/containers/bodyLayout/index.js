@@ -163,6 +163,15 @@ import CeoBackendSupportPayments from '../ceoBackendSupport/ceoBackSupportPaymen
 import AddTicket from '../tickets/AddTicket';
 import EditTicket from '../tickets/EditTicket';
 import ViewTicket from '../tickets/ViewTicket';
+import Ceoui from '../../webui/Ceoui';
+// import AddProductTheme from '../../webui/productthems/AddProductTheme';
+// import ProductTheme1 from '../../webui/Themes/ProductTheme1/ProductTheme1';
+import ProductTheme2 from '../../webui/Themes/ProductTheme2/ProductTheme2';
+import AddDashboardTheme from '../../webui/Dashboard/AddDashboardTheme';
+import EditDashboardTheme from '../../webui/Dashboard/EditDashboardTheme';
+import ThemeManager from "../../webui/productthems/ThemeManager.jsx"
+import DashboardSessionDetails from '../../webui/DashboardSessionDetails.js';
+import BlogPage from "../../webui/Blog/BlogPage.js"
 import SubStaffDetails from '../sub-dealers/SubStaffDetails';
 import AddSubStaff from '../sub-dealers/AddSubStaff';
 import PersonnelDetails from '../sub-dealers/AddSubStaff';
@@ -184,12 +193,17 @@ import OrderDetails from '../websiteOrders/orderDetails';
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const [user, setUser] = useState(null);
+
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [userLocation, setUserLocation] = useState(null);
   let locationInterval = null;
   const role = localStorage.getItem('role');
+
+
+  const webUI = localStorage.getItem('webUI');
   const getPathname = (role = 'ceo') => {
     return formattedPaths[role][location.pathname]?.name || '';
   };
@@ -336,30 +350,32 @@ const BodyLayout = ({ children }) => {
             >
               Bank Account Details
             </button>
-          ) : (
+          ) : (<>
             <div className="w-full md:w-auto relative mb-4 md:mb-0">
-              {/* <input
-                className="w-full md:w-64 border rounded pl-2 text-sm focus:outline-none"
-                placeholder="Search here"
-                value={searchTerm}
-                onChange={handleSearch}
-              /> */}
-              {/* Dropdown for search results */}
-              {searchTerm && results.length > 0 && (
-                <div className="absolute bg-white border rounded shadow-lg z-10 max-h-48 overflow-y-auto w-full">
-                  {results.map((item) => (
-                    <div
-                      key={item.name}
-                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleResultClick(item.route)}
-                    >
-                      {item.name}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {role === 'CEO' ? (
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                  onClick={() => {navigate('/ceoui');localStorage.setItem('webUI', true);}}
+                >
+                  CEO
+                </button>
+              ) : null}
             </div>
-          )}
+            <div className="w-full md:w-auto relative mb-4 md:mb-0">
+              {role === 'CEO'&&webUI ? (
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                  onClick={() => {
+                    localStorage.removeItem('webUI');
+                    navigate('/home');
+                  }}
+                >
+                  home
+                </button>
+              ) : null}
+            </div>
+            
+         </> )}
 
           <div className="flex items-center">
             {/* <span className="text-sm font-medium mr-2">Enable Location</span> */}
@@ -634,6 +650,25 @@ const BodyLayout = ({ children }) => {
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
 
           {/* Add more routes as needed */}
+
+          {/* web ui */}
+
+          <Route path="/ceoui" element={<Ceoui />} />
+          {/* <Route path="/AddProductTheme" element={<AddProductTheme />} /> */}
+        
+          <Route path="/AddDashboardTheme" element={<AddDashboardTheme />} />
+
+          {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
+          <Route path="/ProductTheme2" element={<ProductTheme2 />} />
+
+          <Route path="/EditDashboardTheme" element={<EditDashboardTheme />} />
+          <Route path="/ThemeManager" element={<ThemeManager />} />
+          <Route path="/DashboardSessionDetails" element={<DashboardSessionDetails />} />
+                    <Route path="/BlogPage" element={<BlogPage />} />
+
+
+          {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
+          {/* <Route path="/ProductTheme2" element={<ProductTheme2 />} /> */}
         </Routes>
       </div>
     </div>

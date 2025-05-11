@@ -62,6 +62,7 @@ const Purchase = ({ onEdit, onDetails }) => {
           showEdit={false}
           showDelete={false}
           showDetails={false}
+          showActionColumn={false}
         />
       </div>
     </div>

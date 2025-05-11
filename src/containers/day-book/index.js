@@ -17,8 +17,10 @@ const DayBook = () => {
 
   useEffect(() => {
     const getDayBookDataForReport = async () => {
+      console.log("rrr : ",selectedDate)
       try {
-        const response = await ApiService.post('/dashboards/getDayBookData', {
+        // const response = await ApiService.post('/dashboards/getDayBookData', {
+        const response = await ApiService.post('/dashboards/getDayBookDataForReport', {
           date: selectedDate,
           branchName: dayBook?.branchName,
           companyCode: initialAuthState.companyCode,

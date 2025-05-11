@@ -63,10 +63,27 @@ const TableWithDateFilter = ({
   }, []);
 
   const [searchSubdealer, setSearchSubdealer] = useState('');
+  const [searchInvoice, setSearchInvoice] = useState('');
   const [subdealerList, setSubdealerList] = useState([]);
+  const [invoiceList, setInvoiceList] = useState([]);
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
+
+    if (searchQuery === '') {
+      setFilteredData(invoiceList); // Reset to original data
+    } else {
+      const filteredData = invoiceList.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        )
+      );
+      setFilteredData(filteredData);
+    }
+  };
+
+  const handleSearchInvoice = () => {
+    const searchQuery = searchInvoice.toLowerCase().trim();
 
     if (searchQuery === '') {
       setFilteredData(subdealerList); // Reset to original data
@@ -194,8 +211,8 @@ const TableWithDateFilter = ({
 
       if (response?.length) {
         const cleanedData = response.map((item) => ({
-          requestId:item.
-          requestId
+          requestId: item.
+            requestId
           ,
           requestNumber: item.requestNumber,
           branchName: item.branchName,
@@ -221,7 +238,7 @@ const TableWithDateFilter = ({
     initialAuthState?.companyCode,
     initialAuthState?.unitCode,
   ]);
-  
+
   const getPaymentsData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getPaymentData', {
@@ -247,7 +264,7 @@ const TableWithDateFilter = ({
 
   const getInvoiceData = useCallback(async () => {
     try {
-      const response = await ApiService.post('/dashboards/getVoucherData', {
+      const response = await ApiService.post('/estimate/getAllEstimateDetails', {
         fromDate: dateFrom,
         toDate: dateTo,
         status: statusFilter,
@@ -257,6 +274,7 @@ const TableWithDateFilter = ({
 
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
+        setInvoiceList(response.data); // Assuming the structure is as expected
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch request details.');
@@ -266,6 +284,7 @@ const TableWithDateFilter = ({
       alert('Failed to fetch request details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
+
   useEffect(() => {
     switch (type) {
       case 'sub_dealers':
@@ -298,7 +317,7 @@ const TableWithDateFilter = ({
         dataSource = filteredData;
         break;
       case 'invoice':
-        dataSource = filteredData;
+        dataSource = filteredData.filter((item) => !!item.invoiceId);
         break;
       case 'payments':
         dataSource = filteredData;
@@ -316,8 +335,12 @@ const TableWithDateFilter = ({
         dataSource = [];
     }
     setPageTitle(pageTitles[type]);
-    setColumns(Object.keys(dataSource[0] || {}));
-    setColumnNames(Object.keys(dataSource[0] || {}));
+    const allKeys = Object.keys(dataSource[0] || {});
+    const visibleKeys = type === 'invoice'
+      ? allKeys.filter(key => key.toLowerCase() !== 'products') // remove 'product' column
+      : allKeys;
+    setColumns(visibleKeys);
+    setColumnNames(visibleKeys);
     setData(dataSource);
     setFilteredData(dataSource);
 
@@ -338,7 +361,6 @@ const TableWithDateFilter = ({
   };
 
   const handleBranchFilter = (e) => {
-    console.log('ghhhhhh', e.target.value);
     const selectedBranch = e.target.value;
     setBranchFilter(selectedBranch);
 
@@ -433,13 +455,33 @@ const TableWithDateFilter = ({
           </button>
         </div>
       )}
+      {type === 'invoice' && (
+        <div className="flex mb-4">
+          <div className="flex-grow mx-2">
+            <input
+              type="text"
+              name="name"
+              placeholder="Search by Client Id / Name / Branch"
+              value={searchInvoice}
+              onChange={(e) => setSearchInvoice(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
+            />
+          </div>
+          <button
+            onClick={handleSearchInvoice}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
+        </div>
+      )}
 
       {/* Filters Row */}
-      {type === 'sub_dealers' ? (
+      {type === 'sub_dealers' || type === 'invoice' ? (
         ''
       ) : (
         <div className="flex mb-4">
-          {showDateFilters && (
+          {showDateFilters &&  (
             <div className="flex-grow mr-2">
               <input
                 type="date"
@@ -499,14 +541,12 @@ const TableWithDateFilter = ({
               </div>
             )}
           </div>
-          {false && (
             <button
               onClick={handleSearch}
               className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
             >
               <FaSearch className="mr-2" /> Search
             </button>
-          )}
         </div>
       )}
 
@@ -519,9 +559,9 @@ const TableWithDateFilter = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onDetails={onDetails}
-          showEdit={true} // Ensure Edit button is always visible
-          showDelete={true} // Ensure Delete button is always visible
-          showDetails={true} // Ensure Details button is always visible
+          showEdit={showEdit} // Ensure Edit button is always visible
+          showDelete={showDelete} // Ensure Delete button is always visible
+          showDetails={showDetails} // Ensure Details button is always visible
           showActionColumn={type !== 'payments'}
           editText={editText} // Custom edit button text
           deleteText={deleteText} // Custom delete button text
