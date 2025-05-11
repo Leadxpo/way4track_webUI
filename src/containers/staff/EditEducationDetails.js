@@ -137,8 +137,6 @@ export default function EditEducationDetails() {
     });
   }, [qualification, experience, setEducationDetails]);
 
-  
-
   const handleSubmit = async () => {
     console.log('check0');
     try {

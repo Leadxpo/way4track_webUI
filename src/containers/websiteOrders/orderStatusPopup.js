@@ -21,8 +21,9 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
     dateStr ? new Date(dateStr).toISOString().split('T')[0] : '';
   const [orderDate, setOrderDate] = useState(formatDate(order.orderDate) || '');
   const [deliveryDate, setDeliveryDate] = useState(
-    formatDate(order.deliveryDate) || ''
+    formatDate(order.delivaryDate) || ''
   );
+  console.log(deliveryDate, 'delivery date');
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,7 +44,8 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
       id: order.id,
-      order_status: status.toLowerCase(),
+      orderStatus: status.toLowerCase(),
+      delivaryDate: deliveryDate,
     };
 
     try {

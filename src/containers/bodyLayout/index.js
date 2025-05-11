@@ -179,6 +179,7 @@ import EditSubDealer from '../sub-dealers/EditSubDealer';
 import CustomHome from '../home/CustomHome';
 
 import WebsiteOrders from '../websiteOrders/websiteOrders';
+import OrderDetails from '../websiteOrders/orderDetails';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -630,6 +631,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/attendance-details" element={<AttendanceDetails />} />
           <Route path="/attendance-edit" element={<EditAttendance />} />
           <Route path="/all-orders" element={<WebsiteOrders />} />
+          <Route path="/order-details/:orderId" element={<OrderDetails />} />
+
           {/* Add more routes as needed */}
         </Routes>
       </div>

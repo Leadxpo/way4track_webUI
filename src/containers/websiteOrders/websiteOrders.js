@@ -58,7 +58,7 @@ export default function WebsiteOrders() {
             {orders.map((order) => (
               <tr key={order.id} className="website-orders-row">
                 <td className="website-orders-td">{order.id}</td>
-                <td className="website-orders-td">{order.client?.name}</td>
+                <td className="website-orders-td">{order?.name}</td>
                 <td className="website-orders-td">
                   {new Date(order.orderDate).toLocaleDateString()}
                 </td>
@@ -68,7 +68,7 @@ export default function WebsiteOrders() {
                     onClick={() => handleStatusClick(order)}
                     className="website-orders-status-button"
                   >
-                    {order.paymentStatus}
+                    {order.orderStatus}
                   </button>
                 </td>
                 <td className="website-orders-td">
