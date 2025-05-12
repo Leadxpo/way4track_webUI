@@ -178,6 +178,7 @@ import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router';
 import { initialAuthState } from '../../services/ApiService';
+import { FaFilePdf } from 'react-icons/fa';
 
 const EditHiring = () => {
   const [candidate, setCandidate] = useState(null);
@@ -384,7 +385,30 @@ const EditHiring = () => {
                 <p>Phone Number: {candidate.phoneNumber}</p>
                 <p>Level: {candidate.hiringLevel}</p>
                 <p>Address: {candidate.address}</p>
-                <p>Resume: {candidate.resume}</p>
+                 <p style={{ display: 'flex', alignItems: 'center' }}>
+  <span style={{ marginRight: '8px' }}>Resume:</span>
+  <a
+    href={candidate.resumePath}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '4px 8px',
+      backgroundColor: '#f5f5f5',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      textDecoration: 'none',
+      color: '#000',
+      fontSize: '14px',
+    }}
+  >
+    <FaFilePdf style={{ color: 'red', marginRight: '8px' }} />
+    Download Resume
+  </a>
+</p>
+
+               
                 <p>Status: {candidate.status}</p>
               </div>
             </div>

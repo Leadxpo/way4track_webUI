@@ -87,6 +87,7 @@ const BranchList = () => {
         });
 
         if (response.status && Array.isArray(response.data)) {
+          console.log("res  hhhjjll",response.data);
           const staffData = response.data.map((staff) => ({
             staffId: staff.staffId?.trim() || "",
             name: staff.name?.trim() || "",
@@ -144,6 +145,7 @@ const BranchList = () => {
 
 
   const formatExcelData = (data) => {
+    console.log("dddddd",data);
     return data.map((item) => ({
       "Emp ID": item.staffId,
       "Name of the Employee": item.name,
@@ -199,7 +201,7 @@ const BranchList = () => {
     const filteredEmployees = employees.filter(emp =>
       !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
     );
-
+   console.log("jjjj",filteredEmployees);
     const formattedData = formatExcelData(filteredEmployees);
 
     if (formattedData.length === 0) {
