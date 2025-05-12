@@ -166,7 +166,7 @@ import ViewTicket from '../tickets/ViewTicket';
 import Ceoui from '../../webui/Ceoui';
 // import AddProductTheme from '../../webui/productthems/AddProductTheme';
 // import ProductTheme1 from '../../webui/Themes/ProductTheme1/ProductTheme1';
-import ProductTheme2 from '../../webui/Themes/ProductTheme2/ProductTheme2';
+// import ProductTheme2 from '../../webui/Themes/ProductTheme2/Landingpage2.jsx';
 import AddDashboardTheme from '../../webui/Dashboard/AddDashboardTheme';
 import EditDashboardTheme from '../../webui/Dashboard/EditDashboardTheme';
 import ThemeManager from "../../webui/productthems/ThemeManager.jsx"
@@ -659,7 +659,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/AddDashboardTheme" element={<AddDashboardTheme />} />
 
           {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
-          <Route path="/ProductTheme2" element={<ProductTheme2 />} />
+          {/* <Route path="/ProductTheme2" element={<ProductTheme2 />} /> */}
 
           <Route path="/EditDashboardTheme" element={<EditDashboardTheme />} />
           <Route path="/ThemeManager" element={<ThemeManager />} />

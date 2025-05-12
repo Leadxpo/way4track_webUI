@@ -14,7 +14,7 @@ import '../productthems/styles/ThemeManager.css';
 function ThemeManager() {
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [stepsData, setStepsData] = useState([
-    { fields: { steps: [] }, images: [], points: [] },
+    { fields: { steps: [] }, images: [], points: [], },
   ]);
   const [currentStep, setCurrentStep] = useState(0);
   const [imagePreviews, setImagePreviews] = useState({});
@@ -288,6 +288,8 @@ function ThemeManager() {
             setStepRepeatedItems={setStepRepeatedItems}
             setStepsData={setStepsData}
             stepsData={stepsData}
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
             currentStep={currentStep}
           />
         );
@@ -398,6 +400,10 @@ function ThemeManager() {
                 selectedTheme={selectedTheme}
                 stepsData={stepsData}
                 imagePreviews={imagePreviews}
+                aminitiesData={stepRepeatedItems[1]}
+                applicationData={stepRepeatedItems[2]}
+                deviceData={step4Items}
+                productAppData={step5Items}
               />
             )}
           </div>

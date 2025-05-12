@@ -3,14 +3,15 @@ import "../styles/FormSteps.css";
 
 
 
-function FormStepOne({ 
-  stepsData, 
-  setStepsData, 
-  handleFieldChange, 
-  handleImageChange, 
+function FormStepOne({
+  stepsData,
+  setStepsData,
+  handleFieldChange,
+  handleImageChange,
   imagePreviews,
-  selectedTheme 
+  selectedTheme
 }) {
+
   const handleStepChange = (index, field, value) => {
     const updatedSteps = [...stepsData];
     const stepList = [...(updatedSteps[0].fields.steps || [])];
@@ -50,7 +51,7 @@ function FormStepOne({
       ...updatedSteps[0].points[index],
       [field]: value
     };
-    
+
     setStepsData(updatedSteps);
   };
 
@@ -73,7 +74,7 @@ function FormStepOne({
   return (
     <div className="form-step">
       <h2 className="form-step-title">Product Details</h2>
-      
+      {/* basic data */}
       <section className="form-section">
         <h3 className="section-title">Basic Information</h3>
         <div className="form-group">
@@ -86,7 +87,7 @@ function FormStepOne({
             placeholder="Enter product name"
           />
         </div>
-        
+
         <div className="form-group">
           <label className="form-label">Short Description</label>
           <input
@@ -97,7 +98,7 @@ function FormStepOne({
             placeholder="Brief product description"
           />
         </div>
-        
+
         <div className="form-group">
           <label className="form-label">Full Description</label>
           <textarea
@@ -109,7 +110,8 @@ function FormStepOne({
           />
         </div>
       </section>
-      
+            {/* banners data */}
+      { selectedTheme.id!=="theme4" &&
       <section className="form-section">
         <h3 className="section-title">Banner Images</h3>
         <div className="form-row">
@@ -119,12 +121,12 @@ function FormStepOne({
               <div className="image-upload-container">
                 {imagePreviews[`image${index}`] ? (
                   <div className="image-preview-container">
-                    <img 
-                      src={imagePreviews[`image${index}`]} 
-                      alt={`Banner ${index + 1}`} 
-                      className="image-preview" 
+                    <img
+                      src={imagePreviews[`image${index}`]}
+                      alt={`Banner ${index + 1}`}
+                      className="image-preview"
                     />
-                    <button 
+                    <button
                       className="remove-image-btn"
                       onClick={() => {
                         const updatedSteps = [...stepsData];
@@ -164,10 +166,12 @@ function FormStepOne({
           ))}
         </div>
       </section>
-      
+      }
+      {/* featurs data */}
+      { selectedTheme.id!=="theme4" &&
       <section className="form-section">
         <h3 className="section-title">Product Features</h3>
-        
+
         <h4 className="subsection-title">Key Points</h4>
         {stepsData[0]?.points?.map((point, index) => (
           <div className="feature-point" key={index}>
@@ -204,7 +208,7 @@ function FormStepOne({
             </div>
           </div>
         ))}
-        
+
         <button
           type="button"
           className="btn btn-outline-primary btn-sm"
@@ -217,10 +221,11 @@ function FormStepOne({
           Add Feature Point
         </button>
       </section>
-      
+}
+      {/* how it works data */}
       <section className="form-section">
         <h3 className="section-title">How It Works</h3>
-        
+
         {stepsData[0]?.fields?.steps?.map((step, idx) => (
           <div className="step-item" key={idx}>
             <div className="step-number">{idx + 1}</div>
@@ -258,7 +263,7 @@ function FormStepOne({
             </div>
           </div>
         ))}
-        
+
         <button
           type="button"
           className="btn btn-outline-primary btn-sm"
@@ -271,22 +276,22 @@ function FormStepOne({
           Add New Step
         </button>
       </section>
-      
+      {/* media data */}
       <section className="form-section">
         <h3 className="section-title">Additional Media</h3>
-        
+
         <div className="form-row">
           <div className="form-group col-4">
             <label className="form-label">Blog Image</label>
             <div className="image-upload-container">
               {imagePreviews.blogImage ? (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreviews.blogImage} 
-                    alt="Blog" 
-                    className="image-preview" 
+                  <img
+                    src={imagePreviews.blogImage}
+                    alt="Blog"
+                    className="image-preview"
                   />
-                  <button 
+                  <button
                     className="remove-image-btn"
                     onClick={() => {
                       const updatedSteps = [...stepsData];
@@ -323,18 +328,18 @@ function FormStepOne({
               )}
             </div>
           </div>
-          
+
           <div className="form-group col-4">
             <label className="form-label">Home Banner</label>
             <div className="image-upload-container">
               {imagePreviews.homeBanner ? (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreviews.homeBanner} 
-                    alt="Home Banner" 
-                    className="image-preview" 
+                  <img
+                    src={imagePreviews.homeBanner}
+                    alt="Home Banner"
+                    className="image-preview"
                   />
-                  <button 
+                  <button
                     className="remove-image-btn"
                     onClick={() => {
                       const updatedSteps = [...stepsData];
@@ -371,18 +376,18 @@ function FormStepOne({
               )}
             </div>
           </div>
-          
+
           <div className="form-group col-4">
             <label className="form-label">Footer Banner</label>
             <div className="image-upload-container">
               {imagePreviews.footerBanner ? (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreviews.footerBanner} 
-                    alt="Footer Banner" 
-                    className="image-preview" 
+                  <img
+                    src={imagePreviews.footerBanner}
+                    alt="Footer Banner"
+                    className="image-preview"
                   />
-                  <button 
+                  <button
                     className="remove-image-btn"
                     onClick={() => {
                       const updatedSteps = [...stepsData];
@@ -420,19 +425,19 @@ function FormStepOne({
             </div>
           </div>
         </div>
-        
+
         <div className="form-row">
           <div className="form-group col-6">
             <label className="form-label">Choose Image</label>
             <div className="image-upload-container">
               {imagePreviews.chooseImage ? (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreviews.chooseImage} 
-                    alt="Choose" 
-                    className="image-preview" 
+                  <img
+                    src={imagePreviews.chooseImage}
+                    alt="Choose"
+                    className="image-preview"
                   />
-                  <button 
+                  <button
                     className="remove-image-btn"
                     onClick={() => {
                       const updatedSteps = [...stepsData];
@@ -469,18 +474,18 @@ function FormStepOne({
               )}
             </div>
           </div>
-          
+
           <div className="form-group col-6">
             <label className="form-label">Product Icon</label>
             <div className="image-upload-container">
               {imagePreviews.productIcon ? (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreviews.productIcon} 
-                    alt="Product Icon" 
-                    className="image-preview" 
+                  <img
+                    src={imagePreviews.productIcon}
+                    alt="Product Icon"
+                    className="image-preview"
                   />
-                  <button 
+                  <button
                     className="remove-image-btn"
                     onClick={() => {
                       const updatedSteps = [...stepsData];
