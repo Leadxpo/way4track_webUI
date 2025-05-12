@@ -72,7 +72,8 @@ export const menuOptions = {
     {
       name: 'Payments',
       icon: <img src="./payments.png" />,
-      route: '/work-view-payments',
+      // route: '/work-view-payments',
+      route: '/payments',
     },
     { name: 'Receipt', icon: <img src="./receipt.png" />, route: '/receipts' },
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
