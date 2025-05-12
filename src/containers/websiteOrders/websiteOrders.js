@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import OrderStatusPopup from './orderStatusPopup';
 import './websiteOrders.css';
@@ -42,6 +42,12 @@ export default function WebsiteOrders() {
   return (
     <div className="website-orders-container">
       <h2 className="website-orders-title">Customer Orders</h2>
+      <Link to="/replace-requests">
+        {/* <button type="button" className="website-orders-title"> */}
+        Replace Requests
+        {/* </button> */}
+      </Link>
+
       <div className="website-orders-table-wrapper">
         <table className="website-orders-table">
           <thead>
