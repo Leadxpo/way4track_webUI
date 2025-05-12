@@ -19,7 +19,7 @@ export default function AddStaffForm() {
     employerDetails: {},
   }));
 
-  console.log('Current Form Data:', formData.educationDetails);
+  console.log('Current Form Data:', formData);
 
   const validateStep = useCallback(() => {
     let errorMessage = '';

@@ -60,7 +60,7 @@ const TableWithDateFilter = ({
     };
 
     fetchBranches();
-  }, []);
+  }, [branches]);
 
   const [searchSubdealer, setSearchSubdealer] = useState('');
   const [searchInvoice, setSearchInvoice] = useState('');
@@ -310,46 +310,76 @@ const TableWithDateFilter = ({
     }
   }, [type]);
 
+  // useEffect(() => {
+  //   let dataSource = [];
+  //   switch (type) {
+  //     case 'estimate':
+  //       dataSource = filteredData;
+  //       break;
+  //     case 'invoice':
+  //       dataSource = filteredData.filter((item) => !!item.invoiceId);
+  //       break;
+  //     case 'payments':
+  //       dataSource = filteredData;
+  //       break;
+  //     case 'requests':
+  //       dataSource = filteredData;
+  //       break;
+  //     case 'vendors':
+  //       dataSource = filteredData;
+  //       break;
+  //     case 'sub_dealers':
+  //       dataSource = filteredData;
+  //       break;
+  //     default:
+  //       dataSource = [];
+  //   }
+  //   setPageTitle(pageTitles[type]);
+  //   const allKeys = Object.keys(dataSource[0] || {});
+  //   const visibleKeys = type === 'invoice'
+  //     ? allKeys.filter(key => key.toLowerCase() !== 'products') // remove 'product' column
+  //     : allKeys;
+  //   setColumns(visibleKeys);
+  //   setColumnNames(visibleKeys);
+  //   setData(dataSource);
+  //   setFilteredData(dataSource);
+
+  //   // Extract unique statuses
+  //   const uniqueStatuses = [...new Set(dataSource.map((item) => item.status))];
+  //   setStatuses(uniqueStatuses);
+  // }, [type, filteredData]);
+
+  // Handle status filter change
+
   useEffect(() => {
     let dataSource = [];
-    switch (type) {
-      case 'estimate':
-        dataSource = filteredData;
-        break;
-      case 'invoice':
-        dataSource = filteredData.filter((item) => !!item.invoiceId);
-        break;
-      case 'payments':
-        dataSource = filteredData;
-        break;
-      case 'requests':
-        dataSource = filteredData;
-        break;
-      case 'vendors':
-        dataSource = filteredData;
-        break;
-      case 'sub_dealers':
-        dataSource = filteredData;
-        break;
-      default:
-        dataSource = [];
+
+    if (type === 'invoice') {
+      dataSource = filteredData.filter((item) => !!item.invoiceId);
+    } else {
+      dataSource = filteredData;
     }
+
     setPageTitle(pageTitles[type]);
+
     const allKeys = Object.keys(dataSource[0] || {});
     const visibleKeys = type === 'invoice'
-      ? allKeys.filter(key => key.toLowerCase() !== 'products') // remove 'product' column
+      ? allKeys.filter(key => key.toLowerCase() !== 'products')
       : allKeys;
+
     setColumns(visibleKeys);
     setColumnNames(visibleKeys);
     setData(dataSource);
-    setFilteredData(dataSource);
 
-    // Extract unique statuses
+    // ✅ Only update if different
+    setFilteredData((prev) =>
+      JSON.stringify(prev) !== JSON.stringify(dataSource) ? dataSource : prev
+    );
+
     const uniqueStatuses = [...new Set(dataSource.map((item) => item.status))];
     setStatuses(uniqueStatuses);
-  }, [type, filteredData]);
+  }, [type, filteredData]); // ← still safe with diff check
 
-  // Handle status filter change
   const handleStatusChange = (e) => {
     const selectedStatus = e.target.value;
     setStatusFilter(selectedStatus);
@@ -481,7 +511,7 @@ const TableWithDateFilter = ({
         ''
       ) : (
         <div className="flex mb-4">
-          {showDateFilters &&  (
+          {showDateFilters && (
             <div className="flex-grow mr-2">
               <input
                 type="date"
@@ -541,12 +571,12 @@ const TableWithDateFilter = ({
               </div>
             )}
           </div>
-            <button
-              onClick={handleSearch}
-              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
-            >
-              <FaSearch className="mr-2" /> Search
-            </button>
+          <button
+            onClick={handleSearch}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
         </div>
       )}
 

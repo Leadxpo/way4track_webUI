@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import OrderStatusPopup from './orderStatusPopup';
 import './websiteOrders.css';
@@ -34,14 +34,20 @@ export default function WebsiteOrders() {
   const handleStatusUpdate = async (updatedOrder) => {
     const response = await ApiService.post('/order/updateStatus', updatedOrder);
     if (response.status) {
-      fetchOrders();
       setShowModal(false);
+      fetchOrders();
     }
   };
 
   return (
     <div className="website-orders-container">
       <h2 className="website-orders-title">Customer Orders</h2>
+      <Link to="/replace-requests">
+        {/* <button type="button" className="website-orders-title"> */}
+        Replace Requests
+        {/* </button> */}
+      </Link>
+
       <div className="website-orders-table-wrapper">
         <table className="website-orders-table">
           <thead>
@@ -58,7 +64,7 @@ export default function WebsiteOrders() {
             {orders.map((order) => (
               <tr key={order.id} className="website-orders-row">
                 <td className="website-orders-td">{order.id}</td>
-                <td className="website-orders-td">{order.client?.name}</td>
+                <td className="website-orders-td">{order?.name}</td>
                 <td className="website-orders-td">
                   {new Date(order.orderDate).toLocaleDateString()}
                 </td>
@@ -68,7 +74,7 @@ export default function WebsiteOrders() {
                     onClick={() => handleStatusClick(order)}
                     className="website-orders-status-button"
                   >
-                    {order.paymentStatus}
+                    {order.orderStatus}
                   </button>
                 </td>
                 <td className="website-orders-td">

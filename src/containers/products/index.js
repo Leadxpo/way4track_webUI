@@ -320,15 +320,14 @@ const Products = () => {
     const matchesProduct = item?.productName
       ?.toLowerCase()
       .includes(searchData.productName.toLowerCase());
-  
+
     const branchToCompare = searchData.branchName || selectedBranch;
     const matchesBranch = item?.branchName
       ?.toLowerCase()
       .includes(branchToCompare.toLowerCase());
-  
+
     return matchesProduct && matchesBranch;
   });
-  
 
   const filteredInHandStock = inHandStock.filter(
     (item) =>
@@ -584,6 +583,18 @@ const Products = () => {
                 </div>
               </div>
             )}
+
+            {/* <div
+              className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+              onClick={() => setSelected('handstock')}
+            >
+              <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                <span className="text-gray-800 font-medium">
+                  In Hand Products
+                </span>
+              </div>
+              <div className="text-white text-5xl font-extrabold mt-6">220</div>
+            </div> */}
 
             {/* <div
             className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"

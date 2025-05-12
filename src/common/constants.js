@@ -72,7 +72,8 @@ export const menuOptions = {
     {
       name: 'Payments',
       icon: <img src="./payments.png" />,
-      route: '/work-view-payments',
+      // route: '/work-view-payments',
+      route: '/payments',
     },
     { name: 'Receipt', icon: <img src="./receipt.png" />, route: '/receipts' },
     { name: 'Hiring', icon: <img src="./hiring.png" />, route: '/hiring' },
@@ -327,7 +328,7 @@ export const menuOptions = {
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'tele caller': [
+  'tele caller associate': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -340,7 +341,7 @@ export const menuOptions = {
     },
   ],
 
-  'sales man': [
+  'field sales executive': [
     { name: 'Home', icon: <img src="./home.png" />, route: '/salesman-home' },
     {
       name: 'Products',
@@ -439,7 +440,7 @@ export const menuOptions = {
       route: '/performance',
     },
   ],
-  'backend support': [
+  'backend support executive': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -726,7 +727,7 @@ export const formattedPaths = {
       icon: <img src="./maintenance.png" />,
     },
   },
-  'Tele caller': {
+  'Tele caller ass': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/customer-requests': {
       name: 'Customer Requests',
@@ -811,7 +812,7 @@ export const formattedPaths = {
     '/receipts': { name: 'Receipts', icon: <img src="./receipts.png" /> },
     '/reports': { name: 'Reports', icon: <img src="./reports.png" /> },
   },
-  'sales man': {
+  'field sales executive': {
     '/salesman-home': { name: 'Home', icon: <img src="./home.png" /> },
     '/products': { name: 'Products', icon: <img src="./products.png" /> },
     '/requests': { name: 'Requests', icon: <img src="./request.png" /> },

@@ -247,7 +247,7 @@ const PaymentForm = () => {
     //   console.log("qqqqqqqqpayload",payload)
 
     const payloadObj = {
-      date: formData.date,
+      generationDate: formData.date,
       day: formData.day,
       bankAccountNumber: formData.bankAccountNumber,
       pendingInvoices: formData.pendingInvoices.map((item) => ({

@@ -2,39 +2,38 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './orderStatusPopup.css';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-// import { useNavigate } from 'react-router';
 
 const statusOptions = [
-  'Pending',
-  'Received',
-  'Dispatched',
-  'Delivered',
-  'Aborted',
-  'Cancelled',
+  { label: 'Pending', value: 'pending' },
+  { label: 'Success', value: 'success' },
+  { label: 'Aborted', value: 'aborted' },
+  { label: 'Cancelled', value: 'cancelled' },
+  { label: 'Received', value: 'received' },
+  { label: 'Dispatched', value: 'dispatched' },
+  { label: 'Delivered', value: 'delivered' },
+  { label: 'Request Raised', value: 'request_raised' },
+  { label: 'Request Approved', value: 'request_approved' },
+  { label: 'Request Rejected', value: 'request_reject' },
+  { label: 'Request Success', value: 'request_sucess' },
 ];
 
 const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
-  console.log(order, 'order details');
-  const [status, setStatus] = useState(order.status || 'Pending');
-  const navigate = useNavigate();
-  const formatDate = (dateStr) =>
-    dateStr ? new Date(dateStr).toISOString().split('T')[0] : '';
+  const [status, setStatus] = useState(
+    order.status?.toLowerCase() || 'pending'
+  );
   const [orderDate, setOrderDate] = useState(formatDate(order.orderDate) || '');
   const [deliveryDate, setDeliveryDate] = useState(
-    formatDate(order.deliveryDate) || ''
+    formatDate(order.delivaryDate) || ''
   );
-
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  //   const handleUpdate = () => {
-  //     const updateData = {
-  //       status: status.toUpperCase(),
-  //       orderDate,
-  //       deliveryDate,
-  //     };
-  //     onUpdate(order.id, updateData);
-  //     onClose();
-  //   };
+  const clientDbId = localStorage.getItem('client_db_id');
+  console.log(order, 'ckjbfjef');
+
+  function formatDate(dateStr) {
+    return dateStr ? new Date(dateStr).toISOString().split('T')[0] : '';
+  }
 
   const handleUpdate = async () => {
     setIsLoading(true);
@@ -43,7 +42,11 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
       id: order.id,
-      order_status: status.toLowerCase(),
+      orderStatus: status,
+      delivaryDate: deliveryDate,
+      clientId:order.client.id,
+      deliveryAddressId: order.deliveryAddressId.id,
+      buildingAddressId: order.buildingAddressId.id,
     };
 
     try {
@@ -53,13 +56,14 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
       );
 
       if (response.status) {
-        alert('Order Updated successfully:', response);
-        // navigate('/order-success', { state: { order: response.data } });
+        alert('Order updated successfully');
+        onUpdate?.(order.id, payload);
+        onClose();
       } else {
         throw new Error('Failed to update order');
       }
     } catch (err) {
-      console.error('Error update order:', err);
+      console.error('Error updating order:', err);
     } finally {
       setIsLoading(false);
     }
@@ -78,8 +82,8 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
             onChange={(e) => setStatus(e.target.value)}
           >
             {statusOptions.map((option) => (
-              <option key={option} className="status-option">
-                {option}
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
@@ -107,10 +111,18 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
         </div>
 
         <div className="button-container">
-          <button className="update-button" onClick={handleUpdate}>
-            Update
+          <button
+            className="update-button"
+            onClick={handleUpdate}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Updating...' : 'Update'}
           </button>
-          <button className="cancel-button" onClick={onClose}>
+          <button
+            className="cancel-button"
+            onClick={onClose}
+            disabled={isLoading}
+          >
             Cancel
           </button>
         </div>
