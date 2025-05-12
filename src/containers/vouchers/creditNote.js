@@ -190,7 +190,7 @@ const CreditNoteForm = () => {
      e.preventDefault(); 
      const payload = new FormData();
  
-     payload.append('date', formData.date);
+     payload.append('generationDate', formData.date);
      payload.append('day', formData.day);
      payload.append('ledgerId', Number(formData.ledgerId));
      payload.append('branchId', Number(localStorage.getItem("branchId")));

@@ -11,6 +11,7 @@ const SaleForm = () => {
   const [formData, setFormData] = useState({
     date: null,
     day: '',
+    dueDate:null,
     partyName: '',
     ledgerId: '',
     voucherType: 'SALES',
@@ -91,6 +92,15 @@ const SaleForm = () => {
       ...prev,
       date: value,
       day: dayName,
+    }));
+  };
+
+  const handleDueDateChange = (e) => {
+    const value = e.target.value;
+
+    setFormData((prev) => ({
+      ...prev,
+      dueDate: value
     }));
   };
 
@@ -238,8 +248,9 @@ const SaleForm = () => {
     e.preventDefault();
 
     const payloadObject = {
-      date: formData.date,
+      generationDate: formData.date,
       day: formData.day,
+      dueDate: formData.dueDate,
       branchId: Number(localStorage.getItem('branchId')),
       ledgerId: Number(formData?.ledgerId),
       voucherType: formData.voucherType,
@@ -455,6 +466,25 @@ const SaleForm = () => {
           }}
         />
 
+        <input
+          type="date"
+          placeholder="Date:"
+          value={formData.dueDate}
+          name="date"
+          onChange={handleDueDateChange}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+
         <select
           value={formData.ledgerId}
           onChange={handleLedgerChange}
@@ -656,6 +686,7 @@ const SaleForm = () => {
           )}
         </div>
       </div>
+      
 
       {/* Entries */}
       <div
