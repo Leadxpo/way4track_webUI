@@ -137,7 +137,7 @@ function ThemeManager() {
         'website-product/handleWebsiteProductDetails',
         step1Data
       );
-      console.log('Step 1 Response:', step1Res);
+      console.log('Step 1 Response.........:', step1Res);
 
       const webProductId = step1Res.data.id;
       const webProductName = step1Res.data.name;
@@ -278,6 +278,7 @@ function ThemeManager() {
             handleFieldChange={handleFieldChange}
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
+            setImagePreviews={setImagePreviews}
             selectedTheme={selectedTheme}
           />
         );

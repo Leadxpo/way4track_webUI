@@ -163,11 +163,11 @@ function Notifications() {
               </div>
             </div>
             {/* Unread Notification Badge */}
-            {!notification.isRead && (
+            {/* {!notification.isRead && (
               <div className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
                 {notification.id}
               </div>
-            )}
+            )} */}
           </div>
         ))}
       </div>

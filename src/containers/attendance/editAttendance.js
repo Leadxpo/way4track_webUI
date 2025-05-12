@@ -103,10 +103,10 @@ const EditAttendance = () => {
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Edit Staff Attendance</h2>
+      <h2 className="text-2xl font-bold mb-4">Edit Employee Attendance</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {orderedFields.map((key) => (
+        {fieldLabels.map((key) => (
           <div key={key}>
             <label className="block font-semibold mb-1">
               {fieldLabels[key]}

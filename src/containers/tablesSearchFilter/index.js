@@ -126,7 +126,8 @@ const TableWithSearchFilter = ({
       if (response.status) {
         const filteredData = response.data.map(({ qualifications, ...rest }) => ({
           ...rest,
-          dateOfUpload: rest.dateOfUpload?.split('T')[0], // Extract just the date
+          // dateOfUpload: rest.dateOfUpload?.split('T')[0], // Extract just the date
+          dateOfUpload: rest.dateOfUpload.split('T')[0].split('-').reverse().join('-')
         }));
         setFilteredData(filteredData);
       } else {

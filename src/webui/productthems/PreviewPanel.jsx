@@ -13,7 +13,7 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
       'https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
     const previewData = {
-      name: stepsData[0]?.fields?.name || 'Product Name',
+      name: stepsData[0]?.fields?.name || 'Product ',
       description:
         stepsData[0]?.fields?.description || 'Product description goes here...',
       shortDescription:
@@ -39,7 +39,6 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
       deviceData: deviceData || [],
       productAppData: productAppData || []
     };
-    console.log("rrr:", selectedTheme.id)
     switch (selectedTheme.id) {
       // case 'theme1':
       //   return <ProductTheme1 data={previewData} />;

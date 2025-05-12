@@ -1,15 +1,14 @@
 import React from 'react';
 import "../styles/FormSteps.css";
 
-
-
-function FormStepOne({
-  stepsData,
-  setStepsData,
-  handleFieldChange,
-  handleImageChange,
+function FormStepOne({ 
+  stepsData, 
+  setStepsData, 
+  handleFieldChange, 
+  handleImageChange, 
   imagePreviews,
-  selectedTheme
+  setImagePreviews,
+  selectedTheme 
 }) {
 
   const handleStepChange = (index, field, value) => {
@@ -71,6 +70,30 @@ function FormStepOne({
     setStepsData(updatedSteps);
   };
 
+  const handleRemoveBannerImage = (index) => {
+    const updatedSteps = [...stepsData];
+    updatedSteps[0].images[index] = null;
+    setStepsData(updatedSteps);
+    
+    setImagePreviews(prev => {
+      const updated = {...prev};
+      delete updated[`image${index}`];
+      return updated;
+    });
+  };
+
+  const handleRemoveFieldImage = (field) => {
+    const updatedSteps = [...stepsData];
+    updatedSteps[0].fields[field] = null;
+    setStepsData(updatedSteps);
+    
+    setImagePreviews(prev => {
+      const updated = {...prev};
+      delete updated[field];
+      return updated;
+    });
+  };
+
   return (
     <div className="form-step">
       <h2 className="form-step-title">Product Details</h2>
@@ -128,16 +151,7 @@ function FormStepOne({
                     />
                     <button
                       className="remove-image-btn"
-                      onClick={() => {
-                        const updatedSteps = [...stepsData];
-                        updatedSteps[0].images[index] = null;
-                        setStepsData(updatedSteps);
-                        // setImagePreviews(prev => {
-                        //   const updated = {...prev};
-                        //   delete updated[`image${index}`];
-                        //   return updated;
-                        // });
-                      }}
+                      onClick={() => handleRemoveBannerImage(index)}
                     >
                       ×
                     </button>
@@ -170,8 +184,8 @@ function FormStepOne({
       {/* featurs data */}
       { selectedTheme.id!=="theme4" &&
       <section className="form-section">
-        <h3 className="section-title">Product Features</h3>
-
+        <h3 className="section-title">Why choose us (Product Features)</h3>
+        
         <h4 className="subsection-title">Key Points</h4>
         {stepsData[0]?.points?.map((point, index) => (
           <div className="feature-point" key={index}>
@@ -293,16 +307,7 @@ function FormStepOne({
                   />
                   <button
                     className="remove-image-btn"
-                    onClick={() => {
-                      const updatedSteps = [...stepsData];
-                      updatedSteps[0].fields.blogImage = null;
-                      setStepsData(updatedSteps);
-                      // setImagePreviews(prev => {
-                      //   const updated = {...prev};
-                      //   delete updated.blogImage;
-                      //   return updated;
-                      // });
-                    }}
+                    onClick={() => handleRemoveFieldImage('blogImage')}
                   >
                     ×
                   </button>
@@ -341,16 +346,7 @@ function FormStepOne({
                   />
                   <button
                     className="remove-image-btn"
-                    onClick={() => {
-                      const updatedSteps = [...stepsData];
-                      updatedSteps[0].fields.homeBanner = null;
-                      setStepsData(updatedSteps);
-                      // setImagePreviews(prev => {
-                      //   const updated = {...prev};
-                      //   delete updated.homeBanner;
-                      //   return updated;
-                      // });
-                    }}
+                    onClick={() => handleRemoveFieldImage('homeBanner')}
                   >
                     ×
                   </button>
@@ -389,16 +385,7 @@ function FormStepOne({
                   />
                   <button
                     className="remove-image-btn"
-                    onClick={() => {
-                      const updatedSteps = [...stepsData];
-                      updatedSteps[0].fields.footerBanner = null;
-                      setStepsData(updatedSteps);
-                      // setImagePreviews(prev => {
-                      //   const updated = {...prev};
-                      //   delete updated.footerBanner;
-                      //   return updated;
-                      // });
-                    }}
+                    onClick={() => handleRemoveFieldImage('footerBanner')}
                   >
                     ×
                   </button>
@@ -439,16 +426,7 @@ function FormStepOne({
                   />
                   <button
                     className="remove-image-btn"
-                    onClick={() => {
-                      const updatedSteps = [...stepsData];
-                      updatedSteps[0].fields.chooseImage = null;
-                      setStepsData(updatedSteps);
-                      // setImagePreviews(prev => {
-                      //   const updated = {...prev};
-                      //   delete updated.chooseImage;
-                      //   return updated;
-                      // });
-                    }}
+                    onClick={() => handleRemoveFieldImage('chooseImage')}
                   >
                     ×
                   </button>
@@ -487,16 +465,7 @@ function FormStepOne({
                   />
                   <button
                     className="remove-image-btn"
-                    onClick={() => {
-                      const updatedSteps = [...stepsData];
-                      updatedSteps[0].fields.productIcon = null;
-                      setStepsData(updatedSteps);
-                      // setImagePreviews(prev => {
-                      //   const updated = {...prev};
-                      //   delete updated.productIcon;
-                      //   return updated;
-                      // });
-                    }}
+                    onClick={() => handleRemoveFieldImage('productIcon')}
                   >
                     ×
                   </button>
