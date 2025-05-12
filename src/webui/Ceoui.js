@@ -1,28 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import ApiService from '../services/ApiService';
+import ApiService,{initialAuthState} from '../services/ApiService';
 
 const Ceoui = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('products');
 
   const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Product A',
-      header: 'Main Header',
-      desc: 'Sample Description',
-      theme: 'Dark',
-    },
-    {
-      id: 2,
-      name: 'Product B',
-      header: 'Header B',
-      desc: 'Another Description',
-      theme: 'Light',
-    },
+  
   ]);
+
+
+  // products
+      const fetchProducts = async () => {
+      try {
+        const response = await ApiService.post("/website-product/getWebsiteProductDetails",{
+          companyCode: initialAuthState.companyCode,
+                    unitCode: initialAuthState.unitCode,
+        });
+        console.log("lllllll",response);
+        if (response.data) {
+          setProducts(response.data || []);
+          // setAllVehicles(response.data || []); // Store original data
+        } else {
+          console.error("Error: API response is invalid");
+        }
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    useEffect(() => {
+      fetchProducts();
+      }, []);
+
+
+
+
+
 
   const [dashboards, setDashboards] = useState([]);
 
@@ -74,7 +92,7 @@ const Ceoui = () => {
 
   const handleView = (item, type) => {
     if (type === 'product') {
-      navigate('/EditProductTheme', { state: { product: item } });
+      navigate('/ProductPreview', { state: { product: item } });
     } else {
       navigate("/DashboardSessionDetails", { state: { promotiondata: item } });
     }
@@ -148,7 +166,7 @@ const Ceoui = () => {
             ))}
 
           {activeTab === 'dashboard' &&
-            dashboards.map((dashboard, index) => (
+            dashboards?.map((dashboard, index) => (
               <tr key={dashboard.id}>
                 <td>{index + 1}</td>
                 <td>{dashboard.name}</td>

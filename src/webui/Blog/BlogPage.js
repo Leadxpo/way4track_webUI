@@ -23,10 +23,12 @@ const BlogPage = () => {
       };
 
       const res = await ApiService.post('/blog/getBlogDetails', payload);
-      setBlogs(res.data.map(b => ({
-        ...b,
-        blogImage: b.image, // for UI rendering
-      })));
+      setBlogs(
+        res.data.map((b) => ({
+          ...b,
+          blogImage: b.image, // for UI rendering
+        }))
+      );
     } catch (error) {
       console.error('Error fetching blogs:', error);
     }
@@ -264,7 +266,14 @@ const BlogPage = () => {
                 </button>
                 <button
                   className="text-red-600 hover:text-red-800"
-                  onClick={() => handleDelete(blog.id)}
+                  onClick={() => {
+                    const confirmDelete = window.confirm(
+                      'Are you sure you want to delete this blog?'
+                    );
+                    if (confirmDelete) {
+                      handleDelete(blog.id);
+                    }
+                  }}
                 >
                   <FaTrash />
                 </button>

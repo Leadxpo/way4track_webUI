@@ -2,7 +2,6 @@ import React from "react";
 import "./ProductTheme2.css";
 
 const ProductTheme2 = ({data}) => {
-  console.log("rrr:",data)
   const features = [
     {
       icon: "/live_location_tracking.png", // Replace with actual paths to your icons

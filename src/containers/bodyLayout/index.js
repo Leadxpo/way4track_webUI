@@ -186,6 +186,10 @@ import EditClient from '../clients/EditClient';
 import AddEditSubDealer from '../sub-dealers/addSubDealer';
 import EditSubDealer from '../sub-dealers/EditSubDealer';
 import CustomHome from '../home/CustomHome';
+import ProductPreview from '../../webui/ProductPreview.js';
+import EditProductDetails from '../../webui/EditProductDetails.js';
+import EditAmenitiesDetails from '../../webui/EditAmenitiesDetails.js';
+import EditApplicationDetails from '../../webui/EditApplicationDetails.js';
 
 import WebsiteOrders from '../websiteOrders/websiteOrders';
 
@@ -666,6 +670,10 @@ const BodyLayout = ({ children }) => {
 
           {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
           {/* <Route path="/ProductTheme2" element={<ProductTheme2 />} /> */}
+           <Route path="/ProductPreview" element={<ProductPreview/>} />
+          <Route path="/EditProductDetails" element={<EditProductDetails/>} />
+          <Route path="/EditAmenitiesDetails" element={<EditAmenitiesDetails/>} />
+          <Route path="/EditApplicationDetails" element={<EditApplicationDetails/>} />
         </Routes>
       </div>
     </div>

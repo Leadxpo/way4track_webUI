@@ -21,7 +21,7 @@ function ThemeEditorPage({ stepsData, imagePreviews }) {
       />
 
       <PreviewPanel
-        selectedTheme={selectedThemeId} // send just the theme ID here
+        selectedTheme={selectedThemeId} 
         stepsData={stepsData}
         imagePreviews={imagePreviews}
       />
