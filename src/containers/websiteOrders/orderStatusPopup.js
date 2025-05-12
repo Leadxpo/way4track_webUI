@@ -44,7 +44,7 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
       id: order.id,
       orderStatus: status,
       delivaryDate: deliveryDate,
-      clientId:clientDbId,
+      clientId:order.client.id,
       deliveryAddressId: order.deliveryAddressId.id,
       buildingAddressId: order.buildingAddressId.id,
     };
