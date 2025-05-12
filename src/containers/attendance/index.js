@@ -90,13 +90,13 @@ const Attendance = () => {
           {/* Staff ID */}
           <div className="flex flex-col">
             <label className="text-xs font-medium text-gray-700 mb-1">
-              Staff ID
+              Employee ID
             </label>
             <input
               type="text"
               value={staffId}
               onChange={(e) => setStaffId(e.target.value)}
-              placeholder="Enter Staff ID"
+              placeholder="Enter Employee ID"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition placeholder-gray-400"
             />
           </div>
@@ -131,10 +131,11 @@ const Attendance = () => {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border p-2">Staff ID</th>
-            <th className="border p-2">Staff Name</th>
-            <th className="border p-2">Branch</th>
             <th className="border p-2">Date</th>
+            <th className="border p-2">Employee ID</th>
+            <th className="border p-2">Employee Name</th>
+            <th className="border p-2">Branch</th>
+            
             <th className="border p-2">In Time</th>
             <th className="border p-2">Out Time</th>
             <th className="border p-2">Status</th>
@@ -148,12 +149,13 @@ const Attendance = () => {
               console.log(att);
               return (
                 <tr key={att.id} className="text-center">
-                  <td className="border p-2">{att.staffId}</td>
-                  <td className="border p-2">{att.staffName.trim()}</td>
-                  <td className="border p-2">{att.branchName}</td>
                   <td className="border p-2">
                     {new Date(att.day).toLocaleDateString()}
                   </td>
+                  <td className="border p-2">{att.staffId}</td>
+                  <td className="border p-2">{att.staffName.trim()}</td>
+                  <td className="border p-2">{att.branchName}</td>
+                  
                   <td className="border p-2">{att.inTimeRemark}</td>
                   <td className="border p-2">{att.outTimeRemark}</td>
                   <td className="border p-2">{att.status}</td>

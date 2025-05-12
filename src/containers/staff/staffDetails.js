@@ -206,7 +206,7 @@ const StaffDetails = () => {
 
       console.log('API Response', response);
 
-      if (response.data.errorCode === 200) {
+      if (response.status) {
         const staff = response.data.data;
 
         alert('OTP sent successfully');
