@@ -11,7 +11,7 @@ const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
     alternateNumber: '',
     email: '',
     aadharNumber: '',
-    panCardNumber: '',
+    panCardNumber: null,
     // drivingLicence: '',
     address: '',
     uanNumber: '',

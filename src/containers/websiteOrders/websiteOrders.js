@@ -34,8 +34,8 @@ export default function WebsiteOrders() {
   const handleStatusUpdate = async (updatedOrder) => {
     const response = await ApiService.post('/order/updateStatus', updatedOrder);
     if (response.status) {
-      fetchOrders();
       setShowModal(false);
+      fetchOrders();
     }
   };
 

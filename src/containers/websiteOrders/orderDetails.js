@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './orderDetails.css';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-
 import { useParams } from 'react-router';
 
 const formatDate = (dateStr) =>
@@ -56,86 +55,165 @@ const OrderDetails = () => {
     orderItems,
     companyCode,
     unitCode,
+    refund,
   } = order;
 
-  console.log(order.orderItems, 'order Items');
+  const handleUpdateStatus = async (refundId, newStatus) => {
+    try {
+      const response = await ApiService.post('/Refund/handleRefundDetails', {
+        id:refundId,
+        refundStatus: newStatus,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      });
+      if (response.status) {
+        alert('Status updated successfully!');
+        // Optionally refetch order to reflect changes
+        window.location.reload();
+      } else {
+        alert('Failed to update status');
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Server error occurred');
+    }
+  };
+
+  const refundStatusLabels = {
+    pending: 'Pending',
+    request_recived: 'Request Received',
+    request_accept: 'Accepted',
+    request_reject: 'Rejected',
+    pick_scheduled: 'Pick Scheduled',
+    item_picked_up: 'Item Picked Up',
+    new_item_dispatched: 'New Item Dispatched',
+    replaced_sucess: 'Replaced Successfully',
+    returning: 'Returning',
+  };
 
   return (
-    <div className="OrderDetails-container">
-      <h1 className="OrderDetails-page-title">Order Details</h1>
+    <div className="order-details-container">
+      <h1 className="order-details-page-title">Order Details</h1>
 
-      <div className="OrderDetails-card">
-        <div className="OrderDetails-summary">
-          <div>
+      <div className="order-details-card">
+        <div className="order-details-summary">
+          <div className="order-summary-item">
             <strong>Order ID:</strong> #{id}
           </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Customer:</strong> {name}
           </div>
-          <div>
-            <strong>Company:</strong> {companyCode}
-          </div>
-          <div>
-            <strong>Unit Code:</strong> {unitCode}
-          </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Order Date:</strong> {formatDate(orderDate)}
           </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Delivery Date:</strong> {formatDate(delivaryDate)}
           </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Delivery Address:</strong> {deliveryAddress || 'N/A'}
           </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Order Status:</strong>
             <span
-              className={`OrderDetails-status-tag ${orderStatus?.toLowerCase()}`}
+              className={`order-details-status-tag ${orderStatus?.toLowerCase()}`}
             >
               {orderStatus}
             </span>
           </div>
-          <div>
+          <div className="order-summary-item">
             <strong>Payment Status:</strong>
             <span
-              className={`OrderDetails-status-tag ${paymentStatus?.toLowerCase()}`}
+              className={`order-details-status-tag ${paymentStatus?.toLowerCase()}`}
             >
               {paymentStatus}
             </span>
           </div>
         </div>
 
-        <div>
-          <h2 className="OrderDetails-section-title">Items</h2>
-          <div className="OrderDetails-items-list">
-            {orderItems?.map((item, index) => (
-              <div key={index} className="OrderDetails-item-card">
-                <div className="OrderDetails-item-name">{item.name}</div>
-                <div>
-                  <strong>Description:</strong> {item.desc}
-                </div>
-                <div>
-                  <strong>Qty:</strong> {item.qty}
-                </div>
-                <div>
-                  <strong>Amount:</strong> ₹{item.amount}
-                </div>
-                <div>
-                  <strong>Network:</strong> {item.network}
-                </div>
-                <div>
-                  <strong>Subscription:</strong> {item.subscriptionType}
-                </div>
-                <div>
-                  <strong>Relay:</strong> {item.is_relay ? 'Yes' : 'No'}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <div className="order-details-order-items-container">
+          <h2 className="order-details-section-title">Items</h2>
+          <div className="order-details-items-list">
+            {orderItems?.map((item, index) => {
+              const associatedRefund = refund?.find(
+                (r) => r.deviceId.id === item.deviceId
+              );
+              return (
+                <div key={index} className="order-details-item-card">
+                  <div className="order-details-item-name">{item.name}</div>
+                  <div className="order-details-item-description">
+                    <strong>Description:</strong> {item.desc}
+                  </div>
+                  <div className="order-details-item-qty">
+                    <strong>Qty:</strong> {item.qty}
+                  </div>
+                  <div className="order-details-item-amount">
+                    <strong>Amount:</strong> ₹{item.amount}
+                  </div>
+                  <div className="order-details-item-network">
+                    <strong>Network:</strong> {item.network}
+                  </div>
+                  <div className="order-details-item-subscription">
+                    <strong>Subscription:</strong> {item.subscriptionType}
+                  </div>
+                  <div className="order-details-item-relay">
+                    <strong>Relay:</strong> {item.is_relay ? 'Yes' : 'No'}
+                  </div>
 
-        <div className="OrderDetails-total-amount">
-          <strong>Total Amount:</strong> ₹{totalAmount}
+                  {associatedRefund && (
+                    <div className="order-details-refund-details">
+                      <h3 className="order-details-refund-title">
+                        Replace Item Requests
+                      </h3>
+                      <div className="order-details-refund-status">
+                        <strong>Replace Status:</strong>
+                        <select
+                          value={associatedRefund.refundStatus}
+                          onChange={(e) =>
+                            handleUpdateStatus(
+                              associatedRefund.id,
+                              e.target.value
+                            )
+                          }
+                          className="order-details-status-select"
+                        >
+                          {Object.entries(refundStatusLabels).map(
+                            ([value, label]) => (
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
+                      <div className="order-details-refund-description">
+                        <strong>Description:</strong>{' '}
+                        {associatedRefund.description}
+                      </div>
+                      <div className="order-details-refund-requested-on">
+                        <strong>Requested On:</strong>{' '}
+                        {formatDate(associatedRefund.dateOfRequest)}
+                      </div>
+                      <div className="order-details-refund-replacement-date">
+                        <strong>Replacement Date:</strong>{' '}
+                        {formatDate(associatedRefund.dateOfReplace)}
+                      </div>
+                      {associatedRefund.damageImage && (
+                        <div className="order-details-refund-photo">
+                          <strong>Photo:</strong>
+                          <br />
+                          <img
+                            src={associatedRefund.damageImage}
+                            alt="damage"
+                            className="order-details-refund-photo-image"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
