@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import ApiService from '../services/ApiService';
 
 function EditApplicationDetails() {
   const location = useLocation();
+  const navigate=useNavigate()
   const [applicationDetails, setApplicationDetails] = useState([]);
   const [productMeta, setProductMeta] = useState({}); // companyCode, unitCode, webProductId
 
@@ -61,15 +62,16 @@ function EditApplicationDetails() {
       }
 
       try {
-        const res = await ApiService.post('/applications/handleUpdateApplicationDetails', formData, {
+        const res = await ApiService.post('/application/updateApplicationDetails', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         console.log(`Application ${application.id} updated successfully:`, res.data);
+        navigate('/ceoui');
       } catch (error) {
         console.error(`Failed to update application ${application.id}:`, error);
       }
     }
-    alert('All applications updated.');
+    // alert('All applications updated.');
   };
 
   return (
