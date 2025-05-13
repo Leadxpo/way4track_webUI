@@ -91,7 +91,6 @@ const WarehouseManagerBranch = () => {
   
   return (
     <div className="p-4 space-y-4">
-      {/* <div className="mt-10 bg-white rounded-lg shadow-md overflow-hidden"> */}
       <h1 className="text-3xl font-bold mb-4">
         Branches
       </h1>
@@ -123,14 +122,8 @@ const WarehouseManagerBranch = () => {
                 Branch Name
               </th>
               <th className="p-3 text-left">Product</th>
-              {/* <th className="p-3 text-left">
-                Assign Time
-              </th> */}
               <th className="p-3 text-left">
                 Present Stock
-              </th>
-              <th className="p-3 text-left">
-                In Hand Stock
               </th>
 
               <td className="p-3 text-left">Status</td>
@@ -144,12 +137,8 @@ const WarehouseManagerBranch = () => {
                   <td className="p-3">{String(index + 1).padStart(2, "0")}</td>
                   <td className="p-3">{item.branchName}</td>
                   <td className="p-3">{item.productName}</td>
-                  {/* <td className="p-3">{item.
-                    assignTime
-                  }</td> */}
                   <td className="p-3">{item.presentStock
                   }</td>
-                  <td className="p-3">{item.handStock}</td>
 
                   <td className="p-3">{item.productStatus}</td>
 
@@ -199,15 +188,10 @@ const WarehouseManagerBranch = () => {
               </th>
               <th className="p-3 text-left">
                 Sub Dealer Name</th>
-              {/* <th className="p-3 text-left">
-                Assign Time
-              </th> */}
               <th className="p-3 text-left">
                 Present Stock
               </th>
-
-              <td className="p-3 text-left">Status</td>
-              {/* <th className="p-3 text-left">Action</th> */}
+              <th className="p-3 text-left">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -224,12 +208,7 @@ const WarehouseManagerBranch = () => {
                   <td className="p-3">{item.presentStock
                   }</td>
 
-                  <td className="p-3">{item.productStatus}</td>
-
-
-                  {/* <td className="p-3">
-                    <button className="p-2 text-gray-600 hover:text-gray-900">⋮</button>
-                  </td> */}
+                  <td className="p-3 capitalize">{item.productStatus}</td>
                 </tr>
               ))
             ) : (

@@ -391,7 +391,9 @@ const BranchList = () => {
                   <td className="p-3">{staff.designation}</td>
                   <td className="p-3">{staff.branchName}</td>
                   <td className="p-3">{staff.phoneNumber}</td>
-                  <td className="p-3">{staff.joiningDate}</td>
+                 
+                  <td className="p-2">{staff.joiningDate.split('-').reverse().join('-')}</td>
+                 
                   <td className="p-3">{staff.monthlySalary}</td>
                   <td className="px-4 py-2 border">
                     <FaFileDownload
