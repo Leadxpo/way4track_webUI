@@ -142,7 +142,9 @@ const Dispatch = () => {
                                         <td className="px-6 py-4">{item.receiverName}</td>
                                         <td className="px-6 py-4">{item.fromAddress}</td>
                                         <td className="px-6 py-4">{item.toAddress}</td>
-                                        <td className="px-6 py-4">{item.dispatchDate}</td>
+                                        <td className="px-2 py-2">
+  {new Date(item.dispatchDate).toLocaleDateString('en-GB').replace(/\//g, '/')}
+</td>
                                         <td className="px-6 py-4">{item.status}</td>
                                         <td className="px-6 py-4">{item.transportId}</td>
                                         <td className="px-6 py-4">{item.packageId}</td>

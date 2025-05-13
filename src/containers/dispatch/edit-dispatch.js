@@ -119,7 +119,7 @@ const EditDispatch = () => {
                 <input
                     type="date"
                     name="dispatchDate"
-                    value={formData.dispatchDate}
+                    value={formData.dispatchDate.split('T')[0]}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
@@ -130,7 +130,7 @@ const EditDispatch = () => {
                 <input
                     type="date"
                     name="arrivalDate"
-                    value={formData.arrivalDate}
+                    value={formData.arrivalDate.split('T')[0]}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
