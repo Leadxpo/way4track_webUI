@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Ensure axios is installed
 import ApiService from '../services/ApiService';
 
 function EditAmenitiesDetails() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [amenityDetails, setAmenityDetails] = useState([]);
   const [productMeta, setProductMeta] = useState({}); // companyCode, unitCode, webProductId
 
   useEffect(() => {
     const product = location?.state?.product;
     if (product && product.amenities) {
-      const filledAmenities = product.amenities.map(a => ({
+      const filledAmenities = product.amenities.map((a) => ({
         id: a.id,
         name: a.name || '',
         desc: a.desc || '',
@@ -29,7 +30,7 @@ function EditAmenitiesDetails() {
   }, [location.state?.product]);
 
   const handleChange = (index, field, value) => {
-    setAmenityDetails(prev => {
+    setAmenityDetails((prev) => {
       const updated = [...prev];
       updated[index][field] = value;
       return updated;
@@ -38,7 +39,7 @@ function EditAmenitiesDetails() {
 
   const handleImageChange = (index, file) => {
     const preview = file ? URL.createObjectURL(file) : '';
-    setAmenityDetails(prev => {
+    setAmenityDetails((prev) => {
       const updated = [...prev];
       updated[index].image = file;
       updated[index].imagePreview = preview;
@@ -62,10 +63,15 @@ function EditAmenitiesDetails() {
       }
 
       try {
-        const res =await ApiService.post('/amenities/handleUpdateAmenitiesDetails', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-              });
+        const res = await ApiService.post(
+          '/amenities/handleUpdateAmenitiesDetails',
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
         console.log(`Amenity ${amenity.id} updated successfully:`, res.data);
+        navigate('/ceoui');
       } catch (error) {
         console.error(`Failed to update amenity ${amenity.id}:`, error);
       }
@@ -77,7 +83,8 @@ function EditAmenitiesDetails() {
     <div className="max-w-3xl mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-2">Amenities</h2>
       <p className="text-gray-500 mb-6">
-        Add up to 6 amenities that enhance your product's appeal. Each amenity should have a name, description, and optional image.
+        Add up to 6 amenities that enhance your product's appeal. Each amenity
+        should have a name, description, and optional image.
       </p>
 
       {amenityDetails.map((amenity, index) => (
@@ -88,7 +95,9 @@ function EditAmenitiesDetails() {
 
           <div className="p-4 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
               <input
                 type="text"
                 placeholder="Enter amenity name"
@@ -99,7 +108,9 @@ function EditAmenitiesDetails() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
               <textarea
                 placeholder="Enter a brief description"
                 value={amenity.desc}
@@ -109,7 +120,9 @@ function EditAmenitiesDetails() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Image
+              </label>
               <label className="cursor-pointer block">
                 <div className="border-dashed border-2 border-gray-300 rounded-md p-4 flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50 transition">
                   <svg
@@ -120,7 +133,11 @@ function EditAmenitiesDetails() {
                     stroke="currentColor"
                     strokeWidth={2}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"
+                    />
                   </svg>
                   <span className="font-medium">Upload</span>
                 </div>

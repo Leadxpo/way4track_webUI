@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
-import "../webui/productthems/styles/FormSteps.css";
+import { useNavigate } from 'react-router-dom';
+import '../webui/productthems/styles/FormSteps.css';
 import { useLocation } from 'react-router';
 import ApiService from '../services/ApiService';
 
 function EditProductDetails() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [productDetails, setProductDetails] = useState({
     name: '',
@@ -52,9 +53,10 @@ function EditProductDetails() {
   }, [location.state?.product]);
 
   const handleFieldChange = (field, value) => {
-    setProductDetails(prev => ({ ...prev, [field]: value }));
+    setProductDetails((prev) => ({ ...prev, [field]: value }));
   };
 
+  console.log(productDetails, 'productsdfnie');
   // const handlePointChange = (index, field, value) => {
   //   const updated = [...productDetails.points];
   //   updated[index][field] = value;
@@ -101,7 +103,14 @@ function EditProductDetails() {
 
     // Append the fields and check for modified images
     Object.keys(productDetails).forEach((key) => {
-      if (key.includes('banner') || key === 'chooseImage' || key === 'productIcon' || key === 'blogImage' || key === 'homeBanner' || key === 'footerBanner') {
+      if (
+        key.includes('banner') ||
+        key === 'chooseImage' ||
+        key === 'productIcon' ||
+        key === 'blogImage' ||
+        key === 'homeBanner' ||
+        key === 'footerBanner'
+      ) {
         // Only send the changed image if it's different from the original
         if (productDetails[key] !== originalProductDetails[key]) {
           formData.append(key, productDetails[key]);
@@ -117,17 +126,35 @@ function EditProductDetails() {
     }
 
     try {
-      // Send the FormData to the API
-      await ApiService.post('/website-product/handleWebsiteProductDetails', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await ApiService.post(
+        '/website-product/handleWebsiteProductDetails',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+
+      if (response?.status) {
+        console.log('Product details updated successfully:', response.data);
+        navigate('/ceoui');
+      } else {
+        console.warn(
+          'Product update responded without success flag:',
+          response.data
+        );
+      }
     } catch (error) {
-      console.error("Error submitting product details:", error);
+      console.error(
+        'Failed to submit product details:',
+        error.response?.data || error.message
+      );
     }
   };
 
   const renderImagePreview = (imageFile) => {
-    return typeof imageFile === 'string' ? imageFile : URL.createObjectURL(imageFile);
+    return typeof imageFile === 'string'
+      ? imageFile
+      : URL.createObjectURL(imageFile);
   };
 
   return (
@@ -153,7 +180,9 @@ function EditProductDetails() {
             type="text"
             className="form-control"
             value={productDetails.shortDescription}
-            onChange={(e) => handleFieldChange('shortDescription', e.target.value)}
+            onChange={(e) =>
+              handleFieldChange('shortDescription', e.target.value)
+            }
             placeholder="Brief product description"
           />
         </div>
@@ -306,7 +335,13 @@ function EditProductDetails() {
       <section className="form-section">
         <h3 className="section-title">Additional Media</h3>
         <div className="d-flex gap-4 flex-wrap">
-          {['blogImage', 'homeBanner', 'footerBanner', 'chooseImage', 'productIcon'].map((banner, idx) => (
+          {[
+            'blogImage',
+            'homeBanner',
+            'footerBanner',
+            'chooseImage',
+            'productIcon',
+          ].map((banner, idx) => (
             <div className="upload-box" key={banner}>
               <label className="upload-label">
                 <input
@@ -346,4 +381,3 @@ function EditProductDetails() {
 }
 
 export default EditProductDetails;
-

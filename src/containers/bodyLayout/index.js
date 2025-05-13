@@ -190,6 +190,8 @@ import ProductPreview from '../../webui/ProductPreview.js';
 import EditProductDetails from '../../webui/EditProductDetails.js';
 import EditAmenitiesDetails from '../../webui/EditAmenitiesDetails.js';
 import EditApplicationDetails from '../../webui/EditApplicationDetails.js';
+import EditDeviceDetails from '../../webui/EditDeviceDetails.js';
+import EditProductAppDetails from '../../webui/EditProductAppDetails.js';
 
 import WebsiteOrders from '../websiteOrders/websiteOrders';
 import OrderDetails from '../websiteOrders/orderDetails';
@@ -681,6 +683,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/EditProductDetails" element={<EditProductDetails/>} />
           <Route path="/EditAmenitiesDetails" element={<EditAmenitiesDetails/>} />
           <Route path="/EditApplicationDetails" element={<EditApplicationDetails/>} />
+          <Route path="/EditDeviceDetails" element={<EditDeviceDetails/>} />
+          <Route path="/EditProductAppDetails" element={<EditProductAppDetails/>} />
         </Routes>
       </div>
     </div>

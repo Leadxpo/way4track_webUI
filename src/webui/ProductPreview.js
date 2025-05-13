@@ -5,20 +5,25 @@ import { useLocation, useNavigate } from 'react-router';
 // import { faPen } from '@fortawesome/free-solid-svg-icons';
 
 const ProductPreview = () => {
-    const location=useLocation();
-    console.log("ffkjjh",location.state);
-    const navigate=useNavigate();
+  const location = useLocation();
+  console.log('ffkjjh', location.state);
+  const navigate = useNavigate();
   return (
     <div className="max-w-2xl mx-auto mt-10 px-4 space-y-4">
-      
       {/* Education Details */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-sm relative">
         <div className="flex justify-between items-start">
-          <h2 className="font-semibold text-lg text-gray-800">Product Details</h2>
-          <button 
-          onClick={()=>navigate('/EditProductDetails', { state: { product: 
-location?.state?.product } })} 
-          className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50">
+          <h2 className="font-semibold text-lg text-gray-800">
+            Product Details
+          </h2>
+          <button
+            onClick={() =>
+              navigate('/EditProductDetails', {
+                state: { product: location?.state?.product },
+              })
+            }
+            className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50"
+          >
             <FaPen />
             <span className="text-sm">Edit</span>
           </button>
@@ -31,11 +36,17 @@ location?.state?.product } })}
       {/* Bank Details */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-sm relative">
         <div className="flex justify-between items-start">
-          <h2 className="font-semibold text-lg text-gray-800">Amenities Details</h2>
-          <button 
-          onClick={()=>navigate('/EditAmenitiesDetails', { state: { product: 
-location?.state?.product } })} 
-          className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50">
+          <h2 className="font-semibold text-lg text-gray-800">
+            Amenities Details
+          </h2>
+          <button
+            onClick={() =>
+              navigate('/EditAmenitiesDetails', {
+                state: { product: location?.state?.product },
+              })
+            }
+            className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50"
+          >
             <FaPen />
             <span className="text-sm">Edit</span>
           </button>
@@ -48,11 +59,17 @@ location?.state?.product } })}
       {/* Product Details */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-sm relative">
         <div className="flex justify-between items-start">
-          <h2 className="font-semibold text-lg text-gray-800">Application Details</h2>
-          <button 
-          onClick={()=>navigate('/EditApplicationDetails', { state: { product: 
-location?.state?.product } })} 
-          className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50">
+          <h2 className="font-semibold text-lg text-gray-800">
+            Application Details
+          </h2>
+          <button
+            onClick={() =>
+              navigate('/EditApplicationDetails', {
+                state: { product: location?.state?.product },
+              })
+            }
+            className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50"
+          >
             <FaPen />
             <span className="text-sm">Edit</span>
           </button>
@@ -65,9 +82,18 @@ location?.state?.product } })}
       {/* Amenities Info */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-sm relative">
         <div className="flex justify-between items-start">
-          <h2 className="font-semibold text-lg text-gray-800">Device Details</h2>
-          <button className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50">
-            <FaPen/>
+          <h2 className="font-semibold text-lg text-gray-800">
+            Device Details
+          </h2>
+          <button
+            onClick={() =>
+              navigate('/EditDeviceDetails', {
+                state: { product: location?.state?.product },
+              })
+            }
+            className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50"
+          >
+            <FaPen />
             <span className="text-sm">Edit</span>
           </button>
         </div>
@@ -79,11 +105,17 @@ location?.state?.product } })}
       {/* Device Settings */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-sm relative">
         <div className="flex justify-between items-start">
-          <h2 className="font-semibold text-lg text-gray-800">productApp Details</h2>
-          <button 
-          onClick={()=>navigate('/EditProductDetails', { state: { product: 
-location.state.product } })} 
-          className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50">
+          <h2 className="font-semibold text-lg text-gray-800">
+            productApp Details
+          </h2>
+          <button
+            onClick={() =>
+              navigate('/EditProductAppDetails', {
+                state: { product: location.state.product },
+              })
+            }
+            className="flex items-center gap-1 bg-white rounded-xl px-3 py-1 shadow hover:bg-gray-50"
+          >
             <FaPen />
             <span className="text-sm">Edit</span>
           </button>
@@ -92,7 +124,6 @@ location.state.product } })}
           <strong>Device ID:</strong> DVC123456, <strong>Status:</strong> Active
         </div> */}
       </div>
-
     </div>
   );
 };
