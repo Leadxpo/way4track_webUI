@@ -62,7 +62,7 @@ const ProfileSettings = () => {
             <ProfileDetail label="Address" value={profileData.address} />
             <ProfileDetail label="Joining Date" value={profileData.joiningDate} />
             <ProfileDetail label="Basic Salary" value={profileData.monthlySalary} />
-            <ProfileDetail label="Experience (Years)" value={`${profileData.beforeExperience} years`} />
+            <ProfileDetail label="Experience (Years)" value={`${profileData.beforeExperience||0} years`} />
           </div>
         </div>
       </div>

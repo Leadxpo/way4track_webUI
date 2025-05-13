@@ -186,12 +186,12 @@ const ProductType = () => {
                             >
                               Edit
                             </li>
-                            <li
+                            {/* <li
                               className="p-2 hover:bg-gray-100 cursor-pointer"
                               onClick={() => handleDelete(item.id)}
                             >
                               Delete
-                            </li>
+                            </li> */}
                             {/* <li
                               className="p-2 hover:bg-gray-100 cursor-pointer"
                               onClick={() =>

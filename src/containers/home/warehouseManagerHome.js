@@ -263,7 +263,8 @@ const WarehouseManagerHome = () => {
   return (
     <div className="p-6">
       {/* Profile Section */}
-      {userProfile && (
+      {userProfile && (<>
+        <h2 className="text-2xl font-bold mb-4 mt-10">Profile</h2>
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
           <img
             src={userProfile.staffPhoto || 'https://via.placeholder.com/100'}
@@ -282,15 +283,15 @@ const WarehouseManagerHome = () => {
             </p>
           </div>
         </div>
-      )}
+      </>)}
 
 
 
       <h2 className="text-2xl font-bold mb-4 mt-10">Requests</h2>
-      <div className="bg-white p-4 rounded-lg shadow-md mt-10">
+      {/* <div className="bg-white p-4 rounded-lg shadow-md mt-10">
         <label className="text-lg font-semibold">Branch Name :{requestsData.branchName}</label>
 
-      </div>
+      </div> */}
 
       <div className="flex mt-10">
 
@@ -307,6 +308,7 @@ const WarehouseManagerHome = () => {
             </option>
           ))}
         </select>
+        
 
 
         <button
@@ -349,7 +351,7 @@ const WarehouseManagerHome = () => {
 
 
 
-      <div className="bg-white p-4 rounded-xl shadow-md mb-4 flex gap-4 mt-10">
+      {/* <div className="bg-white p-4 rounded-xl shadow-md mb-4 flex gap-4 mt-10">
 
 
       <select
@@ -367,8 +369,7 @@ const WarehouseManagerHome = () => {
 </select>
 
     
-        <input type="date" placeholder="From" className="border p-2 rounded w-1/4" />
-        <input type="date" placeholder="To" className="border p-2 rounded w-1/4" />
+
         <button
           onClick={downloadExcel}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
@@ -382,7 +383,42 @@ const WarehouseManagerHome = () => {
         >
           <FaFileDownload className="mr-2" />  Download
         </button>
-      </div>
+      </div> */}
+
+      <div className="bg-white p-4 rounded-xl shadow-md mb-4 mt-10 flex justify-between items-center">
+  {/* Left: Branch Select */}
+  <select
+    id="branch"
+    value={selectedBranch}
+    onChange={handleChange}
+    className="border rounded px-4 py-2 w-96"
+  >
+    <option value="">-- Select Branch --</option>
+    {branches.map((branch, index) => (
+      <option key={index} value={branch.id}>
+        {branch.branchName} ({branch.branchNumber})
+      </option>
+    ))}
+  </select>
+
+  {/* Right: Buttons */}
+  <div className="flex gap-3">
+    <button
+      onClick={downloadExcel}
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+    >
+      Search
+    </button>
+
+    <button
+      onClick={handleProductDownload}
+      className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+    >
+      <FaFileDownload className="mr-2" /> Download
+    </button>
+  </div>
+</div>
+
 
       {/* Table */}
       <div className="overflow-x-auto mt-10">
@@ -391,20 +427,20 @@ const WarehouseManagerHome = () => {
             <tr>
               <th className="p-3 text-left">NO.</th>
               <th className="p-3 text-left">Product</th>
-              <th className="p-3 text-left">
+              {/* <th className="p-3 text-left">
                 Assign Time
-              </th>
+              </th> */}
               <th className="p-3 text-left">
               Present Stock
               </th>
-              <th className="p-3 text-left">
+              {/* <th className="p-3 text-left">
               In Hand Stock
-              </th>
+              </th> */}
               <th className="p-3 text-left">
               Branch Name
               </th>
               <td className="p-3 text-left">Status</td>
-              <th className="p-3 text-left">Action</th>
+              {/* <th className="p-3 text-left">Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -413,19 +449,19 @@ const WarehouseManagerHome = () => {
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                   <td className="p-3">{String(index + 1).padStart(2, "0")}</td>
                   <td className="p-3">{item.productName}</td>
-                  <td className="p-3">{item.
+                  {/* <td className="p-3">{item.
                     assignTime
-                  }</td>
+                  }</td> */}
                   <td className="p-3">{item.presentStock
                   }</td>
-                  <td className="p-3">{item.handStock}</td>
+                  {/* <td className="p-3">{item.handStock}</td> */}
                   <td className="p-3">{item.branchName}</td>
                   <td className="p-3">{item.productStatus}</td>
 
 
-                  <td className="p-3">
+                  {/* <td className="p-3">
                     <button className="p-2 text-gray-600 hover:text-gray-900">⋮</button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             ) : (

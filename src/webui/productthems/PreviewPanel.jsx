@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 // import '../styles/PreviewPanel.css';
 // import ProductTheme1 from '../Themes/ProductTheme1/Landingpage1';
-// import ProductTheme2 from '../Themes/ProductTheme2/Landingpage2';
-import ProductTheme3 from '../Themes/ProductTheme3/LandingPage3';
+import ProductTheme2 from '../Themes/ProductTheme2';
+// import ProductTheme3 from '../Themes/ProductTheme3/LandingPage3';
 import ProductTheme4 from '../Themes/ProductTheme4/index';
 
-function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, applicationData, deviceData, productAppData }) {
+function PreviewPanel({
+  selectedTheme,
+  stepsData,
+  imagePreviews,
+  aminitiesData,
+  applicationData,
+  deviceData,
+  productAppData,
+}) {
   const [viewMode, setViewMode] = useState('desktop');
 
   const renderThemePreview = () => {
@@ -17,7 +25,27 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
       description:
         stepsData[0]?.fields?.description || 'Product description goes here...',
       shortDescription:
-        stepsData[0]?.fields?.shortDescription || 'Short description',  
+        stepsData[0]?.fields?.shortDescription || 'Short description',
+
+        workTitle:
+        stepsData[0]?.fields?.workTitle || 'Short workTitle',
+
+             workFor:
+        stepsData[0]?.fields?.workFor || 'Short workFor',
+
+          workDescription:
+        stepsData[0]?.fields?.workDescription || 'Short workDescription',
+
+          productModal:
+        stepsData[0]?.fields?.productModal || 'Short productModal',
+
+        solutionTitle:
+        stepsData[0]?.fields?.solutionTitle || 'Short solutionTitle',
+
+        solutionDescription:
+        stepsData[0]?.fields?.solutionDescription || 'Short solutionDescription',
+
+
       banner1: imagePreviews.image0 || defaultImage,
       banner2: imagePreviews.image1 || defaultImage,
       banner3: imagePreviews.image2 || defaultImage,
@@ -26,26 +54,34 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
       blogImage: imagePreviews.blogImage || defaultImage,
       chooseImage: imagePreviews.chooseImage || defaultImage,
       productIcon: imagePreviews.productIcon || defaultImage,
+      solutionImage: imagePreviews.solutionImage || defaultImage,
+
       steps: stepsData[0]?.fields?.steps || [],
       points: stepsData[0]?.points || [],
-      aminityImage1:imagePreviews.amenity0 || defaultImage,
-      aminityImage2:imagePreviews.amenity1 || defaultImage,
-      aminityImage3:imagePreviews.amenity2 || defaultImage,
-      aminityImage4:imagePreviews.amenity3 || defaultImage,
-      aminityImage5:imagePreviews.amenity4 || defaultImage,
-      aminityImage6:imagePreviews.amenity5 || defaultImage,
+      aminityImage1: imagePreviews.amenity0 || defaultImage,
+      aminityImage2: imagePreviews.amenity1 || defaultImage,
+      aminityImage3: imagePreviews.amenity2 || defaultImage,
+      aminityImage4: imagePreviews.amenity3 || defaultImage,
+      aminityImage5: imagePreviews.amenity4 || defaultImage,
+      aminityImage6: imagePreviews.amenity5 || defaultImage,
+      applicationImage1: imagePreviews.application0 || defaultImage,
+      applicationImage2: imagePreviews.application1 || defaultImage,
+      applicationImage3: imagePreviews.application2 || defaultImage,
+      applicationImage4: imagePreviews.application3 || defaultImage,
+      applicationImage5: imagePreviews.application4 || defaultImage,
+      applicationImage6: imagePreviews.application5 || defaultImage,
       aminities: aminitiesData || [],
       application: applicationData || [],
       deviceData: deviceData || [],
-      productAppData: productAppData || []
+      productAppData: productAppData || [],
     };
     switch (selectedTheme.id) {
       // case 'theme1':
       //   return <ProductTheme1 data={previewData} />;
-      // case 'theme2':
-      //   return <ProductTheme2 data={previewData} />;
-      case 'theme3':
-        return <ProductTheme3 data={previewData} />;
+      case 'theme2':
+        return <ProductTheme2 data={previewData} />;
+      // case 'theme3':
+      //   return <ProductTheme3 data={previewData} />;
       case 'theme4':
         return <ProductTheme4 data={previewData} />;
       default:

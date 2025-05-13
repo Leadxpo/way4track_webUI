@@ -11,7 +11,7 @@ import MonitoringSection from './MonitoringSection';
 import DriverAppSection from './DriverAppSection';
 import SupportedTrackersSection from './SupportedTrackersSection';
 
-function LandingPage3() {
+function App() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -43,4 +43,4 @@ function LandingPage3() {
   );
 }
 
-export default LandingPage3;
+export default App;
