@@ -122,8 +122,22 @@ function ThemeManager() {
         step1Data.append('chooseImage', stepsData[0].fields.chooseImage);
       if (stepsData[0]?.fields?.productIcon)
         step1Data.append('productIcon', stepsData[0].fields.productIcon);
+       if (stepsData[0]?.fields?.workTitle)
+        step1Data.append('workTitle', stepsData[0].fields.workTitle);
+         if (stepsData[0]?.fields?.workFor)
+        step1Data.append('workFor', stepsData[0].fields.workFor);
+        if (stepsData[0]?.fields?.workDescription)
+        step1Data.append('workDescription', stepsData[0].fields.workDescription);
+       if (stepsData[0]?.fields?.productModal)
+        step1Data.append('productModal', stepsData[0].fields.productModal);
+         if (stepsData[0]?.fields?.solutionTitle)
+        step1Data.append('solutionTitle', stepsData[0].fields.solutionTitle);
+         if (stepsData[0]?.fields?.solutionDescription)
+        step1Data.append('solutionDescription', stepsData[0].fields.solutionDescription);
       if (stepsData[0]?.fields?.blogImage)
         step1Data.append('blogImage', stepsData[0].fields.blogImage);
+         if (stepsData[0]?.fields?.solutionImage)
+        step1Data.append('solutionImage', stepsData[0].fields.solutionImage);
 
       // Points array
       step1Data.append('points', JSON.stringify(stepsData[0]?.points || []));

@@ -290,6 +290,75 @@ function FormStepOne({
           Add New Step
         </button>
       </section>
+
+{/* our solutions */}
+   <section className="form-section">
+        <h3 className="section-title">Our soultions</h3>
+        <div className="form-group">
+          <label className="form-label">workTitle</label>
+          <input
+            type="text"
+            className="form-control"
+            value={stepsData[0].fields.workTitle || ''}
+            onChange={(e) => handleFieldChange('workTitle', e.target.value)}
+            placeholder="Enter workTitle"
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">workFor</label>
+          <input
+            type="text"
+            className="form-control"
+            value={stepsData[0].fields.workFor || ''}
+            onChange={(e) => handleFieldChange('workFor', e.target.value)}
+            placeholder="Brief workFor"
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Full workDescription</label>
+          <textarea
+            className="form-control"
+            rows="3"
+            value={stepsData[0].fields.workDescription || ''}
+            onChange={(e) => handleFieldChange('workDescription', e.target.value)}
+            placeholder="Detailed product workDescription"
+          />
+        </div>
+           <div className="form-group">
+          <label className="form-label">productModal</label>
+          <input
+            type="text"
+            className="form-control"
+            value={stepsData[0].fields.productModal || ''}
+            onChange={(e) => handleFieldChange('productModal', e.target.value)}
+            placeholder="Enter productModal"
+          />
+        </div>
+           <div className="form-group">
+          <label className="form-label">Product Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={stepsData[0].fields.solutionTitle || ''}
+            onChange={(e) => handleFieldChange('solutionTitle', e.target.value)}
+            placeholder="Enter product solutionTitle"
+          />
+        </div>
+           <div className="form-group">
+          <label className="form-label">Product solutionDescription</label>
+          <input
+            type="text"
+            className="form-control"
+            value={stepsData[0].fields.solutionDescription || ''}
+            onChange={(e) => handleFieldChange('solutionDescription', e.target.value)}
+            placeholder="Enter product solutionDescription"
+          />
+        </div>
+      </section>
+
+
       {/* media data */}
       <section className="form-section">
         <h3 className="section-title">Additional Media</h3>
@@ -414,7 +483,7 @@ function FormStepOne({
         </div>
 
         <div className="form-row">
-          <div className="form-group col-6">
+          <div className="form-group col-4">
             <label className="form-label">Choose Image</label>
             <div className="image-upload-container">
               {imagePreviews.chooseImage ? (
@@ -453,7 +522,7 @@ function FormStepOne({
             </div>
           </div>
 
-          <div className="form-group col-6">
+          <div className="form-group col-4">
             <label className="form-label">Product Icon</label>
             <div className="image-upload-container">
               {imagePreviews.productIcon ? (
@@ -480,6 +549,44 @@ function FormStepOne({
                     onChange={(e) => handleImageChange('productIcon', e.target.files[0])}
                   />
                   <label htmlFor="product-icon" className="file-label">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Upload</span>
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+           <div className="form-group col-4">
+            <label className="form-label">solutionImage</label>
+            <div className="image-upload-container">
+              {imagePreviews.solutionImage ? (
+                <div className="image-preview-container">
+                  <img
+                    src={imagePreviews.solutionImage}
+                    alt="Product solutionImage"
+                    className="image-preview"
+                  />
+                  <button
+                    className="remove-image-btn"
+                    onClick={() => handleRemoveFieldImage('solutionImage')}
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div className="image-upload-field">
+                  <input
+                    type="file"
+                    id="solutionImage"
+                    className="file-input"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange('solutionImage', e.target.files[0])}
+                  />
+                  <label htmlFor="solutionImage" className="file-label">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                       <polyline points="17 8 12 3 7 8"></polyline>
