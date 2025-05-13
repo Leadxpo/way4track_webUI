@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // import '../styles/PreviewPanel.css';
 // import ProductTheme1 from '../Themes/ProductTheme1/Landingpage1';
-// import ProductTheme2 from '../Themes/ProductTheme2/Landingpage2';
-import ProductTheme3 from '../Themes/ProductTheme3/LandingPage3';
+import ProductTheme2 from '../Themes/ProductTheme2';
+// import ProductTheme3 from '../Themes/ProductTheme3/LandingPage3';
 import ProductTheme4 from '../Themes/ProductTheme4/index';
 
 function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, applicationData, deviceData, productAppData }) {
@@ -34,6 +34,12 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
       aminityImage4:imagePreviews.amenity3 || defaultImage,
       aminityImage5:imagePreviews.amenity4 || defaultImage,
       aminityImage6:imagePreviews.amenity5 || defaultImage,
+      applicationImage1:imagePreviews.application0 || defaultImage,
+      applicationImage2:imagePreviews.application1 || defaultImage,
+      applicationImage3:imagePreviews.application2 || defaultImage,
+      applicationImage4:imagePreviews.application3 || defaultImage,
+      applicationImage5:imagePreviews.application4 || defaultImage,
+      applicationImage6:imagePreviews.application5 || defaultImage,
       aminities: aminitiesData || [],
       application: applicationData || [],
       deviceData: deviceData || [],
@@ -42,10 +48,10 @@ function PreviewPanel({ selectedTheme, stepsData, imagePreviews, aminitiesData, 
     switch (selectedTheme.id) {
       // case 'theme1':
       //   return <ProductTheme1 data={previewData} />;
-      // case 'theme2':
-      //   return <ProductTheme2 data={previewData} />;
-      case 'theme3':
-        return <ProductTheme3 data={previewData} />;
+      case 'theme2':
+        return <ProductTheme2 data={previewData} />;
+      // case 'theme3':
+      //   return <ProductTheme3 data={previewData} />;
       case 'theme4':
         return <ProductTheme4 data={previewData} />;
       default:

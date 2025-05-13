@@ -26,7 +26,7 @@ const ParametersSection = ({ stateData }) => {
     if (Array.isArray(parameterData)) {
       setParameters(parameterData);
     }
-  })
+  },[])
 
   return (
     <section className="parameters-section py-5">
