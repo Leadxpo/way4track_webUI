@@ -1,25 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import DashboardDemo from './DashboardDemo';
 import TrackingFeatures from './TrackingFeatures';
 import FeatureGrid from './FeatureGrid';
 import CTASection from './CTASection';
-import './styles/App.css';
+// import './styles/App.css';
 
-function App() {
-  useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
-  }, []);
-
+function Landingpage1() {
   // Mock data that would normally come from an API or CMS
   const productData = {
     name: "Bike GPS Tracker",
@@ -33,28 +23,23 @@ function App() {
   };
 
   return (
-    <div className="bike-tracker-app">
+    <div className="bike-tracker-app bg-light">
       <HeroSection 
         title={productData.name} 
         description={productData.shortDescription}
         heroImage={productData.heroImage}
         mobileAppImage={productData.mobileAppImage}
       />
-      <FeaturesSection 
-        title={productData.description}
-      />
-      <DashboardDemo 
-        dashboardImage={productData.dashboardImage1}
-      />
-      <TrackingFeatures 
-        dashboardImage={productData.dashboardImage2}
-      />
-      <FeatureGrid />
-      <CTASection 
-        footerImage={productData.footerImage}
-      />
+
+      <div className="container-fluid">
+        <FeaturesSection title={productData.description} />
+        <DashboardDemo dashboardImage={productData.dashboardImage1} />
+        <TrackingFeatures dashboardImage={productData.dashboardImage2} />
+        <FeatureGrid />
+        <CTASection footerImage={productData.footerImage} />
+      </div>
     </div>
   );
 }
 
-export default App;
+export default Landingpage1;
