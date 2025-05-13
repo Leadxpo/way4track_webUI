@@ -110,6 +110,7 @@ const EditDashboardTheme = ({ theme, promo }) => {
                   (_, groupIndex) => {
                     const groupStart = groupIndex * 4;
                     const group = promo.list.slice(groupStart, groupStart + 4);
+                    console.log(group,"images")
 
                     return (
                       <div className="col-12 mb-4" key={groupIndex}>
