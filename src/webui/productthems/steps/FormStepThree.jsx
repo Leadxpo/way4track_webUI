@@ -3,7 +3,7 @@ import "../styles/FormSteps.css";
 
 
 
-function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep }) {
+function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep, handleImageChange, imagePreviews, }) {
   const handleRepeatedItemChange = (stepIndex, itemIndex, field, value) => {
     const updated = [...stepRepeatedItems[stepIndex]];
     updated[itemIndex][field] = value;
@@ -20,14 +20,14 @@ function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, 
       <p className="form-step-description">
         Define up to 6 applications or use cases for your product. Show customers how they can benefit from your product across different scenarios.
       </p>
-      
+
       <div className="applications-grid">
         {stepRepeatedItems[currentStep]?.map((item, index) => (
           <div className="application-card" key={index}>
             <div className="application-header">
               <h3 className="application-title">Application {index + 1}</h3>
             </div>
-            
+
             <div className="application-body">
               <div className="form-group">
                 <label className="form-label">Application Name</label>
@@ -46,7 +46,7 @@ function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, 
                   placeholder="Enter application name"
                 />
               </div>
-              
+
               <div className="form-group">
                 <label className="form-label">Description</label>
                 <textarea
@@ -64,18 +64,18 @@ function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, 
                   placeholder="Explain how this application works"
                 />
               </div>
-              
+
               <div className="form-group">
                 <label className="form-label">Image</label>
                 <div className="image-upload-container">
                   {item.photos ? (
                     <div className="image-preview-container">
-                      <img 
-                        src={URL.createObjectURL(item.photos)} 
-                        alt={`Application ${index + 1}`} 
-                        className="image-preview" 
+                      <img
+                        src={URL.createObjectURL(item.photos)}
+                        alt={`Application ${index + 1}`}
+                        className="image-preview"
                       />
-                      <button 
+                      <button
                         className="remove-image-btn"
                         onClick={() => {
                           handleRepeatedItemChange(
@@ -96,13 +96,15 @@ function FormStepThree({ stepRepeatedItems, setStepRepeatedItems, setStepsData, 
                         id={`application-image-${index}`}
                         className="file-input"
                         accept="image/*"
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          handleImageChange(`application${index}`, e.target.files[0])
                           handleRepeatedItemChange(
                             currentStep,
                             index,
                             'photos',
                             e.target.files[0]
                           )
+                        }
                         }
                       />
                       <label htmlFor={`application-image-${index}`} className="file-label">

@@ -15,7 +15,6 @@ const LandingPage = ({ stateData }) => {
   return (
     <div className="landing-page bg-gradient-to-b from-white to-amber-50">
       <HeroSection stateData={stateData} />
-
       <div className="container-fluid">
         <FeaturesSection stateData={stateData} />
         <GpsSection stateData={stateData} />

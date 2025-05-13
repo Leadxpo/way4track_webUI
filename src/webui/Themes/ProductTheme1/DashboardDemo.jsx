@@ -31,11 +31,6 @@ const DashboardDemo = ({ dashboardImage }) => {
               className="dashboard-image-container" 
               data-aos="fade-up"
             >
-              <img 
-                src={dashboardImage} 
-                alt="Vehicle Tracking Dashboard" 
-                className="dashboard-image img-fluid" 
-              />
               <div className="overlay-element element-1">
                 <div className="blob-shape"></div>
               </div>

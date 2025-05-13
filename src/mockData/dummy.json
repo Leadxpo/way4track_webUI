@@ -681,87 +681,118 @@
 }
 //product state
 {
-    "name": "Product Name",
-    "description": "Product description goes here...",
-    "shortDescription": "Short description",
-    "banner1": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "banner2": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "banner3": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "homeBanner": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "footerBanner": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "blogImage": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "chooseImage": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "productIcon": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "steps": [],
-    "points": [],
-    "aminityImage1": "blob:http://localhost:3000/c493b806-9451-41c4-add8-cd16adb1f079",
-    "aminityImage2": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "aminityImage3": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "aminityImage4": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "aminityImage5": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    "aminityImage6": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "name": "GPS Trackers",
+    "description": "live tracking od bike * livetracking of cars * live tracking of bussess",
+    "shortDescription": "GPS tracker id user to track Bikes",
+    "workTitle": "Solution for the tracking",
+    "workFor": "vehilies",
+    "workDescription": "solution for the tracking vechiles * solutions for the data* work in any where og the globel where internet is accessed",
+    "productModal": "AC110",
+    "solutionTitle": "Advance things for vehicless",
+    "solutionDescription": "product user for the tracking the vechiles* product used for the demo*product are very efficient",
+    "banner1": "blob:http://localhost:3000/da29af12-89bb-418e-821d-b4c9fd3c1ca5",
+    "banner2": "blob:http://localhost:3000/ff98e01d-7ea9-4c0f-a271-c5fcdc79ce13",
+    "banner3": "blob:http://localhost:3000/8511b5d4-aea3-44e0-bf99-6a3159548c0a",
+    "homeBanner": "blob:http://localhost:3000/8f8d66e8-706a-4396-abe7-5b9ea1282cdc",
+    "footerBanner": "blob:http://localhost:3000/5f50807b-69b0-4203-a6fa-213818713dc9",
+    "blogImage": "blob:http://localhost:3000/2c9cdf99-376b-4253-b52b-3d9746f1eb24",
+    "chooseImage": "blob:http://localhost:3000/89712c35-0ce0-4d7c-814c-54010fcf9985",
+    "productIcon": "blob:http://localhost:3000/a6ab5fa9-f498-466c-880d-f38779f1509c",
+    "solutionImage": "blob:http://localhost:3000/8b00dc3e-b72f-40fa-b2a5-bb3dde32bf58",
+    "steps": [
+        {
+            "title": "install",
+            "description": "regisyter the device with user phone number"
+        },
+        {
+            "title": "activate",
+            "description": "activating the device in live i.e immidiate after install"
+        }
+    ],
+    "points": [
+        {
+            "title": "speed installations",
+            "description": "we provide speed installations"
+        },
+        {
+            "title": "speed responce",
+            "description": "speed responces for tracking the vechicles"
+        }
+    ],
+    "aminityImage1": "blob:http://localhost:3000/f685c126-42e1-4aa9-a6fd-58d775b81c6f",
+    "aminityImage2": "blob:http://localhost:3000/6ff5b366-3fb4-4b00-9022-9b881fde8ca4",
+    "aminityImage3": "blob:http://localhost:3000/fedaf211-4add-4c03-8e82-c47330ce7c90",
+    "aminityImage4": "blob:http://localhost:3000/32063f20-15ec-4c3f-8a96-1ba3a3148f1a",
+    "aminityImage5": "blob:http://localhost:3000/b8f6f9bd-fdb1-47e3-8fea-3cb5e0c21047",
+    "aminityImage6": "blob:http://localhost:3000/2d4b275f-0243-43e8-81f2-2c41cb86faaa",
+    "applicationImage1": "blob:http://localhost:3000/a8356d07-ca47-4508-87c9-2ba024c8ff99",
+    "applicationImage2": "blob:http://localhost:3000/ef5a69f1-4951-4839-951a-6f15af08f604",
+    "applicationImage3": "blob:http://localhost:3000/485031e0-8d2d-447f-8529-bb99216bb872",
+    "applicationImage4": "blob:http://localhost:3000/0dfd414d-5db2-4ab0-a0cf-50eb5182ec57",
+    "applicationImage5": "blob:http://localhost:3000/6389301f-375b-4179-a3df-57a99e0b545e",
+    "applicationImage6": "blob:http://localhost:3000/64f0653d-d03d-4f57-957b-c084ae8d67aa",
     "aminities": [
         {
-            "name": "tarcking",
-            "desc": "rerethnvnv",
+            "name": "feature 1",
+            "desc": "feature1 description",
             "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "feature 2",
+            "desc": "feature2 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "feature 3",
+            "desc": "feature  3 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "feature 4",
+            "desc": "feature 4 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "feature 5",
+            "desc": "feature5 descrition",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "feature 6",
+            "desc": "feature 6 description",
+            "photos": {}
         }
     ],
     "application": [
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application1",
+            "desc": "application1 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application2",
+            "desc": "application 2 description ",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application3",
+            "desc": "application 3 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application 4",
+            "desc": "application 4 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application 5",
+            "desc": "application 5 description",
+            "photos": {}
         },
         {
-            "name": "",
-            "desc": "",
-            "photos": null
+            "name": "application 6",
+            "desc": "application 6 description",
+            "photos": {}
         }
     ],
     "deviceData": [
@@ -779,8 +810,4 @@
             "photos": null
         }
     ]
-}//imagepriview
-{
-    "image0": "blob:http://localhost:3000/4f832663-ba08-44e6-bfa0-b3068cce6a52",
-    "image2": "blob:http://localhost:3000/1e779fb7-1774-44d1-a690-850a4711f5c2"
 }
