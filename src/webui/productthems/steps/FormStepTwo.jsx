@@ -3,7 +3,7 @@ import "../styles/FormSteps.css";
 
 
 
-function FormStepTwo({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep }) {
+function FormStepTwo({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep,  handleImageChange,imagePreviews,}) {
   const handleRepeatedItemChange = (stepIndex, itemIndex, field, value) => {
     const updated = [...stepRepeatedItems[stepIndex]];
     updated[itemIndex][field] = value;
@@ -96,13 +96,15 @@ function FormStepTwo({ stepRepeatedItems, setStepRepeatedItems, setStepsData, st
                         id={`amenity-image-${index}`}
                         className="file-input"
                         accept="image/*"
-                        onChange={(e) =>
+                        onChange={(e) =>{
+                          handleImageChange(`amenity${index}`, e.target.files[0])
                           handleRepeatedItemChange(
                             currentStep,
                             index,
                             'photos',
                             e.target.files[0]
                           )
+                        }
                         }
                       />
                       <label htmlFor={`amenity-image-${index}`} className="file-label">

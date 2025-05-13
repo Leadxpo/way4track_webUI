@@ -14,7 +14,7 @@ import '../productthems/styles/ThemeManager.css';
 function ThemeManager() {
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [stepsData, setStepsData] = useState([
-    { fields: { steps: [] }, images: [], points: [] },
+    { fields: { steps: [] }, images: [], points: [], },
   ]);
   const [currentStep, setCurrentStep] = useState(0);
   const [imagePreviews, setImagePreviews] = useState({});
@@ -137,7 +137,7 @@ function ThemeManager() {
         'website-product/handleWebsiteProductDetails',
         step1Data
       );
-      console.log('Step 1 Response:', step1Res);
+      console.log('Step 1 Response.........:', step1Res);
 
       const webProductId = step1Res.data.id;
       const webProductName = step1Res.data.name;
@@ -278,6 +278,7 @@ function ThemeManager() {
             handleFieldChange={handleFieldChange}
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
+            setImagePreviews={setImagePreviews}
             selectedTheme={selectedTheme}
           />
         );
@@ -288,6 +289,8 @@ function ThemeManager() {
             setStepRepeatedItems={setStepRepeatedItems}
             setStepsData={setStepsData}
             stepsData={stepsData}
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
             currentStep={currentStep}
           />
         );
@@ -398,6 +401,10 @@ function ThemeManager() {
                 selectedTheme={selectedTheme}
                 stepsData={stepsData}
                 imagePreviews={imagePreviews}
+                aminitiesData={stepRepeatedItems[1]}
+                applicationData={stepRepeatedItems[2]}
+                deviceData={step4Items}
+                productAppData={step5Items}
               />
             )}
           </div>

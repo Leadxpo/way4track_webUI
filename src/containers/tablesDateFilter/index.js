@@ -399,7 +399,6 @@ const TableWithDateFilter = ({
     const filtered = requestList.filter(
       (item) => !selectedBranch || item.branchId === Number(selectedBranch)
     );
-    console.log('0000000>>>>>', filtered);
     setFilteredData(filtered);
   };
 

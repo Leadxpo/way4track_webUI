@@ -679,3 +679,108 @@
     "payableAmount": "0.00",
     "ActualEarnedMonthlySalary": 0
 }
+//product state
+{
+    "name": "Product Name",
+    "description": "Product description goes here...",
+    "shortDescription": "Short description",
+    "banner1": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "banner2": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "banner3": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "homeBanner": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "footerBanner": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "blogImage": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "chooseImage": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "productIcon": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "steps": [],
+    "points": [],
+    "aminityImage1": "blob:http://localhost:3000/c493b806-9451-41c4-add8-cd16adb1f079",
+    "aminityImage2": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "aminityImage3": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "aminityImage4": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "aminityImage5": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "aminityImage6": "https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "aminities": [
+        {
+            "name": "tarcking",
+            "desc": "rerethnvnv",
+            "photos": {}
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        }
+    ],
+    "application": [
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        },
+        {
+            "name": "",
+            "desc": "",
+            "photos": null
+        }
+    ],
+    "deviceData": [
+        {
+            "webProductName": "",
+            "photo": null,
+            "model": ""
+        }
+    ],
+    "productAppData": [
+        {
+            "name": "",
+            "shortDescription": "",
+            "points": [],
+            "photos": null
+        }
+    ]
+}//imagepriview
+{
+    "image0": "blob:http://localhost:3000/4f832663-ba08-44e6-bfa0-b3068cce6a52",
+    "image2": "blob:http://localhost:3000/1e779fb7-1774-44d1-a690-850a4711f5c2"
+}
