@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 const MiningVehiclesSection = ({ stateData }) => {
   const [workForDes, setWorkForDes] = useState([])
   useEffect(() => {
-    const workforDescription = stateData.workForDescription.splite("*");
+    const workforDescription = stateData.workDescription?.split("*");
     setWorkForDes(workforDescription)
   }, [])
   return (
@@ -18,9 +18,9 @@ const MiningVehiclesSection = ({ stateData }) => {
             </h2>
 
             {workForDes?.map((item) => {
-              <p className="mb-3">
+             return( <p className="mb-3">
                 {item}
-              </p>
+              </p>)
             })}
             {/* <p className="mb-3">
               It is now mandatory for all the Mining transport organisations that the E-permit system

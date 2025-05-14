@@ -56,8 +56,6 @@ const AccordionItem = ({ title, icon, isOpen, onClick, children }) => {
 
 const ParentsAppSection = ({ stateData }) => {
   const produxData = stateData?.productAppData || [];
-  console.log("rrr : ", produxData)
-  console.log("rrr : ", stateData)
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -173,7 +171,7 @@ const ParentsAppSection = ({ stateData }) => {
             <span className="fw-medium">Real-time updates</span>
           </motion.div>
           <motion.img
-            src="https://images.pexels.com/photos/6963944/pexels-photo-6963944.jpeg"
+            src={stateData.chooseImage}
             alt="Parents App and Safety Graph"
             className="rounded-4 shadow w-100 object-fit-cover"
             style={{ height: '500px', objectFit: 'cover' }}
@@ -187,9 +185,9 @@ const ParentsAppSection = ({ stateData }) => {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <span className="text-secondary text-uppercase small">WHY CHOOSE US?</span>
-          <h2 className="fw-bold text-warning mt-2 fs-2 mb-4">Why is SmartBus the smart choice?</h2>
+          <h2 className="fw-bold text-warning mt-2 fs-2 mb-4">Why is {stateData.name} choice?</h2>
           <div className="bg-white rounded-4 shadow-sm p-4">
-            {accordionItems.map((item, index) => (
+            {stateData.points?.map((item, index) => (
               <AccordionItem
                 key={index}
                 title={item.title}
@@ -197,7 +195,7 @@ const ParentsAppSection = ({ stateData }) => {
                 isOpen={openAccordion === index}
                 onClick={() => toggleAccordion(index)}
               >
-                {item.content}
+                {item.description}
               </AccordionItem>
             ))}
           </div>
