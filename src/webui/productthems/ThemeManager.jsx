@@ -314,6 +314,8 @@ function ThemeManager() {
             stepRepeatedItems={stepRepeatedItems}
             setStepRepeatedItems={setStepRepeatedItems}
             setStepsData={setStepsData}
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
             stepsData={stepsData}
             currentStep={currentStep}
           />

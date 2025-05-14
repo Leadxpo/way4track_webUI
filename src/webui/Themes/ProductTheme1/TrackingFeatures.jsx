@@ -3,29 +3,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { CalendarClock, Clock, Bell, Users } from 'lucide-react';
 import './styles/TrackingFeatures.css';
 
-const TrackingFeatures = ({ dashboardImage }) => {
-  const trackingFeatures = [
-    {
-      icon: <CalendarClock size={28} />,
-      title: "Maintenance Remainders",
-      description: "Never miss a service with automated maintenance reminders based on time or mileage."
-    },
-    {
-      icon: <Clock size={28} />,
-      title: "Live Vehicle Status",
-      description: "Monitor real-time status of your bike including location, speed, and engine status."
-    },
-    {
-      icon: <Bell size={28} />,
-      title: "Custom Notifications",
-      description: "Set up personalized alerts for speeding, movement, or geofence violations."
-    },
-    {
-      icon: <Users size={28} />,
-      title: "Family Sharing",
-      description: "Share location and tracking access with family members for better security."
-    }
-  ];
+const TrackingFeatures = ({ stateData }) => {
+  const workDescription=stateData.workDescription.split("*")
 
   return (
     <section className="tracking-features section-padding">
@@ -37,7 +16,7 @@ const TrackingFeatures = ({ dashboardImage }) => {
               data-aos="fade-up"
             >
               <img 
-                src={dashboardImage} 
+                src={stateData.banner2} 
                 alt="Tracking Dashboard" 
                 className="dashboard-img img-fluid" 
               />
@@ -57,32 +36,14 @@ const TrackingFeatures = ({ dashboardImage }) => {
           </Col>
         </Row>
         <Row className="mt-5">
-          {trackingFeatures.map((feature, index) => (
-            <Col md={6} lg={3} sm={12} key={index}>
-              <div 
-                className="tracking-feature" 
-                data-aos="fade-up" 
-                data-aos-delay={index * 100}
-              >
-                <div className="feature-icon-box">
-                  {feature.icon}
-                </div>
-                <h4>{feature.title}</h4>
-                <p>{feature.description}</p>
-              </div>
-            </Col>
-          ))}
-        </Row>
-        <Row className="mt-5">
           <Col lg={8} className="mx-auto">
             <div className="what-we-do-box" data-aos="fade-up">
               <h3>— WHAT WE DO? —</h3>
-              <p>
-                The crucial idea of the way4track vehicle tracking system is to ensure 
-                the safety of all its customers. The GPS tracking app for the bike has 
-                to be installed by the individual who will track and monitor the concerned 
-                person's location.
-              </p>
+              {workDescription.map((item)=>{
+              return(<p>
+                {item}
+              </p>)
+              })}
             </div>
           </Col>
         </Row>

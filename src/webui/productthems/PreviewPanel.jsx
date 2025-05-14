@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // import '../styles/PreviewPanel.css';
-// import ProductTheme1 from '../Themes/ProductTheme1/Landingpage1';
+import ProductTheme1 from '../Themes/ProductTheme1/Index';
 import ProductTheme2 from '../Themes/ProductTheme2';
-// import ProductTheme3 from '../Themes/ProductTheme3/LandingPage3';
+import ProductTheme3 from '../Themes/ProductTheme3/Index';
 import ProductTheme4 from '../Themes/ProductTheme4/index';
 
 function PreviewPanel({
@@ -76,12 +76,12 @@ function PreviewPanel({
       productAppData: productAppData || [],
     };
     switch (selectedTheme.id) {
-      // case 'theme1':
-      //   return <ProductTheme1 data={previewData} />;
+      case 'theme1':
+        return <ProductTheme1 data={previewData} />;
       case 'theme2':
         return <ProductTheme2 data={previewData} />;
-      // case 'theme3':
-      //   return <ProductTheme3 data={previewData} />;
+      case 'theme3':
+        return <ProductTheme3 data={previewData} />;
       case 'theme4':
         return <ProductTheme4 data={previewData} />;
       default:
