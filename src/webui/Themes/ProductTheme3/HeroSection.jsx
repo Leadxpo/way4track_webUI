@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Bus, Check, ChevronRight, AlertTriangle } from 'lucide-react';
 
-const HeroSection = () => {
+const HeroSection = ({ stateData }) => {
+  const description = stateData.description.split("*");
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -37,27 +38,21 @@ const HeroSection = () => {
             <span className="fw-semibold text-warning">Safety First</span>
           </motion.div>
 
-          <motion.h1 className="display-5 fw-bold mb-4 text-dark" variants={itemVariants}>
-            School Bus <span className="text-warning">Tracker</span>
+          <motion.h1 className="display-5 fw-bold mb-4 text-dark" style={{ textTransform: 'capitalize' }} variants={itemVariants}>
+            {stateData.name} <span className="text-warning">Tracker</span>
           </motion.h1>
 
           <motion.p className="lead text-muted mb-4" variants={itemVariants}>
-            SmartBus generates trips, lets you see how long the bus spends at each stop, notifies delays, records attendance, and more. Sit back and relax, let SmartBus do the work for you!
+            {stateData.shortDescription ? stateData.shortDescription : "SmartBus generates trips, lets you see how long the bus spends at each stop, notifies delays, records attendance, and more. Sit back and relax, let SmartBus do the work for you!"}
           </motion.p>
 
           <motion.div className="d-flex flex-column gap-3 mb-4" variants={itemVariants}>
-            <div className="d-flex align-items-start gap-2">
-              <Check className="text-success flex-shrink-0 mt-1" size={18} />
-              <p className="text-muted mb-0">Real-time GPS tracking for parents and administrators</p>
-            </div>
-            <div className="d-flex align-items-start gap-2">
-              <Check className="text-success flex-shrink-0 mt-1" size={18} />
-              <p className="text-muted mb-0">Automated attendance recording system</p>
-            </div>
-            <div className="d-flex align-items-start gap-2">
-              <Check className="text-success flex-shrink-0 mt-1" size={18} />
-              <p className="text-muted mb-0">Instant notifications for parents about delays</p>
-            </div>
+            {description.map((item) => {
+             return( <div className="d-flex align-items-start gap-2">
+                <Check className="text-success flex-shrink-0 mt-1" size={18} />
+                <p className="text-muted mb-0">{item}</p>
+              </div>)
+            })}
           </motion.div>
 
           <motion.div variants={itemVariants}>
@@ -94,7 +89,7 @@ const HeroSection = () => {
 
             {/* Image */}
             <motion.img
-              src="https://images.pexels.com/photos/6168334/pexels-photo-6168334.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              src={stateData.banner1}
               alt="School Bus"
               className="img-fluid rounded-4 shadow"
               style={{ height: '400px', objectFit: 'cover', width: '100%' }}

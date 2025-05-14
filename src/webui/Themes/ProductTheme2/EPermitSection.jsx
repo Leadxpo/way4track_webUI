@@ -5,27 +5,9 @@ const EPermitSection = ({ stateData }) => {
 
   const [workProcess, setWorkProcess] = useState([]);
   useEffect(() => {
-    const workprocessDes = stateData.workProcess.split("*");
+    const workprocessDes = stateData.workDescription?.split("*");
     setWorkProcess(workprocessDes);
   }, [])
-
-  const steps = [
-    {
-      number: "01",
-      title: "Vehicle Registration",
-      description: "The process of Vehicle getting registered with Mining Transportation."
-    },
-    {
-      number: "02",
-      title: "GPS Installation",
-      description: "This process involves the Vehicle getting fitted with GPS Device."
-    },
-    {
-      number: "03",
-      title: "Vehicle communication",
-      description: "The process of GPS getting live and interactive with servers."
-    }
-  ]
 
   return (
     <section className="py-5">
@@ -35,11 +17,11 @@ const EPermitSection = ({ stateData }) => {
             <h2 className="section-title">
               {stateData.workingTitle}
             </h2>
-            {workProcess.map((item)=>{
+            {workProcess.map((item) => {
 
-            <p className="mb-3">
-              {item}.
-            </p>
+              return(<p className="mb-3">
+                {item}.
+              </p>)
             })}
             {/* <p className="mb-3">
               The 3 steps mentioned show the Process of GPS integration with the portal

@@ -330,6 +330,8 @@ function ThemeManager() {
           <FormStepFive
             step5Items={step5Items}
             setStep5Items={setStep5Items}
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
             handleRemoveStep5Item={handleRemoveStep5Item}
           />
         );
