@@ -2,28 +2,28 @@ import { Container, Row, Col, Card } from 'react-bootstrap'
 
 const FeaturesSection = ({stateData}) => {
   const aminitiesData = stateData?.aminities || [];
-  const features = [
-    {
-      icon: "bi bi-geo-alt-fill",
-      title: "Live Location Tracking",
-      description: "Real-time tracking with GEO fencing."
-    },
-    {
-      icon: "bi bi-speedometer2",
-      title: "Over Speed",
-      description: "Get Over Speed Alerts on Your Smartphone."
-    },
-    {
-      icon: "bi bi-map",
-      title: "Geofence",
-      description: "Get powerful insights with Geofence Analytics."
-    },
-    {
-      icon: "bi bi-clock-history",
-      title: "History View",
-      description: "Entire data of vehicle history is available."
-    }
-  ]
+  // const features = [
+  //   {
+  //     icon: "bi bi-geo-alt-fill",
+  //     title: "Live Location Tracking",
+  //     description: "Real-time tracking with GEO fencing."
+  //   },
+  //   {
+  //     icon: "bi bi-speedometer2",
+  //     title: "Over Speed",
+  //     description: "Get Over Speed Alerts on Your Smartphone."
+  //   },
+  //   {
+  //     icon: "bi bi-map",
+  //     title: "Geofence",
+  //     description: "Get powerful insights with Geofence Analytics."
+  //   },
+  //   {
+  //     icon: "bi bi-clock-history",
+  //     title: "History View",
+  //     description: "Entire data of vehicle history is available."
+  //   }
+  // ]
 
   return (
     <section className="py-5 bg-custom-light">

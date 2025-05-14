@@ -11,17 +11,17 @@ import SupportedTrackersSection from './SupportedTrackersSection';
 
 
 
-const LandingPage = ({ stateData }) => {
+const LandingPage = ({ data }) => {
   return (
     <div className="landing-page bg-gradient-to-b from-white to-amber-50">
-      <HeroSection stateData={stateData} />
+      <HeroSection stateData={data} />
       <div className="container-fluid">
-        <FeaturesSection stateData={stateData} />
-        <GpsSection stateData={stateData} />
-        <ParentsAppSection stateData={stateData} />
-        <MonitoringSection stateData={stateData} />
-        <DriverAppSection stateData={stateData} />
-        <SupportedTrackersSection stateData={stateData} />
+        <FeaturesSection stateData={data} />
+        <GpsSection stateData={data} />
+        <ParentsAppSection stateData={data} />
+        <MonitoringSection stateData={data} />
+        <DriverAppSection stateData={data} />
+        <SupportedTrackersSection stateData={data} />
       </div>
     </div>
   );

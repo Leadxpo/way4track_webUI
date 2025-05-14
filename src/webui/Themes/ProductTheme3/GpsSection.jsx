@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { MapPin, Navigation, Clock, Shield } from 'lucide-react';
 
-const GpsSection = () => {
+const GpsSection = ({stateData}) => {
+
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -37,26 +38,28 @@ const GpsSection = () => {
             Analyze Now
           </motion.span>
           <motion.h2 className="mt-2 h3 fw-bold text-warning mb-4" variants={itemVariants}>
-            GPS For School Bus
+           {stateData.solutionTitle}
           </motion.h2>
           <motion.p className="text-muted mb-4 lead" variants={itemVariants}>
-            We provide customized GPS solutions to School buses to help both management and parents track their first location and activity.
+            {stateData.solutionDescription}.
           </motion.p>
 
           <div className="d-flex flex-column gap-4">
             {/* Feature 1 */}
-            <motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
+            {stateData.points.map((item)=>{
+            return(<motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
               <div className="bg-warning bg-opacity-25 p-2 rounded">
                 <Clock className="text-warning" size={24} />
               </div>
               <div>
-                <h5 className="fw-semibold text-dark mb-1">Time Monitoring</h5>
-                <p className="text-muted mb-0">See how long the bus spends at each stop</p>
+                <h5 className="fw-semibold text-dark mb-1">{item.title}</h5>
+                <p className="text-muted mb-0">{item.description}</p>
               </div>
-            </motion.div>
+            </motion.div>)
+            })}
 
             {/* Feature 2 */}
-            <motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
+            {/* <motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
               <div className="bg-warning bg-opacity-25 p-2 rounded">
                 <Navigation className="text-warning" size={24} />
               </div>
@@ -67,7 +70,7 @@ const GpsSection = () => {
             </motion.div>
 
             {/* Feature 3 */}
-            <motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
+           {/* <motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
               <div className="bg-warning bg-opacity-25 p-2 rounded">
                 <Shield className="text-warning" size={24} />
               </div>
@@ -75,7 +78,7 @@ const GpsSection = () => {
                 <h5 className="fw-semibold text-dark mb-1">Enhanced Safety</h5>
                 <p className="text-muted mb-0">Alerts and notifications for any deviations</p>
               </div>
-            </motion.div>
+            </motion.div> */}
           </div>
         </motion.div>
 
@@ -106,7 +109,7 @@ const GpsSection = () => {
 
           {/* Image */}
           <motion.img
-            src="https://images.pexels.com/photos/7948060/pexels-photo-7948060.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            src={stateData.chooseImage}
             alt="GPS For School Bus"
             className="img-fluid rounded-4 shadow"
             style={{ height: '400px', objectFit: 'cover', width: '100%' }}

@@ -1,7 +1,7 @@
 import React from 'react';
 // import "./FormStepFour.css";
 
-function FormStepFour({ step4Items, setStep4Items }) {
+function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreviews }) {
   const handleStep4FieldChange = (index, field, value) => {
     const updated = [...step4Items];
     updated[index][field] = value;
@@ -93,7 +93,9 @@ function FormStepFour({ step4Items, setStep4Items }) {
                         id={`device-photo-${index}`}
                         className="step4_fileInput"
                         accept="image/*"
-                        onChange={(e) => handleStep4FieldChange(index, 'photo', e.target.files[0])}
+                        onChange={(e) =>{
+                          handleImageChange(`device${index}`, e.target.files[0])
+                           handleStep4FieldChange(index, 'photo', e.target.files[0])}}
                       />
                       <label htmlFor={`device-photo-${index}`} className="step4_fileLabel">
                         Upload

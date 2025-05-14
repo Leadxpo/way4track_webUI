@@ -25,7 +25,7 @@ const FeatureBox = ({ number, title, description, delay }) => {
 const AccordionItem = ({ title, icon, isOpen, onClick, children }) => {
   return (
     <div className="border-bottom py-3">
-      <button 
+      <button
         className="d-flex justify-content-between align-items-center w-100 text-start fw-medium text-dark btn btn-link px-0"
         onClick={onClick}
       >
@@ -54,7 +54,10 @@ const AccordionItem = ({ title, icon, isOpen, onClick, children }) => {
   );
 };
 
-const ParentsAppSection = () => {
+const ParentsAppSection = ({ stateData }) => {
+  const produxData = stateData?.productAppData || [];
+  console.log("rrr : ", produxData)
+  console.log("rrr : ", stateData)
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -85,29 +88,74 @@ const ParentsAppSection = () => {
 
   return (
     <section ref={ref} className="py-5 container">
-      <div className="mb-5 row gy-4 align-items-start">
-        <motion.div
-          className="col-lg-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="text-secondary text-uppercase small">FEATURES</span>
-          <h2 className="fw-bold text-warning mt-2 fs-2 mb-3">Parents App</h2>
-          <p className="text-muted mb-3">
-            Keeps parents in the know of bus ETA, departures, and delays...
-          </p>
-          <p className="text-muted">
-            A portal that allows school management to ensure the safety of students in transit...
-          </p>
-        </motion.div>
+      {produxData.map((item, index) => {
+        const isEven = index % 2 === 0;
+        return (
 
-        <div className="col-lg-6 d-flex flex-column gap-3">
-          <FeatureBox number="01" title="Bus Tracking" description="Know bus locations in real-time" delay={0.1} />
-          <FeatureBox number="02" title="No More Waiting!" description="Get accurate ETA notifications" delay={0.2} />
-          <FeatureBox number="03" title="Child Attendance Records" description="Keep a record of your child's attendance" delay={0.3} />
-        </div>
-      </div>
+          <div className="mb-5 row gy-4 align-items-start" key={index}>
+            {isEven ? (
+              <>
+                {/* Text Left */}
+                <motion.div
+                  className="col-lg-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <span className="text-secondary text-uppercase small">FEATURES</span>
+                  <h2 className="fw-bold text-warning mt-2 fs-2 mb-3">{item.name}</h2>
+                  {item.shortDescription?.split("*").map((p, i) => (
+                    <p className="text-muted mb-3" key={i}>{p}</p>
+                  ))}
+                </motion.div>
+
+                {/* Points Right */}
+                <div className="col-lg-6 d-flex flex-column gap-3">
+                  {item.points.map((point, i) => (
+                    <FeatureBox
+                      key={i}
+                      number={i}
+                      title={point.title}
+                      description={point.description}
+                      delay={0.1}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Points Left */}
+                <div className="col-lg-6 d-flex flex-column gap-3">
+                  {item.points.map((point, i) => (
+                    <FeatureBox
+                      key={i}
+                      number={i}
+                      title={point.title}
+                      description={point.description}
+                      delay={0.1}
+                    />
+                  ))}
+                </div>
+
+                {/* Text Right */}
+                <motion.div
+                  className="col-lg-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <span className="text-secondary text-uppercase small">FEATURES</span>
+                  <h2 className="fw-bold text-warning mt-2 fs-2 mb-3">{item.name}</h2>
+                  {item.shortDescription?.split("*").map((p, i) => (
+                    <p className="text-muted mb-3" key={i}>{p}</p>
+                  ))}
+                </motion.div>
+              </>
+            )}
+          </div>
+        );
+
+      })}
 
       <div className="row gy-4 align-items-center">
         <motion.div

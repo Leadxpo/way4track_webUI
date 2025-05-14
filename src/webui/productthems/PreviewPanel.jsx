@@ -17,8 +17,31 @@ function PreviewPanel({
   const [viewMode, setViewMode] = useState('desktop');
 
   const renderThemePreview = () => {
-    const defaultImage =
-      'https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+
+// Get keys starting with 'application' from imagePreviews
+
+const defaultImage =
+'https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+
+const deviceImages = Object.keys(imagePreviews)
+  .filter(key => key.startsWith('device'))
+  .sort((a, b) => {
+    // Optional: Sort by index (e.g., application0, application1...)
+    const indexA = parseInt(a.replace('device', ''), 10);
+    const indexB = parseInt(b.replace('device', ''), 10);
+    return indexA - indexB;
+  })
+  .map(key => imagePreviews[key] || defaultImage);
+
+const productAppImages = Object.keys(imagePreviews)
+  .filter(key => key.startsWith('productApp'))
+  .sort((a, b) => {
+    // Optional: Sort by index (e.g., application0, application1...)
+    const indexA = parseInt(a.replace('productApp', ''), 10);
+    const indexB = parseInt(b.replace('productApp', ''), 10);
+    return indexA - indexB;
+  })
+  .map(key => imagePreviews[key] || defaultImage);
 
     const previewData = {
       name: stepsData[0]?.fields?.name || 'Product ',
@@ -73,7 +96,10 @@ function PreviewPanel({
       aminities: aminitiesData || [],
       application: applicationData || [],
       deviceData: deviceData || [],
+      devicesImage:deviceImages ||[],
       productAppData: productAppData || [],
+      productAppImage:productAppImages ||[]
+
     };
     switch (selectedTheme.id) {
       case 'theme1':
