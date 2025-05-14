@@ -104,6 +104,16 @@ const SaleForm = () => {
     }));
   };
 
+    const handleDescription= (e) => {
+    const {name,value} = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+
   const branchData = [
     'Purchase',
     'Payments',
@@ -530,7 +540,7 @@ const SaleForm = () => {
           placeholder="Supplier Invoice Number:"
           value={formData.supplierInvoiceNumber}
           name="supplierInvoiceNumber"
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -550,7 +560,7 @@ const SaleForm = () => {
           value={formData.supplierLocation}
           name="supplierLocation"
           // onChange={(e) => setDay(e.target.value)}
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -889,7 +899,7 @@ const SaleForm = () => {
         <textarea
           name="purpose"
           value={formData.purpose}
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           rows="3"
           placeholder="Enter description or notes..."

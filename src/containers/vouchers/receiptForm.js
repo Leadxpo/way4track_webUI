@@ -639,6 +639,7 @@ const ReceiptForm = () => {
         }}
       >
         <button
+        type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}

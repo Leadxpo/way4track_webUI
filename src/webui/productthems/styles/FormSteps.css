@@ -567,3 +567,12 @@ textarea.form-control {
     margin-bottom: 0.5rem;
   }
 }
+
+
+.image-size-info {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}

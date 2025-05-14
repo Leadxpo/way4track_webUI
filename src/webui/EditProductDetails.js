@@ -22,6 +22,13 @@ function EditProductDetails() {
     chooseImage: null,
     productIcon: null,
     blogImage: null,
+    workTitle: null,
+    workFor: null,
+    workDescription: null,
+    productModal: null,
+    solutionTitle: null,
+    solutionDescription: null,
+    solutionImage: null
     // points: [{ title: "", description: "" }],
     // steps: [{ title: "", description: "" }]
   });
@@ -45,6 +52,13 @@ function EditProductDetails() {
         chooseImage: product.chooseImage || null,
         productIcon: product.productIcon || null,
         blogImage: product.blogImage || null,
+        workTitle: product.workTitle || null,
+        workFor: product.workFor || null,
+        workDescription: product.workDescription || null,
+        productModal: product.productModal || null,
+        solutionTitle: product.solutionTitle || null,
+        solutionDescription: product.solutionDescription || null,
+        solutionImage: product.solutionImage || null,
         // points: product.points?.length ? product.points : [{ title: "", description: "" }],
         // steps: product.steps?.length ? product.steps : [{ title: "", description: "" }]
       });
@@ -57,43 +71,6 @@ function EditProductDetails() {
   };
 
   console.log(productDetails, 'productsdfnie');
-  // const handlePointChange = (index, field, value) => {
-  //   const updated = [...productDetails.points];
-  //   updated[index][field] = value;
-  //   setProductDetails(prev => ({ ...prev, points: updated }));
-  // };
-
-  // const addNewPoint = () => {
-  //   setProductDetails(prev => ({
-  //     ...prev,
-  //     points: [...prev.points, { title: '', description: '' }]
-  //   }));
-  // };
-
-  // const removePoint = (index) => {
-  //   const updated = [...productDetails.points];
-  //   updated.splice(index, 1);
-  //   setProductDetails(prev => ({ ...prev, points: updated }));
-  // };
-
-  // const handleStepChange = (index, field, value) => {
-  //   const updated = [...productDetails.steps];
-  //   updated[index][field] = value;
-  //   setProductDetails(prev => ({ ...prev, steps: updated }));
-  // };
-
-  // const addNewStep = () => {
-  //   setProductDetails(prev => ({
-  //     ...prev,
-  //     steps: [...prev.steps, { title: '', description: '' }]
-  //   }));
-  // };
-
-  // const removeStep = (index) => {
-  //   const updated = [...productDetails.steps];
-  //   updated.splice(index, 1);
-  //   setProductDetails(prev => ({ ...prev, steps: updated }));
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -157,6 +134,8 @@ function EditProductDetails() {
       : URL.createObjectURL(imageFile);
   };
 
+  console.log(productDetails, '{productDetails.shortDescription}');
+
   return (
     <form className="form-step" onSubmit={handleSubmit}>
       <h2 className="form-step-title">Product Details</h2>
@@ -195,6 +174,81 @@ function EditProductDetails() {
             value={productDetails.description}
             onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="Detailed product description"
+          />
+        </div>
+      </section>
+
+      <section className="form-section">
+        <h3 className="section-title">Our soultions</h3>
+        <div className="form-group">
+          <label className="form-label">workTitle</label>
+          <input
+            type="text"
+            className="form-control"
+            value={productDetails.workTitle}
+            onChange={(e) => handleFieldChange('workTitle', e.target.value)}
+            placeholder="Enter workTitle"
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">workFor</label>
+          <input
+            type="text"
+            className="form-control"
+            value={productDetails.workFor}
+            // value={stepsData[0].fields.workFor || ''}
+            onChange={(e) => handleFieldChange('workFor', e.target.value)}
+            placeholder="Brief workFor"
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Full workDescription</label>
+          <textarea
+            className="form-control"
+            rows="3"
+            value={productDetails.workDescription}
+            // value={stepsData[0].fields.workDescription || ''}
+            onChange={(e) =>
+              handleFieldChange('workDescription', e.target.value)
+            }
+            placeholder="Detailed product workDescription"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">productModal</label>
+          <input
+            type="text"
+            className="form-control"
+            value={productDetails.productModal}
+            // value={stepsData[0].fields.productModal || ''}
+            onChange={(e) => handleFieldChange('productModal', e.target.value)}
+            placeholder="Enter productModal"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Product Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={productDetails.solutionTitle}
+            // value={stepsData[0].fields.solutionTitle || ''}
+            onChange={(e) => handleFieldChange('solutionTitle', e.target.value)}
+            placeholder="Enter product solutionTitle"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Product solutionDescription</label>
+          <input
+            type="text"
+            className="form-control"
+            value={productDetails.solutionDescription}
+            // value={stepsData[0].fields.solutionDescription || ''}
+            onChange={(e) =>
+              handleFieldChange('solutionDescription', e.target.value)
+            }
+            placeholder="Enter product solutionDescription"
           />
         </div>
       </section>
@@ -341,6 +395,7 @@ function EditProductDetails() {
             'footerBanner',
             'chooseImage',
             'productIcon',
+            'solutionImage',
           ].map((banner, idx) => (
             <div className="upload-box" key={banner}>
               <label className="upload-label">

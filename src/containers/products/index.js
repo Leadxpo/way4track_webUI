@@ -901,9 +901,9 @@ const Products = () => {
                   <th className="px-6 py-3 text-left text-sm font-bold">
                     Sim Number
                   </th> */}
-                  <th className="px-6 py-3 text-left text-sm font-bold">
+                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     Date
-                  </th>
+                  </th> */}
                   {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     Action
                   </th> */}
@@ -948,7 +948,7 @@ const Products = () => {
                     )} */}
 
                     {/* Date - optional fallback */}
-                    <td className="px-6 py-4">{item.date || '-'}</td>
+                    {/* <td className="px-6 py-4">{item.date || '-'}</td> */}
 
                     {/* Actions */}
                     {/* <td className="px-6 py-4 text-center relative">
