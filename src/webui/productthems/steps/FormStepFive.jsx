@@ -2,7 +2,7 @@
 import React from 'react';
 import "../styles/FormSteps.css";
 
-function FormStepFive({ step5Items, setStep5Items }) {
+function FormStepFive({ step5Items, setStep5Items,handleImageChange,imagePreviews }) {
   const handleChange = (index, field, value) => {
     const updated = [...step5Items];
     updated[index][field] = value;
@@ -76,7 +76,9 @@ function FormStepFive({ step5Items, setStep5Items }) {
     />
     <input
       type="file"
-      onChange={(e) => handleFileChange(index, e.target.files[0])}
+      onChange={(e) =>{
+        handleImageChange(`productApp${index}`, e.target.files[0])
+         handleFileChange(index, e.target.files[0])}}
       className="form-control my-2"
     />
 

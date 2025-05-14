@@ -22,7 +22,7 @@ const WhyChooseUsSection = ({stateData}) => {
               </h2>
               <ul className="list-unstyled">
                 {stateData.points.map((item)=>{
-                <li className="mb-4">
+                return(<li className="mb-4">
                   <div className="d-flex">
                     <div className="me-3 text-success fs-4">✓</div>
                     <div>
@@ -30,7 +30,7 @@ const WhyChooseUsSection = ({stateData}) => {
                       <p>{item.description}.</p>
                     </div>
                   </div>
-                </li>
+                </li>)
                 })}
                 {/* <li className="mb-4">
                   <div className="d-flex">

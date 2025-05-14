@@ -41,12 +41,15 @@ export default function WebsiteOrders() {
 
   return (
     <div className="website-orders-container">
-      <h2 className="website-orders-title">Customer Orders</h2>
-      <Link to="/replace-requests">
-        {/* <button type="button" className="website-orders-title"> */}
-        Replace Requests
-        {/* </button> */}
-      </Link>
+      
+      <div className="replace-request-button-container">
+        <h2 className="website-orders-title">Customer Orders</h2>
+        <Link to="/replace-requests" className='website-replace-request-button'>
+          {/* <button type="button" className="website-orders-title"> */}
+          Replace Requests
+          {/* </button> */}
+        </Link>
+      </div>
 
       <div className="website-orders-table-wrapper">
         <table className="website-orders-table">

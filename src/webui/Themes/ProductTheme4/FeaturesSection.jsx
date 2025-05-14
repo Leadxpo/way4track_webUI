@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 // FeatureCard Component
 const FeatureCard = ({ icon, title, description, color }) => {
-  console.log("rrr:", icon)
   return (
     <div className="col-md-6 col-lg-4 mb-4" data-aos="fade-up">
       <div

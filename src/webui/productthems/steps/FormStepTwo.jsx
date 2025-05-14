@@ -3,7 +3,7 @@ import "../styles/FormSteps.css";
 
 
 
-function FormStepTwo({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep,  handleImageChange,imagePreviews,}) {
+function FormStepTwo({ stepRepeatedItems, setStepRepeatedItems, setStepsData, stepsData, currentStep,  handleImageChange,imagePreviews}) {
   const handleRepeatedItemChange = (stepIndex, itemIndex, field, value) => {
     const updated = [...stepRepeatedItems[stepIndex]];
     updated[itemIndex][field] = value;

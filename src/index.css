@@ -25,3 +25,43 @@ code {
     scrollbar-width: none;
   }
 }
+/* Custom scrollbar styling */
+@layer utilities {
+  /* For Webkit browsers (Chrome, Safari) */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 20px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #a1a1a1;
+  }
+  
+  /* Hide scrollbar while maintaining functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+/* Ensure the html and body take full height */
+html, body, #root {
+  @apply h-full w-full m-0 p-0 overflow-hidden;
+}
+
+/* Apply the thin scrollbar to specific elements */
+main, .sidebar-content {
+  @apply scrollbar-thin;
+}

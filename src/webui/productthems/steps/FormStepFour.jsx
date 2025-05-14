@@ -1,9 +1,7 @@
 import React from 'react';
-import "../styles/FormSteps.css";
+// import "./FormStepFour.css";
 
-
-
-function FormStepFour({ step4Items, setStep4Items }) {
+function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreviews }) {
   const handleStep4FieldChange = (index, field, value) => {
     const updated = [...step4Items];
     updated[index][field] = value;
@@ -25,20 +23,20 @@ function FormStepFour({ step4Items, setStep4Items }) {
   };
 
   return (
-    <div className="form-step">
-      <h2 className="form-step-title">Devices</h2>
-      <p className="form-step-description">
+    <div className="step4_formStep">
+      <h2 className="step4_formTitle">Devices</h2>
+      <p className="step4_description">
         Add device specifications, pricing, and options for your product.
       </p>
 
-      <div className="devices-container">
+      <div className="step4_devicesContainer">
         {step4Items.map((item, index) => (
-          <div className="device-card" key={index}>
-            <div className="device-header">
-              <h3 className="device-title">Device {index + 1}</h3>
+          <div className="step4_deviceCard" key={index}>
+            <div className="step4_deviceHeader">
+              <h3 className="step4_deviceTitle">Device {index + 1}</h3>
               {step4Items.length > 1 && (
                 <button
-                  className="btn btn-icon btn-danger"
+                  className="step4_btnIcon step4_btnDanger"
                   onClick={() => removeStep4Item(index)}
                 >
                   ×
@@ -46,254 +44,179 @@ function FormStepFour({ step4Items, setStep4Items }) {
               )}
             </div>
             
-            <div className="device-body">
-              <div className="form-row">
-                <div className="form-group col-6">
-                  <label className="form-label">Device Name</label>
+            <div className="step4_deviceBody">
+              <div className="step4_formRow">
+                <div className="step4_formGroup step4_col6">
+                  <label className="step4_formLabel">Device Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="step4_formControl"
                     value={item.name || ''}
-                    onChange={(e) =>
-                      handleStep4FieldChange(
-                        index,
-                        'name',
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => handleStep4FieldChange(index, 'name', e.target.value)}
                     placeholder="Enter device name"
                   />
                 </div>
                 
-                <div className="form-group col-6">
-                  <label className="form-label">Model</label>
+                <div className="step4_formGroup step4_col6">
+                  <label className="step4_formLabel">Model</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="step4_formControl"
                     value={item.model || ''}
-                    onChange={(e) =>
-                      handleStep4FieldChange(
-                        index,
-                        'model',
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => handleStep4FieldChange(index, 'model', e.target.value)}
                     placeholder="Enter model number"
                   />
                 </div>
               </div>
               
-              <div className="form-group">
-                <label className="form-label">Device Image</label>
-                <div className="image-upload-container">
+              <div className="step4_formGroup">
+                <label className="step4_formLabel">Device Image</label>
+                <div className="step4_imageUploadContainer">
                   {item.photo ? (
-                    <div className="image-preview-container">
+                    <div className="step4_imagePreviewContainer">
                       <img 
                         src={URL.createObjectURL(item.photo)} 
                         alt={`Device ${index + 1}`} 
-                        className="image-preview" 
+                        className="step4_imagePreview" 
                       />
                       <button 
-                        className="remove-image-btn"
-                        onClick={() => {
-                          handleStep4FieldChange(
-                            index,
-                            'photo',
-                            null
-                          );
-                        }}
+                        className="step4_removeImageBtn"
+                        onClick={() => handleStep4FieldChange(index, 'photo', null)}
                       >
                         ×
                       </button>
                     </div>
                   ) : (
-                    <div className="image-upload-field">
+                    <div className="step4_imageUploadField">
                       <input
                         type="file"
                         id={`device-photo-${index}`}
-                        className="file-input"
+                        className="step4_fileInput"
                         accept="image/*"
-                        onChange={(e) =>
-                          handleStep4FieldChange(
-                            index,
-                            'photo',
-                            e.target.files[0]
-                          )
-                        }
+                        onChange={(e) =>{
+                          handleImageChange(`device${index}`, e.target.files[0])
+                           handleStep4FieldChange(index, 'photo', e.target.files[0])}}
                       />
-                      <label htmlFor={`device-photo-${index}`} className="file-label">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                          <polyline points="17 8 12 3 7 8"></polyline>
-                          <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <span>Upload</span>
+                      <label htmlFor={`device-photo-${index}`} className="step4_fileLabel">
+                        Upload
                       </label>
                     </div>
                   )}
                 </div>
               </div>
               
-              <div className="form-row">
-                <div className="form-group col-6">
-                  <label className="form-label">Base Price</label>
-                  <div className="input-group">
-                    <span className="input-group-text">$</span>
+              <div className="step4_formRow">
+                <div className="step4_formGroup step4_col6">
+                  <label className="step4_formLabel">Base Price</label>
+                  <div className="step4_inputGroup">
+                    <span className="step4_inputGroupText">$</span>
                     <input
                       type="number"
-                      className="form-control"
+                      className="step4_formControl"
                       value={item.amount || 0}
-                      onChange={(e) =>
-                        handleStep4FieldChange(
-                          index,
-                          'amount',
-                          parseFloat(e.target.value)
-                        )
-                      }
+                      onChange={(e) => handleStep4FieldChange(index, 'amount', parseFloat(e.target.value))}
                       placeholder="0.00"
                     />
                   </div>
                 </div>
                 
-                <div className="form-group col-6">
-                  <label className="form-label">Discount (%)</label>
-                  <div className="input-group">
+                <div className="step4_formGroup step4_col6">
+                  <label className="step4_formLabel">Discount (%)</label>
+                  <div className="step4_inputGroup">
                     <input
                       type="number"
-                      className="form-control"
+                      className="step4_formControl"
                       value={item.discount || 0}
-                      onChange={(e) =>
-                        handleStep4FieldChange(
-                          index,
-                          'discount',
-                          parseFloat(e.target.value)
-                        )
-                      }
+                      onChange={(e) => handleStep4FieldChange(index, 'discount', parseFloat(e.target.value))}
                       placeholder="0"
                     />
-                    <span className="input-group-text">%</span>
+                    <span className="step4_inputGroupText">%</span>
                   </div>
                 </div>
               </div>
               
-              <div className="form-row">
-                <div className="form-group col-6">
-                  <div className="switch-container">
-                    <label className="switch">
+              <div className="step4_formRow">
+                <div className="step4_formGroup step4_col6">
+                  <div className="step4_switchContainer">
+                    <label className="step4_switch">
                       <input
                         type="checkbox"
                         checked={item.isRelay || false}
-                        onChange={(e) =>
-                          handleStep4FieldChange(
-                            index,
-                            'isRelay',
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => handleStep4FieldChange(index, 'isRelay', e.target.checked)}
                       />
-                      <span className="slider round"></span>
+                      <span className="step4_slider step4_round"></span>
                     </label>
-                    <span className="switch-label">Relay Option</span>
+                    <span className="step4_switchLabel">Relay Option</span>
                   </div>
                   
                   {item.isRelay && (
-                    <div className="input-group mt-2">
-                      <span className="input-group-text">$</span>
+                    <div className="step4_inputGroup step4_mt2">
+                      <span className="step4_inputGroupText">$</span>
                       <input
                         type="number"
-                        className="form-control"
+                        className="step4_formControl"
                         value={item.relayAmt || 0}
-                        onChange={(e) =>
-                          handleStep4FieldChange(
-                            index,
-                            'relayAmt',
-                            parseFloat(e.target.value)
-                          )
-                        }
+                        onChange={(e) => handleStep4FieldChange(index, 'relayAmt', parseFloat(e.target.value))}
                         placeholder="Relay Amount"
                       />
                     </div>
                   )}
                 </div>
                 
-                <div className="form-group col-6">
-                  <div className="switch-container">
-                    <label className="switch">
+                <div className="step4_formGroup step4_col6">
+                  <div className="step4_switchContainer">
+                    <label className="step4_switch">
                       <input
                         type="checkbox"
                         checked={item.isNetwork || false}
-                        onChange={(e) =>
-                          handleStep4FieldChange(
-                            index,
-                            'isNetwork',
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => handleStep4FieldChange(index, 'isNetwork', e.target.checked)}
                       />
-                      <span className="slider round"></span>
+                      <span className="step4_slider step4_round"></span>
                     </label>
-                    <span className="switch-label">Network Option</span>
+                    <span className="step4_switchLabel">Network Option</span>
                   </div>
                 </div>
               </div>
               
-              <div className="form-group">
-                <div className="switch-container">
-                  <label className="switch">
+              <div className="step4_formGroup">
+                <div className="step4_switchContainer">
+                  <label className="step4_switch">
                     <input
                       type="checkbox"
                       checked={item.isSubscription || false}
-                      onChange={(e) =>
-                        handleStep4FieldChange(
-                          index,
-                          'isSubscription',
-                          e.target.checked
-                        )
-                      }
+                      onChange={(e) => handleStep4FieldChange(index, 'isSubscription', e.target.checked)}
                     />
-                    <span className="slider round"></span>
+                    <span className="step4_slider step4_round"></span>
                   </label>
-                  <span className="switch-label">Subscription Option</span>
+                  <span className="step4_switchLabel">Subscription Option</span>
                 </div>
                 
                 {item.isSubscription && (
-                  <div className="subscription-options">
-                    <div className="form-row">
-                      <div className="form-group col-6">
-                        <label className="form-label">Monthly Amount</label>
-                        <div className="input-group">
-                          <span className="input-group-text">$</span>
+                  <div className="step4_subscriptionOptions">
+                    <div className="step4_formRow">
+                      <div className="step4_formGroup step4_col6">
+                        <label className="step4_formLabel">Monthly Amount</label>
+                        <div className="step4_inputGroup">
+                          <span className="step4_inputGroupText">$</span>
                           <input
                             type="number"
-                            className="form-control"
+                            className="step4_formControl"
                             value={item.subscriptionMonthlyAmt || 0}
-                            onChange={(e) =>
-                              handleStep4FieldChange(
-                                index,
-                                'subscriptionMonthlyAmt',
-                                parseFloat(e.target.value)
-                              )
-                            }
+                            onChange={(e) => handleStep4FieldChange(index, 'subscriptionMonthlyAmt', parseFloat(e.target.value))}
                             placeholder="0.00"
                           />
                         </div>
                       </div>
                       
-                      <div className="form-group col-6">
-                        <label className="form-label">Yearly Amount</label>
-                        <div className="input-group">
-                          <span className="input-group-text">$</span>
+                      <div className="step4_formGroup step4_col6">
+                        <label className="step4_formLabel">Yearly Amount</label>
+                        <div className="step4_inputGroup">
+                          <span className="step4_inputGroupText">$</span>
                           <input
                             type="number"
-                            className="form-control"
+                            className="step4_formControl"
                             value={item.subscriptionYearlyAmt || 0}
-                            onChange={(e) =>
-                              handleStep4FieldChange(
-                                index,
-                                'subscriptionYearlyAmt',
-                                parseFloat(e.target.value)
-                              )
-                            }
+                            onChange={(e) => handleStep4FieldChange(index, 'subscriptionYearlyAmt', parseFloat(e.target.value))}
                             placeholder="0.00"
                           />
                         </div>
@@ -303,19 +226,13 @@ function FormStepFour({ step4Items, setStep4Items }) {
                 )}
               </div>
               
-              <div className="form-group">
-                <label className="form-label">Description</label>
+              <div className="step4_formGroup">
+                <label className="step4_formLabel">Description</label>
                 <textarea
-                  className="form-control"
+                  className="step4_formControl"
                   rows="3"
                   value={item.description || ''}
-                  onChange={(e) =>
-                    handleStep4FieldChange(
-                      index,
-                      'description',
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => handleStep4FieldChange(index, 'description', e.target.value)}
                   placeholder="Enter device description, features, and specifications"
                 />
               </div>
@@ -324,11 +241,7 @@ function FormStepFour({ step4Items, setStep4Items }) {
         ))}
       </div>
       
-      <button className="btn btn-outline-primary" onClick={addStep4Item}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
+      <button className="step4_btnOutlinePrimary" onClick={addStep4Item}>
         Add Another Device
       </button>
     </div>

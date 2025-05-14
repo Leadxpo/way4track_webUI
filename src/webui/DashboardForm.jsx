@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Upload, X, Plus, Image as ImageIcon } from 'lucide-react';
 import ApiService from '../services/ApiService';
 
@@ -15,6 +16,8 @@ const DashboardForm = ({
     shortDescription: '',
     theme: '',
   });
+
+  const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -66,7 +69,7 @@ const DashboardForm = ({
           initialData.list.map((item) => ({
             desc: item.desc || '',
             name: item.name || '',
-            photo: item.photo || null,  // Store directly in photo
+            photo: item.photo || null, // Store directly in photo
             preview: null,
           }))
         );
@@ -99,7 +102,7 @@ const DashboardForm = ({
         );
         break;
       case 'Session-4':
-        setList([{ desc: '', photo: null, preview: null,}]);
+        setList([{ desc: '', photo: null, preview: null }]);
         break;
       case 'Session-5':
       case 'Session-6':
@@ -188,6 +191,87 @@ const DashboardForm = ({
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const payload = new FormData();
+
+  //     // Add main form data
+  //     payload.append('name', formData.name);
+  //     payload.append('header', formData.header);
+  //     payload.append('shortDescription', formData.shortDescription);
+  //     payload.append('theme', formData.theme);
+  //     payload.append('companyCode', 'WAY4TRACK');
+  //     payload.append('unitCode', 'WAY4');
+
+  //     if (isEdit && formData.id) {
+  //       payload.append('id', formData.id);
+  //     }
+
+  //     // Handle main image
+  //     if (image) {
+  //       payload.append('image', image);
+  //     } else if (existingImage) {
+  //       payload.append('existingImage', existingImage);
+  //     }
+
+  //     // Handle background image
+  //     if (themeBgimage) {
+  //       payload.append('themeBgimage', themeBgimage);
+  //     } else if (existingBgImage) {
+  //       payload.append('existingBgImage', existingBgImage);
+  //     }
+
+  //     // Handle list items with proper indexing
+  //     list.forEach((item, index) => {
+  //       payload.append(`list[${index}][desc]`, item.desc || '');
+
+  //       if (item.name !== undefined) {
+  //         payload.append(`list[${index}][name]`, item.name || '');
+  //       }
+
+  //       // Handle photos - send existing URL as string or new File
+  //       if (item.photo instanceof File) {
+  //         payload.append(`photo`, item.photo);
+  //       } else if (item.photoUrl) {
+  //         // Send existing URL as string
+  //         payload.append(`photo`, item.photo);
+  //       }
+  //     });
+
+  //     const response = await ApiService.post(
+  //       'promotion/handlePromotionDetails',
+  //       payload,
+  //       {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //         },
+  //       }
+  //     );
+
+  //     if (response.data.status) {
+  //       onSuccess?.();
+  //     } else {
+  //       setError(response.data.internalMessage || 'Unknown error occurred');
+  //     }
+  //   } catch (error) {
+  //     console.error('Submission error:', error);
+  //     setError('Error during submission. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const urlToFile = async (url, filename = 'image.jpg') => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const mimeType = blob.type || 'image/jpeg';
+    return new File([blob], filename, { type: mimeType });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -208,36 +292,38 @@ const DashboardForm = ({
         payload.append('id', formData.id);
       }
 
-      // Handle main image
+      // Main image
       if (image) {
         payload.append('image', image);
       } else if (existingImage) {
-        payload.append('existingImage', existingImage);
+        const file = await urlToFile(existingImage, 'mainImage.jpg');
+        payload.append('image', file);
       }
 
-      // Handle background image
+      // Background image
       if (themeBgimage) {
         payload.append('themeBgimage', themeBgimage);
       } else if (existingBgImage) {
-        payload.append('existingBgImage', existingBgImage);
+        const file = await urlToFile(existingBgImage, 'bgImage.jpg');
+        payload.append('themeBgimage', file);
       }
 
-      // Handle list items with proper indexing
-      list.forEach((item, index) => {
+      // Handle list items
+      for (let index = 0; index < list.length; index++) {
+        const item = list[index];
         payload.append(`list[${index}][desc]`, item.desc || '');
 
         if (item.name !== undefined) {
           payload.append(`list[${index}][name]`, item.name || '');
         }
 
-        // Handle photos - send existing URL as string or new File
         if (item.photo instanceof File) {
           payload.append(`photo`, item.photo);
-        } else if (item.photoUrl) {
-          // Send existing URL as string
-          payload.append(`photo`, item.photo);
+        } else if (item.photo) {
+          const file = await urlToFile(item.photo, `photo-${index}.jpg`);
+          payload.append(`photo`, file);
         }
-      });
+      }
 
       const response = await ApiService.post(
         'promotion/handlePromotionDetails',
@@ -251,6 +337,7 @@ const DashboardForm = ({
 
       if (response.data.status) {
         onSuccess?.();
+        navigate('ceoui');
       } else {
         setError(response.data.internalMessage || 'Unknown error occurred');
       }
@@ -395,7 +482,7 @@ const DashboardForm = ({
                             <div className="flex items-center justify-center">
                               <Upload className="h-6 w-6 text-gray-400" />
                               <span className="ml-2 text-sm text-gray-500">
-                                {item.preview || item.photoUrl
+                                {item.photo || item.photoUrl
                                   ? 'Change image'
                                   : 'Click to upload image'}
                               </span>
@@ -408,7 +495,7 @@ const DashboardForm = ({
                             />
                           </label>
                         </div>
-                        {(item.preview || item.photoUrl) && (
+                        {(item.photo || item.photoUrl) && (
                           <div className="relative">
                             <img
                               src={item.preview || item.photo || ''}
@@ -418,15 +505,17 @@ const DashboardForm = ({
                             <button
                               type="button"
                               className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
-                            onClick={() => {
-  const updated = [...list];
-  updated[index] = {
-    ...updated[index],
-    photo: isEdit ? initialData.list[index].photo : null,  // Restore original if editing
-    preview: null,
-  };
-  setList(updated);
-}}
+                              onClick={() => {
+                                const updated = [...list];
+                                updated[index] = {
+                                  ...updated[index],
+                                  photo: isEdit
+                                    ? initialData.list[index].photo
+                                    : null, // Restore original if editing
+                                  preview: null,
+                                };
+                                setList(updated);
+                              }}
                             >
                               <X className="h-4 w-4" />
                             </button>
