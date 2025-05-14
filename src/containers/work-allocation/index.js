@@ -49,6 +49,9 @@ const WorkAllocation = () => {
   const [productTypes, setProductTypes] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
 
+  const [clientName, setClientName] = useState("");
+  const [productName, setProductName] = useState("");
+
   useEffect(() => {
     const perms = getPermissions('work-allocation');
     setPermissions(perms);
@@ -71,8 +74,7 @@ const WorkAllocation = () => {
     fetchProductList();
   }, []);
 
-  useEffect(() => {
-    const fetchClientDetails = async () => {
+  const fetchClientDetails = async () => {
       try {
         const response = await ApiService.post(
           '/technician/getBackendSupportWorkAllocation',
@@ -90,6 +92,9 @@ console.log("rrr",response);
         alert('Failed to fetch work allocation details.');
       }
     };
+
+  useEffect(() => {
+    
     fetchClientDetails();
   }, []);
 
@@ -98,6 +103,7 @@ console.log("rrr",response);
     setIsEditMode(false);
     setIsModalOpen(true);
   };
+  
 
   const handleOpenModalForEdit = async (id) => {
     if (!id) {
@@ -262,7 +268,9 @@ console.log("rrr",response);
             ? 'Work Allocation updated successfully!'
             : 'Work Allocation added successfully!'
         );
+        setIsModalOpen(false);
         navigate('/work_allocation');
+        fetchClientDetails();
       } else {
         alert('Failed to save work allocation. Please try again.');
       }
@@ -355,9 +363,17 @@ console.log("rrr",response);
     XLSX.writeFile(workbook, 'WorkAllocations.xlsx');
   };
 
-  const filteredData = workAllocationDetails.filter((item) =>
-    String(item.workAllocationNumber).toLowerCase().includes(searchId.toLowerCase())
+ const filteredData = workAllocationDetails.filter((item) => {
+  return [
+    item.workAllocationNumber,
+    item.clientName,
+    item.productName
+  ].every((field, index) =>
+    (field || '').toString().toLowerCase().includes(
+      [searchId, clientName, productName][index].toLowerCase()
+    )
   );
+});
 
   return (
     <div className="p-10">
@@ -371,19 +387,26 @@ console.log("rrr",response);
             color: '#000000',
           }}
           onClick={handleOpenModalForAdd}
-          disabled={!permissions.add}
+          // disabled={!permissions.add}
+          disabled={false}
         >
+
           <span className="text-black mr-2">➕</span>
           Create Work Allocation
         </button>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div
-            className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl"
-            style={{ borderRadius: '50px' }}
-          >
+        // <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        //   <div
+        //     className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl"
+        //     style={{ borderRadius: '50px' }}
+        //   >
+             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+    <div
+      className="bg-white p-8 shadow-lg relative w-3/4 max-w-4xl my-10 max-h-screen overflow-y-auto"
+      style={{ borderRadius: '50px' }}
+    >
             <button
               onClick={handleCloseModal}
               className="absolute top-5 right-5 text-white cursor-pointer rounded-full w-10 h-10 flex items-center justify-center"
@@ -905,20 +928,23 @@ console.log("rrr",response);
       <div className="flex mb-4">
         <input
           type="text"
-          placeholder="Work Allocation ID:"
-          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="Client Name:"
+           value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
           className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
           style={{ height: '47px' }}
         />
         <input
           type="text"
-          placeholder="Work Allocation Name:"
+          value={productName}
+          placeholder="Product Name:"
+          onChange={(e) => setProductName(e.target.value)}
           className="h-12 block w-1/2 border border-gray-500 px-2 mx-2 rounded"
         />
 
-        <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
+        {/* <button  className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
           <FaSearch />
-        </button>
+        </button> */}
         <button
           onClick={generateExcel}
           className="h-12 px-6 bg-green-600 text-white rounded-md flex items-center ml-2"

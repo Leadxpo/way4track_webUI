@@ -182,6 +182,9 @@ const TableWithDateFilter = ({
       alert('Failed to fetch estimate details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
+  
+    const warehouseManagerId=localStorage.getItem('id');
+  // const warehouseManagerId=43;
 
   const getRequestsData = useCallback(async () => {
     try {
@@ -190,6 +193,8 @@ const TableWithDateFilter = ({
         unitCode: initialAuthState?.unitCode,
         role: localStorage.getItem('role'),
       };
+
+
 
       if (
         requestBody.role === 'Technician' ||
@@ -210,7 +215,7 @@ const TableWithDateFilter = ({
       console.log('yyyyyy request request raiseeee', response);
 
       if (response?.length) {
-        const cleanedData = response.map((item) => ({
+        const cleanedData = response.filter((item) => item.req_request_to === warehouseManagerId).map((item) => ({
           requestId: item.
             requestId
           ,

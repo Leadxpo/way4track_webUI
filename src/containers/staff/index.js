@@ -24,6 +24,8 @@ const Staff = () => {
   const [permissions, setPermissions] = useState({});
   console.log(columns, 'columns');
 
+  console.log("profilesaaaaaaaakk44", profiles);
+
   const columnNames = [
     'ID',
     'Staff ID',
@@ -350,13 +352,14 @@ const Staff = () => {
         showEdit={true}
         showDetails={true}
         onDetails={handleMoreDetails}
+
         data={
-          Array.isArray(profiles)
-            ? [...profiles].sort((a, b) =>
-                String(a.staffId).localeCompare(String(b.staffId))
-              )
-            : []
-        }
+  Array.isArray(profiles)
+    ? [...profiles].sort((a, b) =>
+        String(a['Staff ID']).localeCompare(String(b['Staff ID']))
+      )
+    : []
+}
       />
       {/* )}{' '} */}
     </div>
