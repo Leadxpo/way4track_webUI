@@ -19,8 +19,8 @@ const LandingPage = ({ data }) => {
         <FeaturesSection stateData={data} />
         <GpsSection stateData={data} />
         <ParentsAppSection stateData={data} />
-        <MonitoringSection stateData={data} />
-        <DriverAppSection stateData={data} />
+        {/* <MonitoringSection stateData={data} />
+        <DriverAppSection stateData={data} /> */}
         <SupportedTrackersSection stateData={data} />
       </div>
     </div>

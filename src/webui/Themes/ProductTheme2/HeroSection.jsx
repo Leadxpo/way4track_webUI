@@ -1,7 +1,6 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 
 const HeroSection = ({stateData}) => {
-  console.log("rrr",stateData)
   return (
     <section className="py-5 bg-custom-light">
       <Container>

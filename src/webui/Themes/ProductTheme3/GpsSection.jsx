@@ -46,7 +46,7 @@ const GpsSection = ({stateData}) => {
 
           <div className="d-flex flex-column gap-4">
             {/* Feature 1 */}
-            {stateData.points.map((item)=>{
+            {stateData.steps?.map((item)=>{
             return(<motion.div className="d-flex align-items-start gap-3" variants={itemVariants}>
               <div className="bg-warning bg-opacity-25 p-2 rounded">
                 <Clock className="text-warning" size={24} />
@@ -109,7 +109,7 @@ const GpsSection = ({stateData}) => {
 
           {/* Image */}
           <motion.img
-            src={stateData.chooseImage}
+            src={stateData.solutionImage}
             alt="GPS For School Bus"
             className="img-fluid rounded-4 shadow"
             style={{ height: '400px', objectFit: 'cover', width: '100%' }}

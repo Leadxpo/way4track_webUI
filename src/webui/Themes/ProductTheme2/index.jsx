@@ -11,7 +11,6 @@ import FooterBanner from './FooterBanner'
 import './Landingpage2.css'
 
 function App({data}) {
-  console.log("rrr",data)
   useEffect(() => {
     AOS.init({
       duration: 1000,
