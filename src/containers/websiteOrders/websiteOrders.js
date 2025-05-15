@@ -32,11 +32,11 @@ export default function WebsiteOrders() {
   };
 
   const handleStatusUpdate = async (updatedOrder) => {
-    const response = await ApiService.post('/order/updateStatus', updatedOrder);
-    if (response.status) {
+    // const response = await ApiService.post('/order/updateStatus', updatedOrder);
+    // if (response.status) {
       setShowModal(false);
       fetchOrders();
-    }
+    // }
   };
 
   return (
