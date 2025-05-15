@@ -6,6 +6,7 @@ import ApiService from "../../services/ApiService";
 import { toWords } from 'number-to-words';
 
 const Letters = () => {
+
   const [formData, setFormData] = useState({
     name: "",
     designation: "",
@@ -184,8 +185,8 @@ const Letters = () => {
     payslipSection: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
     column: { width: '50%' },
     paysliptext: { marginBottom: 5, fontFamily: "Times-Roman", lineHeight: 1 },
-    table: { width: '100%', borderWidth: 1 ,marginTop:20},
-    row: { flexDirection: 'row', },
+    table: { width: '100%', borderWidth: 1, marginTop: 20 },
+    row: { flexDirection: 'row',justifyContent:"space-between",display:'flex' },
     mainRow: { flexDirection: 'row', border: 1 },
     cell: { flex: 1, textAlign: 'left', paddingVertical: 3, paddingHorizontal: 5, fontFamily: "Times-Roman" },
     lastcell: { textAlign: 'left', paddingVertical: 3, paddingHorizontal: 5, fontFamily: "Times-Roman" },
@@ -224,10 +225,8 @@ const Letters = () => {
               </View>
             </View>
 
-            <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>
-              We are pleased to extend an offer of employment for the designation of {employee?.designation} at Sharon Telematics Pvt Ltd.
-            </Text>
+            <Text style={styles.headText}>Dear {employee?.name}</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Designation Details:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -464,7 +463,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -522,8 +521,8 @@ const Letters = () => {
             <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
               <View>
                 <Text style={styles.headText}>Dear {employee?.name}</Text>
-                <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Accountant. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
-              </View>
+                <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+                </View>
 
             </View>
 
@@ -531,7 +530,7 @@ const Letters = () => {
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Accountant</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -749,7 +748,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -808,16 +807,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Accountant. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Digital Marketing</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department: Marketing</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -992,7 +991,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1051,16 +1050,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Field Sales Manager. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Field Sales Manager</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department: Marketing</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -1290,7 +1289,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1349,16 +1348,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Operation Associate. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Operation Associate</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:Operational Support</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -1537,7 +1536,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1595,16 +1594,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Operational Manager. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Operational Manager</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title:{employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:Operations</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -1886,7 +1885,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1945,16 +1944,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Sales Manager. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Sales Manager</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:Sales</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -2140,7 +2139,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2199,16 +2198,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Branch Manager. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title:Branch Manager</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title:{employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:Manager</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -2392,7 +2391,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2449,16 +2448,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Tech Back-End Support Executive. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Tech Back-End Support Executive</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:IT/Technical Support</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -2643,7 +2642,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
 
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2702,16 +2701,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Tech Back-End Support Executive. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: Tech Back-End Support Executive</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:IT/Technical Support</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -2896,7 +2895,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2955,16 +2954,16 @@ const Letters = () => {
             </View>
 
             <Text style={styles.headText}>Dear {employee?.name},</Text>
-            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as Tele Associate. You will be based in Vishakhapatnam and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
+            <Text style={styles.headText}>This letter is to offer you a position with the company. It is with great pleasure that we offer you the position as {employee.designation}. You will be based in {employee.branch} and Report to the Manager {employee.reportingTo}. Based on your capabilities & Accomplishments, I believe that your talents will not only benefit the company but also our mutual relationship will assist you in reaching your personal and professional goals</Text>
             <View style={styles.section}>
               <Text style={styles.label}>Position Details:</Text>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: tele Calling Assoiates</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Job Title: {employee.designation}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:Sale and Marketing</Text>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Department:{employee.department}</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
 
@@ -3162,7 +3161,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-           <View style={[styles.section,{marginTop:40}]}>
+            <View style={[styles.section, { marginTop: 40 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -3214,10 +3213,10 @@ const Letters = () => {
                 <Text style={styles.text}>{employee.staffId}</Text>
                 <Text style={styles.text}>{employee.branch}</Text>
               </View>
-              <View style={{ flexWrap: "wrap" }}>
+              <View style={{ flexWrap: "wrap",textAlign:'left' }}>
+                <Text style={styles.text}>{todayData.split("T")[0]}</Text>
                 <Text style={styles.text}>{employee.designation}</Text>
                 <Text style={styles.text}>{employee.department}</Text>
-                <Text style={styles.text}>{todayData.split("T")[0]}</Text>
               </View>
             </View>
             <View style={styles.section}>
@@ -3259,7 +3258,7 @@ const Letters = () => {
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
-              <View style={[styles.signatureBlock,{marginTop:30}]}>
+              <View style={[styles.signatureBlock, { marginTop: 30 }]}>
                 <Text style={styles.text}>Signature:</Text>
                 <Text style={styles.text}>Date:</Text>
               </View>
@@ -3306,13 +3305,13 @@ const Letters = () => {
               </View>
               <View style={{ flexWrap: "wrap" }}>
                 <Text style={{ alignItems: "flex-end" }}>{todayData.split("T")[0]}</Text>
+              <Text style={styles.text}>{employee.designation}</Text>
+              <Text style={styles.text}>{employee.department}</Text>
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.text}>{employee.designation}</Text>
-              <Text style={styles.text}>{employee.department}</Text>
-            </View>
+            {/* <View style={styles.section}>
+            </View> */}
             <View style={styles.section}>
               <Text style={styles.text}>Sub: Relieving Letter</Text>
             </View>
@@ -3345,7 +3344,7 @@ const Letters = () => {
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
-              <View style={[styles.signatureBlock,{marginTop:30}]}>
+              <View style={[styles.signatureBlock, { marginTop: 30 }]}>
                 <Text style={styles.text}>Signature:</Text>
                 <Text style={styles.text}>Date:</Text>
               </View>
@@ -3395,6 +3394,8 @@ const Letters = () => {
               </View>
               <View style={{ flexWrap: "wrap" }}>
                 <Text style={{ alignItems: "flex-end" }}> {getIndiaDate()}</Text>
+                <Text style={styles.text}>{employee.designation}</Text>
+                <Text style={styles.text}>{employee.department}</Text>
               </View>
             </View>
 
@@ -3495,18 +3496,18 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-            <Text style={{ textAlign: 'center', marginBottom: 10 }}>
+            <Text style={{ textAlign: 'center', marginTop: 100, textTransform: "uppercase", fontWeight: 'bold', fontSize: 18 }}>
               {payslipTitle}
             </Text>
 
             {/* Employee Details */}
-            <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333" }]}>
+            <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333", marginTop: 30 }]}>
               <View style={[styles.column, { borderRightWidth: 2, borderColor: "#333333" }]}>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
                   <Text style={styles.payslipLabel}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Name:</Text> <Text style={{width:110}}>{employeeData.staffName}</Text>
+                  <Text style={styles.payslipLabel}>Name:</Text> <Text>{employeeData.staffName}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
                   <Text style={styles.payslipLabel}>Designation:</Text> <Text>{employeeData.designation}</Text>
@@ -3548,52 +3549,53 @@ const Letters = () => {
 
             {/* Earnings & Deductions Table */}
 
-            <View style={styles.table}>
+            <View style={[styles.table,{display:'flex'}]}>
               <View style={styles.row}>
                 <Text style={styles.cell}>Earnings</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>Amount (₹)</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>Amount (₹)</Text>
                 <Text style={styles.cell}>Deductions</Text>
-                <Text style={styles.cell}>Amount (₹)</Text>
+                <Text style={[styles.cell, {textAlign:'right' }]}>Amount (₹)</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.cell}>Actual Salary</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.actualSalary}</Text>
-                <Text style={styles.cell}>ESI Employee</Text>
-                <Text style={styles.cell}>{employeeData.ESIC_Employee}</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>{employeeData.actualSalary}</Text>
+                <Text style={styles.cell}>ESIC</Text>
+                <Text style={[styles.cell, {textAlign:'right' }]}>{employeeData.ESIC_Employer}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.cell}>OT Amount</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.OTAmount}</Text>
-                <Text style={styles.cell}>ESI </Text>
-                <Text style={styles.cell}>{employeeData.ESIC_Employer}</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>{employeeData.OTAmount}</Text>
+                <Text style={styles.cell}>PF</Text>
+                <Text style={[styles.cell, { textAlign:'right' }]}>{employeeData.PF_Employer2}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.cell}>Food Allowance</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.foodAllowance}</Text>
-                <Text style={styles.cell}>PF(Employee)</Text>
-                <Text style={styles.cell}>{employeeData.PF_Employee}</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>{employeeData.foodAllowance}</Text>
+                <Text style={styles.cell}>Other Deduction</Text>
+                <Text style={[styles.cell, { textAlign:'right' }]}>{employeeData.lateDeductions}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.cell}>Incentives</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.incentives}</Text>
-                <Text style={styles.cell}>PF (Employer 1)</Text>
-                <Text style={styles.cell}>{employeeData.PF_Employer1}</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>{employeeData.incentives}</Text>
+                <Text style={styles.cell}>Professional Tax</Text>
+                <Text style={[styles.cell, { textAlign:'right' }]}>{employeeData.professionalTax}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.cell}>Leave Encashment</Text>
-                <Text style={[styles.cell, { borderRight: 2 }]}>{employeeData.leaveEncashment}</Text>
-                <Text style={styles.cell}>Professional Tax</Text>
-                <Text style={styles.cell}>{employeeData.professionalTax}</Text>
+                <Text style={[styles.cell, { borderRight: 2,textAlign:'right' }]}>{employeeData.leaveEncashment}</Text>
+                <Text style={styles.cell}> </Text>
+                <Text style={[styles.cell, { textAlign:'right' }]}> </Text>
+
               </View>
               <View style={styles.mainRow}>
                 <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Earnings</Text>
-                <Text style={[styles.cell, { borderRight: 2, fontWeight: 'bold' }]}>{employeeData.grossSalary}</Text>
+                <Text style={[styles.cell, { borderRight: 2, fontWeight: 'bold',textAlign:'right' }]}>{employeeData.grossSalary}</Text>
                 <Text style={[styles.cell, { fontWeight: 'bold' }]}>Total Deductions</Text>
-                <Text style={[styles.cell, { fontWeight: 'bold' }]}>{employeeData.lateDeductions}</Text>
+                <Text style={[styles.cell, { fontWeight: 'bold',textAlign:'right' }]}>{parseInt(employeeData.lateDeductions)+parseInt(employeeData.ESIC_Employer)+parseInt(employeeData.professionalTax)+parseInt(employeeData.PF_Employer2)}</Text>
               </View>
-              <View style={[styles.mainRow,{padding:10}]}>
-                <Text style={[styles.lastcell, {flex:3, fontWeight: 'bold' }]}> Net Pay ( {toWords(employeeData.netSalary)} )</Text>
-                <Text style={[styles.lastcell, {flex:1, fontWeight: 'bold' }]}>  Rs {employeeData.netSalary}</Text>
+              <View style={[styles.mainRow, { padding: 10 }]}>
+                <Text style={[styles.lastcell, { flex: 3, fontWeight: 'bold' }]}> Net Pay ( {toWords(employeeData.netSalary)} )</Text>
+                <Text style={[styles.lastcell, { flex: 1, fontWeight: 'bold',textAlign:'right' }]}>  Rs {employeeData.netSalary}</Text>
                 {/* <Text style={[styles.cell, { fontWeight: 'bold'}]}> </Text> */}
               </View>
             </View>
@@ -3755,7 +3757,25 @@ const Letters = () => {
           onChange={handleChange}
         />
 
-        {letterType === "offer" && (
+<input
+              type="text"
+              name="branch"
+              placeholder="Branch"
+              value={formData.branch}
+              className="flex justify-between items-center w-full shadow-lg rounded-md p-4 my-8 border border-gray-200"
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              name="department"
+              placeholder="department"
+              className="flex justify-between items-center w-full shadow-lg rounded-md p-4 my-8 border border-gray-200"
+              value={formData.department}
+              onChange={handleChange}
+            />
+
+
+        {(letterType !== "termination" && letterType !== "relieving" && letterType !== "resignation" && letterType !== "paySlip") && (
           <div>
             <input
               type="text"

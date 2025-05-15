@@ -181,8 +181,6 @@ const Login = ({ handleLoginFlag }) => {
     }
   };
   
-
-
   useEffect(() => {
     fetchDesignations();
   }, []);

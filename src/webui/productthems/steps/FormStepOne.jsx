@@ -332,61 +332,59 @@ function FormStepOne({
       <section className="form-section">
         <h3 className="section-title">Our soultions</h3>
         <div className="form-group">
-          <label className="form-label">workTitle</label>
+          <label className="form-label">Work Title</label>
           <input
             type="text"
             className="form-control"
             value={stepsData[0].fields.workTitle || ''}
             onChange={(e) => handleFieldChange('workTitle', e.target.value)}
-            placeholder="Enter workTitle"
+            placeholder="Enter work title"
           />
         </div>
 
         <div className="form-group">
-          <label className="form-label">workFor</label>
+          <label className="form-label">Work For</label>
           <input
             type="text"
             className="form-control"
             value={stepsData[0].fields.workFor || ''}
             onChange={(e) => handleFieldChange('workFor', e.target.value)}
-            placeholder="Brief workFor"
+            placeholder="Brief work for"
           />
         </div>
 
         <div className="form-group">
-          <label className="form-label">Full workDescription</label>
+          <label className="form-label">Work Description</label>
           <textarea
             className="form-control"
             rows="3"
             value={stepsData[0].fields.workDescription || ''}
-            onChange={(e) =>
-              handleFieldChange('workDescription', e.target.value)
-            }
-            placeholder="Detailed product workDescription"
+            onChange={(e) => handleFieldChange('workDescription', e.target.value)}
+            placeholder="Detailed work description"
           />
         </div>
-        <div className="form-group">
-          <label className="form-label">productModal</label>
+           <div className="form-group">
+          <label className="form-label">Product Model</label>
           <input
             type="text"
             className="form-control"
             value={stepsData[0].fields.productModal || ''}
             onChange={(e) => handleFieldChange('productModal', e.target.value)}
-            placeholder="Enter productModal"
+            placeholder="Enter product model"
           />
         </div>
-        <div className="form-group">
-          <label className="form-label">Product Name</label>
+           <div className="form-group">
+          <label className="form-label">Solution Title</label>
           <input
             type="text"
             className="form-control"
             value={stepsData[0].fields.solutionTitle || ''}
             onChange={(e) => handleFieldChange('solutionTitle', e.target.value)}
-            placeholder="Enter product solutionTitle"
+            placeholder="Enter solution title"
           />
         </div>
-        <div className="form-group">
-          <label className="form-label">Product solutionDescription</label>
+           <div className="form-group">
+          <label className="form-label">Solution Description</label>
           <input
             type="text"
             className="form-control"
@@ -406,6 +404,7 @@ function FormStepOne({
         <div className="form-row">
           <div className="form-group col-4">
             <label className="form-label">Blog Image</label>
+            <span className="image-size-info">Recommended size: 800 × 600 px (4:3)</span>
             <div className="image-upload-container">
               {imagePreviews.blogImage ? (
                 <div className="image-preview-container">
@@ -454,6 +453,7 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Home Banner</label>
+            <span className="image-size-info">Recommended size: 1920 × 1080 px (16:9)</span>
             <div className="image-upload-container">
               {imagePreviews.homeBanner ? (
                 <div className="image-preview-container">
@@ -502,6 +502,7 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Footer Banner</label>
+            <span className="image-size-info">Recommended size: 1920 × 400 px (wide)</span>
             <div className="image-upload-container">
               {imagePreviews.footerBanner ? (
                 <div className="image-preview-container">
@@ -552,6 +553,7 @@ function FormStepOne({
         <div className="form-row">
           <div className="form-group col-4">
             <label className="form-label">Choose Image</label>
+            <span className="image-size-info">Recommended size: 600 × 600 px (1:1)</span>
             <div className="image-upload-container">
               {imagePreviews.chooseImage ? (
                 <div className="image-preview-container">
@@ -600,6 +602,7 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Product Icon</label>
+            <span className="image-size-info">Recommended size: 256 × 256 px (square)</span>
             <div className="image-upload-container">
               {imagePreviews.productIcon ? (
                 <div className="image-preview-container">
@@ -645,14 +648,15 @@ function FormStepOne({
               )}
             </div>
           </div>
-          <div className="form-group col-4">
-            <label className="form-label">solutionImage</label>
+           <div className="form-group col-4">
+            <label className="form-label">Solution Image</label>
+            <span className="image-size-info">Recommended size: 800 × 600 px (4:3)</span>
             <div className="image-upload-container">
               {imagePreviews.solutionImage ? (
                 <div className="image-preview-container">
                   <img
                     src={imagePreviews.solutionImage}
-                    alt="Product solutionImage"
+                    alt="Solution"
                     className="image-preview"
                   />
                   <button

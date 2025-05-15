@@ -72,6 +72,15 @@ const PurchaseForm = () => {
     console.log('formdata', formData);
   };
 
+
+     const handleDescription= (e) => {
+    const {name,value} = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   const handleDateChange = (e) => {
     const value = e.target.value;
 
@@ -514,7 +523,7 @@ const PurchaseForm = () => {
           placeholder="Supplier Invoice Number:"
           value={formData.supplierInvoiceNumber}
           name="supplierInvoiceNumber"
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -534,7 +543,7 @@ const PurchaseForm = () => {
           value={formData.supplierLocation}
           name="supplierLocation"
           // onChange={(e) => setDay(e.target.value)}
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           style={{
             height: '45px',
@@ -672,6 +681,7 @@ const PurchaseForm = () => {
         }}
       >
         <button
+          type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
@@ -836,7 +846,7 @@ const PurchaseForm = () => {
         <textarea
           name="purpose"
           value={formData.purpose}
-          onChange={handleInputChange}
+          onChange={handleDescription}
           className="w-full border rounded p-2"
           rows="3"
           placeholder="Enter description or notes..."

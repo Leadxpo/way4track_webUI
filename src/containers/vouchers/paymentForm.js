@@ -639,6 +639,7 @@ const PaymentForm = () => {
         }}
       >
         <button
+        type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
@@ -675,7 +676,11 @@ const PaymentForm = () => {
               <input
                 placeholder="Amount"
                 value={entry.amount}
+                name="amount"
                 className="w-1/4 border rounded p-2"
+                onChange={(e) =>
+                  handleEntryChange(index, 'amount', e.target.value)
+                }
               />
               <input
                 placeholder="Paid Amount"

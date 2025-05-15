@@ -383,7 +383,11 @@ const BranchList = () => {
           </thead>
           <tbody>
             {filteredStaff.length > 0 ? (
-              filteredStaff.map((staff, index) => (
+              Array.isArray(filteredStaff) &&
+  [...filteredStaff]
+    .sort((a, b) =>
+      String(a.staffId).localeCompare(String(b.staffId))
+    ).map((staff, index) => (
                 <tr key={staff.staffId} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
                   {/* <td className="p-3">{index + 1}</td> */}
                   <td className="p-3">{staff.staffId}</td>
@@ -448,7 +452,11 @@ const BranchList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp) => (
+            {Array.isArray(filteredEmployees) &&
+  [...filteredEmployees]
+    .sort((a, b) =>
+      String(a.staffId).localeCompare(String(b.staffId))
+    ).map((emp) => (
               <tr key={emp.staffId} className="text-gray-800 text-center border-b">
                 <td className="px-4 py-2 border">{emp.staffId}</td>
                 <td className="px-4 py-2 border">{emp.name}</td>

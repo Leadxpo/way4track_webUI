@@ -1,39 +1,83 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, useCallback} from 'react';
 import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { FaEllipsisV } from 'react-icons/fa';
 
 const RequestRaise = () => {
   const navigate = useNavigate();
 
-  const fetchMemberRecords = async () => {
-    try {
-      const response = await ApiService.post(
-        '/requests/getRequestsBySearch',
-        {
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-          staffId: localStorage.getItem('userId'),
+const [dropdownOpen, setDropdownOpen] = useState(null);
+ const [myRequestList,setMyRequestList]=useState([]);
+ const [filterMyRequests,setFilterMyRequests]=useState([]);
+ const warehouseManagerId=localStorage.getItem('id');
+  // const warehouseManagerId=46;
+    const getRequestsData = useCallback(async () => {
+      try {
+        const requestBody = {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+          role: localStorage.getItem('role'),
+        };
+  
+        if (
+          requestBody.role === 'Technician' ||
+          requestBody.role === 'Sales Man'
+        ) {
+          requestBody.staffId = localStorage.getItem('userId');
         }
-      );
+  
+        // if (requestData.branchName) {
+        //   requestBody.branchName = requestData.branchName;
+        // }
+  
+        const response = await ApiService.post(
+          '/requests/getRequestsBySearch',
+          requestBody
+        );
+  
+        
+  
+        if (response?.length) {
+          console.log('jkl', response);
+          const cleanedData = response.filter((item) => item.req_request_from === warehouseManagerId).map((item) => ({
+            requestId: item.
+              requestId
+            ,
+            requestNumber: item.requestNumber,
+            branchName: item.branchName,
+            branchId: item.req_branch_id,
+            requestType: item.requestType,
+            status: item.status,
+          }));
+  
+          console.log(';;;;;', cleanedData);
+          setMyRequestList(cleanedData);
+          // setFilteredData(cleanedData);
+        } else {
+          console.warn(
+            'Request failed:',
+            response?.data?.message || 'No data found'
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching request details:', error);
+      }
+    }, [
+      // requestData.branchName,
+      initialAuthState?.companyCode,
+      initialAuthState?.unitCode,
+    ]);
 
-      if (response.status) {
-        setRequestRecords(response.data);
-        }
-    } catch (err) {
-      console.error('Failed to fetch data:', err);
-      setRequestRecords([]);
-    }
-  };
+    useEffect(() => {
+  getRequestsData();
+}, [getRequestsData]);
   const [requestRecords, setRequestRecords] = useState([]);
-  const [activeTab, setActiveTab] = useState('work');
+  const [activeTab, setActiveTab] = useState('myRequests');
   const [branchFilter, setBranchFilter] = useState('');
   const [branches, setBranches] = useState([]);
   const [requestStatusFilter, setRequestStatusFilter] = useState('');
 
-  useEffect(() => {
-    fetchMemberRecords();
-  }, []);
 
   const fetchBranchRecords=async ()=>{
     try {
@@ -52,6 +96,11 @@ const RequestRaise = () => {
   useEffect(() => {
     fetchBranchRecords();
   }, [setBranchFilter]);
+
+    const toggleDropdown = (id) => {
+    setDropdownOpen(dropdownOpen === id ? null : id);
+  };
+
 
   const handleBranchFilter = (e) => {
     setBranchFilter(e.target.value);
@@ -83,7 +132,7 @@ const RequestRaise = () => {
     <div>
       <div className="flex space-x-4 mb-4 border-b-2 pb-2">
         <button
-          className={`px-4 py-2 font-semibold ${activeTab === 'work'
+          className={`px-4 py-2 font-semibold ${activeTab === 'myRequests'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500'
             }`}
@@ -92,7 +141,7 @@ const RequestRaise = () => {
           My Requests
         </button>
         <button
-          className={`px-4 py-2 font-semibold ${activeTab === 'voucher'
+          className={`px-4 py-2 font-semibold ${activeTab === 'requests'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500'
             }`}
@@ -147,31 +196,31 @@ const RequestRaise = () => {
             </div>
 
             <div className="overflow-y-auto">
-              {filteredRecords.length === 0 ? (
+              {myRequestList.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
-                  No payment records found.
+                  No records found.
                 </div>
               ) : (
                 <table className="min-w-full border-collapse border border-gray-200">
                   <thead className="bg-gray-100 sticky top-0">
                     <tr className="bg-blue-500 text-white text-left">
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                      RequestID
+                      requestId
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        Request Type
+                        requestNumber
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        Staff Name
+                        branchName
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        Branch
+                        branchId
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        Request Date
+                        requestType
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        Request Status
+                        status
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
                         Action
@@ -179,32 +228,74 @@ const RequestRaise = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredRecords.map((record, index) => (
+                    {myRequestList .filter((record) => {
+    const matchesBranch = !branchFilter || Number(record.branchId) === Number(branchFilter);
+    const matchesStatus = !requestStatusFilter || record.status?.toLowerCase() === requestStatusFilter.toLowerCase();
+    return matchesBranch && matchesStatus;
+  }).map((record, index) => (
                       <tr
                         key={index}
                         className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                       >
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestID || '-'}
+                          {record.requestId || '-'}
                         </td>
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestType || '-'}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.staffName || '-'}
+                          {record.requestNumber || '-'}
                         </td>
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
                           {record.branchName || '-'}
                         </td>
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestDate || '-'}
+                          {record.branchId}
                         </td>
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.status || 'Pending'}
+                          {record.requestType}
                         </td>
                         <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          View
+                          {record.status}
                         </td>
+                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
+  <div className="relative inline-block text-left">
+    <button
+      onClick={() => toggleDropdown(record.requestId)}
+      className="text-gray-600 hover:text-black focus:outline-none"
+    >
+      <FaEllipsisV />
+    </button>
+    {dropdownOpen === record.requestId && (
+      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+        <button
+          onClick={() => {
+            handleVendorEdit(record);
+            setDropdownOpen(null);
+          }}
+          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => {
+            handleDelete(record);
+            setDropdownOpen(null);
+          }}
+          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+        >
+          Delete
+        </button>
+        <button
+          onClick={() => {
+            handleDetails(record);
+            setDropdownOpen(null);
+          }}
+          className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+        >
+          Details
+        </button>
+      </div>
+    )}
+  </div>
+</td>
                       </tr>
                     ))}
                   </tbody>
