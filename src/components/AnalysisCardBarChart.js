@@ -68,7 +68,7 @@ const AnalysisCardBarChart = ({ togglePopup, date }) => {
             <XAxis dataKey="name" stroke="#fff" tick={{ fill: '#fff' }} />
             <YAxis stroke="#fff" tick={{ fill: '#fff' }} />
             <Tooltip
-              formatter={(value) => [`${value.toFixed(2)} Rs`, 'Total Sales']}
+              formatter={(value) => [`Rs.${value.toFixed(2)}`, 'Total Sales']}
               contentStyle={{ backgroundColor: '#333', color: '#fff', borderRadius: 8 }}
             />
             <Line

@@ -3595,7 +3595,7 @@ const Letters = () => {
               </View>
               <View style={[styles.mainRow, { padding: 10 }]}>
                 <Text style={[styles.lastcell, { flex: 3, fontWeight: 'bold' }]}> Net Pay ( {toWords(employeeData.netSalary)} )</Text>
-                <Text style={[styles.lastcell, { flex: 1, fontWeight: 'bold',textAlign:'right' }]}>  Rs {employeeData.netSalary}</Text>
+                <Text style={[styles.lastcell, { flex: 1, fontWeight: 'bold',textAlign:'right' }]}>Rs.{employeeData.netSalary}</Text>
                 {/* <Text style={[styles.cell, { fontWeight: 'bold'}]}> </Text> */}
               </View>
             </View>
