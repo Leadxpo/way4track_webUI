@@ -82,7 +82,7 @@ const Asserts = () => {
           console.log("rr ggg",response.data);
           setProducts(response.data || []);
           setFilterProducts(response.data || []);
-          console.log(response.data, 'asserts');
+          console.log(response.data, 'assets');
         } else {
           setProducts([]);
         }

@@ -48,8 +48,8 @@ const CreditNoteForm = () => {
         day:"",
         partyName: "",
         ledgerId:"",
-        bankAccountNumber:"",
-        saleId:"",
+        // bankAccountNumber:"",
+        invoiceId:"",
         amount:"",
         voucherType:"CREDITNOTE",
         purpose:""
@@ -194,8 +194,8 @@ const CreditNoteForm = () => {
      payload.append('day', formData.day);
      payload.append('ledgerId', Number(formData.ledgerId));
      payload.append('branchId', Number(localStorage.getItem("branchId")));
-     payload.append('bankAccountNumber', formData.bankAccountNumber);
-     payload.append('saleId', formData.saleId);
+    //  payload.append('bankAccountNumber', formData.bankAccountNumber);
+     payload.append('invoiceId', formData.invoiceId);
      payload.append('amount', formData.amount);
      payload.append('voucherType', formData.voucherType);
      payload.append('purpose', formData.purpose);
@@ -392,7 +392,7 @@ const CreditNoteForm = () => {
         ))}
       </select>
 
-<select
+{/* <select
         value={formData.bankAccountNumber}
         onChange={handleInputChange}
         name="bankAccountNumber"
@@ -414,13 +414,13 @@ const CreditNoteForm = () => {
             {`${account.name} (${account.accountNumber})`}
           </option>
         ))}
-      </select>
+      </select> */}
 
         <input
           type="text"
-          name="saleId"
-          placeholder="Sale ID:"
-          value={formData.saleId}
+          name="invoiceId"
+          placeholder="Invoice ID:"
+          value={formData.invoiceId}
           onChange={handleInputChange}
           className="w-full border rounded p-2"
           style={{

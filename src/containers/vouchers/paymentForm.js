@@ -403,6 +403,8 @@ const PaymentForm = () => {
 
     fetchLedgers();
   }, []);
+
+  const branchId =Number(localStorage.getItem("branchId"));
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
@@ -413,8 +415,12 @@ const PaymentForm = () => {
         );
         console.log("setBankAccount22211111", response)
         if (response.status) {
+          const filteredAccounts = response.data.filter(
+          (account) => account.branchId === branchId
 
-          setBankAccount(response.data); // Set branches to state
+        );
+
+          setBankAccount(filteredAccounts);
         } else {
           console.error('Failed to fetch accounts');
         }

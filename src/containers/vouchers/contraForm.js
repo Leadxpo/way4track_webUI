@@ -26,6 +26,8 @@ const ContraForm = () => {
     }));
   };
 
+  const branchId =Number(localStorage.getItem("branchId"));
+
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
@@ -36,8 +38,12 @@ const ContraForm = () => {
         );
         console.log("setBankAccount222",response)
         if (response.status) {
+          const filteredAccounts = response.data.filter(
+          (account) => account.branchId === branchId
+
+        );
           
-          setBankAccount(response.data); // Set branches to state
+          setBankAccount(filteredAccounts); // Set branches to state
         } else {
           console.error('Failed to fetch accounts');
         }

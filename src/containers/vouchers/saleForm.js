@@ -438,25 +438,34 @@ const SaleForm = () => {
       )}
 
       <div className="mt-4 space-y-2">
-        {/* <label className="block">Date:</label> */}
-        <input
-          type="date"
-          placeholder="Date:"
-          value={formData.date}
-          name="date"
-          onChange={handleDateChange}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
+
+        <label
+    htmlFor="dueDate"
+    className="block text-sm mb-1 font-bold text-gray-800"
+    style={{
+      fontSize: '16px',
+      fontWeight: '700',
+    }}
+  >
+    Generation Date
+  </label>
+<input
+  type="date"
+  value={formData.generationDate}
+  name="generationDate"
+  onChange={handleDateChange}
+  className="w-full border p-2"
+  style={{
+    height: '45px',
+    backgroundColor: '#FFFFFF',
+    color: '#000000',
+    borderRadius: '8px',
+    borderWidth: '1px',
+    borderColor: '#A2A2A2',
+    fontSize: '16px',
+    fontWeight: '500',
+  }}
+/>
 
         <input
           type="text"
@@ -476,24 +485,35 @@ const SaleForm = () => {
           }}
         />
 
-        <input
-          type="date"
-          placeholder="Date:"
-          value={formData.dueDate}
-          name="date"
-          onChange={handleDueDateChange}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        />
+        <label
+    htmlFor="dueDate"
+    className="block text-sm mb-1 font-bold text-gray-800"
+    style={{
+      fontSize: '16px',
+      fontWeight: '700',
+    }}
+  >
+    Due Date
+  </label>
+
+<input
+  type="date"
+  value={formData.dueDate
+}
+  name="dueDate"
+  onChange={handleDueDateChange}
+  className="w-full border p-2"
+  style={{
+    height: '45px',
+    backgroundColor: '#FFFFFF',
+    color: '#000000',
+    borderRadius: '8px',
+    borderWidth: '1px',
+    borderColor: '#A2A2A2',
+    fontSize: '16px',
+    fontWeight: '500',
+  }}
+/>
 
         <select
           value={formData.ledgerId}
