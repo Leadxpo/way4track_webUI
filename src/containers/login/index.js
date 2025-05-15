@@ -96,7 +96,6 @@ const Login = ({ handleLoginFlag }) => {
 
       if (response.data.status) {
         localStorage.setItem('userId', userId);
-        localStorage.setItem('password', password);
         localStorage.setItem('role', role);
         localStorage.setItem('userProfile', JSON.stringify(response.data));
 
