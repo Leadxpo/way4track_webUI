@@ -202,7 +202,7 @@ const ReceiptForm = () => {
     if (field === "invoiceId") {
       const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
       if (matchedInvoice) {
-        updatedInvoices[index].amount = matchedInvoice.amount;
+        updatedInvoices[index].amount = matchedInvoice.reminigAmount?matchedInvoice.reminigAmount:matchedInvoice.amount;
       } else {
         updatedInvoices[index].amount = ""; // reset if not found
       }
@@ -618,8 +618,8 @@ const ReceiptForm = () => {
               Invoice ID : {entry.invoiceId}
             </p>
             <p className="font-semibold text-lg">
-              Payable Amount : {parseFloat(entry.amount).toLocaleString('en-IN')}
-            </p>
+  Payable Amount : {entry.reminigAmount ? parseFloat(entry.reminigAmount).toLocaleString('en-IN') : parseFloat(entry.amount).toLocaleString('en-IN')}
+</p>
           </div>
         ))}
 

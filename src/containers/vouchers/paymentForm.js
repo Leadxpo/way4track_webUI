@@ -202,7 +202,7 @@ const PaymentForm = () => {
     if (field === "invoiceId") {
       const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
       if (matchedInvoice) {
-        updatedInvoices[index].amount = matchedInvoice.amount;
+        updatedInvoices[index].amount =matchedInvoice.reminigAmount?matchedInvoice.reminigAmount:matchedInvoice.amount;
       } else {
         updatedInvoices[index].amount = ""; // reset if not found
       }
@@ -358,7 +358,7 @@ const PaymentForm = () => {
   };
 
 
-
+const branch = localStorage.getItem('branchId');
 
   const getPendingVouchers = async (selectedPartyName) => {
     try {
@@ -371,6 +371,8 @@ const PaymentForm = () => {
       console.log("setPendingVouchers+++++++++", response);
 
       if (response.status) {
+        console.log("tttt",response.data);
+        // filter  branch purchse
         setPendingVouchers(response.data);
       } else {
         console.error('Failed to fetch ledger data');
@@ -618,7 +620,7 @@ const PaymentForm = () => {
               Invoice ID : {entry.invoiceId}
             </p>
             <p className="font-semibold text-lg">
-              Payable Amount : {parseFloat(entry.amount).toLocaleString('en-IN')}
+              Payable Amount : {entry.reminigAmount?parseFloat(entry.reminigAmount).toLocaleString('en-IN'):parseFloat(entry.amount).toLocaleString('en-IN')}
             </p>
           </div>
         ))}
