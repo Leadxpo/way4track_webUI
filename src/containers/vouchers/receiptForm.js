@@ -202,7 +202,7 @@ const ReceiptForm = () => {
     if (field === "invoiceId") {
       const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
       if (matchedInvoice) {
-        updatedInvoices[index].amount = matchedInvoice.reminigAmount?matchedInvoice.reminigAmount:matchedInvoice.amount;
+        updatedInvoices[index].amount = matchedInvoice.reminigAmount ? matchedInvoice.reminigAmount : matchedInvoice.amount;
       } else {
         updatedInvoices[index].amount = ""; // reset if not found
       }
@@ -259,7 +259,7 @@ const ReceiptForm = () => {
       })),
       purpose: formData.purpose,
       branchId: Number(localStorage.getItem("branchId")),
-      ledgerId:Number(formData.ledgerId),
+      ledgerId: Number(formData.ledgerId),
       voucherType: formData.voucherType,
       paymentType: paymentType.toLowerCase(),
       upiId: formData.upiId,
@@ -358,7 +358,7 @@ const ReceiptForm = () => {
   };
 
 
-
+  const branch = localStorage.getItem('branchId');
 
   const getPendingVouchers = async (selectedPartyName) => {
     try {
@@ -371,7 +371,13 @@ const ReceiptForm = () => {
       console.log("setPendingVouchers+++++++++", response);
 
       if (response.status) {
-        setPendingVouchers(response.data);
+        const filteredVouchers = response.data.filter(voucher =>
+          voucher.voucherType === "SALE" &&
+          voucher.branchId?.id === Number(branch) 
+          &&
+          Number(voucher.reminigAmount) !== 0
+        );
+        setPendingVouchers(filteredVouchers);
       } else {
         console.error('Failed to fetch ledger data');
       }
@@ -404,7 +410,7 @@ const ReceiptForm = () => {
     fetchLedgers();
   }, []);
 
-  const branchId =Number(localStorage.getItem("branchId"));
+  const branchId = Number(localStorage.getItem("branchId"));
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
@@ -415,10 +421,10 @@ const ReceiptForm = () => {
         );
         console.log("setBankAccount22211111", response)
         if (response.status) {
-           const filteredAccounts = response.data.filter(
-          (account) => account.branchId === branchId
+          const filteredAccounts = response.data.filter(
+            (account) => account.branchId === branchId
 
-        );
+          );
 
           setBankAccount(filteredAccounts); // Set branches to state
         } else {
@@ -618,8 +624,8 @@ const ReceiptForm = () => {
               Invoice ID : {entry.invoiceId}
             </p>
             <p className="font-semibold text-lg">
-  Payable Amount : {entry.reminigAmount ? parseFloat(entry.reminigAmount).toLocaleString('en-IN') : parseFloat(entry.amount).toLocaleString('en-IN')}
-</p>
+              Payable Amount : {entry.reminigAmount ? parseFloat(entry.reminigAmount).toLocaleString('en-IN') : parseFloat(entry.amount).toLocaleString('en-IN')}
+            </p>
           </div>
         ))}
 
@@ -645,7 +651,7 @@ const ReceiptForm = () => {
         }}
       >
         <button
-        type="button"
+          type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}

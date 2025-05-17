@@ -372,8 +372,19 @@ const branch = localStorage.getItem('branchId');
 
       if (response.status) {
         console.log("tttt",response.data);
+
+      //   const filteredVouchers = response.data.filter(voucher =>
+      //   voucher.voucherType === "PURCHASE" && voucher.branchId?.id === Number(branch)
+      // );
+      const filteredVouchers = response.data.filter(voucher =>
+        voucher.voucherType === "PURCHASE" 
+        &&
+        voucher.branchId?.id === Number(branch) 
+        &&
+        Number(voucher.reminigAmount) !== 0
+      );
         // filter  branch purchse
-        setPendingVouchers(response.data);
+        setPendingVouchers(filteredVouchers);
       } else {
         console.error('Failed to fetch ledger data');
       }
