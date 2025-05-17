@@ -193,7 +193,10 @@ const Vouchers = () => {
                 <td className="p-3">{voucher.voucherId}</td>
                 <td className="p-3">{voucher.branch}</td>
                 <td className="p-3">{voucher.paymentType}</td>
-                <td className="p-3 ">{voucher.generationDate}</td>
+                {/* <td className="p-3 ">{voucher.generationDate}</td> */}
+                <td className="p-3 ">
+  {new Date(voucher.generationDate).toLocaleDateString('en-GB')}
+</td>
                 <td className="p-3">{voucher.amount}</td>
                 <td className="p-3">{voucher.paymentMode}</td>
                 <td className="p-3">{voucher.paymentStatus}</td>
@@ -227,8 +230,11 @@ const Vouchers = () => {
             <p>
               <strong>Voucher Type:</strong> {selectedVoucher.paymentType}
             </p>
-            <p>
+            {/* <p>
               <strong>Generation Date:</strong> {selectedVoucher.generationDate}
+            </p> */}
+             <p>
+            <strong>Generation Date:</strong> {new Date(selectedVoucher.generationDate).toLocaleDateString('en-GB')}
             </p>
             <p>
               <strong>Amount:</strong> ₹{selectedVoucher.amount}

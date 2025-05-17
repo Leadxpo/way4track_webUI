@@ -115,7 +115,7 @@ const VendorProfile = () => {
           <p className="text-gray-800">
             Alternate Phone number : {vendorDetails.alternatePhoneNumber}
           </p>
-          <p className="text-gray-800">Branch : {vendorDetails.branch}</p>
+          {/* <p className="text-gray-800">Branch : {vendorDetails.branch}</p> */}
           <p className="text-gray-800">
             Aadhar Number : {vendorDetails.aadharNumber}
           </p>
