@@ -5,10 +5,10 @@ import { useLocation, useNavigate } from 'react-router';
 const EditEmployerDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log('asdffhgfdsa location rammmmmmmmm', location.state);
   const [data, setData] = useState({
     id: '',
     staffId: '',
+    branch:null,
     branchName: '',
     joiningDate: null,
     designation: '',
@@ -35,13 +35,14 @@ const EditEmployerDetails = () => {
   }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
-  console.log(branches, 'datejh');
+ 
 
   // Fetch Branches
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       if (response.status) {
+        console.log("hhyyy .....iii",response.data)
         setBranches(response.data);
       } else {
         console.error('Failed to fetch branch names.');
@@ -122,6 +123,7 @@ const EditEmployerDetails = () => {
     const payload = {
       id: data.id ?? '',
       // staffId: "SFp-0002",
+      branch:data?.branch ,
       branchName: data.branchName ?? '',
       designation: data.designation ?? '',
       department: data.department ?? '',
@@ -251,16 +253,19 @@ const EditEmployerDetails = () => {
           ))}
         </select> */}
 
-        <select
-          name="branchId"
-          value={data.branchId} // Store branchId as a number
+      <select
+          name="branch"
+          value={data.branch}
           onChange={(e) => {
+            const selectedId = e.target.value;
+            console.log("gggg",e.target.value,branches)
             const selectedBranch = branches.find(
-              (branch) => branch.id === Number(e.target.value)
+              (branch) => branch.id.toString() === selectedId
             );
+
             setData((prevData) => ({
               ...prevData,
-              branch: selectedBranch?.id || '', // Store branchId as a number
+              branch: selectedBranch?.id || '',
               branchName: selectedBranch?.branchName || '',
             }));
           }}
@@ -269,8 +274,6 @@ const EditEmployerDetails = () => {
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
             <option key={branch.id} value={branch.id}>
-              {' '}
-              {/* Use branch.id as value */}
               {branch.branchName}
             </option>
           ))}
