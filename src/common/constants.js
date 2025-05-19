@@ -328,7 +328,7 @@ export const menuOptions = {
     },
     { name: 'Tickets', icon: <img src="./tickets.png" />, route: '/tickets' },
   ],
-  'Tele Calling Associate': [
+  'tele calling associate': [
     {
       name: 'Home',
       icon: <img src="./home.png" />,
@@ -727,7 +727,7 @@ export const formattedPaths = {
       icon: <img src="./maintenance.png" />,
     },
   },
-  'Tele Calling Associate': {
+  'tele calling associate': {
     '/home': { name: 'Home', icon: <img src="./home.png" /> },
     '/customer-requests': {
       name: 'Customer Requests',
