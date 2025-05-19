@@ -23,7 +23,7 @@ const App = () => {
       case 'CEO':
         navigate('/home');
         break;
-      case 'Tele caller':
+      case 'Tele Calling Associate':
         navigate('/customer-care-home');
         break;
       case 'Accountant':
