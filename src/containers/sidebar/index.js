@@ -84,7 +84,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'CEO':
         navigate('/home');
         break;
-      case 'Tele caller':
+      case 'Tele Calling Associate':
         navigate('/customer-care-home');
         break;
       case 'Accountant':
