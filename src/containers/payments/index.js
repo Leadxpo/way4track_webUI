@@ -24,21 +24,38 @@ const Payments = () => {
       );
 
       if (response.status) {
+        console.log("tttttff",response.data);
         setPaymentRecords(response.data);
 
         // Extract unique branchId + branchName pairs
-        const uniqueBranches = [];
-        const seenBranchIds = new Set();
+        // const uniqueBranches = [];
+        // const seenBranchIds = new Set();
 
-        response.data.forEach((item) => {
-          if (!seenBranchIds.has(item.branchId)) {
-            seenBranchIds.add(item.branchId);
-            uniqueBranches.push({
-              id: item.branchId,
-              branchName: item.branchName,
-            });
-          }
-        });
+        // response.data.forEach((item) => {
+        //   if (!seenBranchIds.has(item.branchId)) {
+        //     seenBranchIds.add(item.branchId);
+        //     uniqueBranches.push({
+        //       id: item.branchId,
+        //       branchName: item.branchName,
+        //     });
+        //   }
+        // });
+
+        const seenBranchIds = new Set();
+const uniqueBranches = [];
+
+response.data.forEach((item) => {
+  // Filter out items with null or undefined branchId or branchName
+  if (item.branchId != null && item.branchName != null) {
+    if (!seenBranchIds.has(item.branchId)) {
+      seenBranchIds.add(item.branchId);
+      uniqueBranches.push({
+        id: item.branchId,
+        branchName: item.branchName,
+      });
+    }
+  }
+});
 
         setBranches(uniqueBranches);
       }
@@ -112,6 +129,10 @@ const Payments = () => {
 
     return matchesBranch && matchesStatus && matchesDate;
   });
+
+  if(filteredRecords){
+    console.log("qqqqq",filteredRecords);
+  }
 
   return (
     <div>
