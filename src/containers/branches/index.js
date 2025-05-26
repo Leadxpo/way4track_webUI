@@ -161,7 +161,7 @@ const Branches = () => {
                 >
                   Edit
                 </button>
-
+               {permissions.delete&&
                 <button
                   className={`px-4 py-2 text-white rounded-md transition 
                     ${permissions.delete ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
@@ -169,7 +169,7 @@ const Branches = () => {
                    disabled={!permissions.delete}
                 >
                   Delete
-                </button>
+                </button>}
                 {/* <button
                   className={`px-4 py-2 text-white rounded-md transition 
                     ${permissions.view ? 'bg-blue-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
@@ -183,7 +183,7 @@ const Branches = () => {
                 <button
                   className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => handleMoreDetails(branch)}
-                   disabled={!permissions.view}
+                  //  disabled={!permissions.view}
                 >
                   More Details
                 </button>

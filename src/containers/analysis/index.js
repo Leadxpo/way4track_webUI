@@ -58,15 +58,15 @@ const Analysis = () => {
             <div className="grid grid-cols-3 gap-4 text-center text-sm">
               <div>
                 <h3 className="text-green-700 font-semibold text-lg mb-2">Total Sales</h3>
-                <p className="text-black font-medium">{totalSales.toFixed(2)} Rs</p>
+                <p className="text-black font-medium">Rs.{totalSales.toFixed(2)}</p>
               </div>
               <div>
                 <h3 className="text-green-700 font-semibold text-lg mb-2">Total Services</h3>
-                <p className="text-black font-medium">{totalServices.toFixed(2)} Rs</p>
+                <p className="text-black font-medium">Rs.{totalServices.toFixed(2)}</p>
               </div>
               <div>
                 <h3 className="text-green-700 font-semibold text-lg mb-2">Total Products</h3>
-                <p className="text-black font-medium">{totalProducts.toFixed(2)} Rs</p>
+                <p className="text-black font-medium">Rs.{totalProducts.toFixed(2)}</p>
               </div>
             </div>
 
@@ -82,9 +82,9 @@ const Analysis = () => {
                   <h3 className="text-center text-lg font-semibold text-gray-700 mb-2">
                     {item.branchName}
                   </h3>
-                  <p className="text-sm text-gray-600">Sales: {item.TotalSalesAmount} Rs</p>
-                  <p className="text-sm text-gray-600">Services: {item.serviceTotalAmount} Rs</p>
-                  <p className="text-sm text-gray-600">Products: {item.productTotalAmount} Rs</p>
+                  <p className="text-sm text-gray-600">Sales:Rs.{item.TotalSalesAmount}</p>
+                  <p className="text-sm text-gray-600">Services:Rs.{item.serviceTotalAmount}</p>
+                  <p className="text-sm text-gray-600">Products:Rs.{item.productTotalAmount}</p>
                 </div>
               ))}
             </div>

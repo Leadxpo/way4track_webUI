@@ -145,7 +145,10 @@ const TableWithDateFilter = ({
             ...rest, // Spread remaining properties first (except joiningDate)
             name: rest.name, // Ensure 'name' comes first
             phoneNumber, // Place 'phoneNumber' explicitly after 'name'
-            joiningDate, // Place 'joiningDate' after 'phoneNumber'
+            // joiningDate
+            joiningDate: joiningDate
+      ? new Date(joiningDate).toLocaleDateString('en-GB')
+      : '',
           })
         );
         setSubdealerList(formattedData);

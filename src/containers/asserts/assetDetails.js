@@ -127,7 +127,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Name: {data.assertsName}
+          Asset Name: {data.assertsName}
         </p>
       </div>
       <div
@@ -149,7 +149,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Amount: ₹{data.price}
+          Asset Amount: ₹{data.price}
         </p>
       </div>
       <div
@@ -171,7 +171,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Type: {data.assetType}
+          Asset Type: {data.assetType}
         </p>
       </div>
       {/* <div
@@ -215,7 +215,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Quantity: {data.quantity}
+          Asset Quantity: {data.quantity}
         </p>
       </div>
       <div
@@ -259,7 +259,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Description: {data.description}
+          Asset Description: {data.description}
         </p>
       </div>
       <div
@@ -281,7 +281,7 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Assert Purchase Date:{' '}
+          Asset Purchase Date:{' '}
           {data?.purchaseDate ? data.purchaseDate.split('T')[0] : 'N/A'}
         </p>
       </div>

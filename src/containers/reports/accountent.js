@@ -163,17 +163,17 @@ const Reports = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
-        <p className="text-xl text-white font-bold">Trial Balence</p>
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
+        <p className="text-xl text-white font-bold">Trial Balance</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("trialbalance")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
-        <p className="text-xl text-white font-bold">Balence Sheet</p>
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
+        <p className="text-xl text-white font-bold">Balance Sheet</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("BalanceSheet")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Profit And Loss Account</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("ProfitLoss")} />
       </div>
@@ -183,7 +183,7 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Returns</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("salereturn")} />
       </div>
@@ -198,12 +198,12 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">TDS Reports</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("tdsreport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">TCS Reports</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("tcsreport")} />
       </div>
@@ -213,12 +213,12 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Income Statement</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("incomestatement")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Cash Flow Statement</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("cashflowreport")} />
       </div>
@@ -233,7 +233,7 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center p-4 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Fixed Assets and Depreciation</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("fixedassetreport")} />
       </div>
@@ -243,7 +243,7 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Loan and Interest</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("loaninterestreport")} />
       </div>
@@ -263,42 +263,42 @@ const Reports = () => {
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div> */}
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Payables</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("PayableReport")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Cash And Banks</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("Payment Stock")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Ledger Register</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("LedgerRegister")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Purchase Register</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("PurchaseRegister")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Journal Register</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("JournalRegister")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Credit Note Register</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("CreditNoteRegister")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Debit Note Register</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("DebitNoteRegister")} />
       </div>
 
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+      <div className="flex justify-between items-center px-4 py-2 my-2 border bg-green-600">
         <p className="text-xl text-white font-bold">Get Report GSTRI ,GSTR 3B</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal("GstriReport")} />
       </div>

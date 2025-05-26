@@ -142,10 +142,10 @@ const BranchDetails = () => {
           <strong>Branch Opening:</strong>
           <p>{branchDetails.branchOpening || 'N/A'}</p>
         </div>
-        <div>
+        {/* <div>
           <strong>GST:</strong>
           <p>{branchDetails.GST || 'N/A'}</p>
-        </div>
+        </div> */}
       </div>
 
       <div className=" items-center mb-4 ">

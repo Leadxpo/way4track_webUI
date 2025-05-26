@@ -82,7 +82,7 @@ const Asserts = () => {
           console.log("rr ggg",response.data);
           setProducts(response.data || []);
           setFilterProducts(response.data || []);
-          console.log(response.data, 'asserts');
+          console.log(response.data, 'assets');
         } else {
           setProducts([]);
         }
@@ -209,7 +209,7 @@ const Asserts = () => {
         <div className="flex justify-between mx-6">
           <DropdownCard
             bgColor="green"
-            title="Office Asserts"
+            title="Office Assets"
             count={assetCounts.officeAsserts}
             branches={branches}
             selectedBranch={selectedBranch}
@@ -217,7 +217,7 @@ const Asserts = () => {
           />
           <DropdownCard
             bgColor="purple"
-            title="Transport Asserts"
+            title="Transport Assets"
             count={assetCounts.transportAsserts}
             branches={branches}
             selectedBranch={setSelectedBranch}

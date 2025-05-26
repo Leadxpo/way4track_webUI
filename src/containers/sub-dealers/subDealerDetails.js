@@ -49,6 +49,7 @@ const SubDealerDetails = () => {
           }
         );
         if (response.status) {
+          console.log("wer  subdealer id",response.data)
           const subDealer = response.data?.[0];
           setSubDealerDetails({
             ...subDealer,
@@ -98,6 +99,7 @@ const SubDealerDetails = () => {
   //   };
   //   fetchSubDealerDetailsData();
   // }, [subDealerDetailsFromState.SubDealerId]);
+  console.log("dddddog",subDealerDetailsFromState.SubDealerId);
 
   useEffect(() => {
     const fetchSubDealers = async () => {
@@ -112,7 +114,7 @@ const SubDealerDetails = () => {
           }
         );
         if (response.status) {
-          console.log('kk', response.data);
+          console.log('kk sub iiidddd', response.data);
           setSubDealer({
             name: response.data.name,
             subDealerPhoneNumber: response.data.subDealerPhoneNumber,
@@ -369,12 +371,11 @@ const SubDealerDetails = () => {
 
       if (response.status) {
         const data = response.data || [];
-        //  console.log("rrrr ggggg wwwww",data);
-        //   const filteredData = data
-        //     .filter(item => item.subDealerId && item.subDealerId.id === subDealerDetailsFromState.SubDealerId)
-        //     .map(({ subDealerId, ...rest }) => rest);
-        console.log('hhhhh', data);
-        setSubDealerStaffDetailsData(data);
+        const filteredData = data.filter(
+  item => item.subDealerId?.subDealerId === subDealerDetailsFromState.SubDealerId
+)
+        console.log('hhhhh sub staff idsss', data);
+        setSubDealerStaffDetailsData(filteredData);
         // setPreviewData(filteredData);
       } else {
         setSubDealerStaffDetailsData([]);

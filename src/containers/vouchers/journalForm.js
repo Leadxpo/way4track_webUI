@@ -26,6 +26,8 @@ const JournalForm = () => {
     }));
   };
 
+  const branchId =Number(localStorage.getItem("branchId"));
+
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
@@ -34,10 +36,14 @@ const JournalForm = () => {
                     
                   
         );
+        localStorage.getItem("branchId")
         console.log("setBankAccount222",response)
         if (response.status) {
-          
-          setBankAccount(response.data); // Set branches to state
+          const filteredAccounts = response.data.filter(
+          (account) => account.branchId === branchId
+
+        );
+          setBankAccount(filteredAccounts);
         } else {
           console.error('Failed to fetch accounts');
         }
@@ -48,6 +54,8 @@ const JournalForm = () => {
 
     fetchBankAccounts();
   }, []);
+
+
 
   const handleLedgerChange = (e) => {
     const selectedId = Number(e.target.value); // Convert string to number

@@ -5,7 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 const ClientProfile = () => {
   const location = useLocation();
   const clientDetailsFromState = location.state?.clientDetails || {};
-  console.log(location.state?.clientDetails, ':::::::');
+  console.log(location.state?.clientDetails, 'ww:::::::');
 
   console.log(clientDetailsFromState, ':::::::');
   const [clientDetails, setClientDetails] = useState({});
@@ -46,6 +46,7 @@ const ClientProfile = () => {
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
+          console.log("yyyypppp",response.data);
           const client = response.data;
           setClientDetails({
             name: client.name,
@@ -127,10 +128,10 @@ const ClientProfile = () => {
           {/* <p className="text-gray-800">
             Customer Branch : {clientDetails.branch}
           </p> */}
-          <p className="text-gray-800">
+          {/* <p className="text-gray-800">
             GST Number : {clientDetails.gstNumber}
-          </p>
-          <p className="text-gray-800">Joining Date : {clientDetails.joiningDate}</p>
+          </p> */}
+          {/* <p className="text-gray-800">Joining Date : {clientDetails.joiningDate}</p> */}
           <p className="text-gray-800">Address : {clientDetails.address}</p>
         </div>
       </div>
