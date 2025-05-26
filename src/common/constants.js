@@ -132,6 +132,11 @@ export const menuOptions = {
       route: '/all-orders',
     },
     {
+      name: 'Reviews',
+      icon: <img src="./payroll.png" />,
+      route: '/device-reviews',
+    },
+    {
       name: 'Dispatch',
       icon: <img src="./payroll.png" />,
       route: '/dispatch',

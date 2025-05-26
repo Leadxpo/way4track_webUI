@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { FaPaperclip } from 'react-icons/fa6';
+import jsPDF from 'jspdf';
 
 const ViewBackendWorkDetails = () => {
   const location = useLocation();
@@ -260,6 +261,93 @@ const ViewBackendWorkDetails = () => {
     setNewRemark('');
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    let y = 10;
+
+    const addSectionTitle = (title) => {
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title, 10, y);
+      y += 8;
+    };
+
+    const addField = (label, value) => {
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`${label}: ${value || '-'}`, 10, y);
+      y += 6;
+      if (y > 280) {
+        doc.addPage();
+        y = 10;
+      }
+    };
+
+    addSectionTitle('Work Record Details');
+
+    // General Information
+    addSectionTitle('General Information');
+    addField('Service', editedRecord.service);
+    addField('Work Status', editedRecord.workStatus);
+    addField('Payment Status', editedRecord.paymentStatus);
+    addField('Date', new Date(editedRecord.date).toLocaleString());
+    addField(
+      'Attend Date',
+      new Date(editedRecord.attendedDate).toLocaleString()
+    );
+
+    // Product Details
+    addSectionTitle('Product Details');
+    addField('Product Name', editedRecord.productName);
+    addField('IMEI Number', editedRecord.imeiNumber);
+
+    // Vehicle Information
+    addSectionTitle('Vehicle Information');
+    addField('Vehicle Type', editedRecord.vehicleType);
+    addField('Vehicle Number', editedRecord.vehicleNumber);
+    addField('Chassis Number', editedRecord.chassisNumber);
+    addField('Engine Number', editedRecord.engineNumber);
+
+    // Client Details
+    addSectionTitle('Client Details');
+    addField('Client Name', editedRecord.name);
+    addField('Email', editedRecord.email);
+    addField('Phone Number', editedRecord.phoneNumber);
+    addField('Address', editedRecord.address);
+
+    // Company & Work Details
+    addSectionTitle('Company & Work Details');
+    addField('Technician Number', editedRecord.technicianNumber);
+    addField('Amount', editedRecord.amount);
+
+    // Payment Details
+    addSectionTitle('Payment Details');
+    addField('Amount', editedRecord.amount);
+    addField('Paid Amount', editedRecord.paidAmount);
+    addField('Payment Status', editedRecord.paymentStatus);
+
+    // Backend Support Details
+    if (editedRecord.backEndStaffRelation) {
+      addSectionTitle('Backend Support Details');
+      addField('ID', editedRecord.backEndStaffRelation.id);
+      addField('Name', editedRecord.backEndStaffRelation.name);
+      addField('Phone Number', editedRecord.backEndStaffRelation.phoneNumber);
+    }
+    // Remarks
+    if (remarks && remarks.length) {
+      addSectionTitle('Remarks');
+      remarks.forEach((remark) => {
+        addField(
+          `${remark.name} (${new Date(remark.date).toLocaleString()})`,
+          remark.desc
+        );
+      });
+    }
+
+    doc.save('work-record-details.pdf');
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg">
       <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
@@ -275,12 +363,21 @@ const ViewBackendWorkDetails = () => {
               Back
             </button>
 
-            <button
-              onClick={isEditing ? handleSave : handleEdit}
-              className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              {isEditing ? 'Save' : 'Edit'}
-            </button>
+            <div>
+              <button
+                onClick={isEditing ? handleSave : handleEdit}
+                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                {isEditing ? 'Save' : 'Edit'}
+              </button>
+
+              <button
+                onClick={generatePDF}
+                className="mb-4 px-4 py-2 ml-2 bg-green-600 text-white rounded"
+              >
+                Download PDF
+              </button>
+            </div>
           </div>
 
           <Section title="General Information">

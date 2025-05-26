@@ -12,8 +12,8 @@ const Invoices = () => {
       onEdit={() => { }}
       onDelete={() => { }}
       onDetails={() => { }}
-      showCreateBtn={false}
-      showEdit={false}
+      showCreateBtn={true}
+      showEdit={true}
       showDelete={false}
       showDetails={true}
     />

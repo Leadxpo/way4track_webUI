@@ -50,7 +50,7 @@ const TableWithDateFilter = ({
           '/branch/getBranchNamesDropDown'
         );
         if (response.status) {
-          setBranches(response.data); // Set branches to state
+          setBranches(response.data); 
         } else {
           console.error('Failed to fetch branches');
         }
@@ -60,7 +60,7 @@ const TableWithDateFilter = ({
     };
 
     fetchBranches();
-  }, [branches]);
+  }, []);
 
   const [searchSubdealer, setSearchSubdealer] = useState('');
   const [searchInvoice, setSearchInvoice] = useState('');

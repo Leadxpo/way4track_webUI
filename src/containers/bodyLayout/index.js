@@ -196,6 +196,7 @@ import EditProductAppDetails from '../../webui/EditProductAppDetails.js';
 import WebsiteOrders from '../websiteOrders/websiteOrders';
 import OrderDetails from '../websiteOrders/orderDetails';
 import ReplaceRequests from '../websiteOrders/replaceRequests.js';
+import AdminDeviceReviews from '../websiteOrders/adminDeviceReviews.js';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -685,6 +686,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/EditApplicationDetails" element={<EditApplicationDetails/>} />
           <Route path="/EditDeviceDetails" element={<EditDeviceDetails/>} />
           <Route path="/EditProductAppDetails" element={<EditProductAppDetails/>} />
+          <Route path="/device-reviews" element={<AdminDeviceReviews/>} />
         </Routes>
       </div>
     </div>

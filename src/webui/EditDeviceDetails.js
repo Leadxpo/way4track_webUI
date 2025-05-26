@@ -59,7 +59,11 @@ function EditDeviceDetails() {
     const formData = new FormData();
     formData.append('companyCode', productMeta.companyCode);
     formData.append('unitCode', productMeta.unitCode);
-    formData.append('id', device.id);
+    // formData.append('id', device.id);
+    if (device.id && Number(device.id) !== 0) {
+      formData.append('id', device.id);
+    }
+
     formData.append('name', device.name);
     formData.append('model', device.model);
     formData.append('description', device.description);
@@ -87,11 +91,33 @@ function EditDeviceDetails() {
       );
       console.log(`Device ${device.id} updated successfully:`, res.data);
       alert(`Device "${device.name}" updated successfully`);
-      navigate('/ceoui')
+      navigate('/ceoui');
     } catch (error) {
       console.error(`Failed to update device ${device.id}:`, error);
       alert(`Failed to update device "${device.name}"`);
     }
+  };
+
+  const handleAddNewDevice = () => {
+    setDeviceDetails((prev) => [
+      ...prev,
+      {
+        id: '',
+        name: '',
+        model: '',
+        description: '',
+        image: null,
+        imagePreview: '',
+        isRelay: false,
+        relayAmt: '',
+        amount: '',
+        isSubscription: false,
+        subscriptionMonthlyAmt: '',
+        subscriptionYearlyAmt: '',
+        isNetwork: false,
+        discount: '',
+      },
+    ]);
   };
 
   return (
@@ -100,6 +126,14 @@ function EditDeviceDetails() {
       <p className="text-gray-500 mb-6">
         Update each device's model, image, pricing, and additional info.
       </p>
+
+      <button
+        type="button"
+        onClick={() => handleAddNewDevice()}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm mb-6"
+      >
+        + Add New Device
+      </button>
 
       {deviceDetails.map((device, index) => (
         <div key={index} className="border border-gray-200 rounded-md mb-6">

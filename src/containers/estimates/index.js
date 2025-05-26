@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 const Estimates = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
+  console.log(permissions,"permissions for edit estimation")
   useEffect(() => {
     const perms = getPermissions('estimate');
     setPermissions(perms);
@@ -29,7 +30,7 @@ const Estimates = () => {
         showStatusFilter={false}
         showCreateBtn={true}
         showDelete={false}
-        showEdit={false}
+        showEdit={permissions.edit}
         showDetails={permissions.view}
       />
       {/* <div style={{ height: '100vh', width: '50vw' }}>

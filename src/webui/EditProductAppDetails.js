@@ -80,8 +80,28 @@ function EditProductAppDetails() {
     }
   };
 
+  const handleAddNewApp = () => {
+    const newApp = {
+      id: '',
+      name: '',
+      shortDescription: '',
+      image: null,
+      imagePreview: '',
+      points: [{ title: '', desc: '' }],
+    };
+    setProductApps([...productApps, newApp]);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <button
+        type="button"
+        onClick={handleAddNewApp}
+        className="mb-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg"
+      >
+        + Add New Product App
+      </button>
+
       <h2 className="text-2xl font-semibold mb-2">Product Applications</h2>
       <p className="text-gray-500 mb-6">
         Edit each product app’s details and its key points.
@@ -149,37 +169,52 @@ function EditProductAppDetails() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Points
               </label>
+              <button
+                    type="button"
+                    onClick={() => {
+                      const updated = [...productApps];
+                      updated[index].points.push({ title: '', desc: '' });
+                      setProductApps(updated);
+                    }}
+                    className="text-blue-600 hover:underline text-sm mt-2"
+                  >
+                    + Add Point
+                  </button>
               {app.points.map((point, pointIndex) => (
-                <div key={pointIndex} className="mb-2">
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={point.title}
-                    onChange={(e) =>
-                      handlePointChange(
-                        index,
-                        pointIndex,
-                        'title',
-                        e.target.value
-                      )
-                    }
-                    className="block w-full mb-1 p-2 rounded-md border border-gray-300"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={point.desc}
-                    onChange={(e) =>
-                      handlePointChange(
-                        index,
-                        pointIndex,
-                        'desc',
-                        e.target.value
-                      )
-                    }
-                    className="block w-full p-2 rounded-md border border-gray-300"
-                  />
-                </div>
+                <>
+                  
+
+                  <div key={pointIndex} className="mb-2">
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={point.title}
+                      onChange={(e) =>
+                        handlePointChange(
+                          index,
+                          pointIndex,
+                          'title',
+                          e.target.value
+                        )
+                      }
+                      className="block w-full mb-1 p-2 rounded-md border border-gray-300"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={point.desc}
+                      onChange={(e) =>
+                        handlePointChange(
+                          index,
+                          pointIndex,
+                          'desc',
+                          e.target.value
+                        )
+                      }
+                      className="block w-full p-2 rounded-md border border-gray-300"
+                    />
+                  </div>
+                </>
               ))}
             </div>
           </div>

@@ -109,6 +109,55 @@ const CeoBackendSupportPayments = () => {
   console.log(selectedLocation, 'selectedLocation');
   console.log(memberPaymentRecords, 'Member payments');
   const [branchWisePaymentRecords, setBranchWisePaymentRecords] = useState([]);
+  const [convertedInvoices, setConvertedInvoices] = useState([]);
+
+  const handleInvoiceConversion = (card) => {
+    createInvoice(card);
+    setConvertedInvoices((prev) => [...prev, card.id]);
+  };
+
+  const createInvoice = async (formData) => {
+    const estimateDate = new Date(); // Current date
+    const expireDate = new Date(estimateDate);
+    expireDate.setDate(estimateDate.getDate() + 3);
+    const estimateDto = {
+      clientId: formData.clientId,
+      estimateDate: estimateDate.toISOString().split('T')[0],
+      expireDate: expireDate.toISOString().split('T')[0],
+      productOrService: 'product',
+      totalAmount: formData.paidAmount,
+      convertToInvoice: true,
+      companyCode: initialAuthState.companyCode, // Replace with actual company code
+      unitCode: initialAuthState.unitCode, // Replace with actual unit code
+      productDetails: [
+        {
+          productId: formData.productId, // Assuming each formData has a productId
+          productName: formData.productName,
+          quantity: 1,
+          amount: formData.amount,
+          hsnCode: '0000', // Total cost calculation
+        },
+      ],
+    };
+
+    // invoicePDF
+    try {
+      console.log('Estimate saved:', estimateDto);
+      const response = await ApiService.post(
+        '/estimate/handleEstimateDetails',
+        estimateDto
+      );
+      if (response.status) {
+        console.log('Estimate saved:', response);
+        alert('Successfully invoice created');
+        navigate('/invoice');
+      } else {
+        alert('Faild to create Invoice');
+      }
+    } catch (err) {
+      console.error('Failed to save estimate:', err);
+    }
+  };
 
   const fetchMemberRecords = async () => {
     try {
@@ -590,6 +639,24 @@ const CeoBackendSupportPayments = () => {
                             {convertToIST(card.startDate)}
                           </p>
                         </div>
+
+                        <button
+                          onClick={() => handleInvoiceConversion(card)}
+                          disabled={
+                            card.paymentStatus !== 'COMPLETED' ||
+                            convertedInvoices.includes(card.id)
+                          }
+                          className={`px-2 py-1 rounded-md text-white ${
+                            card.paymentStatus !== 'COMPLETED' ||
+                            convertedInvoices.includes(card.id)
+                              ? 'bg-gray-400 cursor-not-allowed'
+                              : 'bg-green-600 hover:bg-green-700'
+                          }`}
+                        >
+                          {convertedInvoices.includes(card.id)
+                            ? 'Invoice Converted'
+                            : 'Convert to Invoice'}
+                        </button>
 
                         <button
                           onClick={() =>
