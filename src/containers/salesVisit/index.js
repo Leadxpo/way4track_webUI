@@ -71,7 +71,7 @@ const SalesVisit = () => {
       try {
         const res = await ApiService.post('/staff/getStaffNamesDropDown');
         setStaffList(res.data || []);
-        console.log("rrr :",staffList)
+        console.log("rrr :", staffList)
       } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaffList([]);
@@ -113,17 +113,16 @@ const SalesVisit = () => {
       leadStatus: updatedLeadStatus,
       ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId }),
     }
-    console.log("rrr:",payload)
-      try {
-        // Attempt to fetch branches
-        const { data } = await ApiService.post(`/sales-works/handleSales`, payload, {
-          headers: { "Content-Type": "application/json" }
-        });
-        console.log("response data :",data)
-      } catch (error) {
-        console.log("error : ", error)
-        // If the error status is 500, try refreshing the token
-      }
+    try {
+      // Attempt to fetch branches
+      const { data } = await ApiService.post(`/sales-works/handleSales`, payload, {
+        headers: { "Content-Type": "application/json" }
+      });
+      console.log("response data :", data)
+    } catch (error) {
+      console.log("error : ", error)
+      // If the error status is 500, try refreshing the token
+    }
     // Call your backend API here
     console.log("Updating Lead:", payload);
 
@@ -312,7 +311,7 @@ const SalesVisit = () => {
                   const [year, month, day] = dateString.split("T")[0].split("-");
                   return `${day}-${month}-${year}`;
                 };
-                console.log("remaingDetails:" +JSON.stringify(item.requirementDetails))
+                console.log("remaingDetails:" + JSON.stringify(item.requirementDetails))
                 return (
                   <tr
                     key={item.id}
