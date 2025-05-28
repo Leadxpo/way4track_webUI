@@ -47,27 +47,13 @@ const SalesVisit = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // Check if there's workAllocation data passed through location.state
-  const workAllocationData = location.state?.workAllocationDetails || {};
-  const initialFormData = {
-    id: workAllocationData?.id || '',
-    workAllocationId: workAllocationData?.workAllocationId || '',
-    workAllocationNumber: workAllocationData?.workAllocationNumber || '',
-    serviceOrProduct: workAllocationData?.serviceOrProduct || '',
-    otherInformation: workAllocationData?.otherInformation || '',
-    date: workAllocationData?.date || '',
-    staffId: workAllocationData?.assignedTo || '',
-    companyCode: initialAuthState.companyCode,
-    unitCode: initialAuthState.unitCode,
-    voucherId: workAllocationData?.voucherId || null,
-    install: workAllocationData?.install || false,
-    clientId: workAllocationData?.clientId || null,
-    productName: workAllocationData?.productName,
-  };
-
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [updatedLeadStatus, setUpdatedLeadStatus] = useState('');
+  const [selectedStaffId, setSelectedStaffId] = useState('');
+  const [staffList, setStaffList] = useState([]); // You can fetch this from API if needed
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedWorkAllocation, setSelectedWorkAllocation] =
-    useState(initialFormData);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [client, setClient] = useState([]);
   const [voucher, setVoucher] = useState([]);
@@ -81,6 +67,20 @@ const SalesVisit = () => {
   //Sales Data fetching
 
   useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const res = await ApiService.post('/staff/getStaffNamesDropDown');
+        setStaffList(res.data || []);
+        console.log("rrr :",staffList)
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaffList([]);
+      }
+    };
+    fetchStaff();
+  }, []);
+
+  useEffect(() => {
     const fetchSalesDetails = async () => {
       try {
         const response = await ApiService.post(
@@ -90,8 +90,8 @@ const SalesVisit = () => {
             unitCode: initialAuthState.unitCode,
           }
         );
-        setSalesDetails(response.data);
-        console.log(response.data, 'sales details');
+        setSalesDetails(prev => prev = response.data);
+        console.log(salesDetails, 'sales details');
       } catch (error) {
         console.error('Failed to fetch Sales Details:', error);
         setSalesDetails([]);
@@ -99,6 +99,37 @@ const SalesVisit = () => {
     };
     fetchSalesDetails();
   }, []);
+
+  const leadStatusUpdate = (item) => {
+    setSelectedLead(item);
+    setUpdatedLeadStatus(item.leadStatus);
+    setSelectedStaffId(item.staffId || '');
+    setShowModal(true);
+  };
+
+  const handleSubmitLeadUpdate = async () => {
+    const payload = {
+      id: selectedLead.id,
+      leadStatus: updatedLeadStatus,
+      ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId }),
+    }
+    console.log("rrr:",payload)
+      try {
+        // Attempt to fetch branches
+        const { data } = await ApiService.post(`/sales-works/handleSales`, payload, {
+          headers: { "Content-Type": "application/json" }
+        });
+        console.log("response data :",data)
+      } catch (error) {
+        console.log("error : ", error)
+        // If the error status is 500, try refreshing the token
+      }
+    // Call your backend API here
+    console.log("Updating Lead:", payload);
+
+    // Close modal
+    setShowModal(false);
+  };
 
   const togglePopup = () => {
     setIsOpen(!isOpen);
@@ -111,12 +142,12 @@ const SalesVisit = () => {
       prev && prev.item.id === item.id
         ? null
         : {
-            item,
-            position: {
-              top: rect.top + window.scrollY + 30,
-              left: rect.left + window.scrollX - 50,
-            },
-          }
+          item,
+          position: {
+            top: rect.top + window.scrollY + 30,
+            left: rect.left + window.scrollX - 50,
+          },
+        }
     );
   };
 
@@ -159,7 +190,6 @@ const SalesVisit = () => {
   }, []);
 
   const handleOpenModalForAdd = () => {
-    setSelectedWorkAllocation(initialFormData);
     setIsEditMode(false);
     setIsModalOpen(true);
   };
@@ -171,17 +201,10 @@ const SalesVisit = () => {
         String(clientDetails.clientId) === String(selectedClientId)
     );
 
-    setSelectedWorkAllocation((prev) => ({
-      ...prev,
-      clientId: selectedClientId,
-      clientName: selectedClient?.name || '',
-      phoneNumber: selectedClient?.phoneNumber || '',
-    }));
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSelectedWorkAllocation({ ...selectedWorkAllocation, [name]: value });
   };
 
   useEffect(() => {
@@ -274,39 +297,50 @@ const SalesVisit = () => {
               >
                 <th className="p-3">No.</th>
                 <th className="p-3">Visit ID</th>
-                <th className="p-3">Company</th>
+                <th className="p-3">Client</th>
                 <th className="p-3">Contact</th>
                 <th className="p-3">Date of Visit</th>
-                <th className="p-3">Estimate Date</th>
+                <th className="p-3" >Estimate Date</th>
+                <th className="p-3">Staff ID</th>
+                <th className="p-3">Lead Status</th>
                 <th className="p-3">Action</th>
               </tr>
             </thead>
             <tbody>
-              {data.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className={`border-b`}
-                  style={{
-                    backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#D0D0D0',
-                  }}
-                >
-                  <td className="p-3 font-semibold">{item.id}</td>
-                  <td className="p-3">{item.visitingNumber}</td>
-                  <td className="p-3 font-semibold">{item.name}</td>
-                  <td className="p-3">{item.phoneNumber}</td>
-                  <td className="p-3 font-semibold">{item.date}</td>
-                  <td className="p-3">{item.estimateDate}</td>
-                  <td className="border p-2 relative">
-                    <button
-                      // onClick={(e) => handleOpenPopup(e, group.id)}
-                      onClick={(e) => handleActionClick(e, item)}
-                      className="p-2"
-                    >
-                      <FaEllipsisV />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {salesDetails.map((item, index) => {
+                const formatDate = (dateString) => {
+                  const [year, month, day] = dateString.split("T")[0].split("-");
+                  return `${day}-${month}-${year}`;
+                };
+                console.log("remaingDetails:" +JSON.stringify(item.requirementDetails))
+                return (
+                  <tr
+                    key={item.id}
+                    className={`border-b`}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#D0D0D0',
+                    }}
+                  >
+                    <td className="p-3 font-semibold">{item.id}</td>
+                    <td className="p-3">{item.visitingNumber}</td>
+                    <td className="p-3 font-semibold">{item.name}</td>
+                    <td className="p-3">{item.phoneNumber}</td>
+                    <td className="p-3 font-semibold" width={200}>{formatDate(item.date)}</td>
+                    <td className="p-3" width={100}>{formatDate(item.estimateDate)}</td>
+                    <td className="p-3">{item.staffId ? item.staffId : "N/A"}</td>
+                    <td className="p-3" onClick={() => leadStatusUpdate(item)}>{item.leadStatus}</td>
+                    <td className=" p-2 relative">
+                      <button
+                        // onClick={(e) => handleOpenPopup(e, group.id)}
+                        onClick={(e) => handleActionClick(e, item)}
+                        className="p-2"
+                      >
+                        <FaEllipsisV />
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         )}
@@ -334,17 +368,62 @@ const SalesVisit = () => {
           </button>
         </div>
       )}
-      {/* </div> */}
 
-      {/* <TableWithSearchFilter
-        type="work-allocations"
-        onEdit={handleEdit}
-        onDetails={handleOpenMoreDetailsModal}
-        showCreateBtn={false}
-        showDelete={false}
-        showEdit={permissions.edit}
-        showDetails={permissions.view}
-      /> */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-96 shadow-lg relative">
+            <h2 className="text-xl font-semibold mb-4">Update Lead Status</h2>
+
+            <label className="block mb-2">Lead Status</label>
+            <select
+              value={updatedLeadStatus}
+              onChange={(e) => setUpdatedLeadStatus(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            >
+              <option value="">Select Status</option>
+              <option value="allocated">ALLOCATED</option>
+              <option value="incomplete">INCOMPLETE</option>
+              <option value="paymentPending">PAYMENT_PENDING</option>
+              <option value="partiallyPaid">PARTIALLY_PAID</option>
+              <option value="completed">COMPLETED</option>
+            </select>
+
+            {updatedLeadStatus === 'allocated' && (
+              <>
+                <label className="block mb-2">Allocate Staff</label>
+                <select
+                  value={selectedStaffId}
+                  onChange={(e) => setSelectedStaffId(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                >
+                  <option value="">Select Staff</option>
+                  {staffList.map((staff) => (
+                    <option key={staff.id} value={staff.id}>
+                      {staff.name} ({staff.staffId})
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitLeadUpdate}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
