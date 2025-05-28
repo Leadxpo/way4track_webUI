@@ -9,6 +9,8 @@ const EstimateDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const estimateID = location.state.estimateDetails.estimate.estimateNumber;
+  console.log(location.state.estimateDetails, 'Estimate IDDDDDDDDDDD');
+
   const [estimateData, setEstimateData] = useState({
     company: {},
     estimateDetails: {},
@@ -127,8 +129,9 @@ const EstimateDetails = () => {
         >
           Convert Invoice
         </button> */}
-        <h3 className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
-        >Estimates</h3>
+        <h3 className="bg-orange-500 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all">
+          Estimates
+        </h3>
         <h1></h1>
       </div>
 

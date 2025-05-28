@@ -296,7 +296,7 @@ const estStyles = StyleSheet.create({
   },
 });
 
-export const EstimatePDF = ({ data }) => {
+export const InvoicePDF = ({ data }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
 
@@ -351,7 +351,7 @@ export const EstimatePDF = ({ data }) => {
 
             {/* Right Section: Quotation */}
             <View style={estStyles.quotationContainer}>
-              <Text style={estStyles.quotationTitle}>Quotation</Text>
+              <Text style={estStyles.quotationTitle}>Invoice</Text>
             </View>
           </View>
 

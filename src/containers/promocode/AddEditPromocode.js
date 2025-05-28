@@ -58,7 +58,7 @@ export default function AddEditPromocode() {
 
       if (res.status) {
         alert(editData ? "Promocode updated successfully!" : "Promocode created successfully!");
-        navigate("/promocode");
+        navigate("/promocodes");
       }
     } catch (error) {
       console.error("Error submitting promocode:", error);
@@ -118,8 +118,8 @@ export default function AddEditPromocode() {
             required
             className="w-full p-2 border rounded-md"
           >
-            <option value="PERCENTAGE">Percentage</option>
-            <option value="FIXED">Fixed</option>
+            <option value="Percent">Percentage</option>
+            <option value="Amount">Amount</option>
           </select>
         </div>
 

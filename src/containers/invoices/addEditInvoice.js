@@ -5,10 +5,10 @@ import { MyPDF } from '../../common/commonUtils';
 import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import { EstimatePDF } from '../estimates/EstimatePDF';
+import { InvoicePDF } from './invoicePDF';
 // import EstimatePDF from './EstimatePDF';
 
-const AddEstimate = () => {
+const AddEditInvoice = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
   // Check if editing or creating
@@ -16,6 +16,7 @@ const AddEstimate = () => {
   const initialFormState = {
     client: '',
     clientNumber: '',
+    clientId: '',
     email: '',
     clientAddress: '',
     billingAddress: '',
@@ -42,6 +43,8 @@ const AddEstimate = () => {
     ],
     terms: '',
     totalAmount: 0,
+    branchId: '',
+    accountId: '',
   };
   // name: string; quantity: number; amount: number, costPerUnit: number, totalCost: number, hsnCode: string
   const calculateTotal = (items) => {
@@ -52,6 +55,9 @@ const AddEstimate = () => {
   };
   // Populate form state for edit mode
   const [formData, setFormData] = useState(initialFormState);
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedAccountId, setSelectedAccountId] = useState('');
   //   const [serveProd, setServeProd] = useState("");
 
   //   const changeServeProd = (index, e) => {
@@ -152,22 +158,50 @@ const AddEstimate = () => {
   };
 
   const handleClientChange = (e) => {
-    const selectedClient = clients.find(
-      (client) => client.name === e.target.value
-    );
+    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
+    const selectedId = Number(e.target.value);
+    const selectedClient = clients.find((client) => client.id === selectedId);
+
+    if (!selectedClient) return;
+    console.log(selectedClient, 'sssssssssssssssssssssssss');
     setFormData((prevData) => ({
       ...prevData,
-      client: selectedClient.name,
-      clientNumber: selectedClient.clientId,
-      email: selectedClient.email,
-      clientAddress: selectedClient.address,
+      client: selectedId,
+      clientName: selectedClient.name || '',
+      clientNumber: selectedClient.phoneNumber || '',
+      email: selectedClient.email || '',
+      clientAddress: selectedClient.address || '',
+      clientId: selectedClient.clientId || '',
     }));
+    console.log(formData, 'formdatraaaaaaaaaaaaa');
   };
 
   // Handle field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    if (name === 'branchId') {
+      setFormData((prevData) => ({
+        ...prevData,
+        branchId: value,
+        accountId: '',
+      }));
+
+      const selected = branches.find((branch) => branch.id === parseInt(value));
+      setSelectedBranch(selected);
+      setSelectedAccountId('');
+    } else if (name === 'accountId') {
+      setFormData((prevData) => ({
+        ...prevData,
+        accountId: value,
+      }));
+      setSelectedAccountId(value);
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   // Handle items dynamically
@@ -262,7 +296,7 @@ const AddEstimate = () => {
 
   const handleSave = async () => {
     const estimateDto = {
-      clientId: formData.clientNumber,
+      clientId: formData.clientId,
       buildingAddress: formData.billingAddress,
       shippingAddress: formData.shippingAddress,
       estimateDate: formData.estimateDate,
@@ -289,7 +323,7 @@ const AddEstimate = () => {
       tdsPercentage: formData.tdsPercentage || 0,
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
-      convertToInvoice: formData.convertToInvoice || false,
+      // convertToInvoice: formData.convertToInvoice || false,
       productDetails: formData.items.map((item) => ({
         productId: item.productId,
         type: item.type,
@@ -299,21 +333,29 @@ const AddEstimate = () => {
         costPerUnit: parseFloat(item.rate),
         hsnCode: item.hsnCode,
       })),
+      branchId: formData.branchId,
+      accountId: formData.accountId,
     };
 
     // Get Client Details
-    const client = clients.find(
-      (c) => c.id === (formData.id || estimateDto.id)
+    const client = clients.find((c) => c.id === estimateDto.clientId);
+    const branchDetails = branches.find(
+      (branch) => branch.id === Number(estimateDto.branchId)
     );
+    console.log(estimateDto, 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    // console.log(formData, 'ffffffffffffffffffffffffffff');
+    // console.log(clients, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+    console.log(client, 'clientnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
     const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
-      clientGST: client ? client.gstNumber : '',
+      clientGST: client ? client.GSTNumber : '',
+      branchDetails,
     };
 
     // Generate PDF as Binary (Blob → File)
     const generatePdf = async (data) => {
-      const pdfBlob = await pdf(<EstimatePDF data={data} />).toBlob();
+      const pdfBlob = await pdf(<InvoicePDF data={data} />).toBlob();
       return new File([pdfBlob], 'estimate.pdf', { type: 'application/pdf' });
     };
 
@@ -328,7 +370,7 @@ const AddEstimate = () => {
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append('estimatePdf', pdfFile); // Attach PDF file
-      formDataPayload.append('clientId', estimateDto.clientId);
+      formDataPayload.append('clientId', (estimateDto.clientId));
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
       formDataPayload.append('estimateDate', estimateDto.estimateDate);
@@ -342,6 +384,8 @@ const AddEstimate = () => {
       formDataPayload.append('GSTORTDS', estimateDto.GSTORTDS || '');
       formDataPayload.append('CGST', cgst);
       formDataPayload.append('SCST', scst);
+      formDataPayload.append('branchId', estimateDto.branchId);
+      formDataPayload.append('accountId', estimateDto.accountId);
       formDataPayload.append('includeTax', includeTax);
       formDataPayload.append('tdsPercentage', estimateDto.tdsPercentage);
 
@@ -371,16 +415,16 @@ const AddEstimate = () => {
       );
 
       if (response.status) {
-        console.log('Invoice saved successfully!');
-        alert('Invoice saved successfully!');
-        navigate('/invoice');
+        console.log('Estimate saved successfully!');
+        alert('Estimate saved successfully!');
+        navigate('/estimate');
       } else {
-        console.warn('Invoice save failed:', response.data);
-        alert('Failed to save Invoice. Please try again.');
+        console.warn('Estimate save failed:', response.data);
+        alert('Failed to save estimate. Please try again.');
       }
     } catch (err) {
-      console.error('Invoice to save estimate:', err);
-      alert('Invoice saved successfully!', err);
+      console.error('Failed to save estimate:', err);
+      alert('Estimate saved successfully!', err);
     }
   };
 
@@ -392,16 +436,29 @@ const AddEstimate = () => {
     supplyPlace: 'Andhra Pradesh',
   };
 
-  console.log(isGST,"GST ")
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post('/branch/getBranchDetails');
+        if (response.status) {
+          setBranches(response.data);
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
 
-  console.log(formData,"formdata add estimate")
+    fetchBranches();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-xl w-11/12 max-w-4xl p-8 shadow-md">
         {/* Title */}
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Create Estimates
+          Create Invoice
         </h1>
         {/* Form */}
         <form className="space-y-6">
@@ -417,8 +474,8 @@ const AddEstimate = () => {
               >
                 <option value="">Select Client</option>
                 {clients.map((client) => (
-                  <option key={client.id} value={client.name}>
-                    {client.name}
+                  <option key={client.id} value={client.id}>
+                    {client.name || `Client ${client.clientId}`}
                   </option>
                 ))}
               </select>
@@ -489,6 +546,44 @@ const AddEstimate = () => {
                 placeholder="Shipping Address"
                 className="w-full h-full p-2 border rounded-md"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Branches
+              </label>
+              <select
+                name="branchId"
+                value={formData.branchId}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select Branches</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
+              {selectedBranch && selectedBranch.accounts.length > 0 && (
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold mb-1">
+                    Account
+                  </label>
+                  <select
+                    name="accountId"
+                    value={selectedAccountId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="">Select Account</option>
+                    {selectedBranch.accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.name} - {account.accountNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="flex flex-col justify-between ">
               <div className="mb-auto">
@@ -891,7 +986,8 @@ const AddEstimate = () => {
   );
 };
 
-export default AddEstimate;
+export default AddEditInvoice;
+
 
 
 

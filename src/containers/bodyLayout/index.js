@@ -197,6 +197,10 @@ import WebsiteOrders from '../websiteOrders/websiteOrders';
 import OrderDetails from '../websiteOrders/orderDetails';
 import ReplaceRequests from '../websiteOrders/replaceRequests.js';
 import AdminDeviceReviews from '../websiteOrders/adminDeviceReviews.js';
+import AddEditPromocode from '../promocode/AddEditPromocode.js';
+import EditInvoice from '../invoices/EditInvoice.js';
+
+import Promocode from '../promocode/index.js';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -666,7 +670,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/AddDashboardTheme" element={<AddDashboardTheme />} />
           {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
           {/* <Route path="/ProductTheme2" element={<ProductTheme2 />} /> */}
-
           <Route path="/EditDashboardTheme" element={<EditDashboardTheme />} />
           <Route path="/ThemeManager" element={<ThemeManager />} />
           <Route
@@ -674,19 +677,28 @@ const BodyLayout = ({ children }) => {
             element={<DashboardSessionDetails />}
           />
           <Route path="/BlogPage" element={<BlogPage />} />
-          <Route
-            path="/replace-requests"
-            element={<ReplaceRequests />}
-          />
+          <Route path="/replace-requests" element={<ReplaceRequests />} />
           {/* <Route path="/ProductTheme1" element={<ProductTheme1 />} /> */}
           {/* <Route path="/ProductTheme2" element={<ProductTheme2 />} /> */}
-           <Route path="/ProductPreview" element={<ProductPreview/>} />
-          <Route path="/EditProductDetails" element={<EditProductDetails/>} />
-          <Route path="/EditAmenitiesDetails" element={<EditAmenitiesDetails/>} />
-          <Route path="/EditApplicationDetails" element={<EditApplicationDetails/>} />
-          <Route path="/EditDeviceDetails" element={<EditDeviceDetails/>} />
-          <Route path="/EditProductAppDetails" element={<EditProductAppDetails/>} />
-          <Route path="/device-reviews" element={<AdminDeviceReviews/>} />
+          <Route path="/ProductPreview" element={<ProductPreview />} />
+          <Route path="/EditProductDetails" element={<EditProductDetails />} />
+          <Route
+            path="/EditAmenitiesDetails"
+            element={<EditAmenitiesDetails />}
+          />
+          <Route
+            path="/EditApplicationDetails"
+            element={<EditApplicationDetails />}
+          />
+          <Route path="/EditDeviceDetails" element={<EditDeviceDetails />} />
+          <Route
+            path="/EditProductAppDetails"
+            element={<EditProductAppDetails />}
+          />
+          <Route path="/device-reviews" element={<AdminDeviceReviews />} />
+          <Route path="/promocodes" element={<Promocode />} />
+          <Route path="/addEdit-promocode" element={<AddEditPromocode />} />
+          <Route path="/edit-invoice" element={<EditInvoice />} />
         </Routes>
       </div>
     </div>

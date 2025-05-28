@@ -10,7 +10,7 @@ import { EstimatePDF } from './EstimatePDF';
 const EditEstimate = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
-  console.log(isGST,"gst or tds")
+  console.log(isGST, 'gst or tds');
 
   const location = useLocation();
   const estimateDetails = location.state?.estimateDetails;
@@ -19,8 +19,9 @@ const EditEstimate = () => {
   const initialFormState = {
     id: '',
     clientId: '',
-    clientPhoneNumber: '',
-    clientEmail: '',
+    client: '',
+    clientNumber: '',
+    email: '',
     clientAddress: '',
     buildingAddress: '',
     shippingAddress: '',
@@ -47,6 +48,8 @@ const EditEstimate = () => {
     terms: '',
     totalAmount: 0,
     description: '',
+    branchId: '',
+    accountId: '',
   };
   // name: string; quantity: number; amount: number, costPerUnit: number, totalCost: number, hsnCode: string
   const calculateTotal = (items) => {
@@ -58,6 +61,9 @@ const EditEstimate = () => {
   // Populate form state for edit mode
   const [formData, setFormData] = useState(initialFormState);
   const [serveProd, setServeProd] = useState('');
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedAccountId, setSelectedAccountId] = useState('');
 
   // const changeServeProd = (index, e) => {
   //   setServeProd(e.target.value);
@@ -97,6 +103,10 @@ const EditEstimate = () => {
     fetchServices();
   }, []);
 
+  useEffect(() => {
+    fetchEstimation();
+  }, []);
+
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
@@ -134,23 +144,69 @@ const EditEstimate = () => {
     }
   };
 
+  // const handleClientChange = (e) => {
+  //   const selectedClient = clients.find(
+  //     (client) => client.clientId === e.target.value
+  //   );
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     client: selectedClient.name,
+  //     clientNumber: selectedClient.clientId,
+  //     email: selectedClient.email,
+  //     clientAddress: selectedClient.address,
+  //   }));
+  // };
+
   const handleClientChange = (e) => {
-    const selectedClient = clients.find(
-      (client) => client.clientId === e.target.value
-    );
+    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
+    const selectedId = Number(e.target.value);
+    const selectedClient = clients.find((client) => client.id === selectedId);
+
+    if (!selectedClient) return;
+    console.log(selectedClient, 'sssssssssssssssssssssssss');
     setFormData((prevData) => ({
       ...prevData,
-      client: selectedClient.name,
-      clientNumber: selectedClient.clientId,
-      email: selectedClient.email,
-      clientAddress: selectedClient.address,
+      client: selectedId,
+      clientName: selectedClient.name || '',
+      clientNumber: selectedClient.phoneNumber || '',
+      email: selectedClient.email || '',
+      clientAddress: selectedClient.address || '',
+      clientId: selectedClient.clientId || '',
     }));
+    console.log(formData, 'formdatraaaaaaaaaaaaa');
   };
 
   // Handle field changes
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({ ...prevData, [name]: value }));
+  // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    if (name === 'branchId') {
+      setFormData((prevData) => ({
+        ...prevData,
+        branchId: value,
+        accountId: '',
+      }));
+
+      const selected = branches.find((branch) => branch.id === parseInt(value));
+      setSelectedBranch(selected);
+      setSelectedAccountId('');
+    } else if (name === 'accountId') {
+      setFormData((prevData) => ({
+        ...prevData,
+        accountId: value,
+      }));
+      setSelectedAccountId(value);
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   // Handle items dynamically
@@ -271,8 +327,8 @@ const EditEstimate = () => {
       unitCode: initialAuthState.unitCode,
       estimateId: formData.estimateId || undefined,
       invoiceId: formData.invoiceId || undefined,
-      GSTORTDS: formData.GSTORTDS || undefined,
-      // GSTORTDS: 'GST',
+      // GSTORTDS: formData.GSTORTDS || undefined,
+      GSTORTDS: 'GST',
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
       tds: formData.tds,
@@ -294,16 +350,22 @@ const EditEstimate = () => {
         type: item.type,
         hsnCode: item.hsnCode,
       })),
+      branchId: formData.branchId,
+      accountId: formData.accountId,
     };
 
     // Get Client Details
     const client = clients.find(
       (c) => c.id === (formData.id || estimateDto.id)
     );
+    const branchDetails = branches.find(
+      (branch) => branch.id === Number(estimateDto.branchId)
+    );
     const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
       clientGST: client ? client.gstNumber : '',
+      branchDetails,
     };
 
     // Generate PDF as Binary (Blob → File)
@@ -341,6 +403,8 @@ const EditEstimate = () => {
       formDataPayload.append('GSTORTDS', estimateDto.GSTORTDS || '');
       formDataPayload.append('CGST', cgst);
       formDataPayload.append('SCST', scst);
+      formDataPayload.append('branchId', estimateDto.branchId);
+      formDataPayload.append('accountId', estimateDto.accountId);
       formDataPayload.append('includeTax', includeTax);
       formDataPayload.append('tdsPercentage', estimateDto.tdsPercentage);
 
@@ -490,6 +554,9 @@ const EditEstimate = () => {
           ? Math.round((SCST * 100) / totalAmount)
           : 0;
 
+        const matchedClient = clients.find((c) => c.clientId === data.clientId);
+        console.log(matchedClient, 'madmamamamamamam');
+
         setFormData({
           CGST,
           SCST,
@@ -499,10 +566,11 @@ const EditEstimate = () => {
           buildingAddress: data.buildingAddress,
           shippingAddress: data.shippingAddress,
           clientAddress: data.clientAddress,
-          clientEmail: data.clientEmail,
           clientId: data.clientId,
-          clientName: data.clientName,
-          clientPhoneNumber: data.clientPhoneNumber,
+          client: matchedClient?.id || '',
+          clientName: matchedClient?.name || '',
+          clientNumber: data.clientPhoneNumber,
+          email: data.clientEmail,
           companyCode: data.companyCode,
           description: data.description,
           estimateDate: data.estimateDate,
@@ -513,11 +581,13 @@ const EditEstimate = () => {
           invoiceId: data.invoiceId,
           invoicePdfUrl: data.invoicePdfUrl,
           productOrService: data.productOrService,
-          items: data.products, // If you need to transform this, I can help.
+          items: data.products,
           unitCode: data.unitCode,
           vendorId: data.vendorId,
           vendorName: data.vendorName,
           vendorPhoneNumber: data.vendorPhoneNumber,
+          branchId: data.branchId,
+          accountId: data.accountId,
         });
       } else {
         console.error('Failed to fetch estimate details');
@@ -528,10 +598,43 @@ const EditEstimate = () => {
   };
 
   useEffect(() => {
-    fetchEstimation();
+    if (formData.branchId && branches.length > 0) {
+      const branch = branches.find((b) => b.id === parseInt(formData.branchId));
+      setSelectedBranch(branch || null);
+    }
+
+    if (formData.accountId) {
+      setSelectedAccountId(formData.accountId);
+    }
+  }, [formData.branchId, formData.accountId, branches]);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await ApiService.post('/branch/getBranchDetails');
+        if (response.status) {
+          setBranches(response.data);
+        } else {
+          console.error('Failed to fetch branches');
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
   }, []);
 
   console.log(formData, 'ownfienfi Form data exaplke');
+  useEffect(() => {
+    if (clients.length > 0 && formData.clientId) {
+      const matchedClient = clients.find((c) => c.clientId === formData.clientId);
+      setFormData((prev) => ({
+        ...prev,
+        client: matchedClient?.id || '',
+      }));
+    }
+  }, [clients, formData.clientId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -542,7 +645,7 @@ const EditEstimate = () => {
         <form className="space-y-6">
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
+            {/* <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
               <select
                 name="client"
@@ -557,6 +660,22 @@ const EditEstimate = () => {
                   </option>
                 ))}
               </select>
+            </div> */}
+            <div>
+              <label className="block text-sm font-semibold mb-1">Client</label>
+              <select
+                name="client"
+                value={formData.client}
+                onChange={handleClientChange}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select Client</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name || `Client ${client.clientId}`}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-semibold mb-1">
@@ -565,7 +684,7 @@ const EditEstimate = () => {
               <input
                 type="text"
                 name="clientNumber"
-                value={formData.clientPhoneNumber}
+                value={formData.clientNumber}
                 // onChange={handleInputChange}
                 placeholder="Client Number"
                 className="w-full p-2 border rounded-md"
@@ -579,7 +698,7 @@ const EditEstimate = () => {
               <input
                 type="email"
                 name="email"
-                value={formData.clientEmail}
+                value={formData.email}
                 // onChange={handleInputChange}
                 placeholder="Email Address"
                 className="w-full p-2 border rounded-md"
@@ -624,6 +743,44 @@ const EditEstimate = () => {
                 placeholder="Shipping Address"
                 className="w-full h-full p-2 border rounded-md"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Branches
+              </label>
+              <select
+                name="branchId"
+                value={formData.branchId}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select Branches</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
+              {selectedBranch && selectedBranch.accounts.length > 0 && (
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold mb-1">
+                    Account
+                  </label>
+                  <select
+                    name="accountId"
+                    value={selectedAccountId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="">Select Account</option>
+                    {selectedBranch.accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.name} - {account.accountNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="flex flex-col justify-between ">
               <div className="mb-auto">

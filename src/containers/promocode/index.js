@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { FaSearch, FaEllipsisV } from "react-icons/fa";
-import { useNavigate } from "react-router";
-import ApiService, { initialAuthState } from "../../services/ApiService";
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
+import ApiService, { initialAuthState } from '../../services/ApiService';
 
 const Promocode = () => {
   const navigate = useNavigate();
-  const [searchData, setSearchData] = useState({ promocode: "" });
+  const [searchData, setSearchData] = useState({ promocode: '' });
   const [promocodes, setPromocodes] = useState([]);
   const [allPromocodes, setAllPromocodes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,15 +17,22 @@ const Promocode = () => {
 
   const fetchPromocodes = async () => {
     try {
-      const response = await ApiService.post("/promocode/getPromocodeDetails");
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      const response = await ApiService.post(
+        '/promocode/getPromocodeDetails',
+        payload
+      );
       if (response.data) {
         setPromocodes(response.data);
         setAllPromocodes(response.data);
       } else {
-        console.error("Error: Invalid response format");
+        console.error('Error: Invalid response format');
       }
     } catch (error) {
-      console.error("Error fetching promocodes:", error);
+      console.error('Error fetching promocodes:', error);
     } finally {
       setLoading(false);
     }
@@ -33,7 +40,7 @@ const Promocode = () => {
 
   const handleSearch = () => {
     const searchQuery = searchData.promocode.toLowerCase().trim();
-    if (searchQuery === "") {
+    if (searchQuery === '') {
       setPromocodes(allPromocodes);
     } else {
       const filteredData = allPromocodes.filter((item) =>
@@ -53,16 +60,17 @@ const Promocode = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest(".dropdown-container")) {
+      if (!event.target.closest('.dropdown-container')) {
         setDropdownOpen(null);
       }
     };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   const handleDelete = async (promoId) => {
-    if (!window.confirm("Are you sure you want to delete this promocode?")) return;
+    if (!window.confirm('Are you sure you want to delete this promocode?'))
+      return;
 
     const payload = {
       id: promoId,
@@ -71,14 +79,17 @@ const Promocode = () => {
     };
 
     try {
-      const res = await ApiService.post("/promocode/deletePromocodeDetails", payload);
+      const res = await ApiService.post(
+        '/promocode/deletePromocodeDetails',
+        payload
+      );
       if (res.status) {
-        alert("Promocode deleted successfully!");
+        alert('Promocode deleted successfully!');
         fetchPromocodes();
       }
     } catch (error) {
-      console.error("Error deleting promocode:", error);
-      alert("Failed to delete promocode.");
+      console.error('Error deleting promocode:', error);
+      alert('Failed to delete promocode.');
     }
   };
 
@@ -88,7 +99,7 @@ const Promocode = () => {
         <h2 className="text-2xl font-semibold text-gray-800">Promocodes</h2>
         <button
           className="bg-green-700 text-white px-4 py-2 rounded-md"
-          onClick={() => navigate("/addEdit-promocode")}
+          onClick={() => navigate('/addEdit-promocode')}
         >
           Add Promocode
         </button>
@@ -135,17 +146,21 @@ const Promocode = () => {
                 promocodes.map((item, index) => (
                   <tr
                     key={item.id}
-                    className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}
+                    className={`border-b ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}
                   >
                     <td className="px-4 py-3">{item.promocode}</td>
                     <td className="px-4 py-3">{item.discount}</td>
                     <td className="px-4 py-3">{item.discountType}</td>
-                    <td className="px-4 py-3">{item.minSaleAmount ?? "-"}</td>
-                    <td className="px-4 py-3">{item.maxDiscountAmount ?? "-"}</td>
+                    <td className="px-4 py-3">{item.minSaleAmount ?? '-'}</td>
                     <td className="px-4 py-3">
-                      {item.date ? new Date(item.date).toLocaleDateString() : "-"}
+                      {item.maxDiscountAmount ?? '-'}
                     </td>
-                    <td className="px-4 py-3">{item.promoUsers || "-"}</td>
+                    <td className="px-4 py-3">
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : '-'}
+                    </td>
+                    <td className="px-4 py-3">{item.promoUsers || '-'}</td>
                     <td className="px-4 py-3 relative dropdown-container">
                       <button
                         onClick={(e) => {
@@ -162,7 +177,7 @@ const Promocode = () => {
                             <li
                               className="p-2 hover:bg-gray-100 cursor-pointer"
                               onClick={() =>
-                                navigate("/addEdit-promocode", {
+                                navigate('/addEdit-promocode', {
                                   state: { editData: item },
                                 })
                               }

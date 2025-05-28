@@ -132,6 +132,11 @@ export const menuOptions = {
       route: '/all-orders',
     },
     {
+      name: 'Promocodes',
+      icon: <img src="./home.png" />,
+      route: '/promocodes',
+    },
+    {
       name: 'Reviews',
       icon: <img src="./payroll.png" />,
       route: '/device-reviews',
