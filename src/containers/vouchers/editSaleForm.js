@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const SaleForm = () => {
+const EditSaleForm = (props) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const [ledger, setLedger] = useState([]);
   const [errors, setErrors] = useState({ purchaseGst: '' });
-  console.log("Sales")
   const [formData, setFormData] = useState({
+    id: '',
     date: null,
     day: '',
     dueDate: null,
@@ -38,6 +38,15 @@ const SaleForm = () => {
     purpose: '',
   });
 
+  const {
+    branches,
+    bankOptions,
+    clients,
+    staff,
+    isEditMode,
+    voucherToEdit: item,
+  } = props;
+
   console.log(formData.productDetails, 'Product Details');
 
   const taxData = [
@@ -47,6 +56,33 @@ const SaleForm = () => {
     { name: 'TDS', percent: '0%' },
     { name: 'TCS', percent: '0%' },
   ];
+
+  useEffect(() => {
+    if (isEditMode && item) {
+      setFormData({
+        id: item.id,
+        date: item.generationDate?.substring(0, 10) || '',
+        day: '', // Can compute from date if needed
+        dueDate: item.dueDate?.substring(0, 10) || '',
+        partyName: item.vendorName || '',
+        ledgerId: item.ledgerId || '',
+        voucherType: item.voucherType || 'SALE',
+        supplierInvoiceNumber: item.invoiceId || '',
+        supplierLocation: item.supplierLocation || '',
+        purchaseGst: item.GSTORTDS || '',
+        amount: item.amount || '',
+        SGST: item.SCST || 0,
+        CGST: item.CGST || 0,
+        TDS: item.TDS || '',
+        IGST: item.IGST || '',
+        TCS: item.TCS || '',
+        productDetails: item.productDetails?.length
+          ? item.productDetails
+          : [{ productName: '', quantity: '', rate: '', totalCost: '' }],
+        purpose: item.purpose || '',
+      });
+    }
+  }, [isEditMode, item]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -257,22 +293,34 @@ const SaleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const parseTaxValue = (val) => {
+      return val === '' || val === undefined || val === null
+        ? null
+        : Number(val);
+    };
+
+    const CGST = parseTaxValue(formData.CGST);
+    const SGST = parseTaxValue(formData.SGST);
+    const IGST = parseTaxValue(formData.IGST);
+    const TDS = parseTaxValue(formData.TDS);
+    const TCS = parseTaxValue(formData.TCS);
+
     const calculatedAmount = Number(
       selectedTaxType === 'CGST'
         ? totalAmount +
-            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            (totalAmount * (CGST || 0)) / 100 +
+            (totalAmount * (SGST || 0)) / 100
         : selectedTaxType === 'IGST'
-          ? totalAmount +
-            (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+          ? totalAmount + (totalAmount * (IGST || 0)) / 100
           : selectedTaxType === 'TDS'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+              (totalAmount * (TDS || 0)) / 100 +
+              (totalAmount * (TCS || 0)) / 100
             : totalAmount
     );
 
     const payloadObject = {
+      id: formData.id,
       generationDate: formData.date,
       day: formData.day,
       dueDate: formData.dueDate,
@@ -289,11 +337,11 @@ const SaleForm = () => {
         rate: Number(item.rate),
         totalCost: Number(item.totalCost),
       })),
-      CGST: formData.CGST,
-      SGST: formData.SGST,
-      IGST: formData.IGST,
-      TDS: formData.TDS,
-      TCS: formData.TCS,
+      CGST: CGST,
+      SGST: SGST,
+      IGST: IGST,
+      TDS: TDS,
+      TCS: TCS,
       purpose: formData.purpose,
       pendingInvoices: {
         invoiceId: formData.supplierInvoiceNumber,
@@ -312,16 +360,16 @@ const SaleForm = () => {
       });
 
       if (response.status) {
-        alert('Sale voucher created successfully!');
+        alert('Sale voucher updated successfully!');
         navigate('/vouchers');
         // return response.data;
       } else {
-        alert('Failed to create sale voucher details.');
+        alert('Failed to updated sale voucher details.');
         return null;
       }
     } catch (error) {
-      console.error('Error create sale voucher details:', error);
-      alert('An error occurred while create sale voucher details.');
+      console.error('Error updated sale voucher details:', error);
+      alert('An error occurred while updated sale voucher details.');
       return null;
     }
   };
@@ -458,8 +506,8 @@ const SaleForm = () => {
         </label>
         <input
           type="date"
-          value={formData.generationDate}
-          name="generationDate"
+          value={formData.date}
+          name="date"
           onChange={handleDateChange}
           className="w-full border p-2"
           style={{
@@ -943,4 +991,4 @@ const SaleForm = () => {
   );
 };
 
-export default SaleForm;
+export default EditSaleForm;

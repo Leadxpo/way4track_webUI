@@ -3,39 +3,46 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const JournalForm = () => {
+const EditJournalForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [ledger, setLedger] = useState([]);
-  const [bankAccount, setBankAccount] = useState([]);
+  const [ledger,setLedger] =useState([]);
+ const [bankAccount,setBankAccount] =useState([
+   
+  ]);
 
   const handleDateChange = (e) => {
     const value = e.target.value;
-
-    const dayName = new Date(value).toLocaleDateString('en-US', {
-      weekday: 'long',
+  
+    const dayName = new Date(value).toLocaleDateString("en-US", {
+      weekday: "long",
     });
-
+  
     setFormData((prev) => ({
       ...prev,
       date: value,
-      day: dayName,
+      day: dayName, 
     }));
   };
 
-  const branchId = Number(localStorage.getItem('branchId'));
+  const branchId =Number(localStorage.getItem("branchId"));
 
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
-        const response = await ApiService.post('/account/getAccountsDetails');
-        localStorage.getItem('branchId');
-        console.log('setBankAccount222', response);
+        const response = await ApiService.post(
+          '/account/getAccountsDetails'
+                    
+                  
+        );
+        localStorage.getItem("branchId")
+        console.log("setBankAccount222",response)
         if (response.status) {
           const filteredAccounts = response.data.filter(
-            (account) => account.branchId === branchId
-          );
+          (account) => account.branchId === branchId
+
+        );
           setBankAccount(filteredAccounts);
         } else {
           console.error('Failed to fetch accounts');
@@ -48,16 +55,18 @@ const JournalForm = () => {
     fetchBankAccounts();
   }, []);
 
+
+
   const handleLedgerChange = (e) => {
     const selectedId = Number(e.target.value); // Convert string to number
-
+  
     const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
-
+  
     if (selectedLedger) {
       setFormData((prev) => ({
         ...prev,
         partyName: selectedLedger.name,
-        ledgerId: selectedLedger.id,
+        ledgerId: selectedLedger.id
       }));
     }
   };
@@ -65,11 +74,13 @@ const JournalForm = () => {
   useEffect(() => {
     const fetchLedgers = async () => {
       try {
-        const response = await ApiService.post('/ledger/getLedgerDetails', {
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        });
-        console.log('fedgrfdtrgxfsdf', response);
+        const response = await ApiService.post(
+          '/ledger/getLedgerDetails', {
+                    companyCode: initialAuthState?.companyCode,
+                    unitCode: initialAuthState?.unitCode,
+                  }
+        );
+        console.log("fedgrfdtrgxfsdf",response)
         if (response.status) {
           setLedger(response.data); // Set branches to state
         } else {
@@ -98,19 +109,21 @@ const JournalForm = () => {
     { name: 'TCS', percent: '2%', amount: '10,5000' },
   ];
 
-  const [formData, setFormData] = useState({
-    date: '',
-    day: '',
-    partyName: '',
-    bankAccountNumber: '',
-    purpose: '',
-    ledgerId: '',
-    voucherType: 'JOURNAL',
-    upiId: '',
-    checkNumber: '',
-    cardNumber: '',
-    amountPaid: null,
-  });
+    const [formData, setFormData] = useState(
+      {date:"",
+        day:"",
+        partyName: "",
+        bankAccountNumber:"",
+        purpose:""
+        ,
+        ledgerId:"",
+        voucherType:"JOURNAL",
+        upiId:"",
+        checkNumber:"",
+        cardNumber:"",
+        amountPaid:null
+      }
+    );
 
   const branchData = [
     'Purchase',
@@ -177,6 +190,9 @@ const JournalForm = () => {
     setIsPopupOpen(false);
   };
 
+
+
+
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`);
     // navigate('/receipt-form')
@@ -184,7 +200,7 @@ const JournalForm = () => {
 
   const handleIdChange = (e) => {
     const value = e.target.value;
-
+  
     if (paymentType === 'UPI') {
       setFormData((prev) => ({ ...prev, upiId: value }));
     } else if (paymentType === 'Cheque') {
@@ -196,21 +212,21 @@ const JournalForm = () => {
 
   const handleBankChange = (e) => {
     const selectedAccountNumber = e.target.value;
-
+  
     // If "Cash" is selected, reset bankAmount or treat as special case
-    if (selectedAccountNumber === 'cash') {
+    if (selectedAccountNumber === "cash") {
       setFormData((prev) => ({
         ...prev,
-        bankAccountNumber: 'cash',
+        bankAccountNumber: "cash"
       }));
       return;
     }
-
+  
     // Find the selected bank account from list
     const selectedBank = bankAccount?.find(
       (bank) => bank.accountNumber === selectedAccountNumber
     );
-
+  
     // Update formData with bankAmount if found
     if (selectedBank) {
       setFormData((prev) => ({
@@ -221,24 +237,25 @@ const JournalForm = () => {
       // If not found, reset values
       setFormData((prev) => ({
         ...prev,
-        bankAccountNumber: '',
-        bankAmount: '0.00',
+        bankAccountNumber: "",
+        bankAmount: "0.00",
       }));
     }
   };
+  
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     const payload = new FormData();
 
     payload.append('generationDate', formData.date);
     payload.append('day', formData.day);
-    payload.append('branchId', Number(localStorage.getItem('branchId')));
+    payload.append('branchId',  Number(localStorage.getItem("branchId")));
     payload.append('ledgerId', Number(formData?.ledgerId));
-    payload.append('bankAccountNumber', formData.bankAccountNumber);
+    payload.append('bankAccountNumber',formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
-    payload.append('journalType', selected);
+    payload.append('journalType',selected);
     payload.append('paymentType', paymentType.toLowerCase());
     payload.append('upiId', formData.upiId);
     payload.append('checkNumber', formData.checkNumber);
@@ -247,7 +264,7 @@ const JournalForm = () => {
 
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
-    payload.append('totalAmount', Number(formData.amountPaid));
+    
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -257,7 +274,7 @@ const JournalForm = () => {
 
       if (response.status) {
         alert('Journal voucher created successfully!');
-        navigate('/vouchers');
+        navigate("/vouchers");
         // return response.data;
       } else {
         alert('Failed to create Journal voucher details.');
@@ -336,7 +353,7 @@ const JournalForm = () => {
               ))}
             </ul>
             <button
-              type="button"
+            type="button"
               onClick={handleClosePopup}
               style={{
                 backgroundColor: '#12A651',
@@ -358,94 +375,100 @@ const JournalForm = () => {
       <div className="mt-4 space-y-2">
         {/* <label className="block">Date:</label> */}
         <div className="mt-4 space-y-2">
-          {/* <label className="block">Date:</label> */}
-          <input
-            type="date"
-            placeholder="Date:"
-            value={formData.date}
-            name="date"
-            onChange={handleDateChange}
-            className="w-full border rounded p-2"
-            style={{
-              height: '45px',
-              backgroundColor: '#FFFFFF',
-              color: '#000000',
-              borderRadius: '8px',
-              borderWidth: '1px',
-              borderColor: '#A2A2A2',
-              fontSize: '20px',
-              fontWeight: '500',
-            }}
-          />
+        {/* <label className="block">Date:</label> */}
+        <input
+          type="date"
+          placeholder="Date:"
+          value={formData.date}
+          name="date"
 
-          <input
-            type="text"
-            placeholder="Day:"
-            name="day"
-            value={formData.day}
-            className="w-full border rounded p-2"
-            style={{
-              height: '45px',
-              backgroundColor: '#FFFFFF',
-              color: '#000000',
-              borderRadius: '8px',
-              borderWidth: '1px',
-              borderColor: '#A2A2A2',
-              fontSize: '20px',
-              fontWeight: '500',
-            }}
-          />
-          <div className="flex rounded-lg overflow-hidden w-max shadow-md">
-            <button
-              type="button"
-              onClick={() => setSelected('Debit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Debit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Debit
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelected('Credit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Credit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Credit
-            </button>
-          </div>
+          onChange={handleDateChange}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
 
-          <select
-            value={formData.ledgerId}
-            onChange={handleLedgerChange}
-            name="partyName"
-            className="w-full border rounded p-2"
-            style={{
-              height: '45px',
-              backgroundColor: '#FFFFFF',
-              color: '#000000',
-              borderRadius: '8px',
-              borderWidth: '1px',
-              borderColor: '#A2A2A2',
-              fontSize: '20px',
-              fontWeight: '500',
-            }}
+
+        <input
+          type="text"
+          placeholder="Day:"
+          name="day"
+          value={formData.day}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
+               <div className="flex rounded-lg overflow-hidden w-max shadow-md">
+          <button
+          type="button"
+            onClick={() => setSelected('Debit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Debit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
           >
-            <option value="">Select Party Name</option>
-            {ledger?.map((party) => (
-              <option key={party.id} value={party.id}>
-                {party.name}
-              </option>
-            ))}
-          </select>
+            Debit
+          </button>
+          <button
+          type="button"
+            onClick={() => setSelected('Credit')}
+            className={`px-6 py-2 font-bold transition ${
+              selected === 'Credit'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Credit
+          </button>
         </div>
 
-        <select
+
+<select
+        value={formData.ledgerId}
+        onChange={handleLedgerChange}
+        name="partyName"
+        className="w-full border rounded p-2"
+        style={{
+          height: '45px',
+          backgroundColor: '#FFFFFF',
+          color: '#000000',
+          borderRadius: '8px',
+          borderWidth: '1px',
+          borderColor: '#A2A2A2',
+          fontSize: '20px',
+          fontWeight: '500',
+        }}
+      >
+        <option value="">Select Party Name</option>
+        {ledger?.map((party) => (
+          <option key={party.id} value={party.id}>
+            {party.name}
+          </option>
+        ))}
+      </select>
+
+
+
+      </div>
+
+      <select
           value={formData.bankAccountNumber}
           onChange={handleBankChange}
           name="bankAccountNumber"
@@ -469,20 +492,22 @@ const JournalForm = () => {
             </option>
           ))}
         </select>
+
+
       </div>
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
-        <label className="block mb-1 font-medium">Description:</label>
-        <textarea
-          name="purpose"
-          value={formData.purpose}
-          onChange={handleInputChange}
-          className="w-full border rounded p-2"
-          rows="3"
-          placeholder="Enter description or notes..."
-        />
-      </div>
+  <label className="block mb-1 font-medium">Description:</label>
+  <textarea
+  name="purpose"
+    value={formData.purpose}
+    onChange={handleInputChange}
+    className="w-full border rounded p-2"
+    rows="3"
+    placeholder="Enter description or notes..."
+  />
+</div>
 
       {/* Payment Mode */}
       <div
@@ -503,7 +528,7 @@ const JournalForm = () => {
           <div className="flex gap-2 mb-4">
             {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
               <button
-                type="button"
+              type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${
                   paymentType === type
@@ -577,4 +602,4 @@ const JournalForm = () => {
   );
 };
 
-export default JournalForm;
+export default EditJournalForm;

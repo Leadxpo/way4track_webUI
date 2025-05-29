@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const ReceiptForm = () => {
+const EditReceiptForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -860,4 +860,4 @@ const ReceiptForm = () => {
   );
 };
 
-export default ReceiptForm;
+export default EditReceiptForm;

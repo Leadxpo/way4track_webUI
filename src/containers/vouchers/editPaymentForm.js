@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const ReceiptForm = () => {
+const EditPaymentForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -48,7 +48,7 @@ const ReceiptForm = () => {
       date: "",
       day: "",
       bankAccountNumber: "",
-      voucherType: "RECEIPT",
+      voucherType: "PAYMENT",
       partyName: "",
       ledgerId: "",
       bankAmount: "",
@@ -202,7 +202,7 @@ const ReceiptForm = () => {
     if (field === "invoiceId") {
       const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
       if (matchedInvoice) {
-        updatedInvoices[index].amount = matchedInvoice.reminigAmount ? matchedInvoice.reminigAmount : matchedInvoice.amount;
+        updatedInvoices[index].amount =matchedInvoice.reminigAmount?matchedInvoice.reminigAmount:matchedInvoice.amount;
       } else {
         updatedInvoices[index].amount = ""; // reset if not found
       }
@@ -259,7 +259,7 @@ const ReceiptForm = () => {
       })),
       purpose: formData.purpose,
       branchId: Number(localStorage.getItem("branchId")),
-      ledgerId: Number(formData.ledgerId),
+      ledgerId:Number(formData.ledgerId),
       voucherType: formData.voucherType,
       paymentType: paymentType.toLowerCase(),
       upiId: formData.upiId,
@@ -277,16 +277,16 @@ const ReceiptForm = () => {
       });
 
       if (response.status) {
-        alert('Receipt voucher created successfully!');
-        navigate("/vouchers")
+        alert('Payment voucher created successfully!');
+        navigate("/vouchers");
         // return response.data;
       } else {
-        alert('Failed to create Receipt voucher details.');
+        alert('Failed to create Payment voucher details.');
         return null;
       }
     } catch (error) {
-      console.error('Error create Receipt voucher details:', error);
-      alert('An error occurred while create Receipt voucher details.');
+      console.error('Error create Payment voucher details:', error);
+      alert('An error occurred while create Payment voucher details.');
       return null;
     }
   };
@@ -358,7 +358,7 @@ const ReceiptForm = () => {
   };
 
 
-  const branch = localStorage.getItem('branchId');
+const branch = localStorage.getItem('branchId');
 
   const getPendingVouchers = async (selectedPartyName) => {
     try {
@@ -371,12 +371,19 @@ const ReceiptForm = () => {
       console.log("setPendingVouchers+++++++++", response);
 
       if (response.status) {
-        const filteredVouchers = response.data.filter(voucher =>
-          voucher.voucherType === "SALE" &&
-          voucher.branchId?.id === Number(branch) 
-          &&
-          Number(voucher.reminigAmount) !== 0
-        );
+        console.log("tttt",response.data);
+
+      //   const filteredVouchers = response.data.filter(voucher =>
+      //   voucher.voucherType === "PURCHASE" && voucher.branchId?.id === Number(branch)
+      // );
+      const filteredVouchers = response.data.filter(voucher =>
+        voucher.voucherType === "PURCHASE" 
+        &&
+        voucher.branchId?.id === Number(branch) 
+        &&
+        Number(voucher.reminigAmount) !== 0
+      );
+        // filter  branch purchse
         setPendingVouchers(filteredVouchers);
       } else {
         console.error('Failed to fetch ledger data');
@@ -410,7 +417,7 @@ const ReceiptForm = () => {
     fetchLedgers();
   }, []);
 
-  const branchId = Number(localStorage.getItem("branchId"));
+  const branchId =Number(localStorage.getItem("branchId"));
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
@@ -422,11 +429,11 @@ const ReceiptForm = () => {
         console.log("setBankAccount22211111", response)
         if (response.status) {
           const filteredAccounts = response.data.filter(
-            (account) => account.branchId === branchId
+          (account) => account.branchId === branchId
 
-          );
+        );
 
-          setBankAccount(filteredAccounts); // Set branches to state
+          setBankAccount(filteredAccounts);
         } else {
           console.error('Failed to fetch accounts');
         }
@@ -459,7 +466,7 @@ const ReceiptForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Receipt
+          Payment
         </h2>
       </div>
 
@@ -624,7 +631,7 @@ const ReceiptForm = () => {
               Invoice ID : {entry.invoiceId}
             </p>
             <p className="font-semibold text-lg">
-              Receivable Amount : {entry.reminigAmount ? parseFloat(entry.reminigAmount).toLocaleString('en-IN') : parseFloat(entry.amount).toLocaleString('en-IN')}
+              Payable Amount : {entry.reminigAmount?parseFloat(entry.reminigAmount).toLocaleString('en-IN'):parseFloat(entry.amount).toLocaleString('en-IN')}
             </p>
           </div>
         ))}
@@ -632,7 +639,7 @@ const ReceiptForm = () => {
         {/* Total Amount Section */}
         <div className="flex justify-end mt-4">
           <p className="font-bold text-xl">
-            Total receivale Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
+            Total Payable Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
           </p>
         </div>
       </div>
@@ -651,7 +658,7 @@ const ReceiptForm = () => {
         }}
       >
         <button
-          type="button"
+        type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
@@ -688,7 +695,11 @@ const ReceiptForm = () => {
               <input
                 placeholder="Amount"
                 value={entry.amount}
+                name="amount"
                 className="w-1/4 border rounded p-2"
+                onChange={(e) =>
+                  handleEntryChange(index, 'amount', e.target.value)
+                }
               />
               <input
                 placeholder="Paid Amount"
@@ -735,7 +746,7 @@ const ReceiptForm = () => {
 
       <div className="mt-4 w-full border rounded p-2">
         <p className="mt-3 text-green-700 font-semibold italic text-lg">
-          Total received Amount:{totalPaidAmount}/-
+          Total Paid Amount:{totalPaidAmount}/-
         </p>
         {/* Balance Text */}
 
@@ -860,4 +871,4 @@ const ReceiptForm = () => {
   );
 };
 
-export default ReceiptForm;
+export default EditPaymentForm;

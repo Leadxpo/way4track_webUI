@@ -164,6 +164,14 @@ const Vouchers = () => {
 
           <button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
+            onClick={() => handleEdit(popupData.item)}
+            style={{ fontSize: '12px', color: '#000000', fontWeight: '400' }}
+          >
+            Edit
+          </button>
+
+          <button
+            className="block px-4 py-1 text-left w-full hover:bg-gray-100"
             onClick={() => handleMoreDetails(popupData.item)}
             style={{ fontSize: '12px', color: '#000000', fontWeight: '400' }}
           >
@@ -191,14 +199,14 @@ const Vouchers = () => {
             {filteredData?.map((voucher, index) => (
               <tr key={index} className={index % 2 === 0 ? 'bg-gray-200' : ''}>
                 <td className="p-3">{voucher.voucherId}</td>
-                <td className="p-3">{voucher.branch}</td>
-                <td className="p-3">{voucher.paymentType}</td>
+                <td className="p-3">{voucher.branchName}</td>
+                <td className="p-3">{voucher.voucherType}</td>
                 {/* <td className="p-3 ">{voucher.generationDate}</td> */}
                 <td className="p-3 ">
-  {new Date(voucher.generationDate).toLocaleDateString('en-GB')}
-</td>
+                  {new Date(voucher.generationDate).toLocaleDateString('en-GB')}
+                </td>
                 <td className="p-3">{voucher.amount}</td>
-                <td className="p-3">{voucher.paymentMode}</td>
+                <td className="p-3">{voucher.paymentType}</td>
                 <td className="p-3">{voucher.paymentStatus}</td>
                 <td
                   className="px-4 py-2 text-center"
@@ -225,22 +233,25 @@ const Vouchers = () => {
               <strong>Voucher ID:</strong> {selectedVoucher.voucherId}
             </p>
             <p>
-              <strong>Branch:</strong> {selectedVoucher.branch}
+              <strong>Branch:</strong> {selectedVoucher.branchName}
             </p>
             <p>
-              <strong>Voucher Type:</strong> {selectedVoucher.paymentType}
+              <strong>Voucher Type:</strong> {selectedVoucher.voucherType}
             </p>
             {/* <p>
               <strong>Generation Date:</strong> {selectedVoucher.generationDate}
             </p> */}
-             <p>
-            <strong>Generation Date:</strong> {new Date(selectedVoucher.generationDate).toLocaleDateString('en-GB')}
+            <p>
+              <strong>Generation Date:</strong>{' '}
+              {new Date(selectedVoucher.generationDate).toLocaleDateString(
+                'en-GB'
+              )}
             </p>
             <p>
               <strong>Amount:</strong> ₹{selectedVoucher.amount}
             </p>
             <p>
-              <strong>Payment Mode:</strong> {selectedVoucher.paymentMode}
+              <strong>Payment Mode:</strong> {selectedVoucher.paymentType}
             </p>
             <p>
               <strong>Payment Status:</strong> {selectedVoucher.paymentStatus}

@@ -11,7 +11,7 @@ const PurchaseForm = () => {
   const [formData, setFormData] = useState({
     date: null,
     day: '',
-    dueDate:null,
+    dueDate: null,
     partyName: '',
     ledgerId: '',
     voucherType: 'PURCHASE',
@@ -19,8 +19,8 @@ const PurchaseForm = () => {
     supplierLocation: '',
     purchaseGst: '',
     amount: '',
-    SGST: 9,
-    CGST: 9,
+    SGST: 0,
+    CGST: 0,
     TDS: null,
     IGST: null,
     TCS: null,
@@ -31,23 +31,22 @@ const PurchaseForm = () => {
   });
 
   const taxData = [
-    { name: 'CGST', percent: '9%' },
-    { name: 'SGST', percent: '9%' },
-    { name: 'IGST', percent: '9%' },
-    { name: 'TDS', percent: '18%' },
-    { name: 'TCS', percent: '2%' },
+    { name: 'CGST', percent: '0%' },
+    { name: 'SGST', percent: '0%' },
+    { name: 'IGST', percent: '0%' },
+    { name: 'TDS', percent: '0%' },
+    { name: 'TCS', percent: '0%' },
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // Special handling for purchaseGst with validation
     if (name === 'purchaseGst') {
-      if (value.length > 15) return; // Prevent typing more than 15 chars
+      if (value.length > 15) return;
 
-      // Update form data
       setFormData((prev) => ({ ...prev, [name]: value }));
 
-      // Validation
       if (value.length !== 15 && value.length !== 0) {
         setErrors((prev) => ({
           ...prev,
@@ -56,11 +55,14 @@ const PurchaseForm = () => {
       } else {
         setErrors((prev) => ({ ...prev, purchaseGst: '' }));
       }
+    } else {
+      // General case: update any other form field, including tax inputs
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleLedgerChange = (e) => {
-    const selectedId = Number(e.target.value); // Convert string to number
+    const selectedId = Number(e.target.value);
     const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
     if (selectedLedger) {
       setFormData((prev) => ({
@@ -72,13 +74,12 @@ const PurchaseForm = () => {
     console.log('formdata', formData);
   };
 
-
-     const handleDescription= (e) => {
-    const {name,value} = e.target;
+  const handleDescription = (e) => {
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
   const handleDateChange = (e) => {
@@ -230,6 +231,21 @@ const PurchaseForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const calculatedAmount = Number(
+      selectedTaxType === 'CGST'
+        ? totalAmount +
+            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+        : selectedTaxType === 'IGST'
+          ? totalAmount +
+            (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+          : selectedTaxType === 'TDS'
+            ? totalAmount +
+              (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+              (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+            : totalAmount
+    );
+
     const payloadObject = {
       generationDate: formData.date,
       day: formData.day,
@@ -240,20 +256,7 @@ const PurchaseForm = () => {
       invoiceId: formData.supplierInvoiceNumber,
       supplierLocation: formData.supplierLocation,
       voucherGST: formData.purchaseGst,
-      amount: Number(
-        selectedTaxType === 'CGST'
-          ? totalAmount +
-              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
-          : selectedTaxType === 'IGST'
-            ? totalAmount +
-              (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
-            : selectedTaxType === 'TDS'
-              ? totalAmount +
-                (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-                (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
-              : totalAmount
-      ),
+      amount: calculatedAmount,
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
@@ -266,6 +269,12 @@ const PurchaseForm = () => {
       TDS: formData.TDS,
       TCS: formData.TCS,
       purpose: formData.purpose,
+      pendingInvoices: {
+        invoiceId: formData.supplierInvoiceNumber,
+        paidAmount: 0,
+        amount: calculatedAmount,
+        reminigAmount: calculatedAmount,
+      },
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
@@ -326,13 +335,12 @@ const PurchaseForm = () => {
     }
   };
 
-
-    const handleDueDateChange = (e) => {
+  const handleDueDateChange = (e) => {
     const value = e.target.value;
 
     setFormData((prev) => ({
       ...prev,
-      dueDate: value
+      dueDate: value,
     }));
   };
 
@@ -421,34 +429,33 @@ const PurchaseForm = () => {
       )}
 
       <div className="mt-4 space-y-2">
-        
-         <label
-    htmlFor="dueDate"
-    className="block text-sm mb-1 font-bold text-gray-800"
-    style={{
-      fontSize: '16px',
-      fontWeight: '700',
-    }}
-  >
-    Generation Date
-  </label>
-<input
-  type="date"
-  value={formData.generationDate}
-  name="generationDate"
-  onChange={handleDateChange}
-  className="w-full border p-2"
-  style={{
-    height: '45px',
-    backgroundColor: '#FFFFFF',
-    color: '#000000',
-    borderRadius: '8px',
-    borderWidth: '1px',
-    borderColor: '#A2A2A2',
-    fontSize: '16px',
-    fontWeight: '500',
-  }}
-/>
+        <label
+          htmlFor="dueDate"
+          className="block text-sm mb-1 font-bold text-gray-800"
+          style={{
+            fontSize: '16px',
+            fontWeight: '700',
+          }}
+        >
+          Generation Date
+        </label>
+        <input
+          type="date"
+          value={formData.generationDate}
+          name="generationDate"
+          onChange={handleDateChange}
+          className="w-full border p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '16px',
+            fontWeight: '500',
+          }}
+        />
         <input
           type="text"
           placeholder="Day:"
@@ -467,34 +474,33 @@ const PurchaseForm = () => {
           }}
         />
         <label
-    htmlFor="dueDate"
-    className="block text-sm mb-1 font-bold text-gray-800"
-    style={{
-      fontSize: '16px',
-      fontWeight: '700',
-    }}
-  >
-    Due Date
-  </label>
-         {/* <label className="block text-sm mb-1 font-bold">Due Date</label> */}
-<input
-  type="date"
-  value={formData.dueDate
-}
-  name="dueDate"
-  onChange={handleDueDateChange}
-  className="w-full border p-2"
-  style={{
-    height: '45px',
-    backgroundColor: '#FFFFFF',
-    color: '#000000',
-    borderRadius: '8px',
-    borderWidth: '1px',
-    borderColor: '#A2A2A2',
-    fontSize: '16px',
-    fontWeight: '500',
-  }}
-/>
+          htmlFor="dueDate"
+          className="block text-sm mb-1 font-bold text-gray-800"
+          style={{
+            fontSize: '16px',
+            fontWeight: '700',
+          }}
+        >
+          Due Date
+        </label>
+        {/* <label className="block text-sm mb-1 font-bold">Due Date</label> */}
+        <input
+          type="date"
+          value={formData.dueDate}
+          name="dueDate"
+          onChange={handleDueDateChange}
+          className="w-full border p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '16px',
+            fontWeight: '500',
+          }}
+        />
 
         <select
           value={formData.ledgerId}

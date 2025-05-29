@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const JournalForm = () => {
+const EditContraForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -30,13 +30,13 @@ const JournalForm = () => {
     const fetchBankAccounts = async () => {
       try {
         const response = await ApiService.post('/account/getAccountsDetails');
-        localStorage.getItem('branchId');
         console.log('setBankAccount222', response);
         if (response.status) {
           const filteredAccounts = response.data.filter(
             (account) => account.branchId === branchId
           );
-          setBankAccount(filteredAccounts);
+
+          setBankAccount(filteredAccounts); // Set branches to state
         } else {
           console.error('Failed to fetch accounts');
         }
@@ -105,7 +105,7 @@ const JournalForm = () => {
     bankAccountNumber: '',
     purpose: '',
     ledgerId: '',
-    voucherType: 'JOURNAL',
+    voucherType: 'CONTRA',
     upiId: '',
     checkNumber: '',
     cardNumber: '',
@@ -247,7 +247,6 @@ const JournalForm = () => {
 
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
-    payload.append('totalAmount', Number(formData.amountPaid));
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -256,16 +255,16 @@ const JournalForm = () => {
       });
 
       if (response.status) {
-        alert('Journal voucher created successfully!');
+        alert('Contra voucher created successfully!');
         navigate('/vouchers');
         // return response.data;
       } else {
-        alert('Failed to create Journal voucher details.');
+        alert('Failed to create Contra voucher details.');
         return null;
       }
     } catch (error) {
-      console.error('Error create Journal voucher details:', error);
-      alert('An error occurred while create Journal voucher details.');
+      console.error('Error create Contra voucher details:', error);
+      alert('An error occurred while create Contra voucher details.');
       return null;
     }
   };
@@ -291,7 +290,7 @@ const JournalForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Journal
+          Contra
         </h2>
       </div>
 
@@ -577,4 +576,4 @@ const JournalForm = () => {
   );
 };
 
-export default JournalForm;
+export default EditContraForm;

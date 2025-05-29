@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const SaleForm = () => {
+const EditPurchaseForm = (props) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const [ledger, setLedger] = useState([]);
   const [errors, setErrors] = useState({ purchaseGst: '' });
-  console.log("Sales")
   const [formData, setFormData] = useState({
+    id: '',
     date: null,
     day: '',
     dueDate: null,
     partyName: '',
     ledgerId: '',
-    voucherType: 'SALES',
+    voucherType: 'PURCHASE',
     supplierInvoiceNumber: '',
     supplierLocation: '',
     purchaseGst: '',
@@ -26,19 +26,20 @@ const SaleForm = () => {
     IGST: null,
     TCS: null,
     productDetails: [
-      {
-        productName: '',
-        type: '',
-        description: '',
-        quantity: null,
-        rate: null,
-        totalCost: null,
-      },
+      { productName: '', quantity: null, rate: null, totalCost: null },
     ],
     purpose: '',
   });
 
-  console.log(formData.productDetails, 'Product Details');
+  const {
+    branches,
+    bankOptions,
+    clients,
+    staff,
+    isEditMode,
+    voucherToEdit: item,
+  } = props;
+  console.log(isEditMode, item, 'is edit');
 
   const taxData = [
     { name: 'CGST', percent: '0%' },
@@ -48,9 +49,37 @@ const SaleForm = () => {
     { name: 'TCS', percent: '0%' },
   ];
 
+  useEffect(() => {
+    if (isEditMode && item) {
+      setFormData({
+        id: item.id,
+        date: item.generationDate?.substring(0, 10) || '',
+        day: '', // Can compute from date if needed
+        dueDate: item.dueDate?.substring(0, 10) || '',
+        partyName: item.vendorName || '',
+        ledgerId: item.ledgerId || '',
+        voucherType: item.voucherType || 'PURCHASE',
+        supplierInvoiceNumber: item.invoiceId || '',
+        supplierLocation: item.supplierLocation || '',
+        purchaseGst: item.GSTORTDS || '',
+        amount: item.amount || '',
+        SGST: item.SCST || 0,
+        CGST: item.CGST || 0,
+        TDS: item.TDS || '',
+        IGST: item.IGST || '',
+        TCS: item.TCS || '',
+        productDetails: item.productDetails?.length
+          ? item.productDetails
+          : [{ productName: '', quantity: '', rate: '', totalCost: '' }],
+        purpose: item.purpose || '',
+      });
+    }
+  }, [isEditMode, item]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // Special handling for purchaseGst with validation
     if (name === 'purchaseGst') {
       if (value.length > 15) return;
 
@@ -65,12 +94,13 @@ const SaleForm = () => {
         setErrors((prev) => ({ ...prev, purchaseGst: '' }));
       }
     } else {
+      // General case: update any other form field, including tax inputs
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleLedgerChange = (e) => {
-    const selectedId = Number(e.target.value); // Convert string to number
+    const selectedId = Number(e.target.value);
     const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
     if (selectedLedger) {
       setFormData((prev) => ({
@@ -82,6 +112,14 @@ const SaleForm = () => {
     console.log('formdata', formData);
   };
 
+  const handleDescription = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const handleDateChange = (e) => {
     const value = e.target.value;
 
@@ -93,24 +131,6 @@ const SaleForm = () => {
       ...prev,
       date: value,
       day: dayName,
-    }));
-  };
-
-  const handleDueDateChange = (e) => {
-    const value = e.target.value;
-
-    setFormData((prev) => ({
-      ...prev,
-      dueDate: value,
-    }));
-  };
-
-  const handleDescription = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
     }));
   };
 
@@ -142,7 +162,6 @@ const SaleForm = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
 
-  const [gstNumber, setGstNumber] = useState('');
   const [gstData, setGstData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -174,14 +193,7 @@ const SaleForm = () => {
       ...prevData,
       productDetails: [
         ...prevData.productDetails,
-        {
-          productName: '',
-          type: '',
-          description: '',
-          quantity: null,
-          rate: null,
-          totalCost: null,
-        },
+        { productName: '', quantity: null, rate: null, totalCost: null },
       ],
     }));
   };
@@ -257,22 +269,34 @@ const SaleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const parseTaxValue = (val) => {
+      return val === '' || val === undefined || val === null
+        ? null
+        : Number(val);
+    };
+
+    const CGST = parseTaxValue(formData.CGST);
+    const SGST = parseTaxValue(formData.SGST);
+    const IGST = parseTaxValue(formData.IGST);
+    const TDS = parseTaxValue(formData.TDS);
+    const TCS = parseTaxValue(formData.TCS);
+
     const calculatedAmount = Number(
       selectedTaxType === 'CGST'
         ? totalAmount +
-            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            (totalAmount * (CGST || 0)) / 100 +
+            (totalAmount * (SGST || 0)) / 100
         : selectedTaxType === 'IGST'
-          ? totalAmount +
-            (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+          ? totalAmount + (totalAmount * (IGST || 0)) / 100
           : selectedTaxType === 'TDS'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+              (totalAmount * (TDS || 0)) / 100 +
+              (totalAmount * (TCS || 0)) / 100
             : totalAmount
     );
 
     const payloadObject = {
+      id: formData.id,
       generationDate: formData.date,
       day: formData.day,
       dueDate: formData.dueDate,
@@ -289,11 +313,11 @@ const SaleForm = () => {
         rate: Number(item.rate),
         totalCost: Number(item.totalCost),
       })),
-      CGST: formData.CGST,
-      SGST: formData.SGST,
-      IGST: formData.IGST,
-      TDS: formData.TDS,
-      TCS: formData.TCS,
+      CGST: CGST,
+      SGST: SGST,
+      IGST: IGST,
+      TDS: TDS,
+      TCS: TCS,
       purpose: formData.purpose,
       pendingInvoices: {
         invoiceId: formData.supplierInvoiceNumber,
@@ -312,16 +336,16 @@ const SaleForm = () => {
       });
 
       if (response.status) {
-        alert('Sale voucher created successfully!');
+        alert('Purchase voucher updated successfully!');
         navigate('/vouchers');
         // return response.data;
       } else {
-        alert('Failed to create sale voucher details.');
+        alert('Failed to updated purchase voucher details.');
         return null;
       }
     } catch (error) {
-      console.error('Error create sale voucher details:', error);
-      alert('An error occurred while create sale voucher details.');
+      console.error('Error updated purchase voucher details:', error);
+      alert('An error occurred while updated purchase voucher details.');
       return null;
     }
   };
@@ -361,6 +385,15 @@ const SaleForm = () => {
     }
   };
 
+  const handleDueDateChange = (e) => {
+    const value = e.target.value;
+
+    setFormData((prev) => ({
+      ...prev,
+      dueDate: value,
+    }));
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -382,7 +415,7 @@ const SaleForm = () => {
           className="text-xl font-bold bg-green-600 text-white py-2 px-4 rounded-t"
           style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '600' }}
         >
-          Sales
+          Purchase
         </h2>
       </div>
 
@@ -458,8 +491,8 @@ const SaleForm = () => {
         </label>
         <input
           type="date"
-          value={formData.generationDate}
-          name="generationDate"
+          value={formData.date}
+          name="date"
           onChange={handleDateChange}
           className="w-full border p-2"
           style={{
@@ -473,7 +506,6 @@ const SaleForm = () => {
             fontWeight: '500',
           }}
         />
-
         <input
           type="text"
           placeholder="Day:"
@@ -491,7 +523,6 @@ const SaleForm = () => {
             fontWeight: '500',
           }}
         />
-
         <label
           htmlFor="dueDate"
           className="block text-sm mb-1 font-bold text-gray-800"
@@ -502,7 +533,7 @@ const SaleForm = () => {
         >
           Due Date
         </label>
-
+        {/* <label className="block text-sm mb-1 font-bold">Due Date</label> */}
         <input
           type="date"
           value={formData.dueDate}
@@ -620,26 +651,15 @@ const SaleForm = () => {
         /> */}
 
         <div className="">
-          <div className="relative">
+          <div className="relative z-[10]">
             <input
               type="text"
               placeholder="Purchase GST:"
               name="purchaseGst"
               value={formData.purchaseGst}
               onChange={handleInputChange}
-              className="w-full border rounded pr-36 pl-3 py-2"
-              style={{
-                height: '45px',
-                backgroundColor: '#FFFFFF',
-                color: '#000000',
-                borderRadius: '8px',
-                borderWidth: '1px',
-                borderColor: '#A2A2A2',
-                fontSize: '20px',
-                fontWeight: '500',
-              }}
+              className="w-full border rounded-lg pr-36 pl-3 py-2 text-black text-lg font-medium border-gray-400 bg-white h-[45px]"
             />
-
             <button
               onClick={handleFetchGSTData}
               type="button"
@@ -735,10 +755,10 @@ const SaleForm = () => {
         }}
       >
         <button
+          type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
-          type="button"
         >
           +
         </button>
@@ -752,6 +772,7 @@ const SaleForm = () => {
               alignItems: 'center',
             }}
           >
+            {/* Input Fields */}
             <div
               className="flex flex-1 gap-2"
               style={{
@@ -769,32 +790,6 @@ const SaleForm = () => {
                 }
                 className="w-1/4 border rounded p-2"
               />
-              <select
-                name="type"
-                value={entry.type}
-                onChange={(e) =>
-                  handleEntryChange(index, 'type', e.target.value)
-                }
-                className="w-1/4 border rounded p-2"
-              >
-                <option value="">Select Type</option>
-                <option value="Rectifications">Rectifications</option>
-                <option value="Renewables">Renewables</option>
-                <option value="ProductSales">ProductSales</option>
-                <option value="ServiceSales">ServiceSales</option>
-                <option value="Others">Others</option>
-              </select>
-
-              <input
-                placeholder="Description:"
-                name="description"
-                value={entry.description}
-                onChange={(e) =>
-                  handleEntryChange(index, 'description', e.target.value)
-                }
-                className="w-1/4 border rounded p-2"
-              />
-
               <input
                 type="number"
                 placeholder="Quantity:"
@@ -826,6 +821,7 @@ const SaleForm = () => {
               />
             </div>
 
+            {/* Button - always reserve space */}
             <div
               className="w-[30px] flex justify-center items-center ml-2"
               style={{
@@ -943,4 +939,4 @@ const SaleForm = () => {
   );
 };
 
-export default SaleForm;
+export default EditPurchaseForm;
