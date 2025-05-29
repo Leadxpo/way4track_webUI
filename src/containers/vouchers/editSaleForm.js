@@ -59,10 +59,14 @@ const EditSaleForm = (props) => {
 
   useEffect(() => {
     if (isEditMode && item) {
+      const date = item.generationDate?.substring(0, 10) || '';
+      const day = date
+        ? new Date(date).toLocaleDateString('en-US', { weekday: 'long' })
+        : '';
       setFormData({
         id: item.id,
-        date: item.generationDate?.substring(0, 10) || '',
-        day: '', // Can compute from date if needed
+        date: date,
+        day: day,
         dueDate: item.dueDate?.substring(0, 10) || '',
         partyName: item.vendorName || '',
         ledgerId: item.ledgerId || '',

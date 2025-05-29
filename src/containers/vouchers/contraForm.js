@@ -9,6 +9,9 @@ const ContraForm = () => {
   const { id } = useParams();
   const [ledger, setLedger] = useState([]);
   const [bankAccount, setBankAccount] = useState([]);
+  const [fromAccount, setFromAccount] = useState('');
+  const [toAccount, setToBank] = useState('');
+  const [transferAmount, setTransferAmount] = useState('');
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -244,6 +247,9 @@ const ContraForm = () => {
     payload.append('checkNumber', formData.checkNumber);
     payload.append('cardNumber', formData.cardNumber);
     payload.append('amountPaid', Number(formData.amountPaid));
+    payload.append('fromAccount', fromAccount);
+    payload.append('toAccount', toAccount);
+    payload.append('amount', Number(transferAmount));
 
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
@@ -394,31 +400,7 @@ const ContraForm = () => {
               fontWeight: '500',
             }}
           />
-          <div className="flex rounded-lg overflow-hidden w-max shadow-md">
-            <button
-              type="button"
-              onClick={() => setSelected('Debit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Debit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Debit
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelected('Credit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Credit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Credit
-            </button>
-          </div>
-
+          
           <select
             value={formData.ledgerId}
             onChange={handleLedgerChange}
@@ -443,31 +425,59 @@ const ContraForm = () => {
             ))}
           </select>
         </div>
+        {/* From Bank */}
+        <div>
+          <label className="block font-semibold">From Bank</label>
+          <select
+            value={fromAccount}
+            onChange={(e) => setFromAccount(e.target.value)}
+            className="w-full border rounded p-2"
+            required
+          >
+            <option value="">Select From Bank</option>
+            {bankAccount
+              .filter((bank) => bank.accountNumber !== toAccount)
+              .map((bank) => (
+                <option key={bank.accountNumber} value={bank.id}>
+                  {bank.name} - {bank.accountNumber}
+                </option>
+              ))}
+          </select>
+        </div>
 
-        <select
-          value={formData.bankAccountNumber}
-          onChange={handleBankChange}
-          name="bankAccountNumber"
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        >
-          <option value="">Select Bank Name</option>
-          <option value="cash">Cash</option>
-          {bankAccount?.map((account) => (
-            <option key={account.id} value={account.accountNumber}>
-              {`${account.name} (${account.accountNumber})`}
-            </option>
-          ))}
-        </select>
+        {/* To Bank */}
+        <div>
+          <label className="block font-semibold">To Bank</label>
+          <select
+            value={toAccount}
+            onChange={(e) => setToBank(e.target.value)}
+            className="w-full border rounded p-2"
+            required
+          >
+            <option value="">Select To Bank</option>
+            {bankAccount
+              .filter((bank) => bank.accountNumber !== fromAccount)
+              .map((bank) => (
+                <option key={bank.accountNumber} value={bank.id}>
+                  {bank.name} - {bank.accountNumber}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        {/* Amount */}
+        <div>
+          <label className="block font-semibold">Amount</label>
+          <input
+            type="number"
+            className="w-full border rounded p-2"
+            value={transferAmount}
+            onChange={(e) => setTransferAmount(e.target.value)}
+            required
+            min="1"
+          />
+        </div>
+        {/* </div> */}
       </div>
 
       {/* Description */}

@@ -3,17 +3,15 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const DebitNoteForm = () => {
+const DebitNoteForm = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const [bankAccount,setBankAccount] =useState([
-     
-    ]);
+  const [bankAccount, setBankAccount] = useState([]);
 
-  const [ledger,setLedger] =useState([]);
+  const [ledger, setLedger] = useState([]);
   const { selectedBranch } = location?.state || {};
-  console.log("+++++===== selectedBranch purchase",selectedBranch)
+  console.log('+++++===== selectedBranch purchase', selectedBranch);
   const taxData = [
     { name: 'CGST', percent: '9%', amount: '10,5000' },
     { name: 'SGST', percent: '9%', amount: '10,5000' },
@@ -43,19 +41,17 @@ const DebitNoteForm = () => {
     { invoice: '', amount: '', paid: '', remaining: '' },
   ]);
 
-    const [formData, setFormData] = useState(
-      {date:"",
-        day:"",
-        partyName: "",
-        ledgerId:"",
-        // bankAccountNumber:"",
-        invoiceId:"",
-        amount:"",
-        voucherType:"DEBITNOTE",
-        purpose:""
-  
-      }
-    );
+  const [formData, setFormData] = useState({
+    date: '',
+    day: '',
+    partyName: '',
+    ledgerId: '',
+    // bankAccountNumber:"",
+    invoiceId: '',
+    amount: '',
+    voucherType: 'DEBITNOTE',
+    purpose: '',
+  });
 
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -98,7 +94,6 @@ const DebitNoteForm = () => {
     setIsPopupOpen(false);
   };
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -110,13 +105,11 @@ const DebitNoteForm = () => {
   useEffect(() => {
     const fetchLedgers = async () => {
       try {
-        const response = await ApiService.post(
-          '/ledger/getLedgerDetails', {
-                    companyCode: initialAuthState?.companyCode,
-                    unitCode: initialAuthState?.unitCode,
-                  }
-        );
-        console.log("fedgrfdtrgxfsdf",response)
+        const response = await ApiService.post('/ledger/getLedgerDetails', {
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        });
+        console.log('fedgrfdtrgxfsdf', response);
         if (response.status) {
           setLedger(response.data); // Set branches to state
         } else {
@@ -132,29 +125,29 @@ const DebitNoteForm = () => {
 
   const handleLedgerChange = (e) => {
     const selectedId = Number(e.target.value); // Convert string to number
-  
+
     const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
-  
+
     if (selectedLedger) {
       setFormData((prev) => ({
         ...prev,
         partyName: selectedLedger.name,
-        ledgerId: selectedLedger.id
+        ledgerId: selectedLedger.id,
       }));
     }
   };
 
   const handleDateChange = (e) => {
     const value = e.target.value;
-  
-    const dayName = new Date(value).toLocaleDateString("en-US", {
-      weekday: "long",
+
+    const dayName = new Date(value).toLocaleDateString('en-US', {
+      weekday: 'long',
     });
-  
+
     setFormData((prev) => ({
       ...prev,
       date: value,
-      day: dayName, 
+      day: dayName,
     }));
   };
 
@@ -166,14 +159,9 @@ const DebitNoteForm = () => {
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
-        const response = await ApiService.post(
-          '/account/getAccountsDetails'
-                    
-                  
-        );
-        console.log("setBankAccount222",response)
+        const response = await ApiService.post('/account/getAccountsDetails');
+        console.log('setBankAccount222', response);
         if (response.status) {
-          
           setBankAccount(response.data); // Set branches to state
         } else {
           console.error('Failed to fetch accounts');
@@ -186,44 +174,43 @@ const DebitNoteForm = () => {
     fetchBankAccounts();
   }, []);
 
-   const handleSubmit = async (e) => {
-     e.preventDefault(); 
-     const payload = new FormData();
- 
-     payload.append('generationDate', formData.date);
-     payload.append('day', formData.day);
-     payload.append('ledgerId', Number(formData.ledgerId));
-     payload.append('branchId', Number(localStorage.getItem("branchId")));
-    //  payload.append('bankAccountNumber', formData.bankAccountNumber);
-     payload.append('invoiceId', formData.invoiceId);
-     payload.append('amount', formData.amount);
-     payload.append('voucherType', formData.voucherType);
-     payload.append('purpose', formData.purpose);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const payload = new FormData();
 
-     payload.append('companyCode', initialAuthState.companyCode);
-     payload.append('unitCode', initialAuthState.unitCode);
-     
- 
-     try {
-       const endpoint = '/voucher/saveVoucher';
-       const response = await ApiService.post(endpoint, payload, {
-         headers: { 'Content-Type': 'multipart/form-data' },
-       });
- 
-       if (response.status) {
-         alert('Debit note voucher created successfully!');
-         navigate("/vouchers");
+    payload.append('generationDate', formData.date);
+    payload.append('day', formData.day);
+    payload.append('ledgerId', Number(formData.ledgerId));
+    payload.append('branchId', Number(localStorage.getItem('branchId')));
+    //  payload.append('bankAccountNumber', formData.bankAccountNumber);
+    payload.append('invoiceId', formData.invoiceId);
+    payload.append('amount', formData.amount);
+    payload.append('voucherType', formData.voucherType);
+    payload.append('purpose', formData.purpose);
+
+    payload.append('companyCode', initialAuthState.companyCode);
+    payload.append('unitCode', initialAuthState.unitCode);
+
+    try {
+      const endpoint = '/voucher/saveVoucher';
+      const response = await ApiService.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status) {
+        alert('Debit note voucher created successfully!');
+        navigate('/vouchers');
         //  return response.data;
-       } else {
-         alert('Failed to create Debit note voucher details.');
-         return null;
-       }
-     } catch (error) {
-       console.error('Error create Debit note voucher details:', error);
-       alert('An error occurred while create Debit note voucher details.');
-       return null;
-     }
-   };
+      } else {
+        alert('Failed to create Debit note voucher details.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error create Debit note voucher details:', error);
+      alert('An error occurred while create Debit note voucher details.');
+      return null;
+    }
+  };
 
   return (
     <form
@@ -316,7 +303,6 @@ const DebitNoteForm = () => {
           placeholder="Date:"
           value={formData.date}
           name="date"
-
           onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
@@ -368,31 +354,31 @@ const DebitNoteForm = () => {
           }}
         /> */}
 
-<select
-        value={formData.ledgerId}
-        onChange={handleLedgerChange}
-        name="partyName"
-        className="w-full border rounded p-2"
-        style={{
-          height: '45px',
-          backgroundColor: '#FFFFFF',
-          color: '#000000',
-          borderRadius: '8px',
-          borderWidth: '1px',
-          borderColor: '#A2A2A2',
-          fontSize: '20px',
-          fontWeight: '500',
-        }}
-      >
-        <option value="">Select Party Name</option>
-        {ledger?.map((party) => (
-          <option key={party.id} value={party.id}>
-            {party.name}
-          </option>
-        ))}
-      </select>
+        <select
+          value={formData.ledgerId}
+          onChange={handleLedgerChange}
+          name="partyName"
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <option value="">Select Party Name</option>
+          {ledger?.map((party) => (
+            <option key={party.id} value={party.id}>
+              {party.name}
+            </option>
+          ))}
+        </select>
 
-{/* <select
+        {/* <select
         value={formData.bankAccountNumber}
         onChange={handleInputChange}
         name="bankAccountNumber"
@@ -514,18 +500,16 @@ const DebitNoteForm = () => {
 
       {/* Description */}
       <div className="mt-4 w-full border rounded p-2">
-  <label className="block mb-1 font-medium">Description:</label>
-  <textarea
-  name="purpose"
-    value={formData.purpose}
-    onChange={handleInputChange}
-    className="w-full border rounded p-2"
-    rows="3"
-    placeholder="Enter description or notes..."
-  />
-</div>
-
-
+        <label className="block mb-1 font-medium">Description:</label>
+        <textarea
+          name="purpose"
+          value={formData.purpose}
+          onChange={handleInputChange}
+          className="w-full border rounded p-2"
+          rows="3"
+          placeholder="Enter description or notes..."
+        />
+      </div>
 
       {/* {showPaymentPopup && (
         <div className="border border-gray-300 rounded-lg p-4 mt-2 bg-white">
@@ -592,13 +576,13 @@ const DebitNoteForm = () => {
       {/* Submit Button */}
 
       <div className="mt-6 text-center">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
-            >
-              Submit
-            </button>
-          </div>
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 };

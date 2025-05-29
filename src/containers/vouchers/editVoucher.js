@@ -124,9 +124,9 @@ const EditVoucher = () => {
         return <EditContraForm {...props} />;
       case 'PURCHASE':
         return <EditPurchaseForm {...props} />;
-      case 'DEBIT':
+      case 'DEBITNOTE':
         return <EditDebitNoteForm {...props} />;
-      case 'CREDIT':
+      case 'CREDITNOTE':
         return <EditCreditNoteForm {...props} />;
       case 'EMI':
         return <EmiForm {...props} />;

@@ -3,12 +3,27 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const EditContraForm = () => {
+const EditContraForm = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [ledger, setLedger] = useState([]);
   const [bankAccount, setBankAccount] = useState([]);
+  // const [fromAccount, setFromAccount] = useState('');
+  // const [toAccount, setToBank] = useState('');
+  const [transferAmount, setTransferAmount] = useState('');
+  console.log('a chbubfewnfwrbrb iWEBFUBRARUBGYUH');
+
+  const {
+    branches,
+    bankOptions,
+    clients,
+    staff,
+    isEditMode,
+    voucherToEdit: item,
+  } = props;
+
+  console.log(item.fromAccount,"items in edit")
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -98,6 +113,27 @@ const EditContraForm = () => {
     { name: 'TCS', percent: '2%', amount: '10,5000' },
   ];
 
+  useEffect(() => {
+    if (isEditMode && item) {
+      setFormData((prevData) => ({
+        ...prevData,
+        date: item.generationDate?.split('T')[0] || '',
+        partyName: item.clientName || '',
+        bankAccountNumber: item.toAccount || '',
+        purpose: item.purpose || '',
+        fromAccount: item.fromAccount,
+        toAccount: item.toAccount,
+        ledgerId: item.ledgerId || '',
+        upiId: item.upiId || '',
+        checkNumber: item.checkNumber || '',
+        cardNumber: item.cardNumber || '',
+        amountPaid: item.amount || '',
+      }));
+    }
+  }, [item, isEditMode]);
+
+  
+
   const [formData, setFormData] = useState({
     date: '',
     day: '',
@@ -108,9 +144,12 @@ const EditContraForm = () => {
     voucherType: 'CONTRA',
     upiId: '',
     checkNumber: '',
+    fromAccount: '',
+    toAccount: '',
     cardNumber: '',
     amountPaid: null,
   });
+  console.log(formData.date, 'hdbwdbebfh');
 
   const branchData = [
     'Purchase',
@@ -244,6 +283,9 @@ const EditContraForm = () => {
     payload.append('checkNumber', formData.checkNumber);
     payload.append('cardNumber', formData.cardNumber);
     payload.append('amountPaid', Number(formData.amountPaid));
+    // payload.append('fromAccount', fromAccount);
+    // payload.append('toAccount', toAccount);
+    payload.append('amount', Number(transferAmount));
 
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
@@ -394,30 +436,6 @@ const EditContraForm = () => {
               fontWeight: '500',
             }}
           />
-          <div className="flex rounded-lg overflow-hidden w-max shadow-md">
-            <button
-              type="button"
-              onClick={() => setSelected('Debit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Debit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Debit
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelected('Credit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Credit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              Credit
-            </button>
-          </div>
 
           <select
             value={formData.ledgerId}
@@ -443,31 +461,58 @@ const EditContraForm = () => {
             ))}
           </select>
         </div>
+        {/* From Bank */}
+        <div>
+          <label className="block font-semibold">From Bank</label>
+          <select
+            name="fromAccount"
+            value={formData.fromAccount || ''}
+            onChange={handleInputChange}
+            className="w-full border rounded p-2"
+          >
+            {bankAccount
+              // .filter((bank) => bank.accountNumber !== formData.toAccount)
+              .map((bank) => (
+                <option key={bank.accountNumber} value={bank.id}>
+                  {bank.name} - {bank.accountNumber}
+                </option>
+              ))}
+          </select>
+        </div>
 
-        <select
-          value={formData.bankAccountNumber}
-          onChange={handleBankChange}
-          name="bankAccountNumber"
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        >
-          <option value="">Select Bank Name</option>
-          <option value="cash">Cash</option>
-          {bankAccount?.map((account) => (
-            <option key={account.id} value={account.accountNumber}>
-              {`${account.name} (${account.accountNumber})`}
-            </option>
-          ))}
-        </select>
+        {/* To Bank */}
+        <div>
+          <label className="block font-semibold">To Bank</label>
+          <select
+            name="toAccount"
+            value={formData.toAccount || ''}
+            onChange={handleInputChange}
+            className="w-full border rounded p-2"
+          >
+            <option value="">Select To Bank</option>
+            {bankAccount
+              // .filter((bank) => bank.accountNumber !== formData.fromAccount)
+              .map((bank) => (
+                <option key={bank.accountNumber} value={bank.id}>
+                  {bank.name} - {bank.accountNumber}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        {/* Amount */}
+        <div>
+          <label className="block font-semibold">Amount</label>
+          <input
+            type="number"
+            className="w-full border rounded p-2"
+            value={transferAmount}
+            onChange={(e) => setTransferAmount(e.target.value)}
+            required
+            min="1"
+          />
+        </div>
+        {/* </div> */}
       </div>
 
       {/* Description */}
