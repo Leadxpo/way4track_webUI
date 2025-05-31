@@ -3,19 +3,26 @@ import { useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
-const EditPaymentForm = () => {
+const EditPaymentForm = (props) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const [ledger, setLedger] = useState([
+  const [ledger, setLedger] = useState([]);
 
-  ]);
+  const {
+    branches,
+    bankOptions,
+    clients,
+    staff,
+    isEditMode,
+    voucherToEdit: item,
+  } = props;
 
-  const [pendingVouchers, setPendingVouchers] = useState([
-  ]);
+  console.log(item, 'iteem in the payments');
 
-  const [bankAccount, setBankAccount] = useState([
-  ]);
+  const [pendingVouchers, setPendingVouchers] = useState([]);
+
+  const [bankAccount, setBankAccount] = useState([]);
 
   const handleIdChange = (e) => {
     const value = e.target.value;
@@ -32,8 +39,8 @@ const EditPaymentForm = () => {
   const handleDateChange = (e) => {
     const value = e.target.value;
 
-    const dayName = new Date(value).toLocaleDateString("en-US", {
-      weekday: "long",
+    const dayName = new Date(value).toLocaleDateString('en-US', {
+      weekday: 'long',
     });
 
     setFormData((prev) => ({
@@ -43,28 +50,77 @@ const EditPaymentForm = () => {
     }));
   };
 
-  const [formData, setFormData] = useState(
-    {
-      date: "",
-      day: "",
-      bankAccountNumber: "",
-      voucherType: "PAYMENT",
-      partyName: "",
-      ledgerId: "",
-      bankAmount: "",
-      purpose: "",
-      pendingInvoices: [{
-        invoiceId: "",
+  useEffect(() => {
+    if (isEditMode && item) {
+      const fromAccountNumber =
+        bankAccount.find((account) => account.id === item.fromAccountId)
+          ?.accountNumber || '';
+
+      setFormData({
+        date: item.generationDate || '',
+        day: item.day || '',
+        bankAccountNumber: fromAccountNumber,
+        voucherType: item.voucherType || 'PAYMENT',
+        partyName: item.partyName || '',
+        ledgerId: item.ledgerId || '',
+        bankAmount: item.bankAmount || '',
+        purpose: item.purpose || '',
+        pendingInvoices: item.pendingInvoices?.length
+          ? item.pendingInvoices.map((inv) => ({
+              invoiceId: inv.invoiceId || '',
+              paidAmount: inv.paidAmount || '',
+              amount: inv.amount || '',
+              reminigAmount: inv.reminigAmount || '',
+            }))
+          : [
+              {
+                invoiceId: '',
+                paidAmount: null,
+                amount: null,
+                reminigAmount: null,
+              },
+            ],
+        upiId: item.upiId || '',
+        checkNumber: item.checkNumber || '',
+        cardNumber: item.cardNumber || '',
+        amountPaid: item.amountPaid || null,
+      });
+
+      setPaymentType(item.paymentType?.toLowerCase() || 'cash');
+
+      // Call the function here
+      const fetchPendingVouchers = async () => {
+        if (item.ledgerId) {
+          await getPendingVouchers(item.ledgerId);
+        }
+      };
+
+      fetchPendingVouchers();
+    }
+  }, [isEditMode, item]);
+
+  const [formData, setFormData] = useState({
+    date: '',
+    day: '',
+    bankAccountNumber: '',
+    voucherType: 'PAYMENT',
+    partyName: '',
+    ledgerId: '',
+    bankAmount: '',
+    purpose: '',
+    pendingInvoices: [
+      {
+        invoiceId: '',
         paidAmount: null,
         amount: null,
-        reminigAmount: null
-      }],
-      upiId: "",
-      checkNumber: "",
-      cardNumber: "",
-      amountPaid: null
-    }
-  );
+        reminigAmount: null,
+      },
+    ],
+    upiId: '',
+    checkNumber: '',
+    cardNumber: '',
+    amountPaid: null,
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -102,8 +158,6 @@ const EditPaymentForm = () => {
     { invoice: '', amount: '', paid: '', remaining: '' },
   ]);
 
-
-
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [bank, setBank] = useState('');
@@ -136,7 +190,6 @@ const EditPaymentForm = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-
   const handleBranchClick = () => {
     setIsPopupOpen(true);
   };
@@ -152,31 +205,32 @@ const EditPaymentForm = () => {
       pendingInvoices: [
         ...prevData.pendingInvoices,
         {
-          invoiceId: "",
+          invoiceId: '',
           paidAmount: null,
           amount: null,
-          reminigAmount: null
-        }
-      ]
+          reminigAmount: null,
+        },
+      ],
     }));
   };
 
   const handleRemoveEntry = (indexToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
-      pendingInvoices: prevData.pendingInvoices.filter((_, index) => index !== indexToRemove),
+      pendingInvoices: prevData.pendingInvoices.filter(
+        (_, index) => index !== indexToRemove
+      ),
     }));
   };
 
   const totalPayableAmount = pendingVouchers?.reduce(
-    (acc, cur) => acc + parseFloat(cur.amount || 0),
+    (acc, cur) => acc + parseFloat(cur.reminigAmount || 0),
     0
   );
 
   const totalPaidAmount = formData.pendingInvoices.reduce((acc, item) => {
     return acc + (parseFloat(item.paidAmount) || 0);
   }, 0);
-
 
   // const handleEntryChange = (index, field, value) => {
   //   const updatedInvoices = [...formData.pendingInvoices];
@@ -193,18 +247,21 @@ const EditPaymentForm = () => {
   //   }));
   // };
 
-
   const handleEntryChange = (index, field, value) => {
     const updatedInvoices = [...formData.pendingInvoices];
     updatedInvoices[index][field] = value;
 
     // If user is entering invoiceId, auto-fill the amount
-    if (field === "invoiceId") {
-      const matchedInvoice = pendingVouchers.find(inv => inv.invoiceId === value);
+    if (field === 'invoiceId') {
+      const matchedInvoice = pendingVouchers.find(
+        (inv) => inv.invoiceId === value
+      );
       if (matchedInvoice) {
-        updatedInvoices[index].amount =matchedInvoice.reminigAmount?matchedInvoice.reminigAmount:matchedInvoice.amount;
+        updatedInvoices[index].amount = matchedInvoice.reminigAmount
+          ? matchedInvoice.reminigAmount
+          : matchedInvoice.amount;
       } else {
-        updatedInvoices[index].amount = ""; // reset if not found
+        updatedInvoices[index].amount = ''; // reset if not found
       }
     }
 
@@ -212,17 +269,15 @@ const EditPaymentForm = () => {
     const paidAmount = parseFloat(updatedInvoices[index].paidAmount) || 0;
     updatedInvoices[index].reminigAmount = (amount - paidAmount).toFixed(2);
 
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
       pendingInvoices: updatedInvoices,
     }));
   };
 
-
   const handleItemClick = (item) => {
     navigate(`/forms/${item}`);
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,9 +301,16 @@ const EditPaymentForm = () => {
     //   payload.append('unitCode', initialAuthState.unitCode);
     //   console.log("qqqqqqqqpayload",payload)
 
+    const selectedAccount = bankAccount.find(
+      (acc) => acc.accountNumber === formData.bankAccountNumber
+    );
+
+    const fromAccountId = selectedAccount?.id || null;
+
     const payloadObj = {
       generationDate: formData.date,
       day: formData.day,
+      fromAccount: fromAccountId,
       bankAccountNumber: formData.bankAccountNumber,
       pendingInvoices: formData.pendingInvoices.map((item) => ({
         ...item,
@@ -258,8 +320,8 @@ const EditPaymentForm = () => {
         reminigAmount: Number(item.reminigAmount),
       })),
       purpose: formData.purpose,
-      branchId: Number(localStorage.getItem("branchId")),
-      ledgerId:Number(formData.ledgerId),
+      branchId: Number(localStorage.getItem('branchId')),
+      ledgerId: Number(formData.ledgerId),
       voucherType: formData.voucherType,
       paymentType: paymentType.toLowerCase(),
       upiId: formData.upiId,
@@ -278,7 +340,7 @@ const EditPaymentForm = () => {
 
       if (response.status) {
         alert('Payment voucher created successfully!');
-        navigate("/vouchers");
+        navigate('/vouchers');
         // return response.data;
       } else {
         alert('Failed to create Payment voucher details.');
@@ -297,12 +359,11 @@ const EditPaymentForm = () => {
       setFormData((prev) => ({
         ...prev,
         partyName: selectedLedger.name,
-        ledgerId: selectedLedger.id
+        ledgerId: selectedLedger.id,
       }));
     }
-    console.log("formdata", formData)
+    console.log('formdata', formData);
     getPendingVouchers(selectedId);
-
   };
 
   // const handleBankChange = (e) => {
@@ -322,15 +383,14 @@ const EditPaymentForm = () => {
 
   // };
 
-
   const handleBankChange = (e) => {
     const selectedAccountNumber = e.target.value;
 
     // If "Cash" is selected, reset bankAmount or treat as special case
-    if (selectedAccountNumber === "cash") {
+    if (selectedAccountNumber === 'cash') {
       setFormData((prev) => ({
         ...prev,
-        bankAccountNumber: "cash"
+        bankAccountNumber: 'cash',
       }));
       return;
     }
@@ -345,20 +405,19 @@ const EditPaymentForm = () => {
       setFormData((prev) => ({
         ...prev,
         bankAccountNumber: selectedAccountNumber,
-        bankAmount: selectedBank.totalAmount ?? "0.00",
+        bankAmount: selectedBank.totalAmount ?? '0.00',
       }));
     } else {
       // If not found, reset values
       setFormData((prev) => ({
         ...prev,
-        bankAccountNumber: "",
-        bankAmount: "0.00",
+        bankAccountNumber: '',
+        bankAmount: '0.00',
       }));
     }
   };
 
-
-const branch = localStorage.getItem('branchId');
+  const branch = localStorage.getItem('branchId');
 
   const getPendingVouchers = async (selectedPartyName) => {
     try {
@@ -368,21 +427,20 @@ const branch = localStorage.getItem('branchId');
         ledgerId: selectedPartyName, // Add this only if your API expects it
       });
 
-      console.log("setPendingVouchers+++++++++", response);
+      console.log('setPendingVouchers+++++++++', response);
 
       if (response.status) {
-        console.log("tttt",response.data);
+        console.log('tttt', response.data);
 
-      //   const filteredVouchers = response.data.filter(voucher =>
-      //   voucher.voucherType === "PURCHASE" && voucher.branchId?.id === Number(branch)
-      // );
-      const filteredVouchers = response.data.filter(voucher =>
-        voucher.voucherType === "PURCHASE" 
-        &&
-        voucher.branchId?.id === Number(branch) 
-        &&
-        Number(voucher.reminigAmount) !== 0
-      );
+        //   const filteredVouchers = response.data.filter(voucher =>
+        //   voucher.voucherType === "PURCHASE" && voucher.branchId?.id === Number(branch)
+        // );
+        const filteredVouchers = response.data.filter(
+          (voucher) =>
+            voucher.voucherType === 'PURCHASE' &&
+            voucher.branchId?.id === Number(branch) &&
+            Number(voucher.reminigAmount) > 0
+        );
         // filter  branch purchse
         setPendingVouchers(filteredVouchers);
       } else {
@@ -393,17 +451,14 @@ const branch = localStorage.getItem('branchId');
     }
   };
 
-
   useEffect(() => {
     const fetchLedgers = async () => {
       try {
-        const response = await ApiService.post(
-          '/ledger/getLedgerDetails', {
+        const response = await ApiService.post('/ledger/getLedgerDetails', {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
-        }
-        );
-        console.log("fedgrfdtrgxfsdf", response)
+        });
+        console.log('fedgrfdtrgxfsdf', response);
         if (response.status) {
           setLedger(response.data); // Set branches to state
         } else {
@@ -417,21 +472,16 @@ const branch = localStorage.getItem('branchId');
     fetchLedgers();
   }, []);
 
-  const branchId =Number(localStorage.getItem("branchId"));
+  const branchId = Number(localStorage.getItem('branchId'));
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
-        const response = await ApiService.post(
-          '/account/getAccountsDetails'
-
-
-        );
-        console.log("setBankAccount22211111", response)
+        const response = await ApiService.post('/account/getAccountsDetails');
+        console.log('setBankAccount22211111', response);
         if (response.status) {
           const filteredAccounts = response.data.filter(
-          (account) => account.branchId === branchId
-
-        );
+            (account) => account.branchId === branchId
+          );
 
           setBankAccount(filteredAccounts);
         } else {
@@ -536,7 +586,6 @@ const branch = localStorage.getItem('branchId');
           placeholder="Date:"
           value={formData.date}
           name="date"
-
           onChange={handleDateChange}
           className="w-full border rounded p-2"
           style={{
@@ -555,8 +604,6 @@ const branch = localStorage.getItem('branchId');
         <input
           type="text"
           placeholder="Day:"
-
-
           name="day"
           value={formData.day}
           className="w-full border rounded p-2"
@@ -631,7 +678,10 @@ const branch = localStorage.getItem('branchId');
               Invoice ID : {entry.invoiceId}
             </p>
             <p className="font-semibold text-lg">
-              Payable Amount : {entry.reminigAmount?parseFloat(entry.reminigAmount).toLocaleString('en-IN'):parseFloat(entry.amount).toLocaleString('en-IN')}
+              Payable Amount :{' '}
+              {entry.reminigAmount
+                ? parseFloat(entry.reminigAmount).toLocaleString('en-IN')
+                : parseFloat(entry.amount).toLocaleString('en-IN')}
             </p>
           </div>
         ))}
@@ -639,12 +689,11 @@ const branch = localStorage.getItem('branchId');
         {/* Total Amount Section */}
         <div className="flex justify-end mt-4">
           <p className="font-bold text-xl">
-            Total Payable Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
+            Total Payable Amount: {totalPayableAmount?.toLocaleString('en-IN')}
+            /-
           </p>
         </div>
       </div>
-
-
 
       {/* Entries */}
       <div
@@ -658,7 +707,7 @@ const branch = localStorage.getItem('branchId');
         }}
       >
         <button
-        type="button"
+          type="button"
           className="bg-green-600 text-white font-bold w-[30px] h-[30px]"
           style={{ borderRadius: '8px', marginBottom: '10px' }}
           onClick={handleAddEntry}
@@ -666,7 +715,7 @@ const branch = localStorage.getItem('branchId');
           +
         </button>
 
-        {formData?.pendingInvoices?.map((entry, index) => (
+        {pendingVouchers?.map((entry, index) => (
           <div
             key={index}
             className="flex items-center mb-2"
@@ -694,7 +743,7 @@ const branch = localStorage.getItem('branchId');
               />
               <input
                 placeholder="Amount"
-                value={entry.amount}
+                value={entry.reminigAmount}
                 name="amount"
                 className="w-1/4 border rounded p-2"
                 onChange={(e) =>
@@ -794,10 +843,11 @@ const branch = localStorage.getItem('branchId');
               <button
                 type="button"
                 key={type}
-                className={`px-4 py-2 rounded-md font-bold ${paymentType === type
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-300 text-gray-800'
-                  }`}
+                className={`px-4 py-2 rounded-md font-bold ${
+                  paymentType === type
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-300 text-gray-800'
+                }`}
                 style={{ height: '60px', width: '180px' }}
                 onClick={() => setPaymentType(type)}
               >
@@ -818,31 +868,32 @@ const branch = localStorage.getItem('branchId');
             {(paymentType === 'UPI' ||
               paymentType === 'Check' ||
               paymentType === 'Card') && (
-                <div
-                  className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
-                  style={{ marginLeft: '0px' }}
-                >
-                  {/* <label className="block mb-1">
+              <div
+                className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
+                style={{ marginLeft: '0px' }}
+              >
+                {/* <label className="block mb-1">
                   {paymentType === 'UPI'
                     ? 'UPI ID'
                     : paymentType === 'Check'
                       ? 'Check ID'
                       : 'Card ID'}
                 </label> */}
-                  <input
-                    type="text"
-                    placeholder={`${paymentType === 'UPI'
+                <input
+                  type="text"
+                  placeholder={`${
+                    paymentType === 'UPI'
                       ? 'UPI ID'
                       : paymentType === 'Check'
                         ? 'Check ID'
                         : 'Card ID'
-                      }`}
-                    onChange={handleIdChange}
-                    className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
-                    style={{ marginTop: '20px' }}
-                  />
-                </div>
-              )}
+                  }`}
+                  onChange={handleIdChange}
+                  className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
+                  style={{ marginTop: '20px' }}
+                />
+              </div>
+            )}
 
             {/* Amount Field (visible for all) */}
             <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">

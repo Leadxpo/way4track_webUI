@@ -23,7 +23,7 @@ const EditContraForm = (props) => {
     voucherToEdit: item,
   } = props;
 
-  console.log(item.fromAccount,"items in edit")
+  console.log(item.fromAccount, 'items in edit');
 
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -117,24 +117,26 @@ const EditContraForm = (props) => {
     if (isEditMode && item) {
       setFormData((prevData) => ({
         ...prevData,
+        id:item.id,
         date: item.generationDate?.split('T')[0] || '',
         partyName: item.clientName || '',
         bankAccountNumber: item.toAccount || '',
         purpose: item.purpose || '',
-        fromAccount: item.fromAccount,
-        toAccount: item.toAccount,
+        fromAccount: item.fromAccountId,
+        toAccount: item.toAccountId,
         ledgerId: item.ledgerId || '',
         upiId: item.upiId || '',
         checkNumber: item.checkNumber || '',
         cardNumber: item.cardNumber || '',
         amountPaid: item.amount || '',
       }));
+      const newPaymentType = item.paymentType?.toLowerCase() || 'cash';
+      setPaymentType(newPaymentType);
     }
   }, [item, isEditMode]);
 
-  
-
   const [formData, setFormData] = useState({
+    id:'',
     date: '',
     day: '',
     partyName: '',
@@ -283,9 +285,11 @@ const EditContraForm = (props) => {
     payload.append('checkNumber', formData.checkNumber);
     payload.append('cardNumber', formData.cardNumber);
     payload.append('amountPaid', Number(formData.amountPaid));
-    // payload.append('fromAccount', fromAccount);
-    // payload.append('toAccount', toAccount);
-    payload.append('amount', Number(transferAmount));
+    payload.append('fromAccount', formData.fromAccount);
+    payload.append('toAccount', formData.toAccount);
+    payload.append('amount', Number(formData.amountPaid));
+    payload.append('totalAmount', Number(formData.amountPaid));
+    payload.append('id', formData.id);
 
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
@@ -506,8 +510,10 @@ const EditContraForm = (props) => {
           <input
             type="number"
             className="w-full border rounded p-2"
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(e.target.value)}
+            name="amountPaid"
+            value={formData.amountPaid}
+            onChange={handleInputChange}
+            // onChange={(e) => setTransferAmount(e.target.value)}
             required
             min="1"
           />

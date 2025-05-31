@@ -102,6 +102,7 @@ const JournalForm = () => {
     date: '',
     day: '',
     partyName: '',
+    amount: '',
     bankAccountNumber: '',
     purpose: '',
     ledgerId: '',
@@ -238,6 +239,7 @@ const JournalForm = () => {
     payload.append('bankAccountNumber', formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
+    payload.append('amount', formData.amount);
     payload.append('journalType', selected);
     payload.append('paymentType', paymentType.toLowerCase());
     payload.append('upiId', formData.upiId);
@@ -469,6 +471,24 @@ const JournalForm = () => {
             </option>
           ))}
         </select>
+        <input
+          type="text"
+          placeholder="Amount:"
+          value={formData.amount}
+          name="amount"
+          onChange={handleInputChange}
+          className="w-full border rounded p-2"
+          style={{
+            height: '45px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            borderRadius: '8px',
+            borderWidth: '1px',
+            borderColor: '#A2A2A2',
+            fontSize: '20px',
+            fontWeight: '500',
+          }}
+        />
       </div>
 
       {/* Description */}

@@ -257,6 +257,8 @@ const PurchaseForm = () => {
       supplierLocation: formData.supplierLocation,
       voucherGST: formData.purchaseGst,
       amount: calculatedAmount,
+      reminigAmount: calculatedAmount,
+      paidAmount: 0,
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
