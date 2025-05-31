@@ -10,8 +10,6 @@ const CreateWorkAllocation = () => {
 
   // Check if there's workAllocation data passed through location.state
   const workAllocationData = location.state?.workAllocationDetails;
-  console.log(workAllocationData, '>>>>>>>>>>>>');
-  console.log(workAllocationData.work.id, '+====}}}}}}}}}');
 
   const initialFormData = {
     id: workAllocationData.work.id || '',

@@ -209,21 +209,22 @@ const JournalForm = () => {
 
     // Find the selected bank account from list
     const selectedBank = bankAccount?.find(
-      (bank) => bank.accountNumber === selectedAccountNumber
+      (bank) => {
+        return String(bank.id) === String(selectedAccountNumber)
+      }
     );
-
+    console.log("selectedBank :", selectedBank)
     // Update formData with bankAmount if found
     if (selectedBank) {
       setFormData((prev) => ({
         ...prev,
-        bankAccountNumber: selectedAccountNumber,
+        bankAccountNumber: String(selectedAccountNumber),
       }));
     } else {
       // If not found, reset values
       setFormData((prev) => ({
         ...prev,
         bankAccountNumber: '',
-        bankAmount: '0.00',
       }));
     }
   };
@@ -236,7 +237,10 @@ const JournalForm = () => {
     payload.append('day', formData.day);
     payload.append('branchId', Number(localStorage.getItem('branchId')));
     payload.append('ledgerId', Number(formData?.ledgerId));
-    payload.append('bankAccountNumber', formData.bankAccountNumber);
+    if (selected==="Debit") {
+      payload.append('toAccount', formData.bankAccountNumber);
+    }
+    payload.append('fromAccount', formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
     payload.append('amount', formData.amount);
@@ -245,11 +249,9 @@ const JournalForm = () => {
     payload.append('upiId', formData.upiId);
     payload.append('checkNumber', formData.checkNumber);
     payload.append('cardNumber', formData.cardNumber);
-    payload.append('amountPaid', Number(formData.amountPaid));
-
+    payload.append('amount', Number(formData.amountPaid));
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
-    payload.append('totalAmount', Number(formData.amountPaid));
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -401,22 +403,20 @@ const JournalForm = () => {
             <button
               type="button"
               onClick={() => setSelected('Debit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Debit'
+              className={`px-6 py-2 font-bold transition ${selected === 'Debit'
                   ? 'bg-green-500 text-white'
                   : 'bg-gray-300 text-gray-700'
-              }`}
+                }`}
             >
               Debit
             </button>
             <button
               type="button"
               onClick={() => setSelected('Credit')}
-              className={`px-6 py-2 font-bold transition ${
-                selected === 'Credit'
+              className={`px-6 py-2 font-bold transition ${selected === 'Credit'
                   ? 'bg-green-500 text-white'
                   : 'bg-gray-300 text-gray-700'
-              }`}
+                }`}
             >
               Credit
             </button>
@@ -464,9 +464,8 @@ const JournalForm = () => {
           }}
         >
           <option value="">Select Bank Name</option>
-          <option value="cash">Cash</option>
           {bankAccount?.map((account) => (
-            <option key={account.id} value={account.accountNumber}>
+            <option key={account.id} value={account.id}>
               {`${account.name} (${account.accountNumber})`}
             </option>
           ))}
@@ -525,11 +524,10 @@ const JournalForm = () => {
               <button
                 type="button"
                 key={type}
-                className={`px-4 py-2 rounded-md font-bold ${
-                  paymentType === type
+                className={`px-4 py-2 rounded-md font-bold ${paymentType === type
                     ? 'bg-green-600 text-white'
                     : 'bg-gray-300 text-gray-800'
-                }`}
+                  }`}
                 style={{ height: '60px', width: '180px' }}
                 onClick={() => setPaymentType(type)}
               >
@@ -550,25 +548,24 @@ const JournalForm = () => {
             {(paymentType === 'UPI' ||
               paymentType === 'Cheque' ||
               paymentType === 'Card') && (
-              <div
-                className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
-                style={{ marginLeft: '0px' }}
-              >
-                <input
-                  type="text"
-                  placeholder={`${
-                    paymentType === 'UPI'
-                      ? 'UPI ID'
-                      : paymentType === 'Cheque'
-                        ? 'Cheque ID'
-                        : 'Card ID'
-                  }`}
-                  onChange={handleIdChange}
-                  className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
-                  style={{ marginTop: '20px' }}
-                />
-              </div>
-            )}
+                <div
+                  className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
+                  style={{ marginLeft: '0px' }}
+                >
+                  <input
+                    type="text"
+                    placeholder={`${paymentType === 'UPI'
+                        ? 'UPI ID'
+                        : paymentType === 'Cheque'
+                          ? 'Cheque ID'
+                          : 'Card ID'
+                      }`}
+                    onChange={handleIdChange}
+                    className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
+                    style={{ marginTop: '20px' }}
+                  />
+                </div>
+              )}
 
             {/* Amount Field (visible for all) */}
             <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">
