@@ -308,9 +308,10 @@ export const EstimatePDF = ({ data }) => {
     return `${day}-${month}-${year}`;
   };
 
-  const accountDetails = data.branchDetails.accounts.find(
-    (account) => account.id === Number(data.accountId)
-  );
+  const accountDetails =
+    data.branchDetails?.accounts?.find(
+      (account) => account.id === Number(data.accountId)
+    ) || {};
 
   return (
     <Document>
@@ -517,17 +518,19 @@ export const EstimatePDF = ({ data }) => {
                 Payment Mode: By Cash / NEFT / RTGS / Cheque
               </Text>
               <Text style={estStyles.totalBlockLeftText1}>
-                A/c No: {accountDetails.accountNumber}
+                A/c No:{' '}
+                {accountDetails?.accountNumber || 'Account Number Unavailable'}
               </Text>
               {/* <Text style={estStyles.totalBlockLeftText1}>
                 Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh
                 - 530003
               </Text> */}
               <Text style={estStyles.totalBlockLeftText1}>
-                Bank: {accountDetails.name}., {accountDetails.address}
+                Bank: {accountDetails.name || 'Account Name Unavailable'}.,{' '}
+                {accountDetails.address || 'Account Address Unavailable'}
               </Text>
               <Text style={estStyles.totalBlockLeftText1}>
-                IFSC: {accountDetails.ifscCode}
+                IFSC: {accountDetails.ifscCode || 'Account IFSC Unavailable'}
               </Text>
             </View>
 
