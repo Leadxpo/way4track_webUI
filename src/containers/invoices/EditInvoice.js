@@ -374,19 +374,19 @@ const EditInvoice = () => {
     // Generate PDF as Binary (Blob → File)
     const generatePdf = async (data) => {
       const pdfBlob = await pdf(<InvoicePDF data={data} />).toBlob();
-      return new File([pdfBlob], 'estimate.pdf', { type: 'application/pdf' });
+      return new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
     };
 
     try {
       console.log('bfkuyewfliegfdkqilhfbvawefhbgelfhbrg', estimateDto);
 
-      console.log('formDataPayload! estimate estimateeeee2');
+      console.log('formDataPayload! invoice invoice');
       const pdfFile = await generatePdf(pdfData);
-      console.log('formDataPayload! estimate estimateeeee3');
+      console.log('formDataPayload! invoice invoice');
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
       const includeTax = estimateDto.totalAmount + cgst + scst;
-      console.log('formDataPayload! estimate estimateeeee4');
+      console.log('formDataPayload! invoice invoice');
       // Create FormData to send binary data
       const formDataPayload = new FormData();
 

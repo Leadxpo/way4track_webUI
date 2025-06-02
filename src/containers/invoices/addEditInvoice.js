@@ -356,7 +356,7 @@ const AddEditInvoice = () => {
     // Generate PDF as Binary (Blob → File)
     const generatePdf = async (data) => {
       const pdfBlob = await pdf(<InvoicePDF data={data} />).toBlob();
-      return new File([pdfBlob], 'estimate.pdf', { type: 'application/pdf' });
+      return new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
     };
 
     console.log('pdfData pdfData pdfData', pdfData);
@@ -415,16 +415,16 @@ const AddEditInvoice = () => {
       );
 
       if (response.status) {
-        console.log('Estimate saved successfully!');
-        alert('Estimate saved successfully!');
-        navigate('/estimate');
+        console.log('Invoice saved successfully!');
+        alert('Invoice saved successfully!');
+        navigate('/invoice');
       } else {
-        console.warn('Estimate save failed:', response.data);
-        alert('Failed to save estimate. Please try again.');
+        console.warn('Invoice save failed:', response.data);
+        alert('Failed to save Invoice. Please try again.');
       }
     } catch (err) {
-      console.error('Failed to save estimate:', err);
-      alert('Estimate saved successfully!', err);
+      console.error('Failed to save Invoice:', err);
+      alert('Invoice saved successfully!', err);
     }
   };
 
