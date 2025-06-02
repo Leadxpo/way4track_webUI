@@ -27,6 +27,7 @@ const Letters = () => {
     paySlipYear: "",
     paySlipMonth: "",
     greetingTo: "",
+    ReimbursementAmount:"",
     greetingDesignation: "",
     greetingEmail: "",
     greetingPhoneNo: ""
@@ -448,7 +449,7 @@ const Letters = () => {
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
             </View>
 
@@ -728,7 +729,7 @@ const Letters = () => {
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
             </View>
           <View style={styles.section}>
@@ -934,7 +935,7 @@ const DigitalManagerOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -1251,7 +1252,7 @@ const FieldSalesManagerOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
 
@@ -1465,7 +1466,7 @@ const OperationAssociateOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -1809,7 +1810,7 @@ const OperationalManagerOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         {/* Footer */}
@@ -2052,7 +2053,7 @@ const SalesManagerOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -2297,7 +2298,7 @@ const BranchManagerOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -2538,7 +2539,7 @@ const TechSupportOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -2784,7 +2785,7 @@ const TechnicianOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         <View style={styles.section}>
@@ -3043,7 +3044,7 @@ const TeleAssociateOfferLetter = ({ employee }) => {
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of [                             ] to cover training and on boarding costs.</Text></View>
+            <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} to cover training and on boarding costs.</Text></View>
             <View style={{flexDirection:'row',marginVertical:2}}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
           </View>
         {/* Footer */}
@@ -3804,6 +3805,14 @@ return (
         onChange={handleChange}
       />
 
+      <input
+        type="text"
+        name="ReimbursementAmount"
+        placeholder="Reimbursement Amount"
+        className="flex justify-between items-center shadow-lg w-full rounded-md p-4 my-8 border border-gray-200"
+        value={formData.ReimbursementAmount}
+        onChange={handleChange}
+      />
       <input
         type="text"
         name="greetingTo"
