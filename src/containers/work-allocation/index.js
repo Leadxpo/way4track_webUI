@@ -252,7 +252,6 @@ console.log("rrr",response);
       ? { ...selectedWorkAllocation }
       : { ...selectedWorkAllocation, fromStaffId: localStorage.getItem("id") };
 
-    console.log("rrr :", payload)
     try {
       const endpoint = selectedWorkAllocation.id
         ? '/technician/handleTechnicianDetails'

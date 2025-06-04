@@ -52,8 +52,7 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           'presentDays',
           'actualSalary',
           'leaveDays',
-          'nonPaidLeave',
-          'totalLateHours',
+          'totalLateMinutes',
           'lateDeductions',
           'carryForwardLeaves',
           'leaveEncashment',
@@ -61,43 +60,61 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           'plBikeAmount',
           'totalOTHours',
           'OTAmount',
-          'fullDayOTs',
-          'fullDayOTsAmount',
-          'salesAmount',
+          'daysOutLate6HoursOrMore',
+          'extraHalfSalary',
           'incentives',
           'foodAllowance',
-          'ActualEarnedMonthlySalary',
           'grossSalary',
           'ESIC_Employee',
           'ESIC_Employer',
-          'pfBasicWages',
           'PF_Employee',
           'PF_Employer1',
           'PF_Employer2',
           'professionalTax',
           'netSalary',
-          'otherDeductions',
-          'adavnceAmount',
+          'advanceAmount',
           'payableAmount',
-          'salaryDate',
           'salaryStatus',
-        ].map((field) => (
-          <Controller
-            key={field}
-            name={field}
-            control={control}
-            render={({ field }) => (
-              <div>
-                <p style={{ textTransform: 'capitalize' }}>{field.name}</p>
-                <input
-                  {...field}
-                  placeholder={field.name.replace(/([A-Z])/g, ' $1')}
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-            )}
-          />
-        ))}
+        ].map((field) => {
+          console.log("rrr :", field)
+          switch (field) {
+            case "daysOutLate6HoursOrMore":
+              return <Controller
+                key={field}
+                name={field}
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <p style={{ textTransform: 'capitalize' }}>Total Full Day OT's</p>
+                    <input
+                      {...field}
+                      placeholder="Total Full Day OT's"
+                      className="w-full p-2 border rounded-md"
+                    />
+                  </div>
+                )}
+              />
+              break;
+
+            default:
+              return <Controller
+                key={field}
+                name={field}
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <p style={{ textTransform: 'capitalize' }}>{field.name}</p>
+                    <input
+                      {...field}
+                      placeholder={field.name.replace(/([A-Z])/g, ' $1')}
+                      className="w-full p-2 border rounded-md"
+                    />
+                  </div>
+                )}
+              />
+              break;
+          }
+        })}
 
         <Controller
           name="salaryStatus"

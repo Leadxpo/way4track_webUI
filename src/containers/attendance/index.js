@@ -18,6 +18,24 @@ const Attendance = () => {
 
   const [branchName, setBranchName] = useState(branchData.branchName || '');
 
+  const timeFormate = (decimalTime) => {
+    // Check if it's a valid decimal number
+    const num = parseFloat(decimalTime);
+  
+    // Only format if it's a number AND a valid fractional day (less than 1)
+    if (!isNaN(num) && num > 0 && num < 1) {
+      const totalSeconds = Math.round(num * 24 * 60 * 60);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+  
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+  
+    // Not a valid decimal time – return original input
+    return decimalTime;
+  };
+  
   const fetchAttendanceDetails = async () => {
     try {
       const response = await ApiService.post('/attendance/getStaffAttendance', {
@@ -156,8 +174,8 @@ const Attendance = () => {
                   <td className="border p-2">{att.staffName.trim()}</td>
                   <td className="border p-2">{att.branchName}</td>
                   
-                  <td className="border p-2">{att.inTimeRemark}</td>
-                  <td className="border p-2">{att.outTimeRemark}</td>
+                  <td className="border p-2">{timeFormate(att.inTime)}</td>
+                  <td className="border p-2">{timeFormate(att.outTime)}</td>
                   <td className="border p-2">{att.status}</td>
                   <td className="border p-2">
                     {/* <button

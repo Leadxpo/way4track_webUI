@@ -37,8 +37,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Home');
   // Get menu items based on role
-  const items = menuOptions[role.toLowerCase()] || [];
-
+  const items = menuOptions || [];
 
   useEffect(() => {
     if (role === 'CEO') {
@@ -48,9 +47,6 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       localStorage.setItem('webUI', 'false');
     }
   }, [role]);
-
-
-  
 
   const roleFromStorage = localStorage.getItem('role') || '';
   const webUI = localStorage.getItem('webUI') === 'true';
@@ -136,6 +132,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
         </div>
         <div className="px-4 py-6 space-y-4">
           {items.map((item, index) => (
+            item &&
             <div
               key={index}
               className={`flex items-center h-14 space-y-2 space-x-3 text-white-300 hover:bg-neutral-700 hover:text-white hover:rounded-[8px] ${item.name === selectedOption ? 'bg-neutral-700 rounded-[8px]' : ''}`}
@@ -148,7 +145,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
             </div>
           ))}
         </div>
-     
+
       </div>
       <div className="px-4 py-6">
         <button

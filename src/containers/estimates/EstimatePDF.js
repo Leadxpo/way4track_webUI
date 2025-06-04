@@ -546,6 +546,11 @@ export const EstimatePDF = ({ data }) => {
                 <Text style={estStyles.signatureText}>
                   For SHARON TELEMATICS PVT LTD
                 </Text>
+                <Image src="/signature.png" style={{
+                  alignSelf:'center',
+                  height: 60,justifyContent:'center',
+                  marginRight: 10,
+                }} />
                 <Text style={estStyles.signatureTextBottom}>
                   Authorised Signatory
                 </Text>
