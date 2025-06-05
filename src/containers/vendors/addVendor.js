@@ -26,10 +26,11 @@ const AddEditVendor = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(vendorData?.photo || '');
-  const [bankName, setBankName] = useState(vendorData?.bankDetails.split(",")[0] || '');
-  const [accountHolderName, setAccountHOlderName] = useState(vendorData?.bankDetails.split(",")[1] || '');
-  const [accountNumber, setAccountNumber] = useState(vendorData?.bankDetails.split(",")[2] || '');
-  const [accountIFSC, setAccountIFSC] = useState(vendorData?.bankDetails.split(",")[3] || '');
+  const [bankName, setBankName] = useState(vendorData?.bankDetails?.split(",")[0] || '');
+  const [accountHolderName, setAccountHolderName] = useState(initialFormData?.bankDetails?.split(",")[1] || '');
+  const [accountNumber, setAccountNumber] = useState(initialFormData?.bankDetails?.split(",")[2] || '');
+  const [accountIFSC, setAccountIFSC] = useState(initialFormData?.bankDetails?.split(",")[3] || '');
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,9 +42,9 @@ const AddEditVendor = () => {
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
         payload.append(key, value);
-      } else if(key === 'bankDetails'){
+      } else if (key === 'bankDetails') {
         payload.append(key, `${bankName},${accountHolderName},${accountNumber},${accountIFSC}`);
-      }else{
+      } else {
         payload.append(key, value);
       }
     });
@@ -173,7 +174,7 @@ const AddEditVendor = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-         
+
           {/* Email */}
           <div>
             <p className="font-semibold mb-1">Email ID</p>
@@ -228,45 +229,47 @@ const AddEditVendor = () => {
               type="text"
               name="bankName"
               value={bankName}
-              onChange={setBankName}
+              onChange={(e) => setBankName(e.target.value)}
               placeholder="Enter Bank Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+
           <div>
             <p className="font-semibold mb-1">Bank Account Holder Name</p>
             <input
               type="text"
               name="accountHolderName"
               value={accountHolderName}
-              onChange={setAccountHOlderName}
+              onChange={(e) => setAccountHolderName(e.target.value)}
               placeholder="Enter Account Holder Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+
           <div>
             <p className="font-semibold mb-1">Bank Account Number</p>
             <input
               type="text"
               name="accountNumber"
               value={accountNumber}
-              onChange={setAccountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
               placeholder="Enter Bank Account Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+
           <div>
-            <p className="font-semibold mb-1">Bank Name</p>
+            <p className="font-semibold mb-1">IFSC Code</p>
             <input
               type="text"
               name="accountIFSC"
               value={accountIFSC}
-              onChange={setAccountIFSC}
-              placeholder="Enter Bank Account IFSC"
+              onChange={(e) => setAccountIFSC(e.target.value)}
+              placeholder="Enter IFSC Code"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          
         </div>
 
         {/* Buttons */}
