@@ -304,16 +304,17 @@ export const EstimatePDF = ({ data }) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
     const year = date.getFullYear();
-
+    console.log("rrr :", data)
     return `${day}-${month}-${year}`;
   };
-
-  const accountDetails =
-    data.branchDetails?.accounts?.find(
-      (account) => account.id === Number(data.accountId)
+  const accountDetails =data.branchDetails?.accounts?.find(
+      (account) =>{
+        console.log("ttt :", Number(account.id)+" === "+Number(data.accountId))
+        return( Number(account.id) === Number(data.accountId))}
     ) || {};
 
-  return (
+    console.log("aaa :",accountDetails)
+    return (
     <Document>
       <Page size="A4" style={estStyles.page}>
         <View style={estStyles.pageBorder}>
@@ -329,11 +330,6 @@ export const EstimatePDF = ({ data }) => {
                 <Text style={estStyles.companyDetails}>
                   Company ID: U74999AP2018PTC108597
                 </Text>
-                {/* <Text style={estStyles.companyDetails}>21-27 Viman Nagar</Text>
-              <Text style={estStyles.companyDetails}>Near Airport Road</Text>
-              <Text style={estStyles.companyDetails}>
-                Visakhapatnam, Andhra Pradesh, 530009
-              </Text> */}
                 <Text style={estStyles.companyDetails}>
                   {data.branchDetails.addressLine1}
                 </Text>
@@ -362,14 +358,7 @@ export const EstimatePDF = ({ data }) => {
               style={{
                 borderRight: '1px solid black',
                 ...estStyles.detailsColumn,
-              }}
-            >
-              {/* <View style={estStyles.detailsTextBlock}>
-                <Text style={estStyles.detailsText}>#</Text>
-                <Text style={estStyles.detailsTextBold}>
-                  :{data.estimateNumber}
-                </Text>
-              </View> */}
+              }}>
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.detailsText}>
                   Pro Forma Invoice Date
@@ -494,22 +483,6 @@ export const EstimatePDF = ({ data }) => {
                 </Text>
               </View>
               <Text style={estStyles.totalBlockLeftText2}></Text>
-              {/* <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment Mode: By Cash / NEFT / RTGS / Cheque
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - A/c No: 131905001314
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh, 530003
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - IFSC: HDFC0001319
-            </Text> */}
               <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
               <Text style={estStyles.totalBlockLeftText1}>
                 Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
@@ -521,10 +494,6 @@ export const EstimatePDF = ({ data }) => {
                 A/c No:{' '}
                 {accountDetails?.accountNumber || 'Account Number Unavailable'}
               </Text>
-              {/* <Text style={estStyles.totalBlockLeftText1}>
-                Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh
-                - 530003
-              </Text> */}
               <Text style={estStyles.totalBlockLeftText1}>
                 Bank: {accountDetails.name || 'Account Name Unavailable'}.,{' '}
                 {accountDetails.address || 'Account Address Unavailable'}
