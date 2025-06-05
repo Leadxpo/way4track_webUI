@@ -328,7 +328,7 @@ export const EstimatePDF = ({ data }) => {
                   SHARON TELEMATICS PRIVATE LIMITED
                 </Text>
                 <Text style={estStyles.companyDetails}>
-                  Company ID: U74999AP2018PTC108597
+                  Company ID: {data.branchDetails.CIN}
                 </Text>
                 <Text style={estStyles.companyDetails}>
                   {data.branchDetails.addressLine1}
@@ -341,7 +341,7 @@ export const EstimatePDF = ({ data }) => {
                 </Text>
                 {/* <Text style={estStyles.companyDetails}>India</Text> */}
                 <Text style={estStyles.companyDetails}>
-                  GSTIN: 37ABACS4415R1ZV
+                  GSTIN: {data.branchDetails.GST}
                 </Text>
               </View>
             </View>

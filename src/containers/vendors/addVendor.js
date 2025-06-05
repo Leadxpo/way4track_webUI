@@ -14,18 +14,22 @@ const AddEditVendor = () => {
     name: vendorData.name || '',
     vendorPhoneNumber: vendorData.vendorPhoneNumber || '',
     alternatePhoneNumber: vendorData.alternatePhoneNumber || '',
-    startingDate: vendorData.startingDate || '',
     emailId: vendorData.emailId || '',
-    aadharNumber: vendorData.aadharNumber || '',
     address: vendorData.address || '',
+    state: vendorData.state || '',
+    bankDetails: vendorData.bankDetails || '',
+    GSTNumber: vendorData.GSTNumber || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     photo: vendorData?.photo || null,
-    productType: vendorData?.productType,
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(vendorData?.photo || '');
+  const [bankName, setBankName] = useState(vendorData?.bankDetails.split(",")[0] || '');
+  const [accountHolderName, setAccountHOlderName] = useState(vendorData?.bankDetails.split(",")[1] || '');
+  const [accountNumber, setAccountNumber] = useState(vendorData?.bankDetails.split(",")[2] || '');
+  const [accountIFSC, setAccountIFSC] = useState(vendorData?.bankDetails.split(",")[3] || '');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +41,9 @@ const AddEditVendor = () => {
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
         payload.append(key, value);
-      } else {
+      } else if(key === 'bankDetails'){
+        payload.append(key, `${bankName},${accountHolderName},${accountNumber},${accountIFSC}`);
+      }else{
         payload.append(key, value);
       }
     });
@@ -106,7 +112,7 @@ const AddEditVendor = () => {
         {/* Photo Section */}
         <div className="flex items-center space-x-2 mb-6">
           <img
-            src={image || 'https://i.pravatar.cc/150?img=5'}
+            src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
             alt="Employee"
             className="w-24 h-24 rounded-full object-cover"
           />
@@ -167,16 +173,7 @@ const AddEditVendor = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          <div>
-            <p className="font-semibold mb-1">starting Date</p>
-            <input
-              type="date"
-              name="startingDate"
-              value={formData.startingDate}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
+         
           {/* Email */}
           <div>
             <p className="font-semibold mb-1">Email ID</p>
@@ -189,13 +186,25 @@ const AddEditVendor = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          {/* Aadhar */}
+          {/* GST Number */}
           <div>
-            <p className="font-semibold mb-1">Aadhar Number</p>
+            <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
-              name="aadharNumber"
-              value={formData.aadharNumber}
+              name="GSTNumber"
+              value={formData.GSTNumber}
+              onChange={handleInputChange}
+              placeholder="Enter Email ID"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          {/* State */}
+          <div>
+            <p className="font-semibold mb-1">State</p>
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
               onChange={handleInputChange}
               placeholder="Enter Aadhar Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -214,16 +223,50 @@ const AddEditVendor = () => {
             />
           </div>
           <div>
-            <p className="font-semibold mb-1">product Type</p>
+            <p className="font-semibold mb-1">Bank Name</p>
             <input
               type="text"
-              name="productType"
-              value={formData.productType}
-              onChange={handleInputChange}
-              placeholder="Enter productType"
+              name="bankName"
+              value={bankName}
+              onChange={setBankName}
+              placeholder="Enter Bank Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
+          <div>
+            <p className="font-semibold mb-1">Bank Account Holder Name</p>
+            <input
+              type="text"
+              name="accountHolderName"
+              value={accountHolderName}
+              onChange={setAccountHOlderName}
+              placeholder="Enter Account Holder Name"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <p className="font-semibold mb-1">Bank Account Number</p>
+            <input
+              type="text"
+              name="accountNumber"
+              value={accountNumber}
+              onChange={setAccountNumber}
+              placeholder="Enter Bank Account Number"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          <div>
+            <p className="font-semibold mb-1">Bank Name</p>
+            <input
+              type="text"
+              name="accountIFSC"
+              value={accountIFSC}
+              onChange={setAccountIFSC}
+              placeholder="Enter Bank Account IFSC"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+          </div>
+          
         </div>
 
         {/* Buttons */}
