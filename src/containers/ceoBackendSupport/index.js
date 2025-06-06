@@ -208,6 +208,7 @@ const CeoBackendSupportHome = () => {
       );
 
       setWorkRecords(response.data || []);
+      console.log("rrr :",workRecords)
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -491,6 +492,12 @@ const CeoBackendSupportHome = () => {
                             >
                               Tech Support:
                             </p>
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Vehicle No:
+                            </p>
                             {card.workStatus !== 'install' && (
                               <p
                                 className="text-lg font-semibold text-gray-500"
@@ -503,15 +510,21 @@ const CeoBackendSupportHome = () => {
                           <div>
                             <p
                               className="text-lg font-bold text-gray-800"
-                              style={{ fontSize: '16px' }}
+                              style={{ fontSize: '16px', maxWidth: '100%'  }}
                             >
                               {card.clientName}
                             </p>
                             <p
                               className="text-lg font-bold text-gray-800"
-                              style={{ fontSize: '16px' }}
+                              style={{ fontSize: '16px', maxWidth: '100%',maxLines:1 }}
                             >
                               {card.staffName}
+                            </p>
+                            <p
+                              className="text-lg font-bold text-gray-800"
+                              style={{ fontSize: '16px',textTransform:'capitalize' }}
+                            >
+                              {card.vehicleNumber}
                             </p>
                             {card.workStatus !== 'install' && (
                               <p

@@ -140,6 +140,7 @@ const FilteredWorkStatusDetails = () => {
                 <th className="px-4 py-2">End Time</th>
                 <th className="px-4 py-2">Duration</th>
                 <th className="px-4 py-2">Vehicle Type</th>
+                <th className="px-4 py-2">Vehicle No.</th>
                 <th className="px-4 py-2">Date</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Action</th>
@@ -175,6 +176,7 @@ const FilteredWorkStatusDetails = () => {
                     </td>
 
                     <td className="px-4 py-2">{item.vehicleType}</td>
+                    <td className="px-4 py-2">{item.vehicleNumber}</td>
                     <td className="px-4 py-2">{item.date}</td>
                     <td className="px-4 py-2">
                       <select

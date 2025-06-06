@@ -234,12 +234,12 @@ export const menuOptions = [
   },
   role?.toLowerCase() === "ceo" && {
     name: 'Orders',
-    icon: <img src="./order.png" />,
+    icon: <img src="./sale.png" />,
     route: '/all-orders',
   },
   role?.toLowerCase() === "ceo" && {
     name: 'Promocodes',
-    icon: <img src="./promo.png" />,
+    icon: <img src="./ticket.png" />,
     route: '/promocodes',
   },
   role?.toLowerCase() === "ceo" && {

@@ -537,6 +537,12 @@ const CeoBackendSupportPayments = () => {
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
+                            Vehicle No:
+                          </p>
+                          <p
+                            className="text-lg font-semibold text-gray-500"
+                            style={{ fontSize: '15px' }}
+                          >
                             Backend Support:
                           </p>
                         </div>
@@ -552,6 +558,12 @@ const CeoBackendSupportPayments = () => {
                             style={{ fontSize: '16px' }}
                           >
                             {card.staffName}
+                          </p>
+                          <p
+                            className="text-lg font-bold text-gray-800"
+                            style={{ fontSize: '16px' }}
+                          >
+                            {card.vehicleNumber}
                           </p>
                           <p
                             className="text-lg font-bold text-gray-800"
