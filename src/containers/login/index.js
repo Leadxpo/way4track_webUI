@@ -97,6 +97,7 @@ const Login = ({ handleLoginFlag }) => {
       if (response.data.status) {
         localStorage.setItem('userId', userId);
         localStorage.setItem('role', role);
+        localStorage.setItem('password', password);
         localStorage.setItem('userProfile', JSON.stringify(response.data));
 
         const isSubDealer = role === 'Sub Dealer';

@@ -11,6 +11,62 @@ import { EstimatePDF } from './EstimatePDF';
 const AddEstimate = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
+
+  const termandcondition=`
+   
+AIS-140 MINING GPS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device
+2. 1 Year SIM Charges included.
+3. Tax: GST (18%) is included in the above invoice.
+4. AMC charges are applicable 3500+18% GST (charges may vary depending on the network provider and the government).
+5. 100% Advance Payment.
+Warranty Claims:
+1. Any Manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.
+ 
+LITE GPS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 1 Year SIM Charges included.
+3. Tax: GST (18%) is included in the above invoice.
+4. AMC charges are applicable 2000+18% GST (charges may vary depending on the network provider).
+5. 100% Advance Payment.
+Warranty Claims:
+1. Piece-to-piece replacement is done for manufacturing defects and hardware issues, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.
+ 
+FUEL SENSORS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 2 years warranty for the sensor.
+3. 1 Year SIM Charges included.
+4. Tax: GST (18%) is included in the above invoice.
+5. AMC charges are applicable 4500+18% GST (charges may vary depending on the network provider).
+6. 100% Advance Payment.
+Warranty Claims:
+1. Any manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction. 
+ 
+DASHCAMS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 2 years warranty for the sensor.
+3. 1 Year SIM Charges included.
+4. Tax: GST (18%) is included in the above invoice.
+5. AMC charges are applicable 4500+18% GST (charges may vary depending on the network provider).
+6. 100% Advance Payment.
+Warranty Claims:
+1. Any manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.`
   // Check if editing or creating
   // Initial state for form
   const initialFormState = {
@@ -41,7 +97,7 @@ const AddEstimate = () => {
         hsnCode: '',
       },
     ],
-    terms: '',
+    terms: termandcondition,
     totalAmount: 0,
     branchId: '',
     accountId: '',
@@ -367,7 +423,7 @@ console.log("aaa:",client)
         'scstPercentage',
         estimateDto.scstPercentage || '0'
       );
-      // formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
+      formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
 
       // Append Product Details as JSON String
       formDataPayload.append(
@@ -937,6 +993,7 @@ console.log("aaa:",client)
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"
               className="w-full p-2 border rounded-md"
+              style={{height:300}}
             />
           </div>
 

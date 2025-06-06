@@ -158,7 +158,7 @@ const EstimateDetails = () => {
             <p className="text-lg">#{estimateData?.estimateDetails?.number}</p>
           </div>
         </div>
-
+ 
         {/* Address and Dates */}
         <div className="flex justify-between mb-6">
           {/* Address - 60% Width */}

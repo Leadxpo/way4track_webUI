@@ -73,7 +73,6 @@ const CreateWorkAllocation = () => {
             unitCode: initialAuthState.unitCode,
           }
         );
-        console.log(workAllocationData.id, '+====}}}}}}}}}');
 
         if (response.data?.length > 0) {
           const workAllocation = response.data;
@@ -188,7 +187,7 @@ const CreateWorkAllocation = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     const payload = { ...selectedWorkAllocation };
-    console.log(payload, '+++++++++++++++++++++++');
+
     try {
       const endpoint = selectedWorkAllocation.workAllocationNumber
         ? '/work-allocations/handleWorkAllocationDetails'

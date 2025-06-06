@@ -185,6 +185,8 @@ export const menuOptions = [
   hasPermission(permission, "appointments", "view") && {
     name: 'Appointments',
     icon: <img src="./appointments.png" />,
+    route: '/appointments',
+
   },
   hasPermission(permission, "voucher", "view") && {
     name: 'Purchase',
