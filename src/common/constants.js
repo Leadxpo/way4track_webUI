@@ -104,7 +104,7 @@ export const menuOptions = [
   },
   role?.toLowerCase() === "sub dealer" && {
     name: 'Sub Dealer Staff',
-    icon: <img src="./products.png" />,
+    icon: <img src="./users.png" />,
     route: '/sub-staff-details',
   },
   hasPermission(permission, "product-type", "view") && {

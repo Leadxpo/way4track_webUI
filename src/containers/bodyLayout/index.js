@@ -399,7 +399,7 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/profile')}
             />
-            {role === 'CEO' && (
+            {(role === 'CEO' || role === 'HR')&& (
               <FaCog
                 className="text-xl text-gray-600 cursor-pointer"
                 onClick={() => navigate('/settings')}

@@ -283,17 +283,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs. </Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Market Research:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Stay informed about market trends, competitors, and industry developments. </Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
-              </View>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -322,6 +311,20 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Market Research:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Stay informed about market trends, competitors, and industry developments. </Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
+              </View>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Roles and Responsibilities:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -403,10 +406,6 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Prepare and submit regular sales reports to your manager.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
-              </View>
             </View>
             {/* Footer */}
             <View style={styles.footer}>
@@ -435,6 +434,13 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
+              </View>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Team Collaboration:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -470,7 +476,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -592,17 +598,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Overtime may be required during peak periods, such as year-end financial close.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Accountant:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Financial Records Management</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Oversee and maintain accurate financial records, including general ledger entries, accounts payable, accounts receivable, and financial statements.</Text>
-              </View>
-            </View>
 
 
             {/* Footer */}
@@ -633,6 +628,15 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={styles.label}>Accountant:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Financial Records Management</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Oversee and maintain accurate financial records, including general ledger entries, accounts payable, accounts receivable, and financial statements.</Text>
+              </View>
               <View style={{ flexDirection: "row" }}>
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Ensure timely and accurate preparation of monthly, quarterly, and annual financial reports in compliance with accounting standards and company policies.</Text>
@@ -695,10 +699,6 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular bank reconciliations to verify the accuracy of financial transactions and statements.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
-              </View>
             </View>
 
 
@@ -730,6 +730,16 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
+              </View>
+
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
+              </View>
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
               <Text style={[styles.text, { fontWeight: "bold" }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
@@ -750,7 +760,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -984,7 +994,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1101,17 +1111,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Sales and Customer Interaction</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Engage with customers to understand their needs and recommend suitable products and services.</Text>
-              </View>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1140,6 +1139,18 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Sales and Customer Interaction</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Engage with customers to understand their needs and recommend suitable products and services.</Text>
+              </View>
+            </View>
+
             <View style={styles.section}>
               <View style={{ flexDirection: "row" }}>
 
@@ -1221,10 +1232,7 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Participate in sales meetings, training sessions, and team-building activities.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Share best practices and strategies with colleagues to help the team achieve its collective goals.</Text>
-              </View>
             </View>
 
             {/* Footer */}
@@ -1255,6 +1263,11 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Share best practices and strategies with colleagues to help the team achieve its collective goals.</Text>
+              </View>
+            </View>
+            <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
@@ -1276,7 +1289,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1396,15 +1409,9 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Act as a liaison with the business community in all aspects of report, data feed, and application development.</Text>
               </View>
-              <Text style={styles.label}>System Maintenance:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular system updates, patches, and backups to ensure data security and system integrity.</Text>
-              </View>
-
             </View>
 
-            
+
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1432,6 +1439,11 @@ const Letters = () => {
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
+            </View>
+            <Text style={styles.label}>System Maintenance:</Text>
+            <View style={{ flexDirection: "row" }}>
+
+              <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular system updates, patches, and backups to ensure data security and system integrity.</Text>
             </View>
             <Text style={styles.label}>Complaints:</Text>
             <View style={{ flexDirection: "row" }}>
@@ -1517,7 +1529,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1860,7 +1872,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1974,15 +1986,6 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Analyze market trends and customer needs to identify new business opportunities.</Text>
-              </View>
-
             </View>
             {/* Footer */}
             <View style={styles.footer}>
@@ -2011,6 +2014,18 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Analyze market trends and customer needs to identify new business opportunities.</Text>
+              </View>
+
+            </View>
+
             <Text style={styles.label}>Team Management:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2066,10 +2081,6 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -2098,16 +2109,19 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-            <View style={styles.section}>
+                        <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
+
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2221,14 +2235,6 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Analyze market trends and customer needs to identify new business opportunities.</Text>
-              </View>
 
             </View>
             {/* Footer */}
@@ -2258,6 +2264,19 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Analyze market trends and customer needs to identify new business opportunities.</Text>
+              </View>
+
+            </View>
+
             <Text style={styles.label}>Team Management:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2312,10 +2331,7 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-            </View>
+
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -2343,19 +2359,19 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-
             <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
-
-            <Text style={[styles.greetingText, {  marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2468,17 +2484,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular system updates, patches, and backups to ensure data security and system integrity.</Text>
               </View>
 
-              <Text style={styles.label}>Troubleshooting:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Diagnose and resolve technical issues related to server performance, software bugs, and connectivity problems.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide timely support to the front-end team and other departments for any back-end related issues.</Text>
-              </View>
-
-
             </View>
             {/* Footer */}
             <View style={styles.footer}>
@@ -2507,6 +2512,16 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+            <Text style={styles.label}>Troubleshooting:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Diagnose and resolve technical issues related to server performance, software bugs, and connectivity problems.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide timely support to the front-end team and other departments for any back-end related issues.</Text>
+              </View>
+
             <Text style={styles.label}>Database Management:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2557,11 +2572,7 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
-            </View>
+            
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2589,7 +2600,11 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
+            </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
@@ -2598,7 +2613,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
 
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2713,17 +2728,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform routine maintenance checks and troubleshoot issues to ensure optimal operation.</Text>
               </View>
 
-              <Text style={styles.label}>Technical Support:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide technical support and assistance to clients and team members.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Respond to service calls and resolve technical problems in a timely manner.</Text>
-              </View>
-
-
             </View>
             {/* Footer */}
             <View style={styles.footer}>
@@ -2752,6 +2756,15 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+            <Text style={styles.label}>Technical Support:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide technical support and assistance to clients and team members.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Respond to service calls and resolve technical problems in a timely manner.</Text>
+              </View>
             <Text style={styles.label}>Compliance:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2803,11 +2816,6 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -2836,14 +2844,18 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
+            </View>
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
             <Text style={styles.greetingText}>{employee.greetingTo}</Text>
             <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2960,20 +2972,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-
-              <Text style={styles.label}>Outbound Calls:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Make outbound calls to potential and existing customers to promote products and services.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide accurate information about products, services, and promotions to prospective customers.</Text>
-              </View>
-
-            </View>
 
 
             {/* Footer */}
@@ -3003,11 +3001,26 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
+           
             <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+
+              <Text style={styles.label}>Outbound Calls:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Make outbound calls to potential and existing customers to promote products and services.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide accurate information about products, services, and promotions to prospective customers.</Text>
+              </View>
+              <View style={styles.section}>
               <View style={{ flexDirection: "row" }}>
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Follow up on leads and customer inquiries to drive sales opportunities.</Text>
               </View>
+
+            </View>
 
             </View>
 
@@ -3062,13 +3075,8 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of <Text style={{ fontWeight: "ultrabold" }}>{formData.ReimbursementAmount} Rs</Text> to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-            </View>
+            
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -3098,6 +3106,12 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of <Text style={{ fontWeight: "ultrabold" }}>{formData.ReimbursementAmount} Rs</Text> to cover training and on boarding costs.</Text></View>
+              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
@@ -3107,7 +3121,7 @@ const Letters = () => {
             <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
             <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
             <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 40 }]}>
+            <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
