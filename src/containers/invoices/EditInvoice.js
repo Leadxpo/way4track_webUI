@@ -516,7 +516,7 @@ const EditInvoice = () => {
           //   amount: item.totalCost,
           //   hsnCode: item.hsnCode,
           // })),
-
+ 
           unitCode: response.data[0].unitCode,
           vendorId: response.data[0].vendorId,
           vendorName: response.data[0].vendorName,
