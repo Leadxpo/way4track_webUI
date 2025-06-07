@@ -4,14 +4,9 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 
 const Settings = () => {
-  const location = useLocation();
-  const employeeData = location.state?.staffDetails || {};
   const [staffId, setStaffId] = useState('');
   const [staffData, setStaffData] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [mockData, setMockData] = useState([]); // Holds all staff data
-  const [isLoading, setIsLoading] = useState(true);
-  const [profiles, setProfiles] = useState([]);
 
   // const getStaffPermissions = async () => {
   //   try {
@@ -76,7 +71,6 @@ const Settings = () => {
   // };
   
   const getStaffPermissions = async () => {
-    setIsLoading(true);
     try {
       const response = await ApiService.post('/permissions/getStaffPermissions', {
         staffId: staffId,
@@ -97,7 +91,6 @@ const Settings = () => {
         }
   
         console.log("Staff role data with parsed permissions:", staff);
-        setMockData(staff);
         setStaffData(staff || null);
       } else {
         alert("Failed to fetch staff permissions. Please try again.");
@@ -106,7 +99,6 @@ const Settings = () => {
       console.error('Error fetching staff details:', error);
       alert('Failed to fetch staff details.');
     } finally {
-      setIsLoading(false);
     }
   };
   
@@ -308,7 +300,7 @@ const Settings = () => {
     <span className="font-bold">Branch:</span> {staffData.branchName}
   </p>
   <p>
-    <span className="font-bold">Date Of Birth:</span> {staffData.dob}
+    <span className="font-bold">Date Of Birth:</span> {staffData?.dob.split("T")[0] || "N/A"}
   </p>
   <p>
     <span className="font-bold">Email ID:</span> {staffData.email}
