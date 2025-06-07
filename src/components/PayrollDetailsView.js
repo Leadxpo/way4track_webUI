@@ -130,7 +130,6 @@ const PayrollDetailsView = ({ payrollData }) => {
               companyCode: initialAuthState?.companyCode,
               unitCode: initialAuthState?.unitCode,
             };
-            console.log('=====================', payrollPayload);
             try {
               const response = await ApiService.post(
                 'PAYROLL/createOrUpdatePayroll',

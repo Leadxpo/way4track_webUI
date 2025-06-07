@@ -11,6 +11,7 @@ const StaffDetails = () => {
   const { state } = useLocation();
   console.log('staff details', state);
   const [staffPhoto, setStaffPhoto] = useState('');
+  const [otp, setOtp] = useState('');
   const userId = localStorage.getItem('userId');
 
   const [formData, setFormData] = useState({
@@ -225,6 +226,7 @@ const StaffDetails = () => {
     try {
       const response = await ApiService.post('/otp/verify-otp', {
         staffId: userId,
+        otp:otp,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
@@ -540,7 +542,9 @@ const StaffDetails = () => {
                   type="text"
                   placeholder="Enter OTP"
                   className="border w-full p-2 mb-4 rounded"
-                />
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  />
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setIsOtpModalOpen(false)}

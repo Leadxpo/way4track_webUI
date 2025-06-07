@@ -189,6 +189,7 @@ const BackendSupportHome = () => {
       );
 
       setWorkRecords(response.data || []);
+      console.log("rrr :",response.data )
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -206,6 +207,8 @@ const BackendSupportHome = () => {
         }
       );
       setMemberWorkRecords(response.data || []);
+      console.log("rrr :",response.data)
+
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setMemberWorkRecords([]);
@@ -474,6 +477,12 @@ const BackendSupportHome = () => {
                             style={{ fontSize: '15px' }}
                           >
                             Tech Support:
+                          </p>
+                          <p
+                            className="text-lg font-semibold text-gray-500"
+                            style={{ fontSize: '15px' }}
+                          >
+                            Vehicle Number:
                           </p>
                         </div>
                         <div>

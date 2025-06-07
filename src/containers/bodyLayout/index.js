@@ -13,7 +13,7 @@ import TableWithDateFilter from '../tablesDateFilter';
 import TableWithSearchFilter from '../tablesSearchFilter';
 import Analysis from '../analysis';
 import Reports from '../reports';
-import { formattedPaths, menuOptions } from '../../common/constants';
+import { formattedPaths } from '../../common/constants';
 import Asserts from '../asserts';
 import Settings from '../settings';
 import AddBranchForm from '../branches/addBranch';
@@ -216,34 +216,16 @@ const BodyLayout = ({ children }) => {
   const role = localStorage.getItem('role');
 
   const webUI = localStorage.getItem('webUI');
-  const getPathname = (role = 'ceo') => {
-    return formattedPaths[role][location.pathname]?.name || '';
-  };
-  const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    setSearchTerm(searchValue);
-
-    // Flatten menuOptions and filter based on the search term
-    const filteredResults = menuOptions.ceo.filter((item) =>
-      item.name.toLowerCase().includes(searchValue)
-    );
-    setResults(filteredResults);
+  const getPathname = () => {
+    return formattedPaths[location.pathname]?.name || '';
   };
 
-  // Handle result selection
-  const handleResultClick = (route) => {
-    setSearchTerm(''); // Clear the search input
-    setResults([]); // Clear results
-    navigate(route); // Navigate to the selected route
-  };
-
-  const getIcon = (role = 'ceo') => {
+  const getIcon = () => {
     // Access the routes for the given role from formattedPaths
-    const routes = formattedPaths[role];
+    const routes = formattedPaths;
 
     // Find the current route in the formatted paths based on the location.pathname
     const menuItem = routes[location.pathname];
-
     // Return the icon if a matching route is found
     return menuItem ? (
       <div className="flex items-center justify-center bg-black p-1">
@@ -417,7 +399,7 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/profile')}
             />
-            {role === 'CEO' && (
+            {(role === 'CEO' || role === 'HR')&& (
               <FaCog
                 className="text-xl text-gray-600 cursor-pointer"
                 onClick={() => navigate('/settings')}

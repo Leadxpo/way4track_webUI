@@ -25,8 +25,10 @@ const AddBranchForm = () => {
     image: branchData?.qrPhoto || null,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    latitude:branchData?.latitude,
-    longitude:branchData?.longitude
+    latitude:branchData?.latitude || '',
+    longitude:branchData?.longitude || '',
+    CIN:branchData?.CIN || '',
+    GST:branchData?.GST || ''
   });
 
   const [image, setImage] = useState(branchData?.photo || '');
@@ -71,6 +73,8 @@ const AddBranchForm = () => {
             image: matchedBranch.qrPhoto || null,
             latitude:matchedBranch.latitude,
            longitude:matchedBranch.longitude,
+           CIN:matchedBranch.CIN,
+           GST:matchedBranch.GST,
             companyCode:
               matchedBranch.companyCode || initialAuthState.companyCode,
             unitCode: matchedBranch.unitCode || initialAuthState.unitCode,
@@ -121,7 +125,7 @@ const AddBranchForm = () => {
   const handleSubmit = async () => {
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'photo'||key === 'image' && value instanceof File) {
+      if (key === 'photo'|| key === 'image' && value instanceof File) {
         payload.append(key, value);
       } else {
         payload.append(key, value);
@@ -333,6 +337,30 @@ const AddBranchForm = () => {
                 name="longitude"
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 value={formData.longitude} 
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-4">
+          
+            <div className="flex-1">
+              <label className="block font-bold mb-1">CIN</label>
+              <input
+                type="text"
+                name="CIN"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                value={formData.CIN}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block font-bold mb-1">GST</label>
+              <input
+                type="text"
+                name="GST"
+                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                value={formData.GST} 
                 onChange={handleChange}
               />
             </div>

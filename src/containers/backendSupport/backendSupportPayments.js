@@ -519,6 +519,12 @@ const BackendSupportPayments = () => {
                           >
                             Tech Support:
                           </p>
+                          <p
+                            className="text-lg font-semibold text-gray-500"
+                            style={{ fontSize: '15px' }}
+                          >
+                            Vehicle No:
+                          </p>
                         </div>
                         <div>
                           <p
@@ -532,6 +538,12 @@ const BackendSupportPayments = () => {
                             style={{ fontSize: '16px' }}
                           >
                             {card.staffName}
+                          </p>
+                          <p
+                            className="text-lg font-bold text-gray-800"
+                            style={{ fontSize: '16px' }}
+                          >
+                            {card.vehicleNumber}
                           </p>
                         </div>
                       </div>

@@ -53,7 +53,6 @@ const BranchManagerHome = () => {
   
       if (response?.status && response.data) {
         setBranches(response.data);  // ✅ Correct use of setState
-        console.log("===============>",response.data)
         return response.data;
       } else {
         alert(response?.message || "Failed to fetch branch details.");
@@ -129,7 +128,9 @@ const BranchManagerHome = () => {
         response = await ApiService.post("/dashboards/assertsCardData", payload);
       }
       if (response.status) {
+        console.log()
         setAssertsData(response.data || []);
+        console.log("rrr :",assertsData)
       } else {
         alert(response.data.message || "Failed to fetch asserts details.");
       }
@@ -137,20 +138,6 @@ const BranchManagerHome = () => {
       console.error("Error fetching asserts data:", error);
     }
   };
-
-
-  const response = {
-    data: {
-      groupedBranches: [],
-      officeAsserts: 0,
-      transportAsserts: 0,
-      totalAsserts: 0,
-    },
-  };
-
-
-
-
 
   // Fetch Staff Data
   const fetchStaffData = async () => {
@@ -169,7 +156,7 @@ const BranchManagerHome = () => {
       }
       if (response?.status) {
         setStaffData(Array.isArray(response.data.result) ? response.data.result : []);
-        console.log("total staff Card Details", response.data.result)
+        console.log("total staff Card", response.data.result)
       } else {
         alert(response.data.message || "Failed to fetch staff details.");
       }
@@ -383,7 +370,7 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         // Ensure data is always an array
         setTotalStaffDetails(Array.isArray(response.data.staff) ? response.data.staff : []);
 
-        console.log("total staff details", response.data.staff)
+        console.log("total staff details", totalStaffDetails)
       } else {
         alert(response.data.message || "Failed to fetch staff details.");
       }
@@ -854,19 +841,19 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
           {/* Card Header - Total Asserts */}
           <h2 className="text-xl font-bold text-center text-green-600 border-b pb-2">
-            Total Assets: {response.data.totalAsserts}
+            Total Assets: {assertsData.totalAsserts}
           </h2>
 
           {/* Card Body - Office & Transport Asserts */}
           <div className="mt-4 space-y-4">
             <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
               <span className="text-blue-600 font-semibold">Office Assets</span>
-              <span className="text-blue-600 font-bold text-lg">{response.data.officeAsserts}</span>
+              <span className="text-blue-600 font-bold text-lg">{assertsData.officeAsserts}</span>
             </div>
 
             <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
               <span className="text-yellow-600 font-semibold">Transport Assets</span>
-              <span className="text-yellow-600 font-bold text-lg">{response.data.transportAsserts}</span>
+              <span className="text-yellow-600 font-bold text-lg">{assertsData.transportAsserts}</span>
             </div>
           </div>
         </div>
@@ -875,24 +862,24 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
           {/* Card Header - Total Staff */}
           <h2 className="text-xl font-bold text-center text-red-600 border-b pb-2">
-            Total Staff: {staffData.totalStaff}
+            Total Staff: {staffData[0].totalStaff}
           </h2>
 
           {/* Card Body - Staff Categories */}
           <div className="mt-4 space-y-4">
             <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
               <span className="text-blue-600 font-semibold">Technicians</span>
-              <span className="text-blue-600 font-bold text-lg">{staffData.totalTechnicians}</span>
+              <span className="text-blue-600 font-bold text-lg">{staffData[0].totalTechnicians}</span>
             </div>
 
             <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
               <span className="text-yellow-600 font-semibold">Non Technicians</span>
-              <span className="text-yellow-600 font-bold text-lg">{staffData.totalNonTechnicians}</span>
+              <span className="text-yellow-600 font-bold text-lg">{staffData[0].totalNonTechnicians}</span>
             </div>
 
             <div className="flex justify-between items-center bg-green-100 p-4 rounded-md border border-green-400">
               <span className="text-green-600 font-semibold">Sales Staff</span>
-              <span className="text-green-600 font-bold text-lg">{staffData.salesStaff}</span>
+              <span className="text-green-600 font-bold text-lg">{staffData[0].totalSales}</span>
             </div>
           </div>
         </div>

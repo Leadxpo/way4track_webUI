@@ -97,6 +97,7 @@ const Login = ({ handleLoginFlag }) => {
       if (response.data.status) {
         localStorage.setItem('userId', userId);
         localStorage.setItem('role', role);
+        localStorage.setItem('password', password);
         localStorage.setItem('userProfile', JSON.stringify(response.data));
 
         const isSubDealer = role === 'Sub Dealer';
@@ -111,18 +112,23 @@ const Login = ({ handleLoginFlag }) => {
           }
         } else {
           const staffData = response.data.data;
+
+          const permission = Array.isArray(staffData.permissions) ? staffData.permissions.length : 0;
+
+
           localStorage.setItem('companyCode', staffData.companyCode);
           localStorage.setItem('unitCode', staffData.unitCode);
           localStorage.setItem('id', staffData.id);
           localStorage.setItem('branchName', staffData.branch?.branchName || '');
           localStorage.setItem('branch_id', staffData.branch?.id || '');
+          localStorage.setItem('userPermissions', JSON.stringify(staffData?.permissions[permission-1]?.permissions) || '');
         }
 
-        await fetchUserPermissions(
-          localStorage.getItem('userId'),
-          localStorage.getItem('companyCode'),
-          localStorage.getItem('unitCode')
-        );
+        // await fetchUserPermissions(
+        //   localStorage.getItem('userId'),
+        //   localStorage.getItem('companyCode'),
+        //   localStorage.getItem('unitCode')
+        // );
 
         handleLoginFlag(); // redirect / update UI
       } else {

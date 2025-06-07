@@ -71,7 +71,6 @@ const SalesVisit = () => {
       try {
         const res = await ApiService.post('/staff/getStaffNamesDropDown');
         setStaffList(res.data || []);
-        console.log("rrr :", staffList)
       } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaffList([]);

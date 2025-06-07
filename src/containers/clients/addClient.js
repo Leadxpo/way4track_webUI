@@ -8,12 +8,12 @@ const AddClient = () => {
 
     name: '',
     phoneNumber:'',
-    // gstNumber:'',
+    GSTNumber:'',
     branch:'',
     branchName:'', 
     email:'',
     address:'',
-    // joiningDate:null,
+    state:'',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     file:null,
@@ -233,7 +233,7 @@ const handleChange = useCallback(
         {/* Photo Section */}
         <div className="flex items-center space-x-2 mb-6">
           <img
-            src={image || 'https://i.pravatar.cc/150?img=5'}
+            src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
             alt="Employee"
             className="w-24 h-24 rounded-full object-cover"
           />
@@ -287,18 +287,18 @@ const handleChange = useCallback(
           </div>
 
 
-         {/* Phone Number */}
-          {/* <div>
+         {/* GST Number */}
+          <div>
             <p className="font-semibold mb-1">GST Number</p>
             <input
               type="text"
-              name="gstNumber"
-              value={formData.gstNumber}
+              name="GSTNumber"
+              value={formData.GSTNumber}
               onChange={handleInputChange}
               placeholder="Enter Gst Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-          </div> */}
+          </div>
 
 
           {/* Branch */}
@@ -350,16 +350,16 @@ const handleChange = useCallback(
           </div>
         </div>
 
-        {/* <div>
-          <p className="font-semibold mb-1">Joining Date</p>
+        <div>
+          <p className="font-semibold mb-1">state</p>
           <input
-            type="date"
-            name="joiningDate"
-            value={formData.joiningDate}
+            type="text"
+            name="state"
+            value={formData.state}
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div> */}
+        </div>
       </div>
 
       {/* Buttons */}

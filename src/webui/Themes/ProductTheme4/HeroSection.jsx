@@ -2,9 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Cpu } from 'lucide-react';
 
 const HeroSection = ({stateData}) => {
-  const heroRef = useRef(null);
-  console.log("rrr :",stateData)
-  
+  const heroRef = useRef(null);  
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;

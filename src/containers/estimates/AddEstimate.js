@@ -11,6 +11,62 @@ import { EstimatePDF } from './EstimatePDF';
 const AddEstimate = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
+
+  const termandcondition=`
+   
+AIS-140 MINING GPS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device
+2. 1 Year SIM Charges included.
+3. Tax: GST (18%) is included in the above invoice.
+4. AMC charges are applicable 3500+18% GST (charges may vary depending on the network provider and the government).
+5. 100% Advance Payment.
+Warranty Claims:
+1. Any Manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.
+ 
+LITE GPS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 1 Year SIM Charges included.
+3. Tax: GST (18%) is included in the above invoice.
+4. AMC charges are applicable 2000+18% GST (charges may vary depending on the network provider).
+5. 100% Advance Payment.
+Warranty Claims:
+1. Piece-to-piece replacement is done for manufacturing defects and hardware issues, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.
+ 
+FUEL SENSORS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 2 years warranty for the sensor.
+3. 1 Year SIM Charges included.
+4. Tax: GST (18%) is included in the above invoice.
+5. AMC charges are applicable 4500+18% GST (charges may vary depending on the network provider).
+6. 100% Advance Payment.
+Warranty Claims:
+1. Any manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction. 
+ 
+DASHCAMS
+ 
+Terms & Conditions:
+1. 1-year warranty for the device.
+2. 2 years warranty for the sensor.
+3. 1 Year SIM Charges included.
+4. Tax: GST (18%) is included in the above invoice.
+5. AMC charges are applicable 4500+18% GST (charges may vary depending on the network provider).
+6. 100% Advance Payment.
+Warranty Claims:
+1. Any manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
+2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
+• All Disputes are subject to Visakhapatnam jurisdiction.`
   // Check if editing or creating
   // Initial state for form
   const initialFormState = {
@@ -41,7 +97,7 @@ const AddEstimate = () => {
         hsnCode: '',
       },
     ],
-    terms: '',
+    terms: termandcondition,
     totalAmount: 0,
     branchId: '',
     accountId: '',
@@ -58,23 +114,6 @@ const AddEstimate = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState('');
-  //   const [serveProd, setServeProd] = useState("");
-
-  //   const changeServeProd = (index, e) => {
-  //     setServeProd(e.target.value);
-
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       items: prevData.items.map((item, i) =>
-  //         i === index ? { ...item, productId: '',
-  //         name: '',
-  //         quantity: '',
-  //         rate: '',
-  //         amount: '',
-  //         hsnCode: '',} : item
-  //       ),
-  //     }));
-  // };
 
   const [serveProd, setServeProd] = useState(
     Array(formData.items.length).fill('')
@@ -124,7 +163,6 @@ const AddEstimate = () => {
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
-      console.log('hi ++++______ ++++++++++=====', res.data);
       setClients(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -136,7 +174,6 @@ const AddEstimate = () => {
       const res = await ApiService.post(
         '/productType/getProductTypeNamesDropDown'
       );
-      console.log('++==== producttttttt yyyy', res.data);
       setProducts(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -149,7 +186,6 @@ const AddEstimate = () => {
       const res = await ApiService.post(
         'ServiceType/getServiceTypeNamesDropDown'
       );
-      console.log('++==== producttttttt yyyy', res.data);
       setServices(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -158,12 +194,10 @@ const AddEstimate = () => {
   };
 
   const handleClientChange = (e) => {
-    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
     const selectedId = Number(e.target.value);
     const selectedClient = clients.find((client) => client.id === selectedId);
 
     if (!selectedClient) return;
-    console.log(selectedClient, 'sssssssssssssssssssssssss');
     setFormData((prevData) => ({
       ...prevData,
       client: selectedId,
@@ -173,7 +207,6 @@ const AddEstimate = () => {
       clientAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
-    console.log(formData, 'formdatraaaaaaaaaaaaa');
   };
 
   // Handle field changes
@@ -337,14 +370,11 @@ const AddEstimate = () => {
     };
 
     // Get Client Details
-    const client = clients.find((c) => c.id === estimateDto.clientId);
+    const client = clients.find((c) => String(c.clientId) === String(estimateDto.clientId));
     const branchDetails = branches.find(
       (branch) => branch.id === Number(estimateDto.branchId)
     );
-    console.log(estimateDto, 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-    // console.log(formData, 'ffffffffffffffffffffffffffff');
-    // console.log(clients, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
-    console.log(client, 'clientnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+console.log("aaa:",client)
     const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
@@ -358,14 +388,12 @@ const AddEstimate = () => {
       return new File([pdfBlob], 'estimate.pdf', { type: 'application/pdf' });
     };
 
-    console.log('pdfData pdfData pdfData', pdfData);
     try {
       const pdfFile = await generatePdf(pdfData); // Generate PDF File
 
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
       const includeTax = estimateDto.totalAmount + cgst + scst;
-      console.log('acsdbttrdf : ', pdfFile);
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append('estimatePdf', pdfFile); // Attach PDF file
@@ -395,7 +423,7 @@ const AddEstimate = () => {
         'scstPercentage',
         estimateDto.scstPercentage || '0'
       );
-      // formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
+      formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
 
       // Append Product Details as JSON String
       formDataPayload.append(
@@ -965,6 +993,7 @@ const AddEstimate = () => {
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"
               className="w-full p-2 border rounded-md"
+              style={{height:300}}
             />
           </div>
 

@@ -106,6 +106,7 @@ const BackendSupportWorks = () => {
           unitCode: initialAuthState.unitCode,
         }
       );
+      console.log("rrr :",response.data)
       setWorkRecords(response.data || []);
     } catch (err) {
       console.error('Failed to fetch data:', err);

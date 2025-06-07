@@ -502,7 +502,7 @@ const AddEditProductAssign = () => {
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
           {/* <img
-            src={image || 'https://i.pravatar.cc/150?img=5'}
+            src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
             alt="Employee"
             className="w-24 h-24 rounded-full object-cover"
           /> */}
@@ -857,7 +857,7 @@ export default AddEditProductAssign;
 //         {/* Photo Section */}
 //         <div className="flex items-center space-x-2 mb-6">
 //           <img
-//             src={image || 'https://i.pravatar.cc/150?img=5'}
+//             src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
 //             alt="Employee"
 //             className="w-24 h-24 rounded-full object-cover"
 //           />
@@ -1114,7 +1114,7 @@ export default AddEditProductAssign;
 //   //       {/* Photo Section */}
 //   //       <div className="flex items-center space-x-2 mb-6">
 //   //         <img
-//   //           src={image || 'https://i.pravatar.cc/150?img=5'}
+//   //           src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
 //   //           alt="Employee"
 //   //           className="w-24 h-24 rounded-full object-cover"
 //   //         />

@@ -17,7 +17,7 @@ const estStyles = StyleSheet.create({
     paddingTop: 30,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 30,
+    paddingBottom: 5,
 
     fontFamily: 'Helvetica',
     border: '1px solid black',
@@ -235,7 +235,7 @@ const estStyles = StyleSheet.create({
     padding: 5,
   },
   totalBlockLeft: {
-    flex: 1,
+    flex: 1,paddingBottom:20
   },
   totalBlockLeftText1: {
     fontSize: 10,
@@ -244,8 +244,8 @@ const estStyles = StyleSheet.create({
   totalBlockLeftText2: {
     fontSize: 10,
     fontFamily: 'Helvetica',
-    paddingTop: 15,
-    marginBottom: 15,
+    paddingTop: 5,
+    marginBottom: 5,
   },
   totalBlockLeftText3: {
     fontSize: 10,
@@ -256,12 +256,13 @@ const estStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'flex-start',
-    borderLeft: '1px solid black',
-    borderBottom: '1px solid black',
+    borderLeft: '2px solid black',
+    // borderBottom: '1px solid black',
     paddingLeft: 10,
-    paddingBottom: 10,
   },
+
   totalBlockRightText: {
+    marginTop:10,
     fontSize: 10,
     fontFamily: 'Helvetica',
     width: '50%',
@@ -272,9 +273,10 @@ const estStyles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     width: '50%',
     textAlign: 'right',
+    marginTop:10
   },
   signatureBlock: {
-    marginTop: 5,
+    marginTop: 10,
     paddingBottom: 10,
     width: '100%',
     textAlign: 'center',
@@ -286,7 +288,7 @@ const estStyles = StyleSheet.create({
   signatureTextBottom: {
     fontSize: 10,
     fontFamily: 'Helvetica',
-    marginTop: 40,
+    marginTop: 20,
   },
   amountBlock: {
     borderBottom: '1px solid black',
@@ -304,14 +306,15 @@ export const EstimatePDF = ({ data }) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
     const year = date.getFullYear();
-
+    console.log("rrr :", data)
     return `${day}-${month}-${year}`;
   };
-
-  const accountDetails =
-    data.branchDetails?.accounts?.find(
-      (account) => account.id === Number(data.accountId)
-    ) || {};
+  const accountDetails = data.branchDetails?.accounts?.find(
+    (account) => {
+      console.log("ttt :", Number(account.id) + " === " + Number(data.accountId))
+      return (Number(account.id) === Number(data.accountId))
+    }
+  ) || {};
 
   return (
     <Document>
@@ -327,13 +330,8 @@ export const EstimatePDF = ({ data }) => {
                   SHARON TELEMATICS PRIVATE LIMITED
                 </Text>
                 <Text style={estStyles.companyDetails}>
-                  Company ID: U74999AP2018PTC108597
+                  Company ID: {data.branchDetails.CIN}
                 </Text>
-                {/* <Text style={estStyles.companyDetails}>21-27 Viman Nagar</Text>
-              <Text style={estStyles.companyDetails}>Near Airport Road</Text>
-              <Text style={estStyles.companyDetails}>
-                Visakhapatnam, Andhra Pradesh, 530009
-              </Text> */}
                 <Text style={estStyles.companyDetails}>
                   {data.branchDetails.addressLine1}
                 </Text>
@@ -345,7 +343,7 @@ export const EstimatePDF = ({ data }) => {
                 </Text>
                 {/* <Text style={estStyles.companyDetails}>India</Text> */}
                 <Text style={estStyles.companyDetails}>
-                  GSTIN: 37ABACS4415R1ZV
+                  GSTIN: {data.branchDetails.GST}
                 </Text>
               </View>
             </View>
@@ -362,14 +360,7 @@ export const EstimatePDF = ({ data }) => {
               style={{
                 borderRight: '1px solid black',
                 ...estStyles.detailsColumn,
-              }}
-            >
-              {/* <View style={estStyles.detailsTextBlock}>
-                <Text style={estStyles.detailsText}>#</Text>
-                <Text style={estStyles.detailsTextBold}>
-                  :{data.estimateNumber}
-                </Text>
-              </View> */}
+              }}>
               <View style={estStyles.detailsTextBlock}>
                 <Text style={estStyles.detailsText}>
                   Pro Forma Invoice Date
@@ -451,22 +442,22 @@ export const EstimatePDF = ({ data }) => {
                   <Text style={estStyles.tableRowText}>{row.quantity}</Text>
                   <Text style={estStyles.tableRowText}>{row.costPerUnit}</Text>
                   <View style={estStyles.subColumnTextContainer}>
-                    <Text style={estStyles.subColumnTextRowItem}>9%</Text>
+                    <Text style={estStyles.subColumnTextRowItem}>{data.cgstPercentage}%</Text>
                     <Text style={estStyles.subColumnTextRowItem}>
-                      {(row.totalCost * 0.09).toFixed(2)}
+                      {row.totalCost *(parseInt(data.cgstPercentage)/100)}
                     </Text>
                   </View>
                   <View style={estStyles.subColumnTextContainer}>
-                    <Text style={estStyles.subColumnTextRowItem}>9%</Text>
+                    <Text style={estStyles.subColumnTextRowItem}>{data.scstPercentage}%</Text>
                     <Text style={estStyles.subColumnTextRowItem}>
-                      {(row.totalCost * 0.09).toFixed(2)}
+                      {row.totalCost *(parseInt(data.scstPercentage)/100)}
                     </Text>
                   </View>
                   <Text style={estStyles.tableRowAmtText}>
                     {(
                       row.totalCost +
-                      row.totalCost * 0.09 +
-                      row.totalCost * 0.09
+                      (row.totalCost *(parseInt(data.cgstPercentage)/100)) +
+                      (row.totalCost *(parseInt(data.scstPercentage)/100))
                     ).toFixed(2)}
                   </Text>
                 </View>
@@ -481,35 +472,12 @@ export const EstimatePDF = ({ data }) => {
               </Text>
               <Text style={estStyles.totalBlockLeftText2}>Total In Words</Text>
               <Text style={estStyles.totalBlockLeftText3}>
-                {toWords.convert(data.totalAmount || 0, { currency: false })}
+                {toWords.convert(data.totalAmount+(data.totalAmount *(parseInt(data.cgstPercentage)/100) )+
+                     ( data.totalAmount * (parseInt(data.cgstPercentage)/100)) || 0, { currency: false })}
               </Text>
               <Text style={estStyles.totalBlockLeftText2}>Notes</Text>
               <Text style={estStyles.totalBlockLeftText2}>Looking forward</Text>
-              <View>
-                <Text style={estStyles.totalBlockLeftText2}>
-                  Terms & Conditions
-                </Text>
-                <Text style={estStyles.totalBlockLeftText2}>
-                  {data.description}
-                </Text>
-              </View>
               <Text style={estStyles.totalBlockLeftText2}></Text>
-              {/* <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              Payment Mode: By Cash / NEFT / RTGS / Cheque
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - A/c No: 131905001314
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh, 530003
-            </Text>
-            <Text style={estStyles.totalBlockLeftText1}>
-              - IFSC: HDFC0001319
-            </Text> */}
               <Text style={estStyles.totalBlockLeftText1}>Bank Details:</Text>
               <Text style={estStyles.totalBlockLeftText1}>
                 Payment To: Sharon Telematics Pvt Ltd., Visakhapatnam
@@ -521,10 +489,6 @@ export const EstimatePDF = ({ data }) => {
                 A/c No:{' '}
                 {accountDetails?.accountNumber || 'Account Number Unavailable'}
               </Text>
-              {/* <Text style={estStyles.totalBlockLeftText1}>
-                Bank: HDFC Bank Ltd., Main Branch, Visakhapatnam, Andhra Pradesh
-                - 530003
-              </Text> */}
               <Text style={estStyles.totalBlockLeftText1}>
                 Bank: {accountDetails.name || 'Account Name Unavailable'}.,{' '}
                 {accountDetails.address || 'Account Address Unavailable'}
@@ -534,18 +498,25 @@ export const EstimatePDF = ({ data }) => {
               </Text>
             </View>
 
-            {/* Right Side: Signature and Totals */}
+            {/* Right Side: Signature and Totals */} 
             <View style={estStyles.totalBlockRight}>
               <Text style={estStyles.totalBlockRightText}>
-                Total {data.totalAmount}
+                Total {data.totalAmount+(data.totalAmount *(parseInt(data.cgstPercentage)/100) )+
+                     ( data.totalAmount * (parseInt(data.cgstPercentage)/100))||0}
               </Text>
               <Text style={estStyles.totalBlockRightTextBold}>
-                Amount Due {data.totalAmount}
+                Amount Due {data.totalAmount+(data.totalAmount *(parseInt(data.cgstPercentage)/100) )+
+                     ( data.totalAmount * (parseInt(data.cgstPercentage)/100))||0}
               </Text>
               <View style={estStyles.signatureBlock}>
                 <Text style={estStyles.signatureText}>
                   For SHARON TELEMATICS PVT LTD
                 </Text>
+                <Image src="/signature.png" style={{
+                  alignSelf: 'center',
+                  height: 60, justifyContent: 'center',
+                  marginRight: 10,
+                }} />
                 <Text style={estStyles.signatureTextBottom}>
                   Authorised Signatory
                 </Text>
@@ -554,6 +525,17 @@ export const EstimatePDF = ({ data }) => {
           </View>
         </View>
       </Page>
+      <Page size="A4" style={estStyles.page}>
+      <View>
+            <Text style={estStyles.totalBlockLeftText2}>
+              Terms & Conditions
+            </Text>
+            <Text style={estStyles.totalBlockLeftText2}>
+              {data.description}
+            </Text>
+          </View>
+      </Page>
+
     </Document>
   );
 };

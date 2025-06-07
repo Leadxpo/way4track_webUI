@@ -28,7 +28,6 @@ const EstimateDetails = () => {
         unitCode: initialAuthState?.unitCode,
       });
 
-      console.log('hiiiiiii iiiii');
       if (response.status) {
         console.log(response.data, 'Response Data 0000000'); // Log data to verify it
         const estimateData = response.data[0]; // Access the first element of the array
@@ -37,8 +36,8 @@ const EstimateDetails = () => {
             logo: 'path/to/logo.png', // Replace with actual logo path
             name: 'Company Name', // Replace with actual company name
             address: estimateData.clientAddress,
-            gstin: 'GSTIN', // Replace with actual GSTIN
-            cin: 'CIN', // Replace with actual CIN
+            gstin: estimateData.branchGST, // Replace with actual GSTIN
+            cin:estimateData.branchCIN, // Replace with actual CIN
           },
           estimateDetails: {
             number: estimateData.estimateId,
@@ -120,6 +119,7 @@ const EstimateDetails = () => {
       alert('Failed to fetch estimate data. Please try again.');
     }
   };
+  
   return (
     <div>
       <div className="flex justify-center mb-4 pr-8">
@@ -158,7 +158,7 @@ const EstimateDetails = () => {
             <p className="text-lg">#{estimateData?.estimateDetails?.number}</p>
           </div>
         </div>
-
+ 
         {/* Address and Dates */}
         <div className="flex justify-between mb-6">
           {/* Address - 60% Width */}
