@@ -188,8 +188,22 @@ const BackendSupportHome = () => {
         }
       );
 
-      setWorkRecords(response.data || []);
-      console.log("rrr :",response.data )
+      const records = response.data || [];
+
+      const filteredRecords = records.filter(
+        (item) => item.vehicleNumber !== null
+      );
+
+      const removedItems = records.filter(
+        (item) => item.vehicleNumber === null
+      );
+
+      console.log(records, 'records');
+      console.log('Removed Records:', removedItems);
+      console.log(filteredRecords, 'filtered records');
+
+      setWorkRecords(filteredRecords);
+      console.log('rrr :', response.data);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -207,8 +221,7 @@ const BackendSupportHome = () => {
         }
       );
       setMemberWorkRecords(response.data || []);
-      console.log("rrr :",response.data)
-
+      console.log('rrr :', response.data);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setMemberWorkRecords([]);

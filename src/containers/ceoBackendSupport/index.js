@@ -207,8 +207,23 @@ const CeoBackendSupportHome = () => {
         }
       );
 
-      setWorkRecords(response.data || []);
-      console.log("rrr :",workRecords)
+      const records = response.data || [];
+
+      const filteredRecords = records.filter(
+        (item) => item.vehicleNumber !== null
+      );
+
+      const removedItems = records.filter(
+        (item) => item.vehicleNumber === null
+      );
+
+      console.log(records, 'records');
+      console.log('Removed Records:', removedItems);
+
+      console.log(filteredRecords, 'filtered records');
+
+      setWorkRecords(filteredRecords);
+      console.log('rrr :', workRecords);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -222,9 +237,15 @@ const CeoBackendSupportHome = () => {
         unitCode: initialAuthState.unitCode,
       });
 
-      console.log(response.data, 'setWorkRecordsCount');
-      setWorkRecordsCount(response.data.overall || []);
-      setBranchesWorkRecordsCount(response.data.branchWise || []);
+      const records = response.data || [];
+
+      // const filteredRecords = records.filter(
+      //   (item) => item.vehicleNumber !== null
+      // );
+
+      console.log(records, 'setWorkRecordsCount');
+      setWorkRecordsCount(records.overall || []);
+      setBranchesWorkRecordsCount(records.branchWise || []);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecordsCount([]);
@@ -510,19 +531,26 @@ const CeoBackendSupportHome = () => {
                           <div>
                             <p
                               className="text-lg font-bold text-gray-800"
-                              style={{ fontSize: '16px', maxWidth: '100%'  }}
+                              style={{ fontSize: '16px', maxWidth: '100%' }}
                             >
                               {card.clientName}
                             </p>
                             <p
                               className="text-lg font-bold text-gray-800"
-                              style={{ fontSize: '16px', maxWidth: '100%',maxLines:1 }}
+                              style={{
+                                fontSize: '16px',
+                                maxWidth: '100%',
+                                maxLines: 1,
+                              }}
                             >
                               {card.staffName}
                             </p>
                             <p
                               className="text-lg font-bold text-gray-800"
-                              style={{ fontSize: '16px',textTransform:'capitalize' }}
+                              style={{
+                                fontSize: '16px',
+                                textTransform: 'capitalize',
+                              }}
                             >
                               {card.vehicleNumber}
                             </p>

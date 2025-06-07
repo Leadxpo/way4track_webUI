@@ -202,6 +202,7 @@ import EditInvoice from '../invoices/EditInvoice.js';
 
 import Promocode from '../promocode/index.js';
 import EditVoucher from '../vouchers/editVoucher.js';
+import ViewWork from '../appointment/ViewWork.js';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -683,6 +684,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/addEdit-promocode" element={<AddEditPromocode />} />
           <Route path="/edit-invoice" element={<EditInvoice />} />
           <Route path="/edit-voucher" element={<EditVoucher />} />
+          <Route path="/view-work" element={<ViewWork />} />
         </Routes>
       </div>
     </div>
