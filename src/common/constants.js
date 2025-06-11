@@ -1,7 +1,7 @@
 import hasPermission from '../common/permission'
 var permission = localStorage.getItem("userPermissions");
 var role = localStorage.getItem("role");
-console.log("rrr :",role)
+
 var RoleHome = (role) => {
   switch (role?.toLowerCase()) {
     case "ceo":
@@ -88,7 +88,7 @@ export const menuOptions = [
     icon: <img src="./branch.png" />,
     route: '/warehouse-manager-branch',
   },
-  hasPermission(permission, "staff", "view") && {
+  hasPermission(permission, "staff", "add") && {
     name: 'Designation',
     icon: <img src="./designation.png" />,
     route: '/designations',
@@ -168,7 +168,6 @@ export const menuOptions = [
 
   hasPermission(permission, "voucher", "view") && { name: 'Ledger', icon: <img src="./ledger.png" />, route: '/ledger' },
   hasPermission(permission, "staff", "add") && { name: 'Letters', icon: <img src="./letters.png" />, route: '/letters' },
-
   hasPermission(permission, "attendance", "view") && {
     name: 'Payroll',
     icon: <img src="./payroll.png" />,
@@ -217,6 +216,11 @@ export const menuOptions = [
   },
   // newly added options
   hasPermission(permission, "sale", "view") && {
+    name: 'Sales Visits',
+    icon: <img src="./work_allocation.png" />,
+    route: '/sales_visit',
+  },
+  hasPermission(permission, "sales-visit", "view") && {
     name: 'Sales Visits',
     icon: <img src="./work_allocation.png" />,
     route: '/sales_visit',

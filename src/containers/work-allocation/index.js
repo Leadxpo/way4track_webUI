@@ -83,7 +83,7 @@ const WorkAllocation = () => {
             unitCode: initialAuthState.unitCode,
           }
         );
-console.log("rrr",response);
+
         if (response.data?.length > 0) {
           setWorkAllocationDetails(response.data);
         }

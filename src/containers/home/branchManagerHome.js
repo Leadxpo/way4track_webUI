@@ -810,8 +810,8 @@ const filteredPendingAmount = pendingAmount.filter(p =>
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((row, index) => (
+            {filteredProducts?.length > 0 ? (
+              filteredProducts?.map((row, index) => (
                 <tr key={index} className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"} border-b`}>
                   <td className="py-3 px-4">{row.productId}</td>
                   <td className="py-3 px-4">{row.productName}</td>
@@ -841,19 +841,19 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
           {/* Card Header - Total Asserts */}
           <h2 className="text-xl font-bold text-center text-green-600 border-b pb-2">
-            Total Assets: {assertsData.totalAsserts}
+            Total Assets: {assertsData?.totalAsserts}
           </h2>
 
           {/* Card Body - Office & Transport Asserts */}
           <div className="mt-4 space-y-4">
             <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
               <span className="text-blue-600 font-semibold">Office Assets</span>
-              <span className="text-blue-600 font-bold text-lg">{assertsData.officeAsserts}</span>
+              <span className="text-blue-600 font-bold text-lg">{assertsData?.officeAsserts}</span>
             </div>
 
             <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
               <span className="text-yellow-600 font-semibold">Transport Assets</span>
-              <span className="text-yellow-600 font-bold text-lg">{assertsData.transportAsserts}</span>
+              <span className="text-yellow-600 font-bold text-lg">{assertsData?.transportAsserts}</span>
             </div>
           </div>
         </div>
@@ -862,24 +862,24 @@ const filteredPendingAmount = pendingAmount.filter(p =>
         <div className="flex-1 p-6 bg-white  rounded-lg border border-gray-300">
           {/* Card Header - Total Staff */}
           <h2 className="text-xl font-bold text-center text-red-600 border-b pb-2">
-            Total Staff: {staffData[0].totalStaff}
+            Total Staff: {staffData[0]?.totalStaff}
           </h2>
 
           {/* Card Body - Staff Categories */}
           <div className="mt-4 space-y-4">
             <div className="flex justify-between items-center bg-blue-100 p-4 rounded-md border border-blue-400">
               <span className="text-blue-600 font-semibold">Technicians</span>
-              <span className="text-blue-600 font-bold text-lg">{staffData[0].totalTechnicians}</span>
+              <span className="text-blue-600 font-bold text-lg">{staffData[0]?.totalTechnicians}</span>
             </div>
 
             <div className="flex justify-between items-center bg-yellow-100 p-4 rounded-md border border-yellow-400">
               <span className="text-yellow-600 font-semibold">Non Technicians</span>
-              <span className="text-yellow-600 font-bold text-lg">{staffData[0].totalNonTechnicians}</span>
+              <span className="text-yellow-600 font-bold text-lg">{staffData[0]?.totalNonTechnicians}</span>
             </div>
 
             <div className="flex justify-between items-center bg-green-100 p-4 rounded-md border border-green-400">
               <span className="text-green-600 font-semibold">Sales Staff</span>
-              <span className="text-green-600 font-bold text-lg">{staffData[0].totalSales}</span>
+              <span className="text-green-600 font-bold text-lg">{staffData[0]?.totalSales}</span>
             </div>
           </div>
         </div>
