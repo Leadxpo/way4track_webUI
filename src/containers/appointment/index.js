@@ -174,6 +174,7 @@ const Appointments = () => {
           </select>
         </div>
       )}
+
       <button
         onClick={() => navigate('/add-appointment')}
         className={`text-black font-bold p-2 rounded-md shadow-lg transition-all mb-4 ${

@@ -3,8 +3,10 @@ import { FaEye } from 'react-icons/fa';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
+import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { useNavigate } from 'react-router-dom';
 import { TfiTimer } from 'react-icons/tfi';
+import { InvoicePDF } from '../invoices/invoicePDF';
 
 const CeoBackendSupportPayments = () => {
   const navigate = useNavigate();
@@ -127,25 +129,39 @@ const CeoBackendSupportPayments = () => {
       productOrService: 'product',
       totalAmount: formData.paidAmount,
       convertToInvoice: true,
-      companyCode: initialAuthState.companyCode, // Replace with actual company code
-      unitCode: initialAuthState.unitCode, // Replace with actual unit code
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode, 
       productDetails: [
         {
-          productId: formData.productId, // Assuming each formData has a productId
+          productId: formData.productId, 
           productName: formData.productName,
           quantity: 1,
           amount: formData.amount,
-          hsnCode: '0000', // Total cost calculation
+          hsnCode: '0000',
         },
       ],
     };
 
+    const pdfData = {
+      ...estimateDto,
+    };
+    const generatePdf = async (data) => {
+      const pdfBlob = await pdf(<InvoicePDF data={data} />).toBlob();
+      return new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
+    };
+
     // invoicePDF
     try {
+      const pdfFile = await generatePdf(pdfData);
+
+      const formPayload = new FormData();
+      formPayload.append('pdfFile', pdfFile); // Binary file
+      formPayload.append('estimateDto', JSON.stringify(estimateDto)); // JSON as string
+
       console.log('Estimate saved:', estimateDto);
       const response = await ApiService.post(
         '/estimate/handleEstimateDetails',
-        estimateDto
+        formPayload
       );
       if (response.status) {
         console.log('Estimate saved:', response);

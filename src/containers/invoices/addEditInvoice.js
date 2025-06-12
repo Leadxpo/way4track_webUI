@@ -8,12 +8,10 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 import { InvoicePDF } from './invoicePDF';
 // import EstimatePDF from './EstimatePDF';
 
-
-
 const AddEditInvoice = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
-  const termandcondition=`
+  const termandcondition = `
    
   AIS-140 MINING GPS
    
@@ -67,7 +65,7 @@ const AddEditInvoice = () => {
   Warranty Claims:
   1. Any manufacturing defects and hardware issues under warranty, and hardware malfunctions under normal use.
   2. Any liquid damage, tampering of wires or device(s) during service, repairs or modifications and damage from power surges will not be covered under warranty and are chargeable.
-  • All Disputes are subject to Visakhapatnam jurisdiction.`
+  • All Disputes are subject to Visakhapatnam jurisdiction.`;
   // Check if editing or creating
   // Initial state for form
   const initialFormState = {
@@ -381,7 +379,7 @@ const AddEditInvoice = () => {
     const branchDetails = branches.find(
       (branch) => branch.id === Number(estimateDto.branchId)
     );
-    const pdfData = {  
+    const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
       clientGST: client ? client.GSTNumber : '',
@@ -404,7 +402,7 @@ const AddEditInvoice = () => {
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append('estimatePdf', pdfFile); // Attach PDF file
-      formDataPayload.append('clientId', (estimateDto.clientId));
+      formDataPayload.append('clientId', estimateDto.clientId);
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
       formDataPayload.append('estimateDate', estimateDto.estimateDate);
@@ -431,7 +429,10 @@ const AddEditInvoice = () => {
         'scstPercentage',
         estimateDto.scstPercentage || '0'
       );
-      formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
+      formDataPayload.append(
+        'convertToInvoice',
+        estimateDto.convertToInvoice || 'false'
+      );
 
       // Append Product Details as JSON String
       formDataPayload.append(
@@ -491,9 +492,7 @@ const AddEditInvoice = () => {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-xl w-11/12 max-w-4xl p-8 shadow-md">
         {/* Title */}
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Create Invoice
-        </h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Create Invoice</h1>
         {/* Form */}
         <form className="space-y-6">
           {/* Client Info */}
