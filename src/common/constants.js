@@ -34,7 +34,7 @@ var RoleHome = (role) => {
       }
       break;
 
-    case "backend-support":
+    case "backend support executive":
       return {
         name: 'Home',
         icon: <img src="./home.png" />,
