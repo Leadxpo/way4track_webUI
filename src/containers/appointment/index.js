@@ -13,6 +13,9 @@ const Appointments = () => {
   const [permissions, setPermissions] = useState({});
   const [columns, setColumns] = useState([]);
 
+  const role = localStorage.getItem('role');
+  const storedBranch = localStorage.getItem('branchName');
+
   const fetchAppointmentDetails = async (branchName = 'All') => {
     try {
       setLoading(true);
@@ -35,7 +38,7 @@ const Appointments = () => {
         '/dashboards/getAllAppointmentDetails',
         payload
       );
-console.log("rrr",res.data)
+      console.log('rrr', res.data);
       if (res.status) {
         const fetchedAppointments = res.data.appointments || [];
         setAppointments(fetchedAppointments);
@@ -66,6 +69,12 @@ console.log("rrr",res.data)
       setLoading(false);
     }
   };
+
+  const filteredAppointments =
+    role === 'Branch Manager' && storedBranch
+      ? appointments.filter((item) => item.branchName === storedBranch)
+      : appointments;
+  console.log(filteredAppointments, 'filtered appointmentsssss');
 
   const deleteAppointmentDetails = async (appointmentId) => {
     setLoading(true);
@@ -146,24 +155,25 @@ console.log("rrr",res.data)
     <div className="w-full max-w-4xl mx-auto">
       <h2 className="text-xl font-semibold mb-4">Appointments</h2>
 
-      <div className="mb-4">
-        <label htmlFor="branchDropdown" className="font-medium mr-2">
-          Select Branch:
-        </label>
-        <select
-          id="branchDropdown"
-          value={selectedBranch}
-          onChange={(e) => handleBranchSelection(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-md"
-        >
-          {branches.map((branch) => (
-            <option key={branch.branchName} value={branch.branchName}>
-              {branch.branchName}
-            </option>
-          ))}
-        </select>
-      </div>
-
+      {role !== 'Branch Manager' && (
+        <div className="mb-4">
+          <label htmlFor="branchDropdown" className="font-medium mr-2">
+            Select Branch:
+          </label>
+          <select
+            id="branchDropdown"
+            value={selectedBranch}
+            onChange={(e) => handleBranchSelection(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-md"
+          >
+            {branches.map((branch) => (
+              <option key={branch.branchName} value={branch.branchName}>
+                {branch.branchName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <button
         onClick={() => navigate('/add-appointment')}
         className={`text-black font-bold p-2 rounded-md shadow-lg transition-all mb-4 ${
@@ -177,18 +187,18 @@ console.log("rrr",res.data)
       </button>
 
       <Table
-          columns={columns}
-          columnNames={columns}
-          data={appointments}
-          showCreateBtn={false}
-          showEdit={permissions.edit}
-          showDelete={permissions.delete}
-          showDetails={permissions.view}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onDetails={handleDetails}
-          loading={loading}
-          />
+        columns={columns}
+        columnNames={columns}
+        data={filteredAppointments}
+        showCreateBtn={false}
+        showEdit={permissions.edit}
+        showDelete={permissions.delete}
+        showDetails={permissions.view}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onDetails={handleDetails}
+        loading={loading}
+      />
     </div>
   );
 };
