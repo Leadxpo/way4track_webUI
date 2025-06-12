@@ -101,7 +101,7 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'Branch Manager':
         navigate('/branch-manager-home');
         break;
-      case 'Backend Support':
+      case 'Backend Support Executive':
         navigate('/backend-support-home');
         break;
       case 'HR':
