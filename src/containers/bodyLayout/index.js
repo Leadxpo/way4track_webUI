@@ -203,6 +203,7 @@ import EditInvoice from '../invoices/EditInvoice.js';
 import Promocode from '../promocode/index.js';
 import EditVoucher from '../vouchers/editVoucher.js';
 import ViewWork from '../appointment/ViewWork.js';
+import CreateInvoice from '../backendSupport/createInvoice.js';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -584,7 +585,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-bank-account" element={<AddEditBankDetails />} />
           <Route path="/add-amount" element={<AddAmount />} />
           <Route path="/bank-details" element={<BankDetails />} />
-          <Route path="/custom-home" element={<CustomHome />} />
+          <Route path="/custom-hcreateome" element={<CustomHome />} />
           {/* <Route path="/ticket-assign" element={<TicketAssign />} /> */}
           <Route path="/customer-care-home" element={<CustomerCareHome />} />
           <Route
@@ -685,6 +686,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-invoice" element={<EditInvoice />} />
           <Route path="/edit-voucher" element={<EditVoucher />} />
           <Route path="/view-work" element={<ViewWork />} />
+          <Route path="/create-invoice" element={<CreateInvoice />} />
         </Routes>
       </div>
     </div>

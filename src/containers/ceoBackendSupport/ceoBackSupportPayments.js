@@ -130,10 +130,11 @@ const CeoBackendSupportPayments = () => {
       totalAmount: formData.paidAmount,
       convertToInvoice: true,
       companyCode: initialAuthState.companyCode,
-      unitCode: initialAuthState.unitCode, 
+      unitCode: initialAuthState.unitCode,
+      branchId:formData.branchId,
       productDetails: [
         {
-          productId: formData.productId, 
+          productId: formData.productId,
           productName: formData.productName,
           quantity: 1,
           amount: formData.amount,
@@ -150,29 +151,32 @@ const CeoBackendSupportPayments = () => {
       return new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
     };
 
+    console.log(estimateDto, 'estimate dto');
+    navigate('/create-invoice', { state: { invoiceDetails: { estimateDto } } });
+
     // invoicePDF
-    try {
-      const pdfFile = await generatePdf(pdfData);
+    // try {
+    //   const pdfFile = await generatePdf(pdfData);
 
-      const formPayload = new FormData();
-      formPayload.append('pdfFile', pdfFile); // Binary file
-      formPayload.append('estimateDto', JSON.stringify(estimateDto)); // JSON as string
+    //   const formPayload = new FormData();
+    //   formPayload.append('pdfFile', pdfFile); // Binary file
+    //   formPayload.append('estimateDto', JSON.stringify(estimateDto)); // JSON as string
 
-      console.log('Estimate saved:', estimateDto);
-      const response = await ApiService.post(
-        '/estimate/handleEstimateDetails',
-        formPayload
-      );
-      if (response.status) {
-        console.log('Estimate saved:', response);
-        alert('Successfully invoice created');
-        navigate('/invoice');
-      } else {
-        alert('Faild to create Invoice');
-      }
-    } catch (err) {
-      console.error('Failed to save estimate:', err);
-    }
+    //   console.log('Estimate saved:', estimateDto);
+    //   const response = await ApiService.post(
+    //     '/estimate/handleEstimateDetails',
+    //     formPayload
+    //   );
+    //   if (response.status) {
+    //     console.log('Estimate saved:', response);
+    //     alert('Successfully invoice created');
+    //     navigate('/invoice');
+    //   } else {
+    //     alert('Faild to create Invoice');
+    //   }
+    // } catch (err) {
+    //   console.error('Failed to save estimate:', err);
+    // }
   };
 
   const fetchMemberRecords = async () => {

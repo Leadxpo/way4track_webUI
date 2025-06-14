@@ -8,7 +8,6 @@ import { FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 
-
 const WorkAllocation = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +34,8 @@ const WorkAllocation = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedWorkAllocation, setSelectedWorkAllocation] = useState(initialFormData);
+  const [selectedWorkAllocation, setSelectedWorkAllocation] =
+    useState(initialFormData);
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [client, setClient] = useState({});
   const [staff, setStaff] = useState([]);
@@ -49,8 +49,9 @@ const WorkAllocation = () => {
   const [productTypes, setProductTypes] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
 
-  const [clientName, setClientName] = useState("");
-  const [productName, setProductName] = useState("");
+  const [clientName, setClientName] = useState('');
+  const [productName, setProductName] = useState('');
+  console.log(detailedWorkAllocation, 'wwwwwwwwwwwwwwwwwwwwwwwww');
 
   useEffect(() => {
     const perms = getPermissions('work-allocation');
@@ -75,26 +76,25 @@ const WorkAllocation = () => {
   }, []);
 
   const fetchClientDetails = async () => {
-      try {
-        const response = await ApiService.post(
-          '/technician/getBackendSupportWorkAllocation',
-          {
-            companyCode: initialAuthState.companyCode,
-            unitCode: initialAuthState.unitCode,
-          }
-        );
-
-        if (response.data?.length > 0) {
-          setWorkAllocationDetails(response.data);
+    try {
+      const response = await ApiService.post(
+        '/technician/getBackendSupportWorkAllocation',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
         }
-      } catch (error) {
-        console.error('Error fetching work allocation details:', error);
-        alert('Failed to fetch work allocation details.');
+      );
+
+      if (response.data?.length > 0) {
+        setWorkAllocationDetails(response.data);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching work allocation details:', error);
+      alert('Failed to fetch work allocation details.');
+    }
+  };
 
   useEffect(() => {
-    
     fetchClientDetails();
   }, []);
 
@@ -103,7 +103,6 @@ const WorkAllocation = () => {
     setIsEditMode(false);
     setIsModalOpen(true);
   };
-  
 
   const handleOpenModalForEdit = async (id) => {
     if (!id) {
@@ -118,7 +117,6 @@ const WorkAllocation = () => {
     setIsEditMode(true);
     setIsModalOpen(true);
     try {
-
       const response = await ApiService.post(
         '/work-allocations/getWorkAllocationDetails',
         {
@@ -168,25 +166,28 @@ const WorkAllocation = () => {
     }));
   };
 
-
   const fetchClients = async () => {
     const clientData = {
       phoneNumber: selectedWorkAllocation.phoneNumber,
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
-    }
+    };
     try {
-      const res = await ApiService.post('/client/getClientByPhoneNumber', clientData);
-      console.log("clientdata :", res.data)
+      const res = await ApiService.post(
+        '/client/getClientByPhoneNumber',
+        clientData
+      );
+      console.log('clientdata :', res.data);
       setClient(res.data || []);
       if (res.data) {
         setSelectedWorkAllocation((prev) => ({
           ...prev,
-          "address": res.data?.address, "email": res.data?.email, "name": res.data?.name, // Convert to number if applicable
-        })
-        );
-      }else{
-        alert("no client found with this number so please fill required data")
+          address: res.data?.address,
+          email: res.data?.email,
+          name: res.data?.name, // Convert to number if applicable
+        }));
+      } else {
+        alert('no client found with this number so please fill required data');
       }
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -211,7 +212,6 @@ const WorkAllocation = () => {
 
         setProductTypes(productRes?.data || []);
         setServiceTypes(serviceRes?.data || []);
-
       } catch (error) {
         console.error('Error fetching dropdown data:', error);
       }
@@ -250,7 +250,7 @@ const WorkAllocation = () => {
     e.preventDefault();
     const payload = selectedWorkAllocation.id
       ? { ...selectedWorkAllocation }
-      : { ...selectedWorkAllocation, fromStaffId: localStorage.getItem("id") };
+      : { ...selectedWorkAllocation, fromStaffId: localStorage.getItem('id') };
 
     try {
       const endpoint = selectedWorkAllocation.id
@@ -279,7 +279,8 @@ const WorkAllocation = () => {
     }
   };
 
-  const handleMoreDetails = async (id) => {
+  const handleMoreDetails = async (data) => {
+    const id = data.id;
     if (!id) {
       console.error('Invalid ID passed:', id);
       alert('Invalid Work Allocation ID!');
@@ -289,27 +290,30 @@ const WorkAllocation = () => {
     setIsMoreDetailsModalOpen(true);
     setPopupData(null);
 
-    try {
+    // try {
 
-      const response = await ApiService.post(
-        '/work-allocations/getWorkAllocationDetails',
-        {
-          id,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
+    //   const response = await ApiService.post(
+    //     '/work-allocations/getWorkAllocationDetails',
+    //     {
+    //       id,
+    //       companyCode: initialAuthState.companyCode,
+    //       unitCode: initialAuthState.unitCode,
+    //     }
+    //   );
 
-      if (response.data?.length > 0) {
-        setDetailedWorkAllocation(response.data[0]);
-      }
-    } catch (error) {
-      console.error(
-        'Error fetching work allocation details:',
-        error.response || error
-      );
-      alert('Failed to fetch work allocation details.');
-    }
+    //   if (response.data?.length > 0) {
+    //     setDetailedWorkAllocation(response.data[0]);
+    //   }
+    // } catch (error) {
+    //   console.error(
+    //     'Error fetching work allocation details:',
+    //     error.response || error
+    //   );
+    //   alert('Failed to fetch work allocation details.');
+    // }
+
+    console.log(data, 'more details of work allocation');
+    setDetailedWorkAllocation(data);
   };
 
   const handleActionClick = (event, item) => {
@@ -319,12 +323,12 @@ const WorkAllocation = () => {
       prev && prev.item.id === item.id
         ? null
         : {
-          item,
-          position: {
-            top: rect.top + window.scrollY + 30,
-            left: rect.left + window.scrollX - 50,
-          },
-        }
+            item,
+            position: {
+              top: rect.top + window.scrollY + 30,
+              left: rect.left + window.scrollX - 50,
+            },
+          }
     );
   };
 
@@ -362,17 +366,15 @@ const WorkAllocation = () => {
     XLSX.writeFile(workbook, 'WorkAllocations.xlsx');
   };
 
- const filteredData = workAllocationDetails.filter((item) => {
-  return [
-    item.workAllocationNumber,
-    item.clientName,
-    item.productName
-  ].every((field, index) =>
-    (field || '').toString().toLowerCase().includes(
-      [searchId, clientName, productName][index].toLowerCase()
-    )
-  );
-});
+  const filteredData = workAllocationDetails.filter((item) => {
+    return [item.workAllocationNumber, item.clientName, item.productName].every(
+      (field, index) =>
+        (field || '')
+          .toString()
+          .toLowerCase()
+          .includes([searchId, clientName, productName][index].toLowerCase())
+    );
+  });
 
   return (
     <div className="p-10">
@@ -389,7 +391,6 @@ const WorkAllocation = () => {
           // disabled={!permissions.add}
           disabled={false}
         >
-
           <span className="text-black mr-2">➕</span>
           Create Work Allocation
         </button>
@@ -401,11 +402,11 @@ const WorkAllocation = () => {
         //     className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl"
         //     style={{ borderRadius: '50px' }}
         //   >
-             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-    <div
-      className="bg-white p-8 shadow-lg relative w-3/4 max-w-4xl my-10 max-h-screen overflow-y-auto"
-      style={{ borderRadius: '50px' }}
-    >
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+          <div
+            className="bg-white p-8 shadow-lg relative w-3/4 max-w-4xl my-10 max-h-screen overflow-y-auto"
+            style={{ borderRadius: '50px' }}
+          >
             <button
               onClick={handleCloseModal}
               className="absolute top-5 right-5 text-white cursor-pointer rounded-full w-10 h-10 flex items-center justify-center"
@@ -534,7 +535,6 @@ const WorkAllocation = () => {
                   />
                   {/* )} */}
                 </div>
-
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
@@ -632,14 +632,14 @@ const WorkAllocation = () => {
                   </select>
                   {/* )} */}
                 </div>
-
               </div>
 
               {/* Service or Product */}
               <div
                 style={{
                   display: 'flex',
-                  alignItems: 'center', flexDirection: 'row',
+                  alignItems: 'center',
+                  flexDirection: 'row',
                   marginBottom: '30px',
                 }}
               >
@@ -655,10 +655,13 @@ const WorkAllocation = () => {
                   >
                     Product
                   </label>
-                  <select name='productName'
+                  <select
+                    name="productName"
                     onChange={handleInputChange}
-                    placeholder="Select Product" className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
+                    placeholder="Select Product"
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                    style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}
+                  >
                     <option value="" disabled>
                       Select Product
                     </option>
@@ -670,7 +673,6 @@ const WorkAllocation = () => {
                   </select>
                 </div>
 
-
                 {/* Show product dropdown when "Product" is selected */}
                 <div className="flex gap-3" style={{ flex: 1, padding: 10 }}>
                   {/* Product Dropdown */}
@@ -678,11 +680,16 @@ const WorkAllocation = () => {
                     <label className="block text-gray-700 font-semibold mb-2">
                       Select Services
                     </label>
-                    <select placeholder="Select Service"
+                    <select
+                      placeholder="Select Service"
                       onChange={handleInputChange}
-                      name='serviceId'
+                      name="serviceId"
                       className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                      style={{ borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
+                      style={{
+                        borderRadius: '6px',
+                        backgroundColor: '#FFFFFF',
+                      }}
+                    >
                       <option value="" disabled>
                         Select Services
                       </option>
@@ -694,10 +701,7 @@ const WorkAllocation = () => {
                     </select>
                   </div>
                 </div>
-
-
               </div>
-
 
               {/* Other Information */}
               <div
@@ -797,8 +801,8 @@ const WorkAllocation = () => {
       {isMoreDetailsModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div
-            className="bg-white p-8 rounded-md shadow-lg relative w-3/4 max-w-4xl"
-            style={{ borderRadius: '50px' }}
+            className="bg-white p-8 rounded-md shadow-lg relative w-11/12 max-w-6xl overflow-y-auto"
+            style={{ borderRadius: '50px', maxHeight: '90vh' }}
           >
             {/* Close Button */}
             <button
@@ -809,98 +813,59 @@ const WorkAllocation = () => {
               ✕
             </button>
 
-            {/* Title */}
-            <h2 className="text-xl font-bold text-center mb-6">
+            <h2 className="text-2xl font-bold text-center mb-6">
               Work Allocation Details
             </h2>
 
-            {/* Details */}
-            <div className="grid gap-2 mb-2" style={{ height: '400px' }}>
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Client Name: {detailedWorkAllocation?.clientId?.name || 'N/A'}
-                </p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Object.entries(detailedWorkAllocation || {})
+                .filter(([key]) => key !== 'remark')
+                .map(([key, value]) => {
+                  const formattedKey = key
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, (str) => str.toUpperCase());
 
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Client Number:{' '}
-                  {detailedWorkAllocation?.clientId?.phoneNumber || 'N/A'}
-                </p>
-              </div>
+                  let displayValue = 'N/A';
+                  if (Array.isArray(value)) {
+                    displayValue = value.length
+                      ? value.map((v, i) => JSON.stringify(v)).join(', ')
+                      : '[]';
+                  } else if (typeof value === 'object' && value !== null) {
+                    displayValue = JSON.stringify(value);
+                  } else if (
+                    typeof value === 'string' &&
+                    value.includes('http')
+                  ) {
+                    displayValue = (
+                      <img
+                        src={value}
+                        alt={key}
+                        className="w-full max-w-xs h-auto border rounded-md"
+                      />
+                    );
+                  } else {
+                    displayValue = value || 'N/A';
+                  }
 
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Date: {detailedWorkAllocation?.date || 'N/A'}
-                </p>
-              </div>
-
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Service / Product: Resource Allocation
-                </p>
-              </div>
-
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Allocated to: {detailedWorkAllocation?.staffId?.name || 'N/A'}
-                </p>
-              </div>
-
-              <div>
-                <p
-                  className="w-full p-3 border rounded-md bg-gray-200"
-                  style={{
-                    height: '55px',
-                    fontSize: '24px',
-                    fontWeight: '500',
-                    color: '#000000',
-                  }}
-                >
-                  Client Address:{' '}
-                  {detailedWorkAllocation?.clientId?.address || 'N/A'}
-                </p>
-              </div>
+                  return (
+                    <div key={key}>
+                      <p
+                        className="w-full p-3 border rounded-md bg-gray-100"
+                        style={{
+                          fontSize: '18px',
+                          fontWeight: '500',
+                          color: '#333',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        <span className="font-bold text-gray-800">
+                          {formattedKey}:
+                        </span>{' '}
+                        {displayValue}
+                      </p>
+                    </div>
+                  );
+                })}
             </div>
 
             {/* Save Button */}
@@ -913,8 +878,8 @@ const WorkAllocation = () => {
                   height: '54px',
                   borderRadius: '27px',
                   color: '#000000',
-                  fontSize: '30px',
-                  fontWeight: '500',
+                  fontSize: '24px',
+                  fontWeight: '600',
                 }}
               >
                 Save
@@ -928,7 +893,7 @@ const WorkAllocation = () => {
         <input
           type="text"
           placeholder="Client Name:"
-           value={clientName}
+          value={clientName}
           onChange={(e) => setClientName(e.target.value)}
           className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
           style={{ height: '47px' }}
@@ -1148,15 +1113,15 @@ const WorkAllocation = () => {
             left: `${popupData.position.left}px`,
           }}
         >
-          <button
+          {/* <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
             onClick={() => handleOpenModalForEdit(popupData.item.id)}
           >
             Edit
-          </button>
+          </button> */}
           <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
-            onClick={() => handleMoreDetails(popupData.item.id)}
+            onClick={() => handleMoreDetails(popupData.item)}
           >
             More Details
           </button>

@@ -497,20 +497,18 @@ const CustomerCareHome = () => {
                         key={index}
                         className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                       >
-                        <td className="py-2 px-4 text-center">
-                          {pitcher.id}
-                        </td>
+                        <td className="py-2 px-4 text-center">{pitcher.id}</td>
                         <td className="py-2 px-4 text-center">
                           {pitcher.productName}
                         </td>
                         <td className="py-2 px-4 text-center">
-                          {pitcher.vehicleNumber || "N/A"}
+                          {pitcher.vehicleNumber || 'N/A'}
                         </td>
                         <td className="py-2 px-4 text-center">
-                          {pitcher.quantity || "N/A"}
+                          {pitcher.quantity || 'N/A'}
                         </td>
                         <td className="py-2 px-4 text-center">
-                          {pitcher.amount || "N/A"}
+                          {pitcher.amount || 'N/A'}
                         </td>
                         <td className="py-2 px-4 text-center">
                           {pitcher.paymentStatus}
@@ -550,6 +548,14 @@ const CustomerCareHome = () => {
             <p className="text-center text-gray-600">Loading...</p>
           ) : (
             <div className="overflow-x-auto">
+              <div className="flex justify-between items-center py-4">
+                <button
+                  className="bg-green-700 text-white px-4 py-2 rounded-md"
+                  onClick={() => navigate('/create-appointment')}
+                >
+                  Create Appointment
+                </button>
+              </div>
               <table className="min-w-full bg-white border border-gray-300 rounded-lg">
                 <thead>
                   <tr className="border-b bg-blue-500 text-white text-left">

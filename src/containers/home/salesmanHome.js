@@ -245,7 +245,7 @@ const SalesmanHome = () => {
                     key={i}
                     className="table-cell p-1 border-r border-gray-300 text-center"
                   >
-                    {attendanceData[i]?.inTime.length > 0
+                    {attendanceData[i]?.inTime?.length > 0
                       ? new Date(
                           attendanceData[i].inTime[0]
                         ).toLocaleTimeString()
@@ -264,7 +264,7 @@ const SalesmanHome = () => {
                     key={i}
                     className="table-cell p-1 border-r border-gray-300 text-center"
                   >
-                    {attendanceData[i]?.outTime.length > 0
+                    {attendanceData[i]?.outTime?.length > 0
                       ? new Date(
                           attendanceData[i].outTime[0]
                         ).toLocaleTimeString()
