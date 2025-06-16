@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import hasPermission from '../../common/permission'
 
-const AssertCard = ({ asset }) => {
+const AssertCard = ({ asset,permission }) => {
   console.log(asset,"assetCard")
   const navigate = useNavigate();
   return (
@@ -40,6 +41,8 @@ const AssertCard = ({ asset }) => {
           >
             ₹{asset.assertsAmount}/-
           </p>
+          {hasPermission(permission, "assets", "view") &&
+
           <button
             className="mt-2"
             style={{
@@ -58,6 +61,7 @@ const AssertCard = ({ asset }) => {
           >
             More Details
           </button>
+}
         </div>
       </div>
     </div>

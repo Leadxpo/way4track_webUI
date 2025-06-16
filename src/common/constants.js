@@ -128,7 +128,7 @@ export const menuOptions = [
     route: '/requests',
   },
 
-  (role?.toLowerCase() === "ceo" || role?.toLowerCase() === "accountant" || role?.toLowerCase() === "hr") && {
+  (hasPermission(permission, "staff", "view") || role?.toLowerCase() === "ceo" || role?.toLowerCase() === "accountant" || role?.toLowerCase() === "hr") && {
     name: 'Tracker',
     icon: <img src="./tracker.png" alt="Tracker" />,
     route: '/tracker',

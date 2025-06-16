@@ -3,6 +3,7 @@ import { FaPlus, FaSearch, FaEllipsisV, FaFileDownload } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as XLSX from "xlsx";
+import { getPermissions } from '../../common/commonUtils';
 
 const GroupTable = () => {
   const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
@@ -13,6 +14,10 @@ const GroupTable = () => {
   const [underGroup, setUnderGroup] = useState('');
   const [groupType, setGroupType] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    setPermissions(getPermissions('voucher'));
+  }, [permissions]);
 
   const navigate = useNavigate();
 
@@ -120,12 +125,12 @@ const GroupTable = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold">Group</h1>
-        <button
+        {permissions.add && <button
           className="bg-yellow-400 text-black px-5 py-2 rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
           onClick={() => navigate('/add-groups')}
         >
           <FaPlus /> Create Group
-        </button>
+        </button>}
       </div>
 
       <div className="flex flex-wrap gap-4 mb-4">
@@ -187,8 +192,8 @@ const GroupTable = () => {
                     />
                     {dropdownOpenIndex === index && (
                       <div className="absolute right-0 mt-2 w-40 bg-white border shadow-lg rounded z-10">
-                        <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/add-groups', { state: { item } })}>Edit</p>
-                        <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</p>
+                        {permissions.edit && <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/add-groups', { state: { item } })}>Edit</p>}
+                        {permissions.view && <p className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</p>}
                       </div>
                     )}
                   </td>

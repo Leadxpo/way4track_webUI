@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import ApiService, { initialAuthState } from "../../services/ApiService";
+import { getPermissions } from '../../common/commonUtils';
 
 const Tickets = () => {
   const navigate = useNavigate();
@@ -11,6 +12,11 @@ const Tickets = () => {
   const [allTickets, setAllTickets] = useState([]); // Store full data
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('hiring');
+    setPermissions(perms);
+  }, [permissions]);
 
   useEffect(() => {
     fetchTickets();
@@ -22,7 +28,6 @@ const Tickets = () => {
         companyCode:initialAuthState?.companyCode,
           unitCode:initialAuthState?.unitCode,
       });
-      console.log("fetch ticketss &&&&&&",response);
       if (response.status) {
         setTicket(response.data || []);
         setAllTickets(response.data || []); // Store original data
@@ -100,12 +105,12 @@ const Tickets = () => {
     <div className="m-2">
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Tickets</h2>
-        <button
+       {permissions.add && <button
           className="bg-green-700 text-white px-4 py-2 rounded-md"
           onClick={() => navigate("/add-ticket")}
         >
           Add Ticket
-        </button>
+        </button>}
       </div>
 
       <div className="flex mb-4">
@@ -165,9 +170,9 @@ const Tickets = () => {
                       {dropdownOpen === item.id && (
                         <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                           <ul className="text-left">
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>
+                            {permissions.edit && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>}
+                            {permissions.delete &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>}
+                            {permissions.view &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>}
                           </ul>
                         </div>
                       )}

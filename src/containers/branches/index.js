@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
+import hasPermission from '../../common/permission'
 const Branches = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
   const [branches, setBranches] = useState([]);
   const [percentages, setPercentages] = useState([]);
-  const [permissions, setPermissions] = useState({});
+  var permission = localStorage.getItem("userPermissions");
   // Fetch branches and percentages on component load
   useEffect(() => {
-    const perms = getPermissions('branch');
-    setPermissions(perms);
+    // const perms = getPermissions('branch');
+    // setPermissions(perms);
     const fetchBranchesAndPercentages = async () => {
       try {
         // Fetch branch names
@@ -98,14 +99,17 @@ const Branches = () => {
   return (
     <div className="">
       <div className="flex justify-end">
+      {hasPermission(permission, "branch", "add") &&
+
         <button
           className={`px-4 py-2 text-white rounded-md transition 
-            ${permissions.add ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+            ${hasPermission(permission, "branch", "add") ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-branch')}
-           disabled={!permissions.add}
+           disabled={!hasPermission(permission, "branch", "add")}
         >
           Add Branch
         </button>
+}
       </div>
 
       {combinedBranches.length > 0 ? (
@@ -153,40 +157,36 @@ const Branches = () => {
               </div>
 
               <div className="mt-6 flex justify-center space-x-4">
+              {hasPermission(permission, "branch", "edit") &&
+
                 <button
                   className={`px-4 py-2 text-white rounded-md transition 
-              ${permissions.edit ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+              ${hasPermission(permission, "branch", "edit") ? 'bg-green-700 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleEdit(branch)}
-                  disabled={!permissions.edit}
+                  disabled={!hasPermission(permission, "branch", "edit")}
                 >
                   Edit
                 </button>
-               {permissions.delete&&
+}
+{hasPermission(permission, "branch", "delete") &&
                 <button
                   className={`px-4 py-2 text-white rounded-md transition 
-                    ${permissions.delete ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+                    ${hasPermission(permission, "branch", "delete") ? 'bg-red-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                   onClick={() => handleDeleteClick(branch)}
-                   disabled={!permissions.delete}
+                   disabled={!hasPermission(permission, "branch", "delete")}
                 >
                   Delete
                 </button>}
-                {/* <button
-                  className={`px-4 py-2 text-white rounded-md transition 
-                    ${permissions.view ? 'bg-blue-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
-                  onClick={() =>
-                    navigate('/branch-details', { state: { branch } })
-                  }
-                // disabled={!permissions.view}
-                >
-                  More Details
-                </button> */}
-                <button
-                  className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
+
+                {hasPermission(permission, "branch", "view") &&
+                                              <button
+                  className={`text-gray-400 rounded-md px-1 py-1 border border-gray-300 hover:bg-gray-200 ${hasPermission(permission, "branch", "view") ? '' : 'cursor-not-allowed opacity-50'}`}
                   onClick={() => handleMoreDetails(branch)}
-                  //  disabled={!permissions.view}
+                   disabled={!hasPermission(permission, "branch", "view")}
                 >
                   More Details
                 </button>
+                               }
               </div>
             </div>
           </div>

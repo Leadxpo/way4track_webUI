@@ -1,16 +1,17 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
 import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { getPermissions } from '../../common/commonUtils';
-import { useState, useEffect } from 'react';
 const Hiring = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
+  
   useEffect(() => {
     const perms = getPermissions('hiring');
     setPermissions(perms);
-  }, []);
+  }, [permissions]);
+
   const handleHiringEdit = (hiring) => {
     navigate('/edit-hiring', { state: {  hiring } });
   };
@@ -25,10 +26,10 @@ const Hiring = () => {
   return (
     <TableWithSearchFilter
       type="hiring"
-      showCreateBtn={true}
-      showDelete={true}
-      showEdit={true}
-      showDetails={true}
+      showCreateBtn={permissions.add}
+      showDelete={permissions.delete}
+      showEdit={permissions.edit}
+      showDetails={permissions.view}
       onEdit={handleHiringEdit}
       onDelete={handleDelete}
       onDetails={handleDetails}

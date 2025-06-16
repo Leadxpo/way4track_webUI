@@ -28,8 +28,8 @@ const Estimates = () => {
         // onDelete={() => {}}
         onDetails={handleDetails}
         showStatusFilter={false}
-        showCreateBtn={true}
-        showDelete={false}
+        showCreateBtn={permissions.add}
+        showDelete={permissions.delete}
         showEdit={permissions.edit}
         showDetails={permissions.view}
       />

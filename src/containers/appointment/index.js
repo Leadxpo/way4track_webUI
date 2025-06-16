@@ -3,14 +3,14 @@ import Table from '../../components/Table';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
-
+import hasPermission from '../../common/permission'
 const Appointments = () => {
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [appointments, setAppointments] = useState([]);
   const [branches, setBranches] = useState([{ branchName: 'All' }]);
   const [loading, setLoading] = useState(false);
-  const [permissions, setPermissions] = useState({});
+  var permission = localStorage.getItem("userPermissions");
   const [columns, setColumns] = useState([]);
 
   const role = localStorage.getItem('role');
@@ -74,7 +74,6 @@ const Appointments = () => {
     role === 'Branch Manager' && storedBranch
       ? appointments.filter((item) => item.branchName === storedBranch)
       : appointments;
-  console.log(filteredAppointments, 'filtered appointmentsssss');
 
   const deleteAppointmentDetails = async (appointmentId) => {
     setLoading(true);
@@ -131,8 +130,6 @@ const Appointments = () => {
   };
 
   useEffect(() => {
-    const perms = getPermissions('appointments');
-    setPermissions(perms);
     fetchAppointmentDetails(selectedBranch);
   }, [selectedBranch]);
 
@@ -174,27 +171,27 @@ const Appointments = () => {
           </select>
         </div>
       )}
-
+{hasPermission(permission, "appointments", "add")&&
       <button
         onClick={() => navigate('/add-appointment')}
         className={`text-black font-bold p-2 rounded-md shadow-lg transition-all mb-4 ${
-          permissions.add
+          hasPermission(permission, "appointments", "add")
             ? 'bg-yellow-600 hover:bg-blue-600 hover:bg-yellow-500'
             : 'bg-gray-400 cursor-not-allowed opacity-50'
         }`}
-        disabled={!permissions.add}
       >
         Create New Appointment
       </button>
+}
 
       <Table
         columns={columns}
         columnNames={columns}
         data={filteredAppointments}
         showCreateBtn={false}
-        showEdit={permissions.edit}
-        showDelete={permissions.delete}
-        showDetails={permissions.view}
+        showEdit={hasPermission(permission, "appointments", "edit")}
+        showDelete={hasPermission(permission, "appointments", "delete")}
+        showDetails={hasPermission(permission, "appointments", "view")}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onDetails={handleDetails}
