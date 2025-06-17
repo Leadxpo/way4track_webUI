@@ -13,8 +13,9 @@ const Tickets = () => {
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [permissions, setPermissions] = useState({});
+
   useEffect(() => {
-    const perms = getPermissions('hiring');
+    const perms = getPermissions('tickets');
     setPermissions(perms);
   }, [permissions]);
 
@@ -41,8 +42,6 @@ const Tickets = () => {
     }
   };
 
- 
-
   const handleSearch = () => {
     const searchQuery = searchData.name.toLowerCase().trim();
   
@@ -57,7 +56,6 @@ const Tickets = () => {
       setTicket(filteredData);
     }
   };
-  
 
   const handleInputChange = (e) => {
     setSearchData({ ...searchData, [e.target.name]: e.target.value });

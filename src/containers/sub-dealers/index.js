@@ -3,6 +3,7 @@ import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { getPermissions } from '../../common/commonUtils';
+
 const SubDealers = () => {
   const navigate = useNavigate();
 
@@ -12,7 +13,6 @@ const SubDealers = () => {
     setPermissions(perms);
   }, []);
   const handleVendorEdit = (subDealerDetails) => {
-    console.log("-------------444",subDealerDetails)
     navigate('/edit-sub-dealer', { state: { subDealerDetails } });
   };
 
@@ -21,13 +21,13 @@ const SubDealers = () => {
   };
 
   const handleDetails = (subDealerDetails) => {
-    console.log("-------------moredetails",subDealerDetails)
     navigate('/sub-dealer-profile', { state: { subDealerDetails } });
   };
+
   return (
     <TableWithDateFilter
       type="sub_dealers"
-      showCreateBtn={true}
+      showCreateBtn={permissions.add}
       showDelete={permissions.delete}
       showEdit={permissions.edit}
       showDetails={permissions.view}

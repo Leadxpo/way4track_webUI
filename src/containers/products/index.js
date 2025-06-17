@@ -130,6 +130,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [branches, setBranches] = useState([]);
   const [permissions, setPermissions] = useState({});
+  const [assignPermissions, setAssignPermissions] = useState({});
   // const [searchData, setSearchData] = useState({
   //   productId: '',
   //   productName: '',
@@ -184,7 +185,9 @@ const Products = () => {
 
   useEffect(() => {
     const perms = getPermissions('product');
+    const assignPerms = getPermissions('productassign');
     setPermissions(perms);
+    setAssignPermissions(assignPerms);
     fetchData(selectedBranch);
   }, [selectedBranch]);
 
@@ -368,10 +371,6 @@ const Products = () => {
     getSearchDetailProduct();
   }, [getSearchDetailProduct]);
 
-  // const handleSearch = async () => {
-  //   getSearchDetailProduct();
-  // };
-
   // Navigate to details page
   const handleMoreDetails = () => {
     navigate('/product-details');
@@ -541,23 +540,23 @@ const Products = () => {
           </button>
           <button
             className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              permissions.add
+              assignPermissions.add
                 ? 'bg-blue-700 hover:bg-blue-800 shadow-md'
                 : 'bg-blue-400 cursor-not-allowed opacity-50'
             }`}
             onClick={() => navigate('/add-product-assign')}
-            disabled={!permissions.add}
+            disabled={!assignPermissions.edit}
           >
             <span className="font-medium">Add Product Assign</span>
           </button>
           <button
             className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              permissions.add
+              assignPermissions.edit
                 ? 'bg-orange-500 hover:bg-orange-600 shadow-md'
                 : 'bg-gray-400 cursor-not-allowed opacity-50'
             }`}
             onClick={() => navigate('/add-inhand-product')}
-            disabled={!permissions.add}
+            disabled={!assignPermissions.edit}
           >
             <span className="font-medium">In hand Products</span>
           </button>

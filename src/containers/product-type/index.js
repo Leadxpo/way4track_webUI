@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
+import { FaPencil } from 'react-icons/fa6';
 
 const ProductType = () => {
   const navigate = useNavigate();
@@ -10,7 +12,7 @@ const ProductType = () => {
   const [allProductTypes, setAllProductTypes] = useState([]); // Store full data
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-
+  const [permissions, setPermissions] = useState({});
   useEffect(() => {
     fetchProductTypes();
   }, []);
@@ -21,7 +23,6 @@ const ProductType = () => {
         '/productType/getProductTypeDetails'
       );
       if (response.data) {
-        console.log('+++++====== respons');
         setProductTypes(response.data || []);
         setAllProductTypes(response.data || []); // Store original data
       } else {
@@ -90,13 +91,20 @@ const ProductType = () => {
       alert('Failed to delete product type.');
     }
   };
+
+  useEffect(() => {
+    const perms = getPermissions('product-type');
+    setPermissions(perms);
+  }, [permissions]);
+
   return (
     <div className="m-2">
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Product Types</h2>
         <button
-          className="bg-green-700 text-white px-4 py-2 rounded-md"
+          className={`px-4 py-2 text-white rounded-md transition ${permissions.view ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate('/add-product-type')}
+          disabled={!permissions.add}
         >
           Add Product Type
         </button>
@@ -144,67 +152,19 @@ const ProductType = () => {
                   >
                     <td className="px-6 py-4">{item.name}</td>
                     <td className="px-6 py-4">{item.type}</td>
-                    {/* <td className="px-6 py-4">
-                      <img
-                        src={item.productPhoto}
-                        alt="Product"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <img
-                        src={item.blogImage}
-                        alt="Blog"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </td>
-                    <td className="px-6 py-4">{item.description}</td> */}
                     <td className="px-6 py-4 text-left relative dropdown-container">
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDropdown(item.id);
-                        }}
-                        className="p-2 bg-white rounded-md focus:outline-none"
+                        onClick={() =>
+                          navigate('/edit-product-type', {
+                            state: { productType: item },
+                          })
+                        }
+                        disabled={!permissions.edit}
+                        className={`px-4 py-2 text-white rounded-md transition ${permissions.edit ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                       >
-                        <FaEllipsisV className="cursor-pointer text-gray-700" />
+                        <FaPencil
+                          className="cursor-pointer text-gray-700" />
                       </button>
-
-                      {dropdownOpen === item.id && (
-                        <div
-                          className="absolute right-5 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50"
-                          style={{ marginRight: '10px' }}
-                        >
-                          <ul className="text-left">
-                            <li
-                              className="p-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() =>
-                                navigate('/edit-product-type', {
-                                  state: { productType: item },
-                                })
-                              }
-                            >
-                              Edit
-                            </li>
-                            {/* <li
-                              className="p-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() => handleDelete(item.id)}
-                            >
-                              Delete
-                            </li> */}
-                            {/* <li
-                              className="p-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() =>
-                                navigate('/show-product-type', {
-                                  state: { productType: item },
-                                })
-                              }
-                            >
-                              More Details
-                            </li> */}
-                          </ul>
-                        </div>
-                      )}
                     </td>
                   </tr>
                 ))

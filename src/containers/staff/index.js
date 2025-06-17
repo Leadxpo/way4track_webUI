@@ -241,19 +241,11 @@ const Staff = () => {
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
-            // disabled={!permissions.add}
+            disabled={!permissions.add}
           >
             <FaPlus size={16} />
             <span>Add Staff</span>
           </button>
-          {/* <button
-            className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
-            onClick={() => navigate('/show-staff')}
-            disabled={!permissions.add}
-          >
-            <FaPlus size={16} />
-            <span>show Staff</span>
-          </button> */}
         </div>
       </div>
       <div className="flex space-x-4 my-4">
@@ -348,18 +340,18 @@ const Staff = () => {
         columnNames={columnNames}
         onDelete={handleDelete}
         onEdit={handleEdit}
-        showDelete={true}
-        showEdit={true}
-        showDetails={true}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
         onDetails={handleMoreDetails}
 
         data={
-  Array.isArray(profiles)
-    ? [...profiles].sort((a, b) =>
-        String(a['Staff ID']).localeCompare(String(b['Staff ID']))
-      )
-    : []
-}
+          Array.isArray(profiles)
+            ? [...profiles].sort((a, b) =>
+              String(a['Staff ID']).localeCompare(String(b['Staff ID']))
+            )
+            : []
+        }
       />
       {/* )}{' '} */}
     </div>
@@ -472,25 +464,24 @@ const Table = ({
                 <tr
                   key={rowIndex}
                   className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                  // onClick={() => {
-                  //   setSelectedRowData(row);
-                  //   setShowRowPopup(true);
-                  // }}
+                // onClick={() => {
+                //   setSelectedRowData(row);
+                //   setShowRowPopup(true);
+                // }}
                 >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${
-                        checkColumn(column)
+                      className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${checkColumn(column)
                           ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
                           : ''
-                      } ${column === 'Staff ID' ? 'cursor-pointer hover:underline text-blue-600 hover:bg-blue-500 hover:text-white' : ''}`}
+                        } ${column === 'Staff ID' ? 'cursor-pointer hover:underline text-blue-600 hover:bg-blue-500 hover:text-white' : ''}`}
                       onClick={
                         column === 'Staff ID'
                           ? () => {
-                              setSelectedRowData(row);
-                              setShowRowPopup(true);
-                            }
+                            setSelectedRowData(row);
+                            setShowRowPopup(true);
+                          }
                           : undefined
                       }
                     >
