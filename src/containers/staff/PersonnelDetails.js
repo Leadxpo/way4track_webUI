@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 
 const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
   const [formData, setFormData] = useState({
@@ -15,11 +16,11 @@ const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
     // drivingLicence: '',
     address: '',
     uanNumber: '',
-    esicNumber: '',
+    esicNumber: '', 
     bloodGroup: '',
     photo: null,
   });
-
+  const [permissions, setPermissions] = useState({});
   const [errors, setErrors] = useState({});
   const [photoPreview, setPhotoPreview] = useState('');
   const fileInputRef = useRef(null);
@@ -100,6 +101,11 @@ const PersonnelDetails = ({ setPersonnelDetails,personnelDetails }) => {
 
     return error;
   };
+
+  useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
+  }, [permissions]); // Include getStaffSearchDetails in the dependency array
 
   const handleChange = useCallback(
     (e) => {

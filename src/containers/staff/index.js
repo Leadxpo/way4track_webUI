@@ -24,8 +24,6 @@ const Staff = () => {
   const [permissions, setPermissions] = useState({});
   console.log(columns, 'columns');
 
-  console.log("profilesaaaaaaaakk44", profiles);
-
   const columnNames = [
     'ID',
     'Staff ID',

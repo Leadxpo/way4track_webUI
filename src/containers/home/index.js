@@ -599,11 +599,6 @@ const Home = () => {
     setTableData(filtered);
   };
 
-
-
-
-
-
   return (
     <div className="flex flex-col space-y-16">
       {/* first section */}
