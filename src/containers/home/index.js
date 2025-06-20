@@ -106,9 +106,6 @@ const Home = () => {
     fetchBranches();
   }, []);
 
-
-
-
   const handleCardClick = (cardType) => {
     let dataSource;
     switch (cardType) {
@@ -598,11 +595,6 @@ const Home = () => {
     });
     setTableData(filtered);
   };
-
-
-
-
-
 
   return (
     <div className="flex flex-col space-y-16">

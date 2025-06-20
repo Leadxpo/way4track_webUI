@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 
 const Dispatch = () => {
     const navigate = useNavigate();
@@ -15,6 +16,12 @@ const Dispatch = () => {
     // const [dropdownOpen, setDropdownOpen] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState({});
+    const [permissions, setPermissions] = useState({});
+
+    useEffect(() => {
+        setPermissions(getPermissions('dispatch'));
+    }, [permissions]);
+
 
     const toggleDropdown = (id) => {
         setDropdownOpen((prev) => ({
@@ -79,8 +86,10 @@ const Dispatch = () => {
             <div className="flex justify-between items-center py-4">
                 <h2 className="text-2xl font-semibold text-gray-800">Dispatch</h2>
                 <button
-                    className="bg-green-700 text-white px-4 py-2 rounded-md"
+                    className={`px-4 py-2 text-white rounded-md transition  ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`
+                    }
                     onClick={() => navigate("/add-dispatch")}
+                    disabled={!permissions.add}
                 >
                     Add Dispatch
                 </button>
@@ -143,8 +152,8 @@ const Dispatch = () => {
                                         <td className="px-6 py-4">{item.fromAddress}</td>
                                         <td className="px-6 py-4">{item.toAddress}</td>
                                         <td className="px-2 py-2">
-  {new Date(item.dispatchDate).toLocaleDateString('en-GB').replace(/\//g, '/')}
-</td>
+                                            {new Date(item.dispatchDate).toLocaleDateString('en-GB').replace(/\//g, '/')}
+                                        </td>
                                         <td className="px-6 py-4">{item.status}</td>
                                         <td className="px-6 py-4">{item.transportId}</td>
                                         <td className="px-6 py-4">{item.packageId}</td>
@@ -155,24 +164,30 @@ const Dispatch = () => {
                                             {dropdownOpen[item.id] && ( // Check against the specific row ID
                                                 <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                                                     <ul className="text-left">
-                                                        <li
-                                                            className="p-2 hover:bg-gray-100 cursor-pointer"
-                                                            onClick={() => navigate("/edit-dispatch", { state: { dispatch: item } })}
-                                                        >
-                                                            Edit
-                                                        </li>
-                                                        <li
-                                                            className="p-2 hover:bg-gray-100 cursor-pointer text-red-600"
-                                                            onClick={() => handleDelete(item.id)}
-                                                        >
-                                                            Delete
-                                                        </li>
-                                                        <li
-                                                            className="p-2 hover:bg-gray-100 cursor-pointer"
-                                                            onClick={() => navigate("/show-dispatch", { state: { dispatch: item } })}
-                                                        >
-                                                            More Details
-                                                        </li>
+                                                        {permissions.edit &&
+                                                            <li
+                                                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                                                onClick={() => navigate("/edit-dispatch", { state: { dispatch: item } })}
+                                                            >
+                                                                Edit
+                                                            </li>}
+                                                        {permissions.delete &&
+                                                            <li
+                                                                className="p-2 hover:bg-gray-100 cursor-pointer text-red-600"
+                                                                onClick={() => handleDelete(item.id)}
+                                                            >
+                                                                Delete
+                                                            </li>
+                                                        }
+                                                        {permissions.view &&
+
+                                                            <li
+                                                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                                                onClick={() => navigate("/show-dispatch", { state: { dispatch: item } })}
+                                                            >
+                                                                More Details
+                                                            </li>
+                                                        }
                                                     </ul>
                                                 </div>
                                             )}

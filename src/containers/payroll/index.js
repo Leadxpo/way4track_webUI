@@ -4,6 +4,7 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 import { useLocation, useNavigate } from 'react-router';
+import { getPermissions } from '../../common/commonUtils';
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -15,6 +16,12 @@ const Payroll = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('attendance');
+    setPermissions(perms);
+  }, [permissions]);
+
   const location = useLocation();
   const navigate = useNavigate();
   const fetchPayrollData = async (branchName = 'All') => {
@@ -69,9 +76,9 @@ const Payroll = () => {
   // Columns for the table
   const columns = payrollData.length
     ? Object.keys(payrollData[0]).map((key, index) => ({
-        title: typeof key === 'string' ? formatString(key) : key, // Ensure key is a string
-        dataIndex: key, // Use key instead of index for proper column mapping
-      }))
+      title: typeof key === 'string' ? formatString(key) : key, // Ensure key is a string
+      dataIndex: key, // Use key instead of index for proper column mapping
+    }))
     : [];
   useEffect(() => {
     fetchPayrollData(activeTab);
@@ -193,11 +200,10 @@ const Payroll = () => {
           <button
             key={branch.branchName} // Use branchName as the key
             onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
-            className={`pb-2 text-sm font-semibold ${
-              activeTab === branch.branchName
+            className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
                 ? 'border-b-2 border-black text-black'
                 : 'text-gray-500'
-            }`}
+              }`}
           >
             {branch.branchName}
           </button>
@@ -263,7 +269,7 @@ const Payroll = () => {
                           parseInt(row['OTAmount']) +
                           parseInt(
                             row['extraHalfSalary'] +
-                              parseInt(row['plBikeAmount'])
+                            parseInt(row['plBikeAmount'])
                           );
                       }
                       return (
@@ -278,12 +284,13 @@ const Payroll = () => {
                     })}
                     <td className="ppx-4 py-2 border sticky left-0 bg-white shadow-md text-center">
                       <button
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                        className={`px-4 py-2 text-white rounded-md transition ${permissions.view ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
                         onClick={() =>
                           navigate('/payroll-details', {
                             state: { paySlipDetails: row },
                           })
                         }
+                        disabled={!permissions.view}
                       >
                         View
                       </button>

@@ -5,6 +5,7 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import StaffDetailsPDF from './StaffDetailsPDF';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
+import { getPermissions } from '../../common/commonUtils';
 
 const StaffDetails = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const StaffDetails = () => {
   const [staffPhoto, setStaffPhoto] = useState('');
   const [otp, setOtp] = useState('');
   const userId = localStorage.getItem('userId');
-
+  const [permissions, setPermissions] = useState({});
   const [formData, setFormData] = useState({
     personnelDetails: {
       id: state?.staffDetails?.id,
@@ -96,6 +97,11 @@ const StaffDetails = () => {
     confirmPassword: '',
   });
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  
+  useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
+  }, [permissions]); // Include getStaffSearchDetails in the dependency array
 
   const handlePasswordChangeSubmit = () => {
     // Add validation if needed
@@ -193,6 +199,7 @@ const StaffDetails = () => {
       alert('Failed to fetch staff details.');
     }
   };
+
   useEffect(() => {
     fetchStaffDetails();
   }, [state?.staffDetails?.staffId]);
@@ -233,7 +240,7 @@ const StaffDetails = () => {
 
       console.log('API Response', response);
 
-      if (response.errorCode === 200) {
+      if (response.errorCode === 200) { 
         const staff = response.data;
 
         alert('OTP verified successfully');
@@ -291,6 +298,7 @@ const StaffDetails = () => {
         onEdit={() =>
           handleEdit('/edit-staff-personnel', formData.personnelDetails)
         }
+        permissions={permissions}
       >
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           {Object.entries(formData.personnelDetails).map(([key, value]) => (
@@ -309,6 +317,7 @@ const StaffDetails = () => {
         onEdit={() =>
           handleEdit('/edit-staff-education', formData.educationDetails)
         }
+        permissions={permissions}
       >
         {formData.educationDetails.qualifications.map((qual, index) => (
           <p key={index}>
@@ -323,6 +332,7 @@ const StaffDetails = () => {
         onEdit={() =>
           handleEdit('/edit-staff-education', formData.educationDetails)
         }
+        permissions={permissions}
       >
         {formData.educationDetails.experience.map((exp, index) => (
           <p key={index}>
@@ -337,6 +347,7 @@ const StaffDetails = () => {
       <DetailsCard
         title="Bank Details"
         onEdit={() => handleEdit('/edit-staff-bank', formData.bankDetails)}
+                permissions={permissions}
       >
         <div className="grid grid-cols-1 gap-y-2">
           {Object.entries(formData.bankDetails).map(([key, value]) => (
@@ -355,6 +366,7 @@ const StaffDetails = () => {
         onEdit={() =>
           handleEdit('/edit-staff-employer', formData.employerDetails)
         }
+                permissions={permissions}
       >
         <div className="flex flex-col gap-y-3">
           {Object.entries(formData.employerDetails).map(([key, value]) => {
@@ -394,12 +406,12 @@ const StaffDetails = () => {
                           <IoIosEyeOff size={18} />
                         )}
                       </button>
-                      <button
+                      {permissions.edit &&<button
                         onClick={() => setIsConfirmModalOpen(true)}
                         className="text-blue-600 hover:underline text-xs"
                       >
                         Edit
-                      </button>
+                      </button>}
                     </div>
                   </div>
                 </div>
@@ -572,21 +584,21 @@ const StaffDetails = () => {
   );
 };
 
-const DetailsCard = ({ title, children, onEdit }) => (
+const DetailsCard = ({ title, children, onEdit,permissions }) => (
   <>
     <div className="flex justify-between items-center bg-gray-100 p-2 rounded-t-lg">
       <h4 className="text-xl font-bold">{title}</h4>
       {/* <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2" onClick={onEdit}>
         <FaEdit /> Edit
       </button> */}
-      <button
+     {permissions.edit && <button
         className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-col items-center gap-1 border border-gray-300 shadow"
         onClick={onEdit}
       >
         <FaPencilAlt className="text-black" />
         <span className="flex items-center gap-2">Edit</span>
       </button>
-    </div>
+}    </div>
     <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
   </>
 );

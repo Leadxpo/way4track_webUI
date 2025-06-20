@@ -2,16 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ApiService from "../../services/ApiService";
 import { initialAuthState } from "../../services/ApiService";
-
+import { getPermissions } from '../../common/commonUtils';
 const DesignationDetails = () => {
     const [branchDetails, setBranchDetails] = useState({
         designation: "",
         roles: [],
     });
+    const [permissions, setPermissions] = useState({});
+
     const navigate = useNavigate();
     const location = useLocation();
     const branchDetailsFromState = location.state?.designationDetails || {};
-
+    useEffect(() => {
+        setPermissions(getPermissions('staff'));
+      }, [permissions]);
+    
+    
 
     useEffect(() => {
         const fetchBranchDetails = async () => {
@@ -47,9 +53,11 @@ const DesignationDetails = () => {
                             <span className="text-blue-600">Designation:</span> {branchDetails.designation}
                         </div>
                     </div>
+                    {permissions.edit &&
                     <button className="btn-primarypx-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600" style={{paddingLeft:15,paddingRight:15,paddingTop:5,paddingBottom:5,margin:5}} onClick={() => navigate('/edit-designation', { state: { designationDetails: branchDetails } })}>
                         EDIT
                     </button>
+                    }
 
                 </div>
 

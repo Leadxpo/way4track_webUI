@@ -5,10 +5,12 @@ import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 import { TfiTimer } from 'react-icons/tfi';
+import hasPermission from '../../common/permission'
 
 const CeoBackendSupportHome = () => {
   const navigate = useNavigate();
   const [popupData, setPopupData] = useState(null);
+  var permission = localStorage.getItem("userPermissions");
   const [records, setRecords] = useState([
     {
       id: '01',
@@ -690,31 +692,8 @@ const CeoBackendSupportHome = () => {
                           </div>
                         )}
 
-                        {/* <div className="mb-2">
-                            <button
-                              onClick={() => {
-                                let nextStatus;
-                                if (card.workStatus === 'install')
-                                  nextStatus = 'accept';
-                                else if (card.workStatus === 'accept')
-                                  nextStatus = 'activate';
-                                else nextStatus = card.workStatus;
-                                handleStatusChange(card, nextStatus);
-                              }}
-                              className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
-                            >
-                              {card?.workStatus === 'install'
-                                ? 'In Progress'
-                                : card?.workStatus === 'accept'
-                                  ? 'Activate'
-                                  : card?.workStatus === 'activate'
-                                    ? 'Activated'
-                                    : card?.workStatus?.charAt(0).toUpperCase() +
-                                      card?.workStatus?.slice(1)}
-                            </button>
-                          </div> */}
-
-                        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+{hasPermission(permission, "backend", "edit") &&
+  <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                           {/* Conditional Status Control */}
                           <div className="mb-1">
                             {card.workStatus === 'accept' ||
@@ -792,6 +771,7 @@ const CeoBackendSupportHome = () => {
                             More Details
                           </button>
                         </div>
+}
                       </div>
                     ) : (
                       <div className="h-full flex items-center justify-center text-gray-400 italic">

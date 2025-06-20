@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ApiService from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 
 const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
   const [data, setData] = useState({
@@ -15,7 +16,7 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
     mobileAllocation: 'No',
     // terminationDate: null,
     // resignationDate: null,
-    // finalSettlementDate: null,
+    // finalSettlementDate: null, 
     insuranceNumber: '',
     insuranceEligibilityDate: null,
     insuranceExpiryDate: null,
@@ -23,10 +24,15 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
     description: '',
     mailAllocation: 'No',
   });
-
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
   const [errors, setErrors] = useState({});
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
+  }, [permissions]); // Include getStaffSearchDetails in the dependency array
 
   const validate = (fieldName, value) => {
     let error = '';
@@ -110,22 +116,6 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'number' },
-      // { label: 'Office Email', name: 'officeEmail', type: 'email' },
-      // { label: 'Bike Number', name: 'bikeNumber', type: 'text' },
-      // {
-      //   label: 'Driving Licence Number',
-      //   name: 'drivingLicenceNumber',
-      //   type: 'text',
-      // },
-      // { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
-      // { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
-      // { label: 'Termination Date', name: 'terminationDate', type: 'date' },
-      // { label: 'Resignation Date', name: 'resignationDate', type: 'date' },
-      // {
-      //   label: 'Final Settlement Date',
-      //   name: 'finalSettlementDate',
-      //   type: 'date',
-      // },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',

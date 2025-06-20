@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import EditPayroll from '../containers/payroll/editPayroll';
 import ApiService, { initialAuthState } from '../services/ApiService';
 import { useNavigate } from 'react-router';
+import {getPermissions} from '../common/commonUtils';
 
 const PayrollDetailsView = ({ payrollData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editpayrollData, setPayrollData] = useState(false);
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
 
+  useEffect(() => {
+    const perms = getPermissions('attendance');
+    setPermissions(perms);
+  }, [permissions]);
   return (
     <div className="max-w-7xl w-full bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-gray-700 mb-4">
@@ -71,13 +77,13 @@ const PayrollDetailsView = ({ payrollData }) => {
         </p>
       </div>
 
-      <button
+{Permissions.edit && <button
         className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
         onClick={() => setIsEditing(true)}
       >
         Edit Payroll
       </button>
-
+}
       {isEditing && (
         <EditPayroll
           initialData={payrollData}

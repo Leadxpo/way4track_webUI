@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { FaSearch, FaEllipsisV } from 'react-icons/fa';
-import { useNavigate } from 'react-router';
-import ApiService, { initialAuthState } from '../../services/ApiService';
+
+import React, { useState, useEffect } from "react";
+import { FaSearch, FaEllipsisV } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import ApiService, { initialAuthState } from "../../services/ApiService";
+import { getPermissions } from '../../common/commonUtils';
 
 const Tickets = () => {
   const navigate = useNavigate();
@@ -16,6 +18,12 @@ const Tickets = () => {
   const rawBranchId = localStorage.getItem('branchId');
   const branchId =
     rawBranchId && !isNaN(rawBranchId) ? Number(rawBranchId) : null;
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    const perms = getPermissions('tickets');
+    setPermissions(perms);
+  }, [permissions]);
 
   useEffect(() => {
     fetchTickets();
@@ -120,12 +128,12 @@ const Tickets = () => {
     <div className="m-2">
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Tickets</h2>
-        <button
+       {permissions.add && <button
           className="bg-green-700 text-white px-4 py-2 rounded-md"
           onClick={() => navigate('/add-ticket')}
         >
           Add Ticket
-        </button>
+        </button>}
       </div>
 
       {/* Tabs */}
@@ -240,6 +248,9 @@ const Tickets = () => {
                             >
                               More Details
                             </li>
+                            {permissions.edit && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>}
+                            {permissions.delete &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>}
+                            {permissions.view &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>}
                           </ul>
                         </div>
                       )}

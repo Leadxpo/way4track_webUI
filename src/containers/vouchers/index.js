@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaPlus, FaEllipsisV } from 'react-icons/fa';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
+import { getPermissions } from '../../common/commonUtils';
 
 const Vouchers = () => {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ const Vouchers = () => {
   const [popupData, setPopupData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    const perms = getPermissions('vendor');
+    setPermissions(perms);
+  }, [permissions]);
 
   const handleSearch = () => {
     const filtered = voucherList.filter((item) => {
@@ -103,7 +110,8 @@ const Vouchers = () => {
         <h2 className="text-2xl font-semibold">Vouchers</h2>
         <button
           onClick={handleNavigation}
-          className="bg-yellow-300 text-black font-semibold px-4 py-2 rounded-full shadow-md hover:brightness-95"
+          className={`px-4 py-2 text-white rounded-md transition ${permissions.add ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+          disabled={!permissions.add}
         >
           + Create Vouchers
         </button>
@@ -162,21 +170,21 @@ const Vouchers = () => {
           {/* Horizontal Line */}
           {/* <hr className="border-gray-300 my-1" /> */}
 
-          <button
+          {permissions.edit &&<button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
             onClick={() => handleEdit(popupData.item)}
             style={{ fontSize: '12px', color: '#000000', fontWeight: '400' }}
           >
             Edit
-          </button>
+          </button>}
 
-          <button
+          {permissions.view &&<button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
             onClick={() => handleMoreDetails(popupData.item)}
             style={{ fontSize: '12px', color: '#000000', fontWeight: '400' }}
           >
             More Details
-          </button>
+          </button>}
         </div>
       )}
 

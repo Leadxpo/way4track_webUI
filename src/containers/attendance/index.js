@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-
+import hasPermission from '../../common/permission'
 const Attendance = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  var permission = localStorage.getItem("userPermissions");
   const employeeData = location.state?.staffDetails || {};
   const branchData = location.state?.branchDetails || {};
 
@@ -66,12 +66,14 @@ const Attendance = () => {
   return (
     <div className="p-6">
       <div className="flex justify-end mb-4">
+      {hasPermission(permission, "attendance", "add") &&
         <button
           className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition h-10"
           onClick={() => navigate('/attendance-upload')}
         >
           Bulk Upload Update
         </button>
+}
       </div>
       <div className="mb-6 p-6 bg-white shadow-md rounded-xl border border-gray-200 w-full max-w-4xl mx-auto">
         <h2 className="text-xl font-semibold text-center text-gray-900 mb-4">
@@ -164,7 +166,6 @@ const Attendance = () => {
           {[...profiles]
             .sort((a, b) => String(a.day).localeCompare(String(b.day)))
             .map((att) => {
-              console.log(att);
               return (
                 <tr key={att.id} className="text-center">
                   <td className="border p-2">
@@ -178,13 +179,8 @@ const Attendance = () => {
                   <td className="border p-2">{timeFormate(att.outTime)}</td>
                   <td className="border p-2">{att.status}</td>
                   <td className="border p-2">
-                    {/* <button
-                    onClick={() => navigate('/attendance-details', { state: { attendanceDetails: att } })}
-                    className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-blue-600"
-                  >
-                    More Details
-                  </button> */}
-                    <button
+                  {hasPermission(permission, "attendance", "edit") &&
+                   <button
                       onClick={() =>
                         navigate('/attendance-edit', {
                           state: { attendanceDetails: att },
@@ -194,6 +190,7 @@ const Attendance = () => {
                      >
                       Edit Details
                     </button>
+            }
                   </td>
                 </tr>
               );

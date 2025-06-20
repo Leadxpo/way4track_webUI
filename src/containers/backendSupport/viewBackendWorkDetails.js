@@ -4,6 +4,7 @@ import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { FaPaperclip } from 'react-icons/fa6';
 import jsPDF from 'jspdf';
+import hasPermission from '../../common/permission'
 
 const ViewBackendWorkDetails = () => {
   const location = useLocation();
@@ -13,7 +14,7 @@ const ViewBackendWorkDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedRecord, setEditedRecord] = useState(null);
   const [newRemark, setNewRemark] = useState('');
-
+  var permission = localStorage.getItem("userPermissions");
   const [remarks, setRemarks] = useState(null);
 
   const userId = localStorage.getItem('userId');
@@ -364,13 +365,15 @@ const ViewBackendWorkDetails = () => {
             </button>
 
             <div>
+            {hasPermission(permission, "backend", "edit") &&
+
               <button
                 onClick={isEditing ? handleSave : handleEdit}
                 className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
               >
                 {isEditing ? 'Save' : 'Edit'}
               </button>
-
+}
               <button
                 onClick={generatePDF}
                 className="mb-4 px-4 py-2 ml-2 bg-green-600 text-white rounded"

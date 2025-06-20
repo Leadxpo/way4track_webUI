@@ -49,6 +49,7 @@ const SalesVisit = () => {
   // Check if there's workAllocation data passed through location.state
   const [showModal, setShowModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [paidAmt, setPaidAmt] = useState(0);
   const [updatedLeadStatus, setUpdatedLeadStatus] = useState('');
   const [selectedStaffId, setSelectedStaffId] = useState('');
   const [staffList, setStaffList] = useState([]); // You can fetch this from API if needed
@@ -111,24 +112,25 @@ const SalesVisit = () => {
       id: selectedLead.id,
       leadStatus: updatedLeadStatus,
       ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId }),
-    }
+      ...((updatedLeadStatus === 'partiallyPaid' || updatedLeadStatus === 'completed') && {
+        paidAmount: paidAmt,
+        paidDate: new Date(), // backend should expect this in ISO string format
+      }),
+    };
+  
     try {
-      // Attempt to fetch branches
       const { data } = await ApiService.post(`/sales-works/handleSales`, payload, {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
-      console.log("response data :", data)
+      console.log("response data :", data);
     } catch (error) {
-      console.log("error : ", error)
-      // If the error status is 500, try refreshing the token
+      console.error("error:", error);
     }
-    // Call your backend API here
+  
     console.log("Updating Lead:", payload);
-
-    // Close modal
     setShowModal(false);
   };
-
+  
   const togglePopup = () => {
     setIsOpen(!isOpen);
   };
@@ -183,7 +185,7 @@ const SalesVisit = () => {
   // }, [popupData]);
 
   useEffect(() => {
-    const perms = getPermissions('work-allocation');
+    const perms = getPermissions('sale');
     setPermissions(perms);
   }, []);
 
@@ -352,18 +354,21 @@ const SalesVisit = () => {
             left: `${popupData.position.left}px`,
           }}
         >
-          <button
+          {permissions.edit && <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
             onClick={() => handleEdit(popupData.item)}
           >
             Edit
           </button>
-          <button
+          }
+
+          {permissions.view && <button
             className="block px-4 py-2 text-left w-full hover:bg-gray-100"
             onClick={() => handleMoreDetails(popupData.item)}
           >
             More Details
           </button>
+          }
         </div>
       )}
 
@@ -401,6 +406,18 @@ const SalesVisit = () => {
                     </option>
                   ))}
                 </select>
+              </>
+            )}
+            {(updatedLeadStatus === 'partiallyPaid' || updatedLeadStatus === 'completed') && (
+              <>
+                <label className="block mb-2">Amount</label>
+                <input
+                  type='text'
+                  name={'paidAmount'}
+                  value={paidAmt}
+                  onChange={setPaidAmt}
+                  className="px-4 py-2 border rounded-lg bg-gray-50"
+                />
               </>
             )}
 

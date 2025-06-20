@@ -82,11 +82,11 @@ const ProductAssign = () => {
       {/* Create New Button Row */}
       <div className="flex justify-end mb-4">
         <button
-          className={`h-12 px-4 text-white font-bold rounded-md hover:cursor-pointer ${permissions.add ? 'bg-yellow-400 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
+          className={`h-12 px-4 text-white font-bold rounded-md hover:cursor-pointer ${permissions.add ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={handleCreateNew}
-          // disabled={!permissions.add}
+          disabled={!permissions.add}
         >
-          Create New
+          Assign Products
         </button>
       </div>
 
@@ -116,9 +116,9 @@ const ProductAssign = () => {
           onEdit={onEdit}
           onDetails={onDetails}
           onDelete={onDelete}
-          showDelete={true}
-          showEdit={true}
-          showDetails={true}
+          showDelete={permissions.delete}
+          showEdit={permissions.edit}
+          showDetails={permissions.view}
         />
       </div>
     </div>

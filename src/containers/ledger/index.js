@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus ,FaFileExcel} from 'react-icons/fa';
+import { FaPlus, FaFileExcel } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 import * as XLSX from "xlsx";
 import { data } from 'autoprefixer';
-
+import { getPermissions } from '../../common/commonUtils';
 
 const Ledger = () => {
   const navigate = useNavigate();
+  const [permissions, setPermissions] = useState({});
+  useEffect(() => {
+    const perms = getPermissions('voucher');
+    setPermissions(perms);
+  }, [permissions]);
 
   const [searchData, setSearchData] = useState({
     clientId: '',
@@ -21,7 +26,7 @@ const Ledger = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [client, setClient] = useState([]);
- const [previewData, setPreviewData] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
 
@@ -112,7 +117,7 @@ const Ledger = () => {
     });
   };
 
-const handlePreview = () => {
+  const handlePreview = () => {
     if (columns.length === 0) {
       alert("No group data available to preview.");
       return;
@@ -157,13 +162,6 @@ const handlePreview = () => {
     }
   };
 
-
-
-
-
-
-
-
   useEffect(() => {
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,29 +169,29 @@ const handlePreview = () => {
 
   return (
     <div className="p-8 space-y-6">
-       <div className="flex justify-between mb-4">
-      <h1 className="text-2xl font-bold">Ledger</h1>
-        <button
+      <div className="flex justify-between mb-4">
+        <h1 className="text-2xl font-bold">Ledger</h1>
+        {permissions.add && <button
           className="bg-yellow-400 text-black px-5 py-2 rounded-full shadow-md flex items-center gap-2 hover:bg-yellow-500"
           onClick={() => navigate('/add-ledger')}
         >
           <FaPlus /> Create Ledger
-        </button>
-        </div>
+        </button>}
+      </div>
       {/* Search Section */}
-     
-       
-        <div className=" flex justify-end ">
-        <button
-                  className="w-52 text-left p-2 bg-green-600 text-white hover:bg-green-700 cursor-pointer flex items-center gap-2 rounded"
-                  onClick={handlePreview}
-                >
-                  <FaFileExcel className="text-white" /> Excel Download
-                </button>
-        </div>
-   
 
-           
+
+      <div className=" flex justify-end ">
+        <button
+          className="w-52 text-left p-2 bg-green-600 text-white hover:bg-green-700 cursor-pointer flex items-center gap-2 rounded"
+          onClick={handlePreview}
+        >
+          <FaFileExcel className="text-white" /> Excel Download
+        </button>
+      </div>
+
+
+
 
       {/* Loading and Error Messages */}
       {loading && <p className="text-blue-500">Loading...</p>}
@@ -226,8 +224,9 @@ const handlePreview = () => {
                   ))}
                   <td className="py-1 px-4">
                     <button
-                      className="bg-blue-600 text-white text-sm rounded-lg px-3 py-1 hover:bg-blue-600"
-                      onClick={() => handleView(record)}
+                      className={`px-4 py-2 text-white rounded-md transition ${permissions.view ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`
+                      }
+                      onClick={() => handleView(record)} disabled={!permissions.view}
                     >
                       View
                     </button>

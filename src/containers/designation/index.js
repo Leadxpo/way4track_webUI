@@ -24,7 +24,7 @@ const Designation = () => {
   }, []);
 
   useEffect(() => {
-    setPermissions(getPermissions('designation'));
+    setPermissions(getPermissions('staff'));
     getStaffSearchDetails();
   }, [getStaffSearchDetails]);
 
@@ -40,7 +40,7 @@ const Designation = () => {
             ${permissions.add ? 'bg-yellow-600 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`
           }
           onClick={() => navigate('/add-designation')}
-          // disabled={!permissions.add}
+          disabled={!permissions.add}
         >
           Add Designation
         </button>
@@ -62,7 +62,7 @@ const Designation = () => {
                     className={`px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 
                       ${permissions.view ? '' : 'cursor-not-allowed opacity-50'}`}
                     onClick={() => handleDetails(emp)}
-                    // disabled={!permissions.view}
+                    disabled={!permissions.view}
                   >
                     More Details
                   </button>

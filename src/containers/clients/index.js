@@ -3,9 +3,13 @@ import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import TableWithSearchFilter from '../tablesSearchFilter';
 import { getPermissions } from '../../common/commonUtils';
+import hasPermission from '../../common/permission'
+
 const Clients = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
+  var permission = localStorage.getItem("userPermissions");
+
   useEffect(() => {
     const perms = getPermissions('client');
     setPermissions(perms);
@@ -24,10 +28,10 @@ const Clients = () => {
   return (
     <TableWithSearchFilter
       type="clients"
-      showCreateBtn={true}
+      showCreateBtn={permissions.add}
       showDelete={permissions.delete}
-      showEdit={true}
-      showDetails={true}
+      showEdit={permissions.edit}
+      showDetails={permissions.view}
       onEdit={handleVendorEdit}
       onDelete={handleDelete}
       onDetails={handleDetails}

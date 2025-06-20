@@ -3,13 +3,17 @@ import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { getPermissions } from '../../common/commonUtils';
+
 const Vendors = () => {
   const navigate = useNavigate();
+
   const [permissions, setPermissions] = useState({});
+
   useEffect(() => {
     const perms = getPermissions('vendor');
     setPermissions(perms);
-  }, []);
+  }, [permissions]);
+
   const handleVendorEdit = (vendorDetails) => {
     navigate('/add-vendor', { state: { vendorDetails } });
   };
@@ -24,7 +28,7 @@ const Vendors = () => {
   return (
     <TableWithDateFilter
       type="vendors"
-      showCreateBtn={true}
+      showCreateBtn={permissions.add}
       showDelete={permissions.delete}
       showEdit={permissions.edit || true}
       showDetails={permissions.view || true}

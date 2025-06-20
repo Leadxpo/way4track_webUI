@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import ApiService, { initialAuthState } from "../../services/ApiService";
+import { getPermissions } from '../../common/commonUtils';
 
 const Vehicle = () => {
   const navigate = useNavigate();
@@ -10,6 +11,13 @@ const Vehicle = () => {
   const [allVehicles, setAllVehicles] = useState([]); // Store full data
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    const perms = getPermissions('vehicle');
+    setPermissions(perms);
+  }, []);
+
 
   useEffect(() => {
     fetchVehicles();
@@ -93,6 +101,7 @@ const Vehicle = () => {
         <button
           className="bg-green-700 text-white px-4 py-2 rounded-md"
           onClick={() => navigate("/add-vehicle")}
+          disabled={permissions.add}
         >
           Add Vehicle
         </button>
@@ -150,8 +159,8 @@ const Vehicle = () => {
                       {dropdownOpen === item.id && (
                         <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                           <ul className="text-left">
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-vehicle", { state: { vehicle: item } })}>Edit</li>
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>
+                            {permissions.edit &&<li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-vehicle", { state: { vehicle: item } })}>Edit</li>}
+                            {permissions.delete && <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>}
                           </ul>
                         </div>
                       )}

@@ -7,6 +7,7 @@ import { getPermissions } from '../../common/commonUtils';
 import { FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
+import { FaPencil } from 'react-icons/fa6';
 
 const WorkAllocation = () => {
   const navigate = useNavigate();
@@ -279,7 +280,7 @@ const WorkAllocation = () => {
     }
   };
 
-  const handleMoreDetails = async (data) => {
+  const handleMoreDetails = async (e,data) => {
     const id = data.id;
     if (!id) {
       console.error('Invalid ID passed:', id);
@@ -323,12 +324,12 @@ const WorkAllocation = () => {
       prev && prev.item.id === item.id
         ? null
         : {
-            item,
-            position: {
-              top: rect.top + window.scrollY + 30,
-              left: rect.left + window.scrollX - 50,
-            },
-          }
+          item,
+          position: {
+            top: rect.top + window.scrollY + 30,
+            left: rect.left + window.scrollX - 50,
+          },
+        }
     );
   };
 
@@ -389,7 +390,7 @@ const WorkAllocation = () => {
           }}
           onClick={handleOpenModalForAdd}
           // disabled={!permissions.add}
-          disabled={false}
+          disabled={!permissions.add}
         >
           <span className="text-black mr-2">➕</span>
           Create Work Allocation
@@ -1092,11 +1093,9 @@ const WorkAllocation = () => {
                   </td>
                   <td className="border p-2 relative">
                     <button
-                      // onClick={(e) => handleOpenPopup(e, group.id)}
-                      onClick={(e) => handleActionClick(e, item)}
-                      className="p-2"
-                    >
-                      <FaEllipsisV />
+                      onClick={(e) => handleMoreDetails(e, item)}
+                      className="p-2" >
+                      <FaPencil />
                     </button>
                   </td>
                 </tr>
@@ -1105,28 +1104,18 @@ const WorkAllocation = () => {
         </table>
       </div>
 
-      {popupData && (
+      {/* {popupData && (
         <div
           className="popup-menu absolute bg-white border border-gray-300 shadow-md rounded-lg py-2 w-40"
           style={{
             top: `${popupData.position.top}px`,
             left: `${popupData.position.left}px`,
-          }}
-        >
-          {/* <button
-            className="block px-4 py-2 text-left w-full hover:bg-gray-100"
-            onClick={() => handleOpenModalForEdit(popupData.item.id)}
-          >
-            Edit
-          </button> */}
-          <button
-            className="block px-4 py-2 text-left w-full hover:bg-gray-100"
-            onClick={() => handleMoreDetails(popupData.item)}
-          >
+          }}  >
+          <button className="block px-4 py-2 text-left w-full hover:bg-gray-100">
             More Details
           </button>
         </div>
-      )}
+      )} */}
 
       {/* <TableWithSearchFilter
         type="work-allocations"

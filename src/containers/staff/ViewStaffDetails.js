@@ -3,11 +3,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
+import { getPermissions } from '../../common/commonUtils';
 
 const ViewStaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log('locationnnnnnnnnnnnnnnnnnn', state.staffDetails);
+  const [permissions, setPermissions] = useState({});
+ 
+  useEffect(() => {
+    const perms = getPermissions('staff');
+    setPermissions(perms);
+  }, [permissions]); // Include getStaffSearchDetails in the dependency array
+ 
   const [formData] = useState({
     personnelDetails: {
       id: state.staffDetails.id,
@@ -15,7 +22,7 @@ const ViewStaffDetails = () => {
       name: 'John Doe',
       dob: '1990-01-01',
       gender: 'Male',
-      location: 'New York',
+      location: 'New York', 
       phoneNumber: '1234567890',
       alternateNumber: '0987654321',
       email: 'johndoe@example.com',

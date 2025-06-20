@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import ApiService, { initialAuthState } from "../../services/ApiService";
+import { getPermissions } from '../../common/commonUtils';
 
 const Service = () => {
   const navigate = useNavigate();
@@ -10,6 +11,12 @@ const Service = () => {
   const [allServices, setAllServices] = useState([]); // Store full data
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    const perms = getPermissions('services');
+    setPermissions(perms);
+  }, []);
 
   useEffect(() => {
     fetchServices();
@@ -69,19 +76,19 @@ const Service = () => {
 
 
 
-    const payload={id:serviceId,companyCode:initialAuthState.companyCode,unitCode:initialAuthState.unitCode}
-  
+    const payload = { id: serviceId, companyCode: initialAuthState.companyCode, unitCode: initialAuthState.unitCode }
+
     try {
       const res = await ApiService.post(
         `/ServiceType/deleteServiceTypeDetails`,
         payload
       );
 
-      if(res.status){
+      if (res.status) {
         alert("Service deleted successfully!");
         fetchServices();
       }
-     
+
       // Refresh or update the UI after deletion
     } catch (error) {
       console.error("Error deleting Service:", error);
@@ -93,8 +100,9 @@ const Service = () => {
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Services</h2>
         <button
-          className="bg-green-700 text-white px-4 py-2 rounded-md"
+          className={`px-4 py-2 text-white rounded-md transition ${permissions.add ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
           onClick={() => navigate("/add-service")}
+          disabled={!permissions.add}
         >
           Add Service
         </button>
@@ -126,10 +134,10 @@ const Service = () => {
           <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr className="border-b bg-blue-500 text-white text-left">
-              <th className="px-6 py-3 text-left text-sm font-bold">Id</th>
+                <th className="px-6 py-3 text-left text-sm font-bold">Id</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Name</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Duration</th>
-    
+
                 <th className="px-6 py-3 text-left text-sm font-bold">Description</th>
                 <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
               </tr>
@@ -156,8 +164,8 @@ const Service = () => {
                       {dropdownOpen === item.id && (
                         <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                           <ul className="text-left">
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-service", { state: { service: item } })}>Edit</li>
-                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>
+                            {permissions.edit && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-service", { state: { service: item } })}>Edit</li>}
+                            {permissions.delete && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</li>}
                           </ul>
                         </div>
                       )}
