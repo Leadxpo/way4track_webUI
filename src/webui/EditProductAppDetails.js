@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import ApiService from '../services/ApiService';
+import AddProductAppPopup from './AddProductAppPopup';
 
 function EditProductAppDetails() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [productApps, setProductApps] = useState([]);
   const [productMeta, setProductMeta] = useState({});
+  const [loadingIndex, setLoadingIndex] = useState(null);
+  const [showAddPopup, setShowAddPopup] = useState(false);
 
   useEffect(() => {
     const product = location?.state?.product;
@@ -52,44 +54,79 @@ function EditProductAppDetails() {
     setProductApps(updated);
   };
 
-  const handleSubmit = async () => {
-    for (const app of productApps) {
-      const formData = new FormData();
-      formData.append('id', app.id);
-      formData.append('name', app.name);
-      formData.append('shortDescription', app.shortDescription);
-      formData.append('companyCode', productMeta.companyCode);
-      formData.append('unitCode', productMeta.unitCode);
-      formData.append('webProductId', productMeta.webProductId);
-      formData.append('points', JSON.stringify(app.points));
-      if (app.image) formData.append('photo', app.image);
+  // const handleAddNewApp = () => {
+  //   const newApp = {
+  //     name: '',
+  //     shortDescription: '',
+  //     image: null,
+  //     imagePreview: '',
+  //     points: [{ title: '', desc: '' }],
+  //   };
+  //   setProductApps([...productApps, newApp]);
+  // };
 
-      try {
-        const res = await ApiService.post(
-          '/product-apps/handleUpdateAppDetails',
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
-        console.log(`Product App ${app.id} updated:`, res.data);
-        navigate('/ceoui');
-      } catch (error) {
-        console.error(`Failed to update product app ${app.id}:`, error);
-      }
+  const handleAddNewApp = () => {
+    setShowAddPopup(true);
+  };
+
+  const handleSaveNewApp = (newApp) => {
+    setProductApps([...productApps, newApp]);
+    handleSubmitSingleApp(newApp)
+  };
+
+  const handleSubmitSingleApp = async (app, index) => {
+    const formData = new FormData();
+    formData.append('name', app.name);
+    formData.append('shortDescription', app.shortDescription);
+    formData.append('companyCode', productMeta.companyCode);
+    formData.append('unitCode', productMeta.unitCode);
+    formData.append('webProductId', productMeta.webProductId);
+    formData.append('points', JSON.stringify(app.points));
+    if (app.id) formData.append('id', app.id);
+    if (app.image) formData.append('photo', app.image);
+
+    try {
+      setLoadingIndex(index);
+      const res = await ApiService.post(
+        '/product-apps/handleUpdateAppDetails',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      console.log(`Product App ${app.id || '[New]'} updated:`, res.data);
+      alert(`Product App ${index + 1} updated successfully!`);
+    } catch (error) {
+      console.error(
+        `Failed to update product app ${app.id || '[New]'}:`,
+        error
+      );
+      alert(`Failed to update Product App ${index + 1}`);
+    } finally {
+      setLoadingIndex(null);
     }
   };
 
-  const handleAddNewApp = () => {
-    const newApp = {
-      id: '',
-      name: '',
-      shortDescription: '',
-      image: null,
-      imagePreview: '',
-      points: [{ title: '', desc: '' }],
-    };
-    setProductApps([...productApps, newApp]);
+  const handleRemoveApp = async (indexToRemove) => {
+    const id = indexToRemove;
+    const confirmDelete = window.confirm(
+      'Are you sure you want to remove this product app?'
+    );
+    if (!confirmDelete) return;
+
+    const updated = productApps.filter((_, i) => i !== indexToRemove);
+    setProductApps(updated);
+    try {
+      const res = await ApiService.post('/device/deleteDeviceDetails', {
+        id: id,
+      });
+      console.log(`Product App ${id} deleted successfully:`, res.data);
+      alert(`Product App "${id}" deleted successfully`);
+      // navigate('/ceoui');
+    } catch (error) {
+      console.error(`Failed to update Product App ${id}:`, error);
+      alert(`Failed to update Product App "${id}"`);
+    }
   };
 
   return (
@@ -104,12 +141,12 @@ function EditProductAppDetails() {
 
       <h2 className="text-2xl font-semibold mb-2">Product Applications</h2>
       <p className="text-gray-500 mb-6">
-        Edit each product app’s details and its key points.
+        Update each product app individually with this editor.
       </p>
 
       {productApps.map((app, index) => (
-        <div key={index} className="border border-gray-200 rounded-md mb-6">
-          <div className="bg-gray-100 px-4 py-2 rounded-t-md font-medium">
+        <div key={index} className="border border-gray-300 rounded-lg mb-6">
+          <div className="bg-gray-100 px-4 py-2 font-medium rounded-t-lg">
             Product App {index + 1}
           </div>
 
@@ -122,7 +159,7 @@ function EditProductAppDetails() {
                 type="text"
                 value={app.name}
                 onChange={(e) => handleAppChange(index, 'name', e.target.value)}
-                className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm"
+                className="mt-1 block w-full p-2 rounded-md border border-gray-300"
               />
             </div>
 
@@ -135,7 +172,7 @@ function EditProductAppDetails() {
                 onChange={(e) =>
                   handleAppChange(index, 'shortDescription', e.target.value)
                 }
-                className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm"
+                className="mt-1 block w-full p-2 rounded-md border border-gray-300"
               />
             </div>
 
@@ -170,64 +207,80 @@ function EditProductAppDetails() {
                 Points
               </label>
               <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...productApps];
-                      updated[index].points.push({ title: '', desc: '' });
-                      setProductApps(updated);
-                    }}
-                    className="text-blue-600 hover:underline text-sm mt-2"
-                  >
-                    + Add Point
-                  </button>
+                type="button"
+                onClick={() => {
+                  const updated = [...productApps];
+                  updated[index].points.push({ title: '', desc: '' });
+                  setProductApps(updated);
+                }}
+                className="text-blue-600 hover:underline text-sm"
+              >
+                + Add Point
+              </button>
               {app.points.map((point, pointIndex) => (
-                <>
-                  
-
-                  <div key={pointIndex} className="mb-2">
-                    <input
-                      type="text"
-                      placeholder="Title"
-                      value={point.title}
-                      onChange={(e) =>
-                        handlePointChange(
-                          index,
-                          pointIndex,
-                          'title',
-                          e.target.value
-                        )
-                      }
-                      className="block w-full mb-1 p-2 rounded-md border border-gray-300"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Description"
-                      value={point.desc}
-                      onChange={(e) =>
-                        handlePointChange(
-                          index,
-                          pointIndex,
-                          'desc',
-                          e.target.value
-                        )
-                      }
-                      className="block w-full p-2 rounded-md border border-gray-300"
-                    />
-                  </div>
-                </>
+                <div key={pointIndex} className="mb-2">
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    value={point.title}
+                    onChange={(e) =>
+                      handlePointChange(
+                        index,
+                        pointIndex,
+                        'title',
+                        e.target.value
+                      )
+                    }
+                    className="block w-full mb-1 p-2 rounded-md border border-gray-300"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={point.desc}
+                    onChange={(e) =>
+                      handlePointChange(
+                        index,
+                        pointIndex,
+                        'desc',
+                        e.target.value
+                      )
+                    }
+                    className="block w-full p-2 rounded-md border border-gray-300"
+                  />
+                </div>
               ))}
+            </div>
+
+            <div className="pt-4 flex gap-4">
+              <button
+                type="button"
+                onClick={() => handleSubmitSingleApp(app, index)}
+                disabled={loadingIndex === index}
+                className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg ${
+                  loadingIndex === index ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {loadingIndex === index ? 'Saving...' : 'Update'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleRemoveApp(app.id)}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg"
+              >
+                Remove
+              </button>
             </div>
           </div>
         </div>
       ))}
 
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg"
-      >
-        Submit
-      </button>
+      {showAddPopup && (
+        <AddProductAppPopup
+          onClose={() => setShowAddPopup(false)}
+          onSave={handleSaveNewApp}
+        />
+      )}
     </div>
   );
 }

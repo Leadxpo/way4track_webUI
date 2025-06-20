@@ -1,4 +1,4 @@
-import React,{useState,useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
@@ -7,110 +7,108 @@ import { FaEllipsisV } from 'react-icons/fa';
 const RequestRaise = () => {
   const navigate = useNavigate();
 
-const [dropdownOpen, setDropdownOpen] = useState(null);
- const [myRequestList,setMyRequestList]=useState([]);
- const [filterMyRequests,setFilterMyRequests]=useState([]);
- const warehouseManagerId=localStorage.getItem('id');
-  // const warehouseManagerId=46;
-    const getRequestsData = useCallback(async () => {
-      try {
-        const requestBody = {
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-          role: localStorage.getItem('role'),
-        };
-  
-        if (
-          requestBody.role === 'Technician' ||
-          requestBody.role === 'Sales Man'
-        ) {
-          requestBody.staffId = localStorage.getItem('userId');
-        }
-  
-        // if (requestData.branchName) {
-        //   requestBody.branchName = requestData.branchName;
-        // }
-  
-        const response = await ApiService.post(
-          '/requests/getRequestsBySearch',
-          requestBody
-        );
-  
-        
-  
-        if (response?.length) {
-          console.log('jkl', response);
-          const cleanedData = response.filter((item) => item.req_request_from === warehouseManagerId).map((item) => ({
-            requestId: item.
-              requestId
-            ,
-            requestNumber: item.requestNumber,
-            branchName: item.branchName,
-            branchId: item.req_branch_id,
-            requestType: item.requestType,
-            status: item.status,
-          }));
-  
-          console.log(';;;;;', cleanedData);
-          setMyRequestList(cleanedData);
-          // setFilteredData(cleanedData);
-        } else {
-          console.warn(
-            'Request failed:',
-            response?.data?.message || 'No data found'
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching request details:', error);
-      }
-    }, [
-      // requestData.branchName,
-      initialAuthState?.companyCode,
-      initialAuthState?.unitCode,
-    ]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [myRequestList, setMyRequestList] = useState([]);
+  const [filterMyRequests, setFilterMyRequests] = useState([]);
+  const warehouseManagerId = localStorage.getItem('id');
+  const getRequestsData = useCallback(async () => {
+    try {
+      const requestBody = {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+        role: localStorage.getItem('role'),
+      };
 
-    useEffect(() => {
-  getRequestsData();
-}, [getRequestsData]);
+      if (
+        requestBody.role === 'Technician' ||
+        requestBody.role === 'Sales Man'
+      ) {
+        requestBody.staffId = localStorage.getItem('userId');
+      }
+
+      // if (requestData.branchName) {
+      //   requestBody.branchName = requestData.branchName;
+      // }
+
+      const response = await ApiService.post(
+        '/requests/getRequestsBySearch',
+        requestBody
+      );
+
+      // if (response?.length) {
+      console.log('jkl', response);
+      const cleanedData = response
+        .filter((item) => item.req_request_from === Number(warehouseManagerId))
+        .map((item) => ({
+          requestId: item.requestId,
+          requestNumber: item.requestNumber,
+          branchName: item.branchName,
+          branchId: item.req_branch_id,
+          requestType: item.requestType,
+          status: item.status,
+        }));
+
+      console.log(';;;;;', cleanedData);
+      setMyRequestList(cleanedData);
+      // setFilteredData(cleanedData);
+      // } else {
+      //   console.warn(
+      //     'Request failed:',
+      //     response?.data?.message || 'No data found'
+      //   );
+      // }
+    } catch (error) {
+      console.error('Error fetching request details:', error);
+    }
+  }, [
+    // requestData.branchName,
+    initialAuthState?.companyCode,
+    initialAuthState?.unitCode,
+  ]);
+
+  useEffect(() => {
+    getRequestsData();
+  }, [getRequestsData]);
   const [requestRecords, setRequestRecords] = useState([]);
   const [activeTab, setActiveTab] = useState('myRequests');
   const [branchFilter, setBranchFilter] = useState('');
   const [branches, setBranches] = useState([]);
   const [requestStatusFilter, setRequestStatusFilter] = useState('');
 
-
-  const fetchBranchRecords=async ()=>{
+  const fetchBranchRecords = async () => {
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-      const response = await ApiService.post("/branch/getBranchNamesDropDown", payload);
+      const response = await ApiService.post(
+        '/branch/getBranchNamesDropDown',
+        payload
+      );
       setBranches(response?.data || []);
     } catch (error) {
-      console.error("Error fetching branch stock details:", error);
+      console.error('Error fetching branch stock details:', error);
       setBranches([]);
     }
-  }
+  };
 
   useEffect(() => {
     fetchBranchRecords();
   }, [setBranchFilter]);
 
-    const toggleDropdown = (id) => {
+  const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
-
 
   const handleBranchFilter = (e) => {
     setBranchFilter(e.target.value);
   };
 
   const filteredRecords = requestRecords.filter((record) => {
-    const matchesBranch = !branchFilter || Number(record.branchId) === Number(branchFilter);
+    const matchesBranch =
+      !branchFilter || Number(record.branchId) === Number(branchFilter);
     const matchesStatus =
       !requestStatusFilter || record.requestStatus === requestStatusFilter;
-
 
     return matchesBranch && matchesStatus;
   });
@@ -121,7 +119,6 @@ const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const handleDelete = (request) => {
     navigate('/delete-request', { state: { requestDetails: request } });
-
   };
 
   const handleDetails = (request) => {
@@ -132,19 +129,21 @@ const [dropdownOpen, setDropdownOpen] = useState(null);
     <div>
       <div className="flex space-x-4 mb-4 border-b-2 pb-2">
         <button
-          className={`px-4 py-2 font-semibold ${activeTab === 'myRequests'
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'myRequests'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500'
-            }`}
+          }`}
           onClick={() => setActiveTab('myRequests')}
         >
           My Requests
         </button>
         <button
-          className={`px-4 py-2 font-semibold ${activeTab === 'requests'
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'requests'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500'
-            }`}
+          }`}
           onClick={() => setActiveTab('requests')}
         >
           Requests
@@ -205,7 +204,7 @@ const [dropdownOpen, setDropdownOpen] = useState(null);
                   <thead className="bg-gray-100 sticky top-0">
                     <tr className="bg-blue-500 text-white text-left">
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                      requestId
+                        requestId
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
                         requestNumber
@@ -228,76 +227,85 @@ const [dropdownOpen, setDropdownOpen] = useState(null);
                     </tr>
                   </thead>
                   <tbody>
-                    {myRequestList .filter((record) => {
-    const matchesBranch = !branchFilter || Number(record.branchId) === Number(branchFilter);
-    const matchesStatus = !requestStatusFilter || record.status?.toLowerCase() === requestStatusFilter.toLowerCase();
-    return matchesBranch && matchesStatus;
-  }).map((record, index) => (
-                      <tr
-                        key={index}
-                        className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                      >
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestId || '-'}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestNumber || '-'}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.branchName || '-'}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.branchId}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.requestType}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                          {record.status}
-                        </td>
-                        <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
-  <div className="relative inline-block text-left">
-    <button
-      onClick={() => toggleDropdown(record.requestId)}
-      className="text-gray-600 hover:text-black focus:outline-none"
-    >
-      <FaEllipsisV />
-    </button>
-    {dropdownOpen === record.requestId && (
-      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-        <button
-          onClick={() => {
-            handleVendorEdit(record);
-            setDropdownOpen(null);
-          }}
-          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => {
-            handleDelete(record);
-            setDropdownOpen(null);
-          }}
-          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-        >
-          Delete
-        </button>
-        <button
-          onClick={() => {
-            handleDetails(record);
-            setDropdownOpen(null);
-          }}
-          className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
-        >
-          Details
-        </button>
-      </div>
-    )}
-  </div>
-</td>
-                      </tr>
-                    ))}
+                    {myRequestList
+                      .filter((record) => {
+                        const matchesBranch =
+                          !branchFilter ||
+                          Number(record.branchId) === Number(branchFilter);
+                        const matchesStatus =
+                          !requestStatusFilter ||
+                          record.status?.toLowerCase() ===
+                            requestStatusFilter.toLowerCase();
+                        return matchesBranch && matchesStatus;
+                      })
+                      .map((record, index) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                          }
+                        >
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.requestId || '-'}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.requestNumber || '-'}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.branchName || '-'}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.branchId}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.requestType}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {record.status}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
+                            <div className="relative inline-block text-left">
+                              <button
+                                onClick={() => toggleDropdown(record.requestId)}
+                                className="text-gray-600 hover:text-black focus:outline-none"
+                              >
+                                <FaEllipsisV />
+                              </button>
+                              {dropdownOpen === record.requestId && (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                                  <button
+                                    onClick={() => {
+                                      handleVendorEdit(record);
+                                      setDropdownOpen(null);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      handleDelete(record);
+                                      setDropdownOpen(null);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      handleDetails(record);
+                                      setDropdownOpen(null);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                                  >
+                                    Details
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               )}
@@ -321,5 +329,3 @@ const [dropdownOpen, setDropdownOpen] = useState(null);
 };
 
 export default RequestRaise;
-
-

@@ -1,18 +1,24 @@
-import { useCallback, useEffect, useState } from "react";
-import ApiService, { initialAuthState } from "../../services/ApiService";
-import { useNavigate } from "react-router";
+import { useCallback, useEffect, useState } from 'react';
+import ApiService, { initialAuthState } from '../../services/ApiService';
+import { useNavigate } from 'react-router';
 
 export default function AddTicket() {
   const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
   const [formData, setFormData] = useState({
-    problem: "",
-    date: "",
-    addressingDepartment: "",
-    workStatus: "",
-    description: "",
+    problem: '',
+    date: '',
+    addressingDepartment: '',
+    workStatus: '',
+    description: '',
     designationRelation: null,
   });
+
+  const staffRole = localStorage.getItem('role');
+
+  const userId = localStorage.getItem('id');
+
+  const branchId = localStorage.getItem('branch_id');
 
   // Handle general form data changes
   const handleChange = (e) => {
@@ -25,53 +31,65 @@ export default function AddTicket() {
     e.preventDefault();
 
     // Ensure the date is valid before calling toString() on it
-    const formattedDate = formData.date ? formData.date.toString().split("T")[0] : ""; // Add a fallback value if date is undefined
+    const formattedDate = formData.date
+      ? formData.date.toString().split('T')[0]
+      : ''; // Add a fallback value if date is undefined
 
     const payload = {
       problem: formData.problem,
-      date: formattedDate, 
+      date: formattedDate,
       // addressingDepartment: formData.addressingDepartment,
-      designationRelation:formData.designationRelation,
+      designationRelation: formData.designationRelation,
       workStatus: formData.workStatus,
       description: formData.description,
       companyCode: initialAuthState?.companyCode,
       unitCode: initialAuthState?.unitCode,
+      // staffId: Number(staffDbId),
+      branchId: branchId ? Number(branchId) : null,
+      // branchId,
+      ...(staffRole === 'Sub Dealer'
+        ? { subDealerId: Number(userId) }
+        : { staffId: Number(userId) }),
     };
 
     try {
-      const res = await ApiService.post("/tickets/handleTicketDetails", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await ApiService.post(
+        '/tickets/handleTicketDetails',
+        payload,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
 
       if (res.status) {
-        alert("Ticket submitted successfully!");
+        alert('Ticket submitted successfully!');
         setFormData({
-          problem: "",
-          date: "",
-          addressingDepartment: "",
-          workStatus: "",
-          description: "",
-          designationRelation: null 
+          problem: '',
+          date: '',
+          addressingDepartment: '',
+          workStatus: '',
+          description: '',
+          designationRelation: null,
         });
-        navigate("/tickets");
+        navigate('/tickets');
       }
     } catch (error) {
-      console.error("Error submitting ticket:", error);
-      alert("Failed to submit ticket.");
+      console.error('Error submitting ticket:', error);
+      alert('Failed to submit ticket.');
     }
   };
 
   // Fetch all designations
   const getDesignations = useCallback(async () => {
     try {
-      const response = await ApiService.post("/designations/getAllDesignation");
+      const response = await ApiService.post('/designations/getAllDesignation');
       if (response.status && Array.isArray(response.data)) {
         setDesignations(response.data);
       } else {
-        console.error("Failed to fetch designation details.");
+        console.error('Failed to fetch designation details.');
       }
     } catch (error) {
-      console.error("Error fetching designation details:", error);
+      console.error('Error fetching designation details:', error);
     }
   }, []);
 
@@ -84,13 +102,17 @@ export default function AddTicket() {
     const value = event.target.value;
 
     // Find the designation based on selected ID
-    const selectedDesignation = designations.find(item => item.id === parseInt(value));
+    const selectedDesignation = designations.find(
+      (item) => item.id === parseInt(value)
+    );
 
     // Update formData with the selected designation ID and designation name (addressingDepartment)
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       designationRelation: selectedDesignation ? selectedDesignation.id : null,
-      addressingDepartment: selectedDesignation ? selectedDesignation.designation : "",
+      addressingDepartment: selectedDesignation
+        ? selectedDesignation.designation
+        : '',
     }));
   };
 
@@ -127,7 +149,7 @@ export default function AddTicket() {
           <label className="block font-medium mb-1">Designation Relation</label>
           <select
             name="designation_id"
-            value={formData.designationRelation || ""}
+            value={formData.designationRelation || ''}
             onChange={handleDesignationChange}
             className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
           >
@@ -173,7 +195,10 @@ export default function AddTicket() {
           ></textarea>
         </div>
 
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-2 rounded-md"
+        >
           Submit
         </button>
       </form>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../services/ApiService';
+import AddDevicePopup from './AddDevicePopup';
 
 function EditDeviceDetails() {
   const location = useLocation();
@@ -10,6 +11,7 @@ function EditDeviceDetails() {
 
   useEffect(() => {
     const product = location?.state?.product;
+    console.log(product, 'product');
     if (product && product.device) {
       const filledDevices = product.device.map((d) => ({
         id: d.id,
@@ -33,6 +35,7 @@ function EditDeviceDetails() {
         companyCode: product.companyCode,
         unitCode: product.unitCode,
         webProductId: product.id,
+        webProductName: product.name,
       });
     }
   }, [location.state?.product]);
@@ -44,6 +47,8 @@ function EditDeviceDetails() {
       return updated;
     });
   };
+
+  const [showModal, setShowModal] = useState(false);
 
   const handleImageChange = (index, file) => {
     const preview = file ? URL.createObjectURL(file) : '';
@@ -68,13 +73,23 @@ function EditDeviceDetails() {
     formData.append('model', device.model);
     formData.append('description', device.description);
     formData.append('webProductId', productMeta.webProductId);
-    formData.append('isRelay', device.isRelay ? 1 : 0);
-    formData.append('relayAmt', device.relayAmt);
-    formData.append('amount', device.amount);
-    formData.append('isSubscription', device.isSubscription ? 1 : 0);
-    formData.append('subscriptionMonthlyAmt', device.subscriptionMonthlyAmt);
-    formData.append('subscriptionYearlyAmt', device.subscriptionYearlyAmt);
-    formData.append('isNetwork', device.isNetwork ? 1 : 0);
+    formData.append('webProductName', productMeta.webProductName);
+    formData.append('isRelay', device.isRelay ? Number(1) : Number(0));
+    formData.append('relayAmt', Number(device.relayAmt));
+    formData.append('amount', Number(device.amount));
+    formData.append(
+      'isSubscription',
+      device.isSubscription ? Number(1) : Number(0)
+    );
+    formData.append(
+      'subscriptionMonthlyAmt',
+      Number(device.subscriptionMonthlyAmt)
+    );
+    formData.append(
+      'subscriptionYearlyAmt',
+      Number(device.subscriptionYearlyAmt)
+    );
+    formData.append('isNetwork', device.isNetwork ? Number(1) : Number(0));
     formData.append('discount', device.discount);
 
     if (device.image) {
@@ -120,6 +135,29 @@ function EditDeviceDetails() {
     ]);
   };
 
+  const handleRemoveDevice = async (indexToRemove) => {
+    const id = indexToRemove;
+    setDeviceDetails((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
+    try {
+      const res = await ApiService.post('/device/deleteDeviceDetails', {
+        id: id,
+      });
+      console.log(`Device ${id} deleted successfully:`, res.data);
+      alert(`Device "${id}" deleted successfully`);
+      navigate('/ceoui');
+    } catch (error) {
+      console.error(`Failed to update device ${id}:`, error);
+      alert(`Failed to update device "${id}"`);
+    }
+  };
+
+  const handleSaveDevice = (newDevice) => {
+    // setDeviceDetails((prev) => [...prev, newDevice]);
+    handleSingleSubmit(newDevice)
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-2">Devices</h2>
@@ -127,9 +165,17 @@ function EditDeviceDetails() {
         Update each device's model, image, pricing, and additional info.
       </p>
 
-      <button
+      {/* <button
         type="button"
         onClick={() => handleAddNewDevice()}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm mb-6"
+      >
+        + Add New Device
+      </button> */}
+
+      <button
+        type="button"
+        onClick={() => setShowModal(true)}
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm mb-6"
       >
         + Add New Device
@@ -343,7 +389,7 @@ function EditDeviceDetails() {
             </div>
 
             {/* Save button for this specific device */}
-            <div className="pt-2">
+            {/* <div className="pt-2">
               <button
                 type="button"
                 onClick={() => handleSingleSubmit(device)}
@@ -351,10 +397,34 @@ function EditDeviceDetails() {
               >
                 Save
               </button>
+            </div> */}
+
+            <div className="pt-2 flex gap-4">
+              <button
+                type="button"
+                onClick={() => handleSingleSubmit(device)}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition"
+              >
+                Update
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRemoveDevice(device.id)}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition"
+              >
+                Remove
+              </button>
             </div>
           </div>
         </div>
       ))}
+
+      {showModal && (
+        <AddDevicePopup
+          onClose={() => setShowModal(false)}
+          onSave={handleSaveDevice}
+        />
+      )}
     </div>
   );
 }

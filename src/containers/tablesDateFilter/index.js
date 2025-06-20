@@ -43,6 +43,8 @@ const TableWithDateFilter = ({
   const [branchFilter, setBranchFilter] = useState('');
   const [requestList, setRequestList] = useState([]);
 
+  console.log(filteredData, 'filteredData filgter table');
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -50,7 +52,7 @@ const TableWithDateFilter = ({
           '/branch/getBranchNamesDropDown'
         );
         if (response.status) {
-          setBranches(response.data); 
+          setBranches(response.data);
         } else {
           console.error('Failed to fetch branches');
         }
@@ -147,8 +149,8 @@ const TableWithDateFilter = ({
             phoneNumber, // Place 'phoneNumber' explicitly after 'name'
             // joiningDate
             joiningDate: joiningDate
-      ? new Date(joiningDate).toLocaleDateString('en-GB')
-      : '',
+              ? new Date(joiningDate).toLocaleDateString('en-GB')
+              : '',
           })
         );
         setSubdealerList(formattedData);
@@ -185,8 +187,8 @@ const TableWithDateFilter = ({
       alert('Failed to fetch estimate details.');
     }
   }, [dateFrom, dateTo, statusFilter]);
-  
-    const warehouseManagerId=localStorage.getItem('id');
+
+  const warehouseManagerId = localStorage.getItem('id');
   // const warehouseManagerId=43;
 
   const getRequestsData = useCallback(async () => {
@@ -196,8 +198,6 @@ const TableWithDateFilter = ({
         unitCode: initialAuthState?.unitCode,
         role: localStorage.getItem('role'),
       };
-
-
 
       if (
         requestBody.role === 'Technician' ||
@@ -217,11 +217,11 @@ const TableWithDateFilter = ({
 
       console.log('yyyyyy request request raiseeee', response);
 
-      if (response?.length) {
-        const cleanedData = response.filter((item) => item.req_request_to === warehouseManagerId).map((item) => ({
-          requestId: item.
-            requestId
-          ,
+      // if (response?.length) {
+      const cleanedData = response
+        .filter((item) => item.req_request_to === Number(warehouseManagerId))
+        .map((item) => ({
+          requestId: item.requestId,
           requestNumber: item.requestNumber,
           branchName: item.branchName,
           branchId: item.req_branch_id,
@@ -229,15 +229,15 @@ const TableWithDateFilter = ({
           status: item.status,
         }));
 
-        console.log(';;;;;', cleanedData);
-        setRequestList(cleanedData);
-        setFilteredData(cleanedData);
-      } else {
-        console.warn(
-          'Request failed:',
-          response?.data?.message || 'No data found'
-        );
-      }
+      console.log(';;;;;', cleanedData);
+      setRequestList(cleanedData);
+      setFilteredData(cleanedData);
+      // } else {
+      //   console.warn(
+      //     'Request failed:',
+      //     response?.data?.message || 'No data found'
+      //   );
+      // }
     } catch (error) {
       console.error('Error fetching request details:', error);
     }
@@ -272,13 +272,16 @@ const TableWithDateFilter = ({
 
   const getInvoiceData = useCallback(async () => {
     try {
-      const response = await ApiService.post('/estimate/getAllEstimateDetails', {
-        fromDate: dateFrom,
-        toDate: dateTo,
-        status: statusFilter,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      });
+      const response = await ApiService.post(
+        '/estimate/getAllEstimateDetails',
+        {
+          fromDate: dateFrom,
+          toDate: dateTo,
+          status: statusFilter,
+          companyCode: initialAuthState?.companyCode,
+          unitCode: initialAuthState?.unitCode,
+        }
+      );
 
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
@@ -371,9 +374,10 @@ const TableWithDateFilter = ({
     setPageTitle(pageTitles[type]);
 
     const allKeys = Object.keys(dataSource[0] || {});
-    const visibleKeys = type === 'invoice'
-      ? allKeys.filter(key => key.toLowerCase() !== 'products')
-      : allKeys;
+    const visibleKeys =
+      type === 'invoice'
+        ? allKeys.filter((key) => key.toLowerCase() !== 'products')
+        : allKeys;
 
     setColumns(visibleKeys);
     setColumnNames(visibleKeys);
