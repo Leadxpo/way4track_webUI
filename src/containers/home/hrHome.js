@@ -363,9 +363,6 @@ const HrHome = () => {
                         {formatString(column)}
                       </th>
                     ))}
-                    {/* <th className="border-b border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">
-              Action
-            </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -386,48 +383,6 @@ const HrHome = () => {
                           {row[column] || '-'}
                         </td>
                       ))}
-                      {/* <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600 relative">
-                <span onClick={() => handleActionClick(rowIndex)} className="cursor-pointer">
-                  <FaEllipsisVertical />
-                </span>
-                {openRowIndex === rowIndex && (
-                  <div className="absolute top-8 right-0 w-32 bg-white border rounded shadow-lg z-10">
-                    {showEdit && (
-                      <button
-                        onClick={() => {
-                          onEdit(row);
-                          setOpenRowIndex(null);
-                        }}
-                        className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                      >
-                        {editText}
-                      </button>
-                    )}
-                    {showDelete && (
-                      <button
-                        onClick={() => {
-                          onDelete(row);
-                          setOpenRowIndex(null);
-                        }}
-                        className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                      >
-                        {deleteText}
-                      </button>
-                    )}
-                    {showDetails && (
-                      <button
-                        onClick={() => {
-                          onDetails(row);
-                          setOpenRowIndex(null);
-                        }}
-                        className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                      >
-                        {detailsText}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </td> */}
                     </tr>
                   ))}
                 </tbody>

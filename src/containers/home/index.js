@@ -106,9 +106,6 @@ const Home = () => {
     fetchBranches();
   }, []);
 
-
-
-
   const handleCardClick = (cardType) => {
     let dataSource;
     switch (cardType) {

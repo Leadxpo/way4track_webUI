@@ -8,6 +8,7 @@ const EditAttendance = () => {
   const attendanceDetails = location.state?.attendanceDetails || {};
 
   const [formData, setFormData] = useState({
+    id: "",
     staffName: '',
     branchName: '',
     day: '',
@@ -50,6 +51,7 @@ const EditAttendance = () => {
   useEffect(() => {
     if (attendanceDetails) {
       setFormData({
+        id: attendanceDetails.id || "",
         staffName: attendanceDetails.staffName || '',
         branchName: attendanceDetails.branchName || '',
         day: formatDateForInput(attendanceDetails.day) || '',
