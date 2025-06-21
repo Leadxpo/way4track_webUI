@@ -13,8 +13,8 @@ const AddEditAppointmentForm = () => {
     name: appointmentDetails?.appointment_name || '',
     id: appointmentDetails?.appointment_id || null,
     status: appointmentDetails?.status || 'pending',
-    assignedTo: appointmentDetails?.assignedTo || '',
-    date: appointmentDetails?.date || '',
+    assignedTo: appointmentDetails?.staffId || '',
+    date: appointmentDetails?.date.split("T")[0] || '',
     slot: appointmentDetails?.slot || '00:00',
     period: appointmentDetails?.period || 'AM',
     branchId: appointmentDetails?.branchId || '',
@@ -301,6 +301,20 @@ const AddEditAppointmentForm = () => {
           placeholder="Enter Description"
         ></textarea>
       </div>
+
+      {formData.id && <div className="flex flex-col">
+        <label className="font-semibold mb-2">Status:</label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        >
+          <option value="sent">Sent</option>
+          <option value="accepted">accepted</option>
+          <option value="rejected">rejected</option>
+        </select>
+      </div>}
 
       {/* Submit */}
       <button

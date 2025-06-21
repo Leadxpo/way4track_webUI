@@ -426,11 +426,10 @@ const CeoBackendSupportHome = () => {
                       <div
                         key={i}
                         className={`cursor-pointer border px-3 py-2 rounded-md font-medium text-sm flex justify-between items-center transition-all duration-200 hover:scale-[1.01]
-                    ${
-                      selectedLocation === loc.branchName
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
-                    }
+                    ${selectedLocation === loc.branchName
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
+                          }
                   `}
                         onClick={() => setSelectedLocation(loc.branchName)}
                       >
@@ -458,7 +457,10 @@ const CeoBackendSupportHome = () => {
                     .includes(searchPhone.toLowerCase())
               )
               .map((card, i) => {
-                const cardBgColor =
+                const lastRemark = card?.remark?.[card.remark.length - 1].desc;
+                const lastRemarkName = card?.remark?.[card.remark.length - 1].name;
+
+                console.log("Last remark:", lastRemark); const cardBgColor =
                   {
                     install: 'bg-white-50 border-yellow-300',
                     accept: 'bg-white-50 border-blue-300',
@@ -620,9 +622,9 @@ const CeoBackendSupportHome = () => {
                             >
                               {card.startDate
                                 ? calculateDuration(
-                                    card.startDate,
-                                    card.endDate
-                                  )
+                                  card.startDate,
+                                  card.endDate
+                                )
                                 : ''}
                             </p>
                           </div>
@@ -683,101 +685,115 @@ const CeoBackendSupportHome = () => {
                               >
                                 {card.startDate
                                   ? calculateDuration(
-                                      card.startDate,
-                                      card.endDate
-                                    )
+                                    card.startDate,
+                                    card.endDate
+                                  )
                                   : ''}
                               </p>
                             </div>
                           </div>
                         )}
+                        {lastRemarkName&&<div style={{backgroundColor:'#f3f3f3',borderTopLeftRadius:'5px',borderTopRightRadius:'5px',borderBottomLeftRadius:'5px',padding:5}}>
 
-{hasPermission(permission, "backend", "edit") &&
-  <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                          {/* Conditional Status Control */}
-                          <div className="mb-1">
-                            {card.workStatus === 'accept' ||
-                            card.workStatus === 'pending' ? (
-                              <div className="relative">
-                                <select
-                                  onChange={(e) =>
-                                    handleStatusChange(card, e.target.value)
-                                  }
-                                  defaultValue=""
-                                  className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                                >
-                                  <option value="" disabled>
-                                    Change Status
-                                  </option>
-                                  {card.workStatus === 'accept' && (
-                                    <>
-                                      <option value="activate">Activate</option>
-                                      <option value="pending">Pending</option>
-                                    </>
-                                  )}
-                                  {card.workStatus === 'pending' && (
-                                    <>
-                                      <option value="activate">Activate</option>
-                                      <option value="cancel">Cancel</option>
-                                    </>
-                                  )}
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                                  <svg
-                                    className="w-4 h-4 text-gray-500"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
+                          
+                            <strong style={{fontSize:10,whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: 100, // you can adjust this width
+    display: 'inline-block'}}>{lastRemarkName}</strong>
+                            <p style={{fontSize:8}}>{lastRemark}</p>
+                          
+                        </div>}
+
+                        {hasPermission(permission, "backend", "edit") &&
+                          <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            {/* Conditional Status Control */}
+                            <div className="mb-1">
+                              {card.workStatus === 'accept' ||
+                                card.workStatus === 'pending' ? (
+                                <div className="relative">
+                                  <select
+                                    onChange={(e) =>
+                                      handleStatusChange(card, e.target.value)
+                                    }
+                                    defaultValue=""
+                                    className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                                   >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
+                                    <option value="" disabled>
+                                      Change Status
+                                    </option>
+                                    {card.workStatus === 'accept' && (
+                                      <>
+                                        <option value="activate">Activate</option>
+                                        <option value="pending">Pending</option>
+                                      </>
+                                    )}
+                                    {card.workStatus === 'pending' && (
+                                      <>
+                                        <option value="activate">Activate</option>
+                                        <option value="cancel">Cancel</option>
+                                      </>
+                                    )}
+                                  </select>
+                                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                                    <svg
+                                      className="w-4 h-4 text-gray-500"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                  </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => {
-                                  let nextStatus;
-                                  if (card.workStatus === 'install')
-                                    nextStatus = 'accept';
-                                  else nextStatus = card.workStatus;
-                                  handleStatusChange(card, nextStatus);
-                                }}
-                                className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
-                              >
-                                {card?.workStatus === 'install'
-                                  ? 'In Progress'
-                                  : card?.workStatus === 'activate'
-                                    ? 'Activated'
-                                    : card?.workStatus
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    let nextStatus;
+                                    if (card.workStatus === 'install')
+                                      nextStatus = 'accept';
+                                    else nextStatus = card.workStatus;
+                                    handleStatusChange(card, nextStatus);
+                                  }}
+                                  className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
+                                >
+                                  {card?.workStatus === 'install'
+                                    ? 'In Progress'
+                                    : card?.workStatus === 'activate'
+                                      ? 'Activated'
+                                      : card?.workStatus
                                         ?.charAt(0)
                                         .toUpperCase() +
                                       card?.workStatus?.slice(1)}
-                              </button>
-                            )}
+                                </button>
+                              )}
+                            </div>
+
+                            <button
+                              onClick={() =>
+                                navigate('/work-view-details', {
+                                  state: { data: card },
+                                })
+                              }
+                              className="bg-green-600 text-white px-2 py-1 rounded-md hover:bg-green-700"
+                            >
+                              More Details
+                            </button>
+
                           </div>
 
-                          <button
-                            onClick={() =>
-                              navigate('/work-view-details', {
-                                state: { data: card },
-                              })
-                            }
-                            className="bg-green-600 text-white px-2 py-1 rounded-md hover:bg-green-700"
-                          >
-                            More Details
-                          </button>
-                        </div>
-}
+                        }
                       </div>
                     ) : (
                       <div className="h-full flex items-center justify-center text-gray-400 italic">
                         Empty
                       </div>
                     )}
+
                   </div>
                 );
               })}

@@ -69,9 +69,6 @@ const Table = ({
   const [openRowIndex, setOpenRowIndex] = useState(null);
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
-    console.log("showEdit :",showEdit)
-    console.log("showDelete :",showDelete)
-    console.log("showDetails :",showDetails)
   };
   console.log(data,"table data")
   return (
