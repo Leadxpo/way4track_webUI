@@ -693,7 +693,7 @@ const CeoBackendSupportHome = () => {
                             </div>
                           </div>
                         )}
-                        {lastRemarkName&&<div style={{backgroundColor:'#f3f3f3',borderTopLeftRadius:'5px',borderTopRightRadius:'5px',borderBottomLeftRadius:'5px',padding:5}}>
+                        {lastRemarkName&&<div style={{backgroundColor:'#f3f3f3',borderTopLeftRadius:'10px',borderTopRightRadius:'10px',borderBottomLeftRadius:'10px',padding:8}}>
 
                           
                             <strong style={{fontSize:10,whiteSpace: 'nowrap',
