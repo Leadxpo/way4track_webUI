@@ -10,11 +10,11 @@ import { getPermissions } from '../../common/commonUtils';
 const StaffDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log('staff details', state);
   const [staffPhoto, setStaffPhoto] = useState('');
   const [otp, setOtp] = useState('');
   const userId = localStorage.getItem('userId');
   const [permissions, setPermissions] = useState({});
+  const role = localStorage.getItem('role');
   const [formData, setFormData] = useState({
     personnelDetails: {
       id: state?.staffDetails?.id,
@@ -97,7 +97,7 @@ const StaffDetails = () => {
     confirmPassword: '',
   });
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  
+
   useEffect(() => {
     const perms = getPermissions('staff');
     setPermissions(perms);
@@ -233,14 +233,14 @@ const StaffDetails = () => {
     try {
       const response = await ApiService.post('/otp/verify-otp', {
         staffId: userId,
-        otp:otp,
+        otp: otp,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
 
       console.log('API Response', response);
 
-      if (response.errorCode === 200) { 
+      if (response.errorCode === 200) {
         const staff = response.data;
 
         alert('OTP verified successfully');
@@ -303,10 +303,10 @@ const StaffDetails = () => {
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           {Object.entries(formData.personnelDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2" style={{textTransform:'capitalize'}}>
+              <strong className="text-gray-700 mr-2" style={{ textTransform: 'capitalize' }}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value? value :"N/A"}</span>
+              <span>{value ? value : "N/A"}</span>
             </div>
           ))}
         </div>
@@ -347,15 +347,15 @@ const StaffDetails = () => {
       <DetailsCard
         title="Bank Details"
         onEdit={() => handleEdit('/edit-staff-bank', formData.bankDetails)}
-                permissions={permissions}
+        permissions={permissions}
       >
         <div className="grid grid-cols-1 gap-y-2">
           {Object.entries(formData.bankDetails).map(([key, value]) => (
             <div key={key} className="flex">
-              <strong className="text-gray-700 mr-2"  style={{textTransform:'capitalize'}}>
+              <strong className="text-gray-700 mr-2" style={{ textTransform: 'capitalize' }}>
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </strong>
-              <span>{value? value :"N/A"}</span>
+              <span>{value ? value : "N/A"}</span>
             </div>
           ))}
         </div>
@@ -366,7 +366,7 @@ const StaffDetails = () => {
         onEdit={() =>
           handleEdit('/edit-staff-employer', formData.employerDetails)
         }
-                permissions={permissions}
+        permissions={permissions}
       >
         <div className="flex flex-col gap-y-3">
           {Object.entries(formData.employerDetails).map(([key, value]) => {
@@ -378,7 +378,7 @@ const StaffDetails = () => {
                 >
                   <div className="flex items-center gap-3 flex-1 justify-between mr-3">
                     <div>
-                      <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
+                      <strong className="text-gray-700 mr-2 min-w-[160px]" style={{ textTransform: 'capitalize' }}>
                         {key.replace(/([A-Z])/g, ' $1').trim()}:
                       </strong>
                       {isEditingPassword ? (
@@ -395,7 +395,7 @@ const StaffDetails = () => {
                       )}
                     </div>
                     <div className="flex items-center">
-                      <button
+                      {(role === "HR" || role === "CEO") && <button
                         onClick={() => setShowPassword((prev) => !prev)}
                         className="text-gray-700 text-sm mr-3"
                         title={showPassword ? 'Hide Password' : 'Show Password'}
@@ -405,8 +405,8 @@ const StaffDetails = () => {
                         ) : (
                           <IoIosEyeOff size={18} />
                         )}
-                      </button>
-                      {permissions.edit &&<button
+                      </button>}
+                      {permissions.edit && <button
                         onClick={() => setIsConfirmModalOpen(true)}
                         className="text-blue-600 hover:underline text-xs"
                       >
@@ -446,10 +446,10 @@ const StaffDetails = () => {
 
             return (
               <div key={key} className="items-center p-2 rounded">
-                <strong className="text-gray-700 mr-2 min-w-[160px]"  style={{textTransform:'capitalize'}}>
+                <strong className="text-gray-700 mr-2 min-w-[160px]" style={{ textTransform: 'capitalize' }}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}:
                 </strong>
-                <span>{value? value :"N/A"}</span>
+                <span>{value ? value : "N/A"}</span>
               </div>
             );
           })}
@@ -556,7 +556,7 @@ const StaffDetails = () => {
                   className="border w-full p-2 mb-4 rounded"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  />
+                />
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setIsOtpModalOpen(false)}
@@ -584,21 +584,21 @@ const StaffDetails = () => {
   );
 };
 
-const DetailsCard = ({ title, children, onEdit,permissions }) => (
+const DetailsCard = ({ title, children, onEdit, permissions }) => (
   <>
     <div className="flex justify-between items-center bg-gray-100 p-2 rounded-t-lg">
       <h4 className="text-xl font-bold">{title}</h4>
       {/* <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2" onClick={onEdit}>
         <FaEdit /> Edit
       </button> */}
-     {permissions.edit && <button
+      {permissions.edit && <button
         className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-col items-center gap-1 border border-gray-300 shadow"
         onClick={onEdit}
       >
         <FaPencilAlt className="text-black" />
         <span className="flex items-center gap-2">Edit</span>
       </button>
-}    </div>
+      }    </div>
     <div className="p-4 bg-gray-50 rounded-b-lg">{children}</div>
   </>
 );

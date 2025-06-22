@@ -92,7 +92,6 @@ const Branches = () => {
 
 
   const handleMoreDetails = (branchDetails) => {
-    console.log(branchDetails, "Navigating with this asset data");
     navigate('/branch-details', { state: { branchDetails } });
   };
 

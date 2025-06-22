@@ -13,7 +13,8 @@ import { FaFileDownload } from "react-icons/fa";
 const BranchManagerHome = () => {
   const navigate = useNavigate();
 
-
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [showRowPopup, setShowRowPopup] = useState(false);
   const [workStatus, setWorkStatus] = useState({
     installedPercentage: 0,
     pendingPercentage: 0,
@@ -47,10 +48,15 @@ const BranchManagerHome = () => {
 
 
 
-  const getBranchDetailsById = async (branchId) => {
+  const getBranchDetailsById = async () => {
+    const branchId = localStorage.getItem("branch_id");
     try {
-      const response = await ApiService.post("/branch/getBranchDetailsById", { id: branchId });
-  
+      const response = await ApiService.post("/branch/getBranchDetailsById", {
+        companyCode: localStorage.getItem("companyCode"),
+        unitCode: localStorage.getItem("unitCode"),
+        id: branchId,
+      });
+
       if (response?.status && response.data) {
         setBranches(response.data);  // ✅ Correct use of setState
         return response.data;
@@ -63,7 +69,7 @@ const BranchManagerHome = () => {
       return null;
     }
   };
-  
+
   useEffect(() => {
     getBranchDetailsById();
   }, []);
@@ -81,12 +87,10 @@ const BranchManagerHome = () => {
       const payload = {
         companyCode: localStorage.getItem("companyCode"),
         unitCode: localStorage.getItem("unitCode"),
-        // role: localStorage.getItem("role"),
+        branchName: localStorage.getItem("branchName")
       };
 
-      if (payload.role === "Branch Manager") {
-        payload.branchName = localStorage.getItem("branchName");
-      }
+      console.log("aaa :", payload)
 
       let response;
       if (payload.branchName) {
@@ -101,8 +105,6 @@ const BranchManagerHome = () => {
           installedPercentage: response.data?.creditPercentage || 0,
           pendingPercentage: response.data?.debitPercentage || 0,
         });
-      } else {
-        alert(response.data?.message || "Failed to fetch work status data.");
       }
     } catch (error) {
       console.error("Error fetching work status data:", error);
@@ -118,11 +120,9 @@ const BranchManagerHome = () => {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
-        role: localStorage.getItem("role"),
+        branch: localStorage.getItem("branchName"),
       };
-      if (payload.role === "Branch Manager") {
-        payload.branch = localStorage.getItem("branchName");
-      }
+
       let response;
       if (payload.branch) {
         response = await ApiService.post("/dashboards/assertsCardData", payload);
@@ -130,7 +130,6 @@ const BranchManagerHome = () => {
       if (response.status) {
         console.log()
         setAssertsData(response.data || []);
-        console.log("rrr :",assertsData)
       } else {
         alert(response.data.message || "Failed to fetch asserts details.");
       }
@@ -176,7 +175,7 @@ const BranchManagerHome = () => {
   useEffect(() => {
     fetchPayments();
   }, []);
-  
+
 
   const paymentStatus = [
     {
@@ -198,7 +197,7 @@ const BranchManagerHome = () => {
       textColor: "text-purple-700",
     },
   ];
-  
+
   const fetchPayments = async () => {
     try {
       const payload = {
@@ -209,18 +208,18 @@ const BranchManagerHome = () => {
       if (payload.role === 'Branch Manager') {
         payload.branchName = localStorage.getItem('branchName');
       }
-  
+
       const response = await ApiService.post("/technician/getBackendSupportWorkAllocation", payload);
       if (response?.status && Array.isArray(response.data)) {
         const activePayments = response.data.filter(item => item.workStatus === 'activate');
         setTotalPayments(activePayments);
-  
+
         const received = activePayments.filter(item => item.paymentStatus === 'COMPLETED');
         setReceivedPayments(received);
-  
+
         const pending = activePayments.filter(item => item.paymentStatus === 'PENDING');
         setPendingAmount(pending);
-  
+
         // Set counts for UI
         setPaymentData({
           totalPayment: activePayments.length,
@@ -241,24 +240,24 @@ const BranchManagerHome = () => {
       setPaymentData({ totalPayment: 0, totalSuccessPayment: 0, totalPendingPayment: 0 });
     }
   };
-  
+
   // Filtered lists
   const filteredTotalPayments = totalPayments.filter(p =>
     (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
     (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
   );
-  
-const filteredPayments = receivedPayments.filter(p =>
-  (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
+
+  const filteredPayments = receivedPayments.filter(p =>
+    (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
     (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
   );
-  
 
 
-const filteredPendingAmount = pendingAmount.filter(p =>
-  (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
-  (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
-);
+
+  const filteredPendingAmount = pendingAmount.filter(p =>
+    (p?.staffName ?? '').toLowerCase().includes(searchTotal.toLowerCase()) ||
+    (p?.staffId?.toString() ?? '').toLowerCase().includes(searchTotal.toLowerCase())
+  );
 
 
 
@@ -595,26 +594,26 @@ const filteredPendingAmount = pendingAmount.filter(p =>
 
 
 
-   {/* Stats Section */}
-<div className="w-full sm:w-[95%] md:w-[90%] lg:w-[90%] xl:w-[85%] mx-auto">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 mt-10">
-    {paymentStatus.map((stat, index) => (
-      <div
-        key={index}
-        className={`p-6 rounded-xl shadow-md w-full text-center cursor-pointer ${stat.color}`}
-        onClick={() => toggleTable(stat.label)}
-      >
-        <button
-          className="mt-5 px-6 py-2 text-black rounded-lg font-bold hover:bg-blue-100"
-          onClick={() => toggleTable(stat.label)}
-        >
-          {stat.label}
-        </button>
-        <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
+      {/* Stats Section */}
+      <div className="w-full sm:w-[95%] md:w-[90%] lg:w-[90%] xl:w-[85%] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 mt-10">
+          {paymentStatus.map((stat, index) => (
+            <div
+              key={index}
+              className={`p-6 rounded-xl shadow-md w-full text-center cursor-pointer ${stat.color}`}
+              onClick={() => toggleTable(stat.label)}
+            >
+              <button
+                className="mt-5 px-6 py-2 text-black rounded-lg font-bold hover:bg-blue-100"
+                onClick={() => toggleTable(stat.label)}
+              >
+                {stat.label}
+              </button>
+              <div className={`text-4xl font-bold ${stat.textColor} mt-10`}>{stat.value}</div>
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
 
 
 
@@ -767,7 +766,7 @@ const filteredPendingAmount = pendingAmount.filter(p =>
                       <span className={`px-2 py-1 rounded text-white ${payment.status === "COMPLETED" ? "bg-green-500" :
                         payment.status === "PENDING" ? "bg-yellow-500" : "bg-red-500"
                         }`}>
-                    {payment.paymentStatus}
+                        {payment.paymentStatus}
                       </span>
                     </td>
                   </tr>
@@ -943,10 +942,9 @@ const filteredPendingAmount = pendingAmount.filter(p =>
               <th className="py-3 px-4 text-left">Employ ID</th>
               <th className="py-3 px-4 text-left">Employ Name</th>
               <th className="py-3 px-4 text-left">Designation</th>
+              <th className="py-3 px-4 text-left">email</th>
               <th className="py-3 px-4 text-left">Branch</th>
               <th className="py-3 px-4 text-left">Phone Number</th>
-              {/* <th className="py-3 px-4 text-left">At ident</th> */}
-              <th className="py-3 px-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -957,19 +955,18 @@ const filteredPendingAmount = pendingAmount.filter(p =>
                   className={`${index % 2 === 0 ? "bg-gray-200" : "bg-white"
                     } border-b`}
                 >
-                  <td className="py-3 px-4">{emp.staffId}</td>
+                  <td className="py-3 px-4" onClick={() => {
+                    setSelectedRowData(prev=>prev=emp);
+                    setShowRowPopup(true);
+                    console.log("rrr :",selectedRowData)
+                  }}
+                  >
+                    {emp.staffId} </td>
                   <td className="py-3 px-4">{emp.staffName}</td>
                   <td className="py-3 px-4">{emp.staffDesignation}</td>
+                  <td className="py-3 px-4">{emp.email}</td>
                   <td className="py-3 px-4">{emp.branchName}</td>
                   <td className="py-3 px-4">{emp.phoneNumber}</td>
-                  {/* <td className="py-3 px-4">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                    {emp.status}
-                  </span>
-                </td> */}
-                  <td className="py-3 px-4">
-                    <BsThreeDotsVertical className="text-gray-600 cursor-pointer" />
-                  </td>
                 </tr>
               ))}
           </tbody>
@@ -1019,11 +1016,47 @@ const filteredPendingAmount = pendingAmount.filter(p =>
               </button>
             </div>
           </div>
+
+
         </div>
       )}
 
+{showRowPopup && selectedRowData && (
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+              <div className="bg-white rounded-lg shadow-lg w-96 p-4 relative">
+                <button
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                  onClick={() => setShowRowPopup(false)}
+                >
+                  ×
+                </button>
 
-
+                <h2 className="text-lg font-semibold mb-2">Staff Details</h2>
+                <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">staffName:</span>
+                      <span>{selectedRowData.staffName}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">staffDesignation:</span>
+                      <span>{selectedRowData.staffDesignation}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">Email:</span>
+                      <span>{selectedRowData.email}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">branchName:</span>
+                      <span>{selectedRowData.branchName}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">phoneNumber:</span>
+                      <span>{selectedRowData.phoneNumber}</span>
+                    </div>
+                </div>
+              </div>
+            </div>
+          )}
 
     </div>
   )

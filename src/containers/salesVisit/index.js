@@ -185,7 +185,7 @@ const SalesVisit = () => {
   // }, [popupData]);
 
   useEffect(() => {
-    const perms = getPermissions('sale');
+    const perms = getPermissions('sales-visit');
     setPermissions(perms);
   }, []);
 
