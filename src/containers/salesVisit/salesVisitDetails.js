@@ -12,11 +12,11 @@ const SalesVisitDetails = () => {
 
   try {
     parsedRequirements = JSON.parse(visitDetails.requirementDetails || '[]');
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     parsedServices = JSON.parse(visitDetails.service || '[]');
-  } catch (e) {}
+  } catch (e) { }
 
   return (
     <div className="p-8 space-y-6 mx-auto bg-white rounded-lg">
@@ -47,19 +47,24 @@ const SalesVisitDetails = () => {
       </div>
 
       <div className="flex justify-between items-center mt-6">
-        {['Entrance Card', 'Visit Card'].map((title, index) => (
-          <div key={index} className="w-1/2">
-            <h3 className="font-bold text-center text-lg">{title}</h3>
-            <div className="p-4 border rounded-lg text-center h-[153px]">
-              <img
-                src="/way4track-logo.png"
-                alt="Way4Track Logo"
-                className="mx-auto my-2"
-              />
-              <p className="text-green-600 font-semibold">Track Anywhere</p>
+        {['clientPhoto', 'visitingCard'].map((title, index) => {
+          console.log("rrr :", title);
+          return (
+            <div key={index} className="w-1/2">
+              <h3 className="font-bold text-center text-lg">{title}</h3>
+              <div className="p-4 border rounded-lg items-center justify-center">
+                <div className=" h-[150px] flex items-center justify-center">
+                  <img
+                    src={visitDetails[title]}
+                    alt="Way4Track Logo"
+                    className="object-contain h-full w-full"
+                  />
+                </div>
+              </div>
+
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {parsedRequirements.length > 0 && (

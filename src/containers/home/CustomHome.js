@@ -468,20 +468,58 @@ const CustomHome = () => {
 
               {/* Education Details Section */}
               <div className="mb-6">
-                <h4 className="text-lg font-semibold mb-2">
-                  Education Details
-                </h4>
+                <h4 className="text-lg font-semibold mb-2">Education Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
-                  <p>
-                    <strong>Qualifications:</strong>{' '}
-                    {selectedStaff.qualifications ?? 'N/A'}
-                  </p>{' '}
-                  {/* Changed from selectedVehicle */}
-                  <p>
-                    <strong>Experience Before Joining:</strong>{' '}
-                    {selectedStaff.beforeExperience} years
-                  </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                  <div>
+                    <strong>Qualifications:</strong>
+                    {selectedStaff?.qualifications && selectedStaff.qualifications.length > 0 ? (
+                      <ul className="list-disc list-inside mt-1">
+                        {selectedStaff.qualifications.map((item, index) => (
+                          <li key={index}>
+                            {item.qualificationName} - {item.marksOrCgpa}{' '}
+                            {item.file && (
+                              <a
+                                href={item.file}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline ml-1"
+                              >
+                                (View File)
+                              </a>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-1">N/A</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <strong>Experience Before Joining:</strong>
+                    {selectedStaff?.experienceDetails && selectedStaff.experienceDetails.length > 0 ? (
+                      <ul className="list-disc list-inside mt-1">
+                        {selectedStaff.experienceDetails.map((exp, index) => (
+                          <li key={index} className="mb-1">
+                            <div>
+                              <strong>Company:</strong> {exp.previousCompany}
+                            </div>
+                            <div>
+                              <strong>Designation:</strong> {exp.previous_designation}
+                            </div>
+                            <div>
+                              <strong>Salary:</strong> ₹{exp.previous_salary}
+                            </div>
+                            <div>
+                              <strong>Total Experience:</strong> {exp.total_experience} years
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-1">N/A</p>
+                    )}
+                  </div>
                 </div>
               </div>
 

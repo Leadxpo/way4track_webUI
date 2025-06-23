@@ -2109,7 +2109,7 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-                        <View style={styles.section}>
+            <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
@@ -2513,14 +2513,14 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.label}>Troubleshooting:</Text>
-              <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Diagnose and resolve technical issues related to server performance, software bugs, and connectivity problems.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
+              <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Diagnose and resolve technical issues related to server performance, software bugs, and connectivity problems.</Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide timely support to the front-end team and other departments for any back-end related issues.</Text>
-              </View>
+              <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide timely support to the front-end team and other departments for any back-end related issues.</Text>
+            </View>
 
             <Text style={styles.label}>Database Management:</Text>
             <View style={{ flexDirection: "row" }}>
@@ -2572,7 +2572,7 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
             </View>
-            
+
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2757,14 +2757,14 @@ const Letters = () => {
               </View>
             </View>
             <Text style={styles.label}>Technical Support:</Text>
-              <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide technical support and assistance to clients and team members.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
+              <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide technical support and assistance to clients and team members.</Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Respond to service calls and resolve technical problems in a timely manner.</Text>
-              </View>
+              <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Respond to service calls and resolve technical problems in a timely manner.</Text>
+            </View>
             <Text style={styles.label}>Compliance:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -3001,7 +3001,7 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-           
+
             <View style={styles.section}>
               <Text style={styles.label}>Roles and Responsibilities:</Text>
 
@@ -3015,12 +3015,12 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide accurate information about products, services, and promotions to prospective customers.</Text>
               </View>
               <View style={styles.section}>
-              <View style={{ flexDirection: "row" }}>
+                <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Follow up on leads and customer inquiries to drive sales opportunities.</Text>
+                  <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Follow up on leads and customer inquiries to drive sales opportunities.</Text>
+                </View>
+
               </View>
-
-            </View>
 
             </View>
 
@@ -3076,7 +3076,7 @@ const Letters = () => {
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
               <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
             </View>
-            
+
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -3471,46 +3471,43 @@ const Letters = () => {
             {/* Employee Details */}
             <View style={[styles.payslipSection, { borderWidth: 2, borderColor: "#333333", marginTop: 30 }]}>
               <View style={[styles.column, { borderRightWidth: 2, borderColor: "#333333" }]}>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingTop: 5 }}>
+                  <Text style={styles.payslipLabel}>Name:</Text> <Text>{employeeData.staffName}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Name:</Text> <Text>{employeeData.staffName}</Text>
+                  <Text style={styles.payslipLabel}>Employee ID:</Text> <Text>{employeeData.staffId}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
                   <Text style={styles.payslipLabel}>Designation:</Text> <Text>{employeeData.designation}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Days Worked:</Text> <Text>{employeeData.presentDays}</Text>
+                  <Text style={styles.payslipLabel}>Department:</Text> <Text>{formData?.department}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Leave Days:</Text> <Text>{employeeData.leaveDays}</Text>
+                  <Text style={styles.payslipLabel}>Location:</Text> <Text>{employeeData.branch}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Late Days:</Text> <Text>{employeeData.lateDays}</Text>
+                  <Text style={styles.payslipLabel}>Date Of Joining:</Text> <Text>{staffDetails?.joiningDate}</Text>
                 </View>
               </View>
               <View style={styles.column}>
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Month Days:</Text> <Text>{employeeData.monthDays}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingTop: 5 }}>
+                  <Text style={styles.payslipLabel}>Payable Days in pay Period :</Text> <Text>{employeeData.presentDays}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Total OT Hours:</Text> <Text>{employeeData.totalOTHours} hrs</Text>
-                </View>
-                {/* <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Per Day Salary:</Text> <Text>₹{employeeData.perDaySalary}</Text>
-                </View> */}
-                {/* <View style={{ flexDirection: 'row', justifyContent: "space-between",  paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Per Hour Salary:</Text> <Text>₹{employeeData.perHourSalary}</Text>
-                </View> */}
-                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>Bank Account No:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>LOP Days:</Text> <Text>{employeeData.leaveDays}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>PAN:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>Bank name:</Text> <Text>{staffDetails?.bankName}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
-                  <Text style={styles.payslipLabel}>UAN:</Text> <Text>N/A</Text>
+                  <Text style={styles.payslipLabel}>Bank Account No:</Text> <Text>{staffDetails?.accountNumber}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
+                  <Text style={styles.payslipLabel}>PAN:</Text> <Text>{staffDetails?.panCardNumber}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 0 }}>
+                  <Text style={styles.payslipLabel}>UAN:</Text> <Text>{staffDetails?.uanNumber}</Text>
                 </View>
               </View>
             </View>
@@ -3537,8 +3534,8 @@ const Letters = () => {
                 <Text style={[styles.cell, { textAlign: 'right' }]}>{employeeData.PF_Employer2}</Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.cell}>Food Allowance</Text>
-                <Text style={[styles.cell, { borderRight: 2, textAlign: 'right' }]}>{employeeData.foodAllowance}</Text>
+                <Text style={styles.cell}>Total Full Day OT's</Text>
+                <Text style={[styles.cell, { borderRight: 2, textAlign: 'right' }]}>{employeeData.extraHalfSalary}</Text>
                 <Text style={styles.cell}>Other Deduction</Text>
                 <Text style={[styles.cell, { textAlign: 'right' }]}>{employeeData.lateDeductions}</Text>
               </View>
@@ -3551,6 +3548,13 @@ const Letters = () => {
               <View style={styles.row}>
                 <Text style={styles.cell}>Leave Encashment</Text>
                 <Text style={[styles.cell, { borderRight: 2, textAlign: 'right' }]}>{employeeData.leaveEncashment}</Text>
+                <Text style={styles.cell}> </Text>
+                <Text style={[styles.cell, { textAlign: 'right' }]}> </Text>
+
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.cell}>Food Allowance</Text>
+                <Text style={[styles.cell, { borderRight: 2, textAlign: 'right' }]}>{employeeData.foodAllowance}</Text>
                 <Text style={styles.cell}> </Text>
                 <Text style={[styles.cell, { textAlign: 'right' }]}> </Text>
 

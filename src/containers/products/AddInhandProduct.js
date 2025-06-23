@@ -19,9 +19,8 @@ const AddInhandProduct = () => {
 
   // Fetch Staff List
   const fetchEmployees = async () => {
-    const branchName = 'Visakhapatnam';
+    const branchName =localStorage.getItem("branchName");
     try {
-      console.log('check');
       const response = await ApiService.post(
         '/dashboards/getTotalStaffDetails',
         {
@@ -36,13 +35,13 @@ const AddInhandProduct = () => {
       console.log(
         'qqqqq',
         response.data.staff.filter(
-          (staff) => staff.staffDesignation === 'Technician'
+          (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
         )
       );
       if (response.data) {
         setStaffList(
           response.data.staff.filter(
-            (staff) => staff.staffDesignation === 'Technician'
+            (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
           )
         );
       } else {

@@ -107,6 +107,9 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'HR':
         navigate('/hr-home');
         break;
+        default:
+        navigate('/custom-home');
+        break;
     }
   }, []);
 

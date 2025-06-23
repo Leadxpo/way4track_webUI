@@ -78,7 +78,7 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
         ].map((field) => {
           console.log("rrr :", field)
           switch (field) {
-            case "daysOutLate6HoursOrMore":
+            case "extraHalfSalary":
               return <Controller
                 key={field}
                 name={field}

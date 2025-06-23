@@ -516,7 +516,7 @@ const Products = () => {
         <h2 className="text-3xl font-bold text-gray-900">Products</h2>
 
         <div className="flex items-center space-x-4">
-          {['ceo', 'warehouse manager', 'accountant'].includes(
+          {['ceo', 'inventory Operational Analyst','warehouse manager', 'accountant'].includes(
             loggedinRoll.toLowerCase()
           ) && (
             <button
@@ -540,32 +540,33 @@ const Products = () => {
           </button>
           <button
             className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              assignPermissions.add
+              permissions.edit
                 ? 'bg-blue-700 hover:bg-blue-800 shadow-md'
                 : 'bg-blue-400 cursor-not-allowed opacity-50'
             }`}
             onClick={() => navigate('/add-product-assign')}
-            disabled={!assignPermissions.edit}
+            disabled={!permissions.edit}
           >
             <span className="font-medium">Add Product Assign</span>
           </button>
           <button
             className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              assignPermissions.edit
+              permissions.edit
                 ? 'bg-orange-500 hover:bg-orange-600 shadow-md'
                 : 'bg-gray-400 cursor-not-allowed opacity-50'
             }`}
             onClick={() => navigate('/add-inhand-product')}
-            disabled={!assignPermissions.edit}
+            disabled={!permissions.edit}
           >
             <span className="font-medium">In hand Products</span>
           </button>
         </div>
       </div>
-      {role !== 'CEO' &&
-        role !== 'Accountant' &&
-        role !== 'sub dealer' &&
-        role !== 'Warehouse Manager' && (
+      {role !== 'CEO' ||
+        role !== 'Accountant' ||
+        role !== 'sub dealer' ||
+        role !== 'Inventory Operational Analyst' ||
+        role !== 'Warehouse Manager' || (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
             {role !== 'CEO' && role !== 'Sales Man' && (
               <div
@@ -618,9 +619,10 @@ const Products = () => {
           </div> */}
           </div>
         )}
-      {role !== 'CEO' &&
-        role !== 'Accountant' &&
-        role !== 'Branch Manager' &&
+      {role !== 'CEO' ||
+        role !== 'Accountant' ||
+        role !== 'Branch Manager' ||
+        role !== 'Inventory Operational Analyst' ||
         role !== 'Warehouse Manager' && (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
             {/* {role !== 'CEO' && role !== 'Sales Man' && (
@@ -666,6 +668,7 @@ const Products = () => {
         )}
       {(role === 'CEO' ||
         role === 'Warehouse Manager' ||
+        role === 'Inventory Operational Analyst' ||
         role === 'Accountant') && (
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
           {role !== 'Technician' && role !== 'Sales Man' && (

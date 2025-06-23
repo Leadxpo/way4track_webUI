@@ -17,6 +17,16 @@ const EditSalesVisitDetails = () => {
     productService: '',
     quantity: '',
   });
+  let parsedRequirements = [];
+  let parsedServices = [];
+
+  try {
+    parsedRequirements = JSON.parse(visitDetails.requirementDetails || '[]');
+  } catch (e) { }
+
+  try {
+    parsedServices = JSON.parse(visitDetails.service || '[]');
+  } catch (e) { }
 
   useEffect(() => {
     if (Object.keys(salesVisitData).length > 0) {
@@ -57,38 +67,77 @@ const EditSalesVisitDetails = () => {
       </div>
 
       <div className="flex justify-between items-center mt-6">
-        {['Entrance Card', 'Visit Card'].map((title, index) => (
-          <div key={index} className="w-1/2">
-            <h3 className="font-bold text-center text-lg">{title}</h3>
-            <div className="p-4 border rounded-lg text-center h-[153px]">
-              <img
-                src="/way4track-logo.png"
-                alt="Way4Track Logo"
-                className="mx-auto my-2"
-              />
-              <p className="text-green-600 font-semibold">Track Anywhere</p>
+        {['clientPhoto', 'visitingCard'].map((title, index) => {
+          console.log("rrr :", title);
+          return (
+            <div key={index} className="w-1/2">
+              <h3 className="font-bold text-center text-lg">{title}</h3>
+              <div className="p-4 border rounded-lg items-center justify-center">
+                <div className=" h-[150px] flex items-center justify-center">
+                  <img
+                    src={visitDetails[title]}
+                    alt="Way4Track Logo"
+                    className="object-contain h-full w-full"
+                  />
+                </div>
+              </div>
+
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      <div className="flex space-x-4 mt-6 bg-gray-200 p-4 rounded-lg">
-        {[
-          { name: 'productType', placeholder: 'Type of Product' },
-          { name: 'productService', placeholder: 'Product/Service' },
-          { name: 'quantity', placeholder: 'Quantity' },
-        ].map(({ name, placeholder }) => (
-          <input
-            key={name}
-            type="text"
-            name={name}
-            value={visitDetails[name] || ''}
-            onChange={handleChange}
-            placeholder={placeholder}
-            className="w-1/3 p-2 border rounded"
-          />
-        ))}
-      </div>
+      {parsedRequirements.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-2">Requirements</h3>
+          <div className="space-y-4 bg-gray-200 p-4 rounded-lg">
+            {parsedRequirements.map((req, index) => (
+              <div key={index} className="flex space-x-4">
+                <input
+                  type="text"
+                  value={req.productName || ''}
+                  placeholder="Product Name"
+                  className="w-1/2 p-2 border rounded"
+                  readOnly
+                />
+                <input
+                  type="text"
+                  value={req.quantity || ''}
+                  placeholder="Quantity"
+                  className="w-1/2 p-2 border rounded"
+                  readOnly
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {parsedServices.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-2">Services</h3>
+          <div className="space-x-4 bg-gray-200 p-4 rounded-lg">
+            {parsedServices.map((srv, index) => (
+              <div key={index} className="flex space-x-4">
+                <input
+                  type="text"
+                  value={srv.services || ''}
+                  placeholder="Service Name"
+                  className="w-full p-2 border rounded"
+                  readOnly
+                />
+                <input
+                  type="text"
+                  value={srv.description || ''}
+                  placeholder="Description"
+                  className="w-full p-2 border rounded"
+                  readOnly
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <p className="text-sm text-gray-500 mt-4">
         <strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur

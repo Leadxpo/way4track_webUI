@@ -77,7 +77,7 @@ const PayrollDetailsView = ({ payrollData }) => {
         </p>
       </div>
 
-{Permissions.edit && <button
+{permissions.edit && <button
         className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
         onClick={() => setIsEditing(true)}
       >
