@@ -148,24 +148,24 @@ const SalesVisit = () => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
-    console.log("rrr :", workAllocationPayload)
-    // try {
-    //   const endpoint = '/technician/handleTechnicianDetails'
 
-    //   const response = await ApiService.post(endpoint, workAllocationPayload, {
-    //     headers: { 'Content-Type': 'multipart/form-data' },
-    //   });
+    try {
+      const endpoint = '/technician/handleTechnicianDetails'
 
-    //   if (response.status) {
-    //     alert('Work Allocation updated successfully!'
-    //     );
-    //   } else {
-    //     alert('Failed to save work allocation. Please try again.');
-    //   }
-    // } catch (error) {
-    //   console.error('Error saving work allocation:', error);
-    //   alert('Failed to save work allocation. Please try again.');
-    // }
+      const response = await ApiService.post(endpoint, workAllocationPayload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status) {
+        alert('Work Allocation updated successfully!'
+        );
+      } else {
+        alert('Failed to save work allocation. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving work allocation:', error);
+      alert('Failed to save work allocation. Please try again.');
+    }
   }
   const togglePopup = () => {
     setIsOpen(!isOpen);
