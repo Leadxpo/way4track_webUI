@@ -133,13 +133,10 @@ const TableWithDateFilter = ({
 
       if (response.status) {
         console.log(response.data, 'Response Data'); // Log data to verify it
-
+const branchId=localStorage.getItem("branch_id")
         // Remove null values and format data
         const formattedData = response.data.map(
           ({
-            paymentStatus,
-            amount,
-            voucherId,
             phoneNumber,
             joiningDate,
             ...rest
@@ -153,8 +150,9 @@ const TableWithDateFilter = ({
               : '',
           })
         );
-        setSubdealerList(formattedData);
-        setFilteredData(formattedData);
+        const rrr=formattedData.filter((item)=>(String(item.branch)===String(branchId)))
+        setSubdealerList(rrr);
+        setFilteredData(rrr);
       } else {
         alert(response.data.message || 'Failed to fetch sub-dealer details.');
       }

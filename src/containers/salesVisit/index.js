@@ -117,20 +117,56 @@ const SalesVisit = () => {
         paidDate: new Date(), // backend should expect this in ISO string format
       }),
     };
-  
+
     try {
-      const { data } = await ApiService.post(`/sales-works/handleSales`, payload, {
+      const data = await ApiService.post(`/sales-works/handleSales`, payload, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("response data :", data);
+
+      if (data.status) {
+        if (payload.leadStatus === "allocated") {
+          createWorkAllocation(selectedLead, selectedStaffId);
+        }
+      }
     } catch (error) {
       console.error("error:", error);
     }
-  
+
     console.log("Updating Lead:", payload);
     setShowModal(false);
   };
-  
+
+
+  const createWorkAllocation = async (workData, allocatedStaff) => {
+    const workAllocationPayload = {
+      fromStaffId: localStorage.getItem("id") || '',
+      staffId: allocatedStaff || '',
+      phoneNumber: workData?.phoneNumber || '',
+      name: workData?.name || '',
+      address: workData?.address || '',
+      branchId: workData?.branchId || '',
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    };
+    console.log("rrr :", workAllocationPayload)
+    // try {
+    //   const endpoint = '/technician/handleTechnicianDetails'
+
+    //   const response = await ApiService.post(endpoint, workAllocationPayload, {
+    //     headers: { 'Content-Type': 'multipart/form-data' },
+    //   });
+
+    //   if (response.status) {
+    //     alert('Work Allocation updated successfully!'
+    //     );
+    //   } else {
+    //     alert('Failed to save work allocation. Please try again.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error saving work allocation:', error);
+    //   alert('Failed to save work allocation. Please try again.');
+    // }
+  }
   const togglePopup = () => {
     setIsOpen(!isOpen);
   };
@@ -302,6 +338,7 @@ const SalesVisit = () => {
                 <th className="p-3">Date of Visit</th>
                 <th className="p-3" >Estimate Date</th>
                 <th className="p-3">Staff ID</th>
+                <th className="p-3">Branch</th>
                 <th className="p-3">Lead Status</th>
                 <th className="p-3">Action</th>
               </tr>
@@ -328,6 +365,7 @@ const SalesVisit = () => {
                     <td className="p-3 font-semibold" width={200}>{formatDate(item.date)}</td>
                     <td className="p-3" width={100}>{formatDate(item.estimateDate)}</td>
                     <td className="p-3">{item.staffId ? item.staffId : "N/A"}</td>
+                    <td className="p-3">{item.branchName ? item.branchName : "N/A"}</td>
                     <td className="p-3" onClick={() => leadStatusUpdate(item)}>{item.leadStatus}</td>
                     <td className=" p-2 relative">
                       <button

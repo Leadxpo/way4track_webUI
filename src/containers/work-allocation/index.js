@@ -17,7 +17,7 @@ const WorkAllocation = () => {
   const initialFormData = {
     id: workAllocationData.id,
     fromStaffId: workAllocationData.fromStaffId || '',
-    staffId: workAllocationData?.phoneNumberstaffId || '',
+    staffId: workAllocationData?.staffId || '',
     phoneNumber: workAllocationData?.phoneNumber || '',
     userName: workAllocationData?.userID || '',
     name: workAllocationData?.name || '',
@@ -103,49 +103,6 @@ const WorkAllocation = () => {
     setSelectedWorkAllocation(initialFormData);
     setIsEditMode(false);
     setIsModalOpen(true);
-  };
-
-  const handleOpenModalForEdit = async (id) => {
-    if (!id) {
-      console.error('Invalid ID passed:', id);
-      alert('Invalid Work Allocation ID!');
-      return;
-    }
-
-    setPopupData(null);
-
-    setSelectedWorkAllocation(initialFormData);
-    setIsEditMode(true);
-    setIsModalOpen(true);
-    try {
-      const response = await ApiService.post(
-        '/work-allocations/getWorkAllocationDetails',
-        {
-          id,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
-
-      if (response.data?.length > 0) {
-        const subDealer = response.data[0];
-        setSelectedWorkAllocation({
-          ...initialFormData,
-          ...subDealer,
-          clientId: subDealer.clientId.id,
-          address: subDealer.clientId.address,
-          staffId: subDealer.staffId.id,
-          date: subDealer.date.split('T')[0],
-          productDetails: subDealer?.productDetails || [],
-        });
-      }
-    } catch (error) {
-      console.error(
-        'Error fetching work allocation details:',
-        error.response || error
-      );
-      alert('Failed to fetch work allocation details.');
-    }
   };
 
   const handleDropdownChange = (e) => {
