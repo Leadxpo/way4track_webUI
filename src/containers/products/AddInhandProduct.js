@@ -129,7 +129,6 @@ const AddInhandProduct = () => {
     payload.append('staffId', formData.staffId);
     payload.append('assignTime', formData.assignTime);
     payload.append('productTypeId', formData.productTypeId);
-    // payload.append('numberOfProducts', formData.numberOfProducts);
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
 
@@ -159,7 +158,6 @@ const AddInhandProduct = () => {
       console.error('Error submitting data:', error);
       alert('Submission failed. Please check your input.');
     }
-
     setIsLoading(false);
   };
 

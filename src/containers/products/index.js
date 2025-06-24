@@ -414,6 +414,7 @@ const Products = () => {
       const response = await ApiService.post('/products/productAssignDetails', {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        branchName:localStorage.getItem("branchName")
       });
       if (response.data) {
         setBranchList(response.data.branchList);
@@ -516,45 +517,42 @@ const Products = () => {
         <h2 className="text-3xl font-bold text-gray-900">Products</h2>
 
         <div className="flex items-center space-x-4">
-          {['ceo', 'inventory Operational Analyst','warehouse manager', 'accountant'].includes(
+          {['ceo', 'inventory Operational Analyst', 'warehouse manager', 'accountant'].includes(
             loggedinRoll.toLowerCase()
           ) && (
-            <button
-              className="flex items-center space-x-2 bg-yellow-400 hover:bg-yellow-800 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out"
-              onClick={() => setSelected('')}
-            >
-              <span className="font-medium">Refresh</span>
-            </button>
-          )}
+              <button
+                className="flex items-center space-x-2 bg-yellow-400 hover:bg-yellow-800 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out"
+                onClick={() => setSelected('')}
+              >
+                <span className="font-medium">Refresh</span>
+              </button>
+            )}
 
           <button
-            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              permissions.add
-                ? 'bg-green-700 hover:bg-green-800 shadow-md'
-                : 'bg-gray-400 cursor-not-allowed opacity-50'
-            }`}
+            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${permissions.add
+              ? 'bg-green-700 hover:bg-green-800 shadow-md'
+              : 'bg-gray-400 cursor-not-allowed opacity-50'
+              }`}
             onClick={() => navigate('/add-product')}
             disabled={!permissions.add}
           >
             <span className="font-medium">Add Product</span>
           </button>
           <button
-            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              permissions.edit
-                ? 'bg-blue-700 hover:bg-blue-800 shadow-md'
-                : 'bg-blue-400 cursor-not-allowed opacity-50'
-            }`}
+            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${permissions.edit
+              ? 'bg-blue-700 hover:bg-blue-800 shadow-md'
+              : 'bg-blue-400 cursor-not-allowed opacity-50'
+              }`}
             onClick={() => navigate('/add-product-assign')}
             disabled={!permissions.edit}
           >
             <span className="font-medium">Add Product Assign</span>
           </button>
           <button
-            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${
-              permissions.edit
-                ? 'bg-orange-500 hover:bg-orange-600 shadow-md'
-                : 'bg-gray-400 cursor-not-allowed opacity-50'
-            }`}
+            className={`flex items-center space-x-2 text-white px-5 py-2.5 rounded-lg transition duration-300 ease-in-out ${permissions.edit
+              ? 'bg-orange-500 hover:bg-orange-600 shadow-md'
+              : 'bg-gray-400 cursor-not-allowed opacity-50'
+              }`}
             onClick={() => navigate('/add-inhand-product')}
             disabled={!permissions.edit}
           >
@@ -668,68 +666,68 @@ const Products = () => {
         )}
       {(role === 'CEO' ||
         role === 'Warehouse Manager' ||
+        role === 'Branch Manager' ||
         role === 'Inventory Operational Analyst' ||
         role === 'Accountant') && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
-          {role !== 'Technician' && role !== 'Sales Man' && (
-            <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 m-6">
+            {role !== 'Technician' && role !== 'Sales Man' && (
+              <>
+                <div
+                  className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                  onClick={() => setSelected('branchstock')}
+                >
+                  <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                    <select
+                      name="branchName"
+                      disabled={!permissions.add}
+                      value={searchData.branchName}
+                      onChange={handleInputChange}
+                      className="w-full p-1 text-gray-700 rounded focus:outline-none"
+                    >
+                      <option value="">Select Branch</option>
+                      {branchList.map((branch, index) => (
+                        <option key={index} value={branch.branchName}>
+                          {branch.branchName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="text-white text-5xl font-extrabold mt-6">
+                    {selected === 'branchstock'
+                      ? totalBranchStock
+                      : totalUnassignedStock}
+                  </div>
+                </div>
+              </>
+            )}
               <div
-                className="bg-red-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-                onClick={() => setSelected('branchstock')}
+                className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                onClick={() => setSelected('subDealerStock')}
               >
                 <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-                  <select
-                    name="branchName"
-                    // value={selectedBranch}
-                    // onChange={(e) => setSelectedBranch(e.target.value)}
-                    value={searchData.branchName}
-                    onChange={handleInputChange}
-                    className="w-full p-1 text-gray-700 rounded focus:outline-none"
-                  >
-                    <option value="">Select Branch</option>
-                    {branchList.map((branch, index) => (
-                      <option key={index} value={branch.branchName}>
-                        {branch.branchName}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="text-gray-800 font-medium">Sub Dealers</span>
                 </div>
                 <div className="text-white text-5xl font-extrabold mt-6">
-                  {selected === 'branchstock'
-                    ? totalBranchStock
-                    : totalUnassignedStock}
+                  {totalSubDealerStock}
                 </div>
               </div>
-            </>
-          )}
 
-          <div
-            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-            onClick={() => setSelected('subDealerStock')}
-          >
-            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-              <span className="text-gray-800 font-medium">Sub Dealers</span>
-            </div>
-            <div className="text-white text-5xl font-extrabold mt-6">
-              {totalSubDealerStock}
-            </div>
+              <div
+                className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
+                onClick={() => setSelected('handstock')}
+              >
+                <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
+                  <span className="text-gray-800 font-medium">
+                    In Hand Products
+                  </span>
+                </div>
+                <div className="text-white text-5xl font-extrabold mt-6">
+                  {totalHandStock}
+                </div>
+              </div>
           </div>
 
-          <div
-            className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
-            onClick={() => setSelected('handstock')}
-          >
-            <div className="bg-white shadow-inner rounded-md p-2 w-3/4">
-              <span className="text-gray-800 font-medium">
-                In Hand Products
-              </span>
-            </div>
-            <div className="text-white text-5xl font-extrabold mt-6">
-              {totalHandStock}
-            </div>
-          </div>
-        </div>
-      )}
+        )}
       {selected == !'branchstock' &&
         selected == !'handstock' &&
         selected == !'subDealerStock' && (
@@ -774,9 +772,8 @@ const Products = () => {
                     filteredStock?.map((item, index) => (
                       <tr
                         key={item.id}
-                        className={`border-b ${
-                          index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
-                        } hover:bg-gray-50`}
+                        className={`border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+                          } hover:bg-gray-50`}
                       >
                         <td className="px-6 py-4">{index + 1}</td>
                         <td className="px-6 py-4">{item.productName}</td>
@@ -829,18 +826,18 @@ const Products = () => {
       {(selected === 'branchstock' ||
         selected === 'handstock' ||
         selected === 'subDealerStock') && (
-        <>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <input
-              type="text"
-              name="productName"
-              placeholder="Search Product Name"
-              value={searchData.productName}
-              onChange={handleInputChange}
-              className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
-            />
+          <>
+            <div className="flex flex-wrap gap-4 mb-6">
+              <input
+                type="text"
+                name="productName"
+                placeholder="Search Product Name"
+                value={searchData.productName}
+                onChange={handleInputChange}
+                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+              />
 
-            {/* {selected === 'branchstock' && (
+              {/* {selected === 'branchstock' && (
               <input
                 type="text"
                 name="branchName"
@@ -851,109 +848,109 @@ const Products = () => {
               />
             )} */}
 
-            {selected === 'handstock' && (
-              <input
-                type="text"
-                name="staffName"
-                placeholder="Search Staff Name"
-                value={searchData.staffName}
-                onChange={handleInputChange}
-                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
-              />
-            )}
+              {selected === 'handstock' && (
+                <input
+                  type="text"
+                  name="staffName"
+                  placeholder="Search Staff Name"
+                  value={searchData.staffName}
+                  onChange={handleInputChange}
+                  className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+                />
+              )}
 
-            {selected === 'subDealerStock' && (
-              <input
-                type="text"
-                name="subDealerName"
-                placeholder="Search Sub Dealer Name"
-                value={searchData.subDealerName}
-                onChange={handleInputChange}
-                className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
-              />
-            )}
+              {selected === 'subDealerStock' && (
+                <input
+                  type="text"
+                  name="subDealerName"
+                  placeholder="Search Sub Dealer Name"
+                  value={searchData.subDealerName}
+                  onChange={handleInputChange}
+                  className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+                />
+              )}
 
-            <button
-              onClick={handleSearch}
-              className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800"
-            >
-              <FaSearch className="mr-2" /> Search
-            </button>
-          </div>
+              <button
+                onClick={handleSearch}
+                className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800"
+              >
+                <FaSearch className="mr-2" /> Search
+              </button>
+            </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-bold">
-                    Product Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold">
-                    {selected === 'branchstock' && 'Branch'}
-                    {selected === 'subDealerStock' && 'Sub Dealer'}
-                    {selected === 'handstock' && 'Staff Name'}
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-bold">
-                    Stock
-                  </th>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      Product Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      {selected === 'branchstock' && 'Branch'}
+                      {selected === 'subDealerStock' && 'Sub Dealer'}
+                      {selected === 'handstock' && 'Staff Name'}
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold">
+                      Stock
+                    </th>
 
-                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
+                    {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     IMEI
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-bold">
                     Sim Number
                   </th> */}
-                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
+                    {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     Date
                   </th> */}
-                  {/* <th className="px-6 py-3 text-left text-sm font-bold">
+                    {/* <th className="px-6 py-3 text-left text-sm font-bold">
                     Action
                   </th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {(selected === 'branchstock'
-                  ? filteredBranchStock
-                  : selected === 'subDealerStock'
-                    ? filteredSubdealerStock
-                    : filteredInHandStock
-                ).map((item, index) => (
-                  <tr
-                    key={item.id || index}
-                    className={`border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-50`}
-                  >
-                    <td className="px-6 py-4">{item.productName || '-'}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(selected === 'branchstock'
+                    ? filteredBranchStock
+                    : selected === 'subDealerStock'
+                      ? filteredSubdealerStock
+                      : filteredInHandStock
+                  ).map((item, index) => (
+                    <tr
+                      key={item.id || index}
+                      className={`border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-50`}
+                    >
+                      <td className="px-6 py-4">{item.productName || '-'}</td>
 
-                    {selected === 'handstock' && (
-                      <>
-                        <td className="px-6 py-4">{item.staffName}</td>
-                        <td className="px-6 py-4">{item.handStock}</td>
-                      </>
-                    )}
+                      {selected === 'handstock' && (
+                        <>
+                          <td className="px-6 py-4">{item.staffName}</td>
+                          <td className="px-6 py-4">{item.handStock}</td>
+                        </>
+                      )}
 
-                    {selected === 'branchstock' && (
-                      <>
-                        <td className="px-6 py-4">{item.branchName}</td>
-                        <td className="px-6 py-4">{item.presentStock}</td>
-                      </>
-                    )}
-                    {selected === 'subDealerStock' && (
-                      <>
-                        <td className="px-6 py-4">{item.subDealerName}</td>
-                        <td className="px-6 py-4">{item.presentStock}</td>
-                      </>
-                    )}
+                      {selected === 'branchstock' && (
+                        <>
+                          <td className="px-6 py-4">{item.branchName}</td>
+                          <td className="px-6 py-4">{item.presentStock}</td>
+                        </>
+                      )}
+                      {selected === 'subDealerStock' && (
+                        <>
+                          <td className="px-6 py-4">{item.subDealerName}</td>
+                          <td className="px-6 py-4">{item.presentStock}</td>
+                        </>
+                      )}
 
-                    {/* Staff Name for in-hand */}
-                    {/* {selected === 'handstock' && (
+                      {/* Staff Name for in-hand */}
+                      {/* {selected === 'handstock' && (
                       <td className="px-6 py-4">{item.staffName}</td>
                     )} */}
 
-                    {/* Date - optional fallback */}
-                    {/* <td className="px-6 py-4">{item.date || '-'}</td> */}
+                      {/* Date - optional fallback */}
+                      {/* <td className="px-6 py-4">{item.date || '-'}</td> */}
 
-                    {/* Actions */}
-                    {/* <td className="px-6 py-4 text-center relative">
+                      {/* Actions */}
+                      {/* <td className="px-6 py-4 text-center relative">
                       <button
                         onClick={() => toggleDropdown(item.id)}
                         className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
@@ -977,13 +974,13 @@ const Products = () => {
                         </div>
                       )}
                     </td> */}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
     </div>
   );
 };

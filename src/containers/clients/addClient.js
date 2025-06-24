@@ -71,10 +71,10 @@ if(errors)
 
   const handleSave = async () => {
 
-    if (errors.email || errors.phoneNumber) {
-      alert('Please fix the validation errors before saving.');
-      return;
-    }
+    // if (errors.email || errors.phoneNumber) {
+    //   alert('Please fix the validation errors before saving.');
+    //   return;
+    // }
 
     const payload = new FormData();
   
@@ -85,6 +85,7 @@ if(errors)
         payload.append(key, value);
       }
     });
+
     try {
       const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -206,7 +207,6 @@ const handleChange = useCallback(
     const { name, value } = e.target;
     setFormData((prevData) => {
       const updatedData = { ...prevData, [name]: value };
-      // setPersonnelDetails(updatedData);
       return updatedData;
     });
 

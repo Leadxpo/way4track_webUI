@@ -117,11 +117,11 @@ export const menuOptions = [
     icon: <img src="./products.png" />,
     route: '/products',
   },
-  hasPermission(permission, "productassign", "view") && {
-    name: 'Product Assign',
-    icon: <img src="./product_assign.png" />,
-    route: '/products_assign',
-  },
+  // hasPermission(permission, "productassign", "view") && {
+  //   name: 'Product Assign',
+  //   icon: <img src="./product_assign.png" />,
+  //   route: '/products_assign',
+  // },
   hasPermission(permission, "requests", "view") && {
     name: 'Request Raise',
     icon: <img src="./request_raise.png" />,
@@ -284,9 +284,9 @@ export const formattedPaths = {
   '/add-client': { name: 'Add Customer', icon: <img src="./clients.png" /> },
   '/delete-client': { name: 'Delete Customer', icon: <img src="./delete_client.png" /> },
   '/client-details': { name: 'Customer Details', icon: <img src="./client_details.png" /> },
-  '/products_assign': { name: 'Product Assign', icon: <img src="./product_assign.png" /> },
-  '/add-product-assign': { name: 'Add Product Assign', icon: <img src="./product_assign.png" /> },
-  '/delete-product-assign': { name: 'Delete Product Assign', icon: <img src="./delete_product_assign.png" /> },
+  // '/products_assign': { name: 'Product Assign', icon: <img src="./product_assign.png" /> },
+  // '/add-product-assign': { name: 'Add Product Assign', icon: <img src="./product_assign.png" /> },
+  // '/delete-product-assign': { name: 'Delete Product Assign', icon: <img src="./delete_product_assign.png" /> },
   '/vendors': { name: 'Vendors', icon: <img src="./vendors.png" /> },
   '/add-vendor': { name: 'Add Vendor', icon: <img src="./vendors.png" /> },
   '/sales_visit': { name: 'Sales Visit', icon: <img src=".work_allocation.png" /> },
@@ -324,7 +324,7 @@ export const formattedPaths = {
 
 export const pageTitles = {
   clients: 'Clients Details',
-  product_assign: 'Product Assign',
+  // product_assign: 'Product Assign',
   vendors: 'Vendor Details',
   sub_dealers: 'Sub Dealers',
   receipts: 'Receipts',

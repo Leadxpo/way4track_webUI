@@ -41,6 +41,7 @@ const TableWithSearchFilter = ({
   const workData = location.state?.workData || {};
   const [columnNames,setColumnNames]=useState([])
   const [qualifiedCount, setQualifiedCount] = useState(0);
+
   useEffect(() => {
     const countQualified = filteredData.filter(
       (item) => item.status === 'Qualified'
@@ -53,20 +54,19 @@ const TableWithSearchFilter = ({
     console.log('fgsgs hiringData', hiringData);
   }
   const voucherData = location.state?.voucherData || {};
+
   const getSearchDetailClient = useCallback(async () => {
     try {
       const response = await ApiService.post(
         '/dashboards/getSearchDetailClient',
         {
           clientId: searchID,
-          branchName: clientData?.branchName,
+          branchName: localStorage.getItem("branchName"),
           name: searchName,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
       );
-
-      console.log("tttttrrr ",response.data)
 
       if (response.status) {
         setFilteredData(response.data); // Assuming the structure is as expected
@@ -541,7 +541,7 @@ const TableWithSearchFilter = ({
               onChange={type==="hiring"?handleHiringSearch:handleStatusChange}
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
             >
-              <option value="" disabled>
+              <option value="branch" disabled>
                 Select a Branch
               </option>
               {branches.map((branch) => (
