@@ -43,8 +43,6 @@ const TableWithDateFilter = ({
   const [branchFilter, setBranchFilter] = useState('');
   const [requestList, setRequestList] = useState([]);
 
-  console.log(filteredData, 'filteredData filgter table');
-
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -110,7 +108,6 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch vendor details.');
@@ -132,7 +129,6 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
 const branchId=localStorage.getItem("branch_id")
         // Remove null values and format data
         const formattedData = response.data.map(
@@ -213,8 +209,6 @@ const branchId=localStorage.getItem("branch_id")
         requestBody
       );
 
-      console.log('yyyyyy request request raiseeee', response);
-
       // if (response?.length) {
       const cleanedData = response
         .filter((item) => item.req_request_to === Number(warehouseManagerId))
@@ -227,7 +221,6 @@ const branchId=localStorage.getItem("branch_id")
           status: item.status,
         }));
 
-      console.log(';;;;;', cleanedData);
       setRequestList(cleanedData);
       setFilteredData(cleanedData);
       // } else {
@@ -257,7 +250,6 @@ const branchId=localStorage.getItem("branch_id")
       });
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch estimate details.');
@@ -282,7 +274,6 @@ const branchId=localStorage.getItem("branch_id")
       );
 
       if (response.status) {
-        console.log(response.data, 'Response Data'); // Log data to verify it
         setInvoiceList(response.data); // Assuming the structure is as expected
         setFilteredData(response.data); // Assuming the structure is as expected
       } else {

@@ -22,7 +22,6 @@ const Staff = () => {
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
   const [permissions, setPermissions] = useState({});
-  console.log(columns, 'columns');
 
   const columnNames = [
     'ID',
@@ -51,7 +50,6 @@ const Staff = () => {
     // 'Branch Name',
   ];
 
-  console.log(columns, 'Staff table columns');
   // Fetch Staff Details using useCallback to memoize the function
   const getStaffSearchDetails = useCallback(async () => {
     try {
@@ -182,7 +180,6 @@ const Staff = () => {
 
   const handleDelete = async (row) => {
     const id = row.ID;
-    console.log(id, 'iddddsds');
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this record?'
     );

@@ -214,7 +214,7 @@ const PurchaseForm = () => {
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         });
-        console.log('fedgrfdtrgxfsdf', response);
+
         if (response.status) {
           setLedger(response.data); // Set branches to state
         } else {
@@ -637,58 +637,58 @@ const PurchaseForm = () => {
                   <label className="font-semibold text-gray-600">
                     Company Name:
                   </label>
-                  <p>{gstData.taxpayerInfo.tradeNam}</p>
+                  <p>{gstData?.taxpayerInfo?.tradeNam}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     GST Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.gstin}</p>
+                  <p>{gstData?.taxpayerInfo?.gstin}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Type Of Company:
                   </label>
-                  <p>{gstData.taxpayerInfo.dty}</p>
+                  <p>{gstData?.taxpayerInfo?.dty}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Incorporate Type:
                   </label>
-                  <p>{gstData.taxpayerInfo.ctb}</p>
+                  <p>{gstData?.taxpayerInfo?.ctb}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">Status:</label>
-                  <p>{gstData.taxpayerInfo.sts}</p>
+                  <p>{gstData?.taxpayerInfo?.sts}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Pan Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.panNo}</p>
+                  <p>{gstData?.taxpayerInfo?.panNo}</p>
                 </div>
                 <div className="sm:col-span-2">
                   <label className="font-semibold text-gray-600">
                     Address:
                   </label>
                   <p className="leading-relaxed">
-                    {gstData.taxpayerInfo.pradr.addr.bno &&
-                      `${gstData.taxpayerInfo.pradr.addr.bno}, `}
-                    {gstData.taxpayerInfo.pradr.addr.st &&
-                      `${gstData.taxpayerInfo.pradr.addr.st}, `}
-                    {gstData.taxpayerInfo.pradr.addr.loc &&
-                      `${gstData.taxpayerInfo.pradr.addr.loc}, `}
-                    {gstData.taxpayerInfo.pradr.addr.dst &&
-                      `${gstData.taxpayerInfo.pradr.addr.dst}, `}
-                    {gstData.taxpayerInfo.pradr.addr.stcd} -{' '}
-                    {gstData.taxpayerInfo.pradr.addr.pncd}
+                    {gstData?.taxpayerInfo?.pradr.addr.bno &&
+                      `${gstData?.taxpayerInfo?.pradr.addr.bno}, `}
+                    {gstData?.taxpayerInfo?.pradr.addr.st &&
+                      `${gstData?.taxpayerInfo?.pradr.addr.st}, `}
+                    {gstData?.taxpayerInfo?.pradr.addr.loc &&
+                      `${gstData?.taxpayerInfo?.pradr.addr.loc}, `}
+                    {gstData?.taxpayerInfo?.pradr.addr.dst &&
+                      `${gstData?.taxpayerInfo?.pradr.addr.dst}, `}
+                    {gstData?.taxpayerInfo?.pradr.addr.stcd} -{' '}
+                    {gstData?.taxpayerInfo?.pradr.addr.pncd}
                   </p>
                 </div>
               </div>
 
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <label className="font-semibold text-gray-600">State:</label>
-                <p>{gstData.taxpayerInfo.pradr.addr.stcd}</p>
+                <p>{gstData?.taxpayerInfo?.pradr.addr.stcd}</p>
               </div>
             </div>
           )}

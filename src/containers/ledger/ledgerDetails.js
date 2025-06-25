@@ -1,73 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const LedgerDetails = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const ledgerDetails = location.state?.ledgerDetails || {};
-  // Determine voucherId based on available values
-  const voucherId =
-    ledgerDetails.clientId ||
-    ledgerDetails.vendorId ||
-    ledgerDetails.subDealerId ||
-    '';
 
   // State to store ledger data and client information
   const [ledgerData, setLedgerData] = useState([]);
-  const [clientData, setClientData] = useState({
-    name:
-      ledgerDetails.clientName ||
-      ledgerDetails.vendorName ||
-      ledgerDetails.subDealerName ||
-      'N/A',
-    phone: ledgerDetails.phoneNumber || 'N/A',
-    email: ledgerDetails.email || 'N/A',
-    gst: ledgerDetails.GSTNumber || 'N/A',
-    image: '', // To be set from API response
-  });
+  const [ledgerVoucherData, setLedgerVoucherData] = useState([]);
 
   useEffect(() => {
+
     const fetchLedgerDetailsById = async () => {
-      if (!voucherId) return; // Prevent API call if there's no valid voucherId
 
       try {
         const response = await ApiService.post(
-          '/dashboards/getLedgerDataById',
+          '/ledger/getLedgerDetailsById',
           {
-            voucherId,
+            id: ledgerDetails.id,
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
           }
         );
 
-        if (response.status && response.data.length > 0) {
+        if (response.status) {
           const ledgerEntries = response.data;
-
+          console.log("rrr :", ledgerEntries)
           // Extract client details from the first valid entry
-          const firstEntry = ledgerEntries.find(
-            (entry) =>
-              entry.clientName || entry.vendorName || entry.subDealerName
-          );
-          if (firstEntry) {
-            setClientData({
-              name:
-                firstEntry.clientName ||
-                firstEntry.vendorName ||
-                firstEntry.subDealerName ||
-                clientData.name,
-              phone: firstEntry.phoneNumber || clientData.phone,
-              email: firstEntry.email || clientData.email,
-              gst: firstEntry.GSTNumber || clientData.gst,
-              image:
-                firstEntry.clientPhoto ||
-                firstEntry.vendorPhoto ||
-                firstEntry.subDealerPhoto ||
-                '',
-            });
-          }
+          // if (firstEntry) {
+          //   setledgerData({
+          //     name:
+          //       firstEntry.clientName ||
+          //       firstEntry.vendorName ||
+          //       firstEntry.subDealerName ||
+          //       ledgerData.name,
+          //     phone: firstEntry.phoneNumber || ledgerData.phone,
+          //     email: firstEntry.email || ledgerData.email,
+          //     gst: firstEntry.GSTNumber || ledgerData.gst,
+          //     image:
+          //       firstEntry.clientPhoto ||
+          //       firstEntry.vendorPhoto ||
+          //       firstEntry.subDealerPhoto ||
+          //       '',
+          //   });
+          // }
 
           // Set ledger data
           setLedgerData(ledgerEntries);
+          setLedgerVoucherData(ledgerEntries.vouchers)
         }
       } catch (error) {
         console.error('Error fetching ledger details:', error);
@@ -75,11 +57,17 @@ const LedgerDetails = () => {
     };
 
     fetchLedgerDetailsById();
-  }, [voucherId]);
+  }, []);
 
+  const handleEdit = (ledger) => {
+    console.log("aaa :", ledger)
+    navigate('/add-ledger', {
+      state: { ledgerDetails: ledger },
+    });
+  };
   // Calculate total amount
-  const totalAmount = ledgerData.reduce(
-    (total, entry) => total + (parseInt(entry.debitAmount) || 0),
+  const totalAmount = ledgerData?.vouchers?.reduce(
+    (total, entry) => total + (parseInt(entry?.amount) || 0),
     0
   );
 
@@ -87,21 +75,49 @@ const LedgerDetails = () => {
     <div className="p-8 space-y-6">
       {/* Client Profile Section */}
       <div className="flex items-center bg-white p-6 rounded-lg shadow-lg">
-        {clientData.image && (
-          <img
-            src={clientData.image}
-            alt="Client Profile"
-            className="w-24 h-24 rounded-full object-cover mr-6"
-          />
+
+        {ledgerData && (
+          <div >
+            <h2 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Ledger Details</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-700" style={{ justifyContent: 'space-between' }}>
+              <div>
+                <span className="font-semibold">Name:</span> {ledgerData.name}
+              </div>
+              <div>
+                <span className="font-semibold">State:</span> {ledgerData.state}
+              </div>
+              <div>
+                <span className="font-semibold">Country:</span> {ledgerData.country}
+              </div>
+              <div>
+                <span className="font-semibold">PAN Number:</span> {ledgerData.panNumber || 'N/A'}
+              </div>
+              <div>
+                <span className="font-semibold">Registration Type:</span> {ledgerData.registrationType}
+              </div>
+              <div>
+                <span className="font-semibold">GST UIN:</span> {ledgerData.gstUinNumber || 'N/A'}
+              </div>
+              <div>
+                <span className="font-semibold">Group:</span> {ledgerData.group}
+              </div>
+              <div>
+                <span className="font-semibold">TDS Deductable:</span> {ledgerData.tdsDeductable ? 'Yes' : 'No'}
+              </div>
+              <div>
+                <span className="font-semibold">TCS Deductable:</span> {ledgerData.tcsDeductable ? 'Yes' : 'No'}
+              </div>
+            </div>
+          </div>
         )}
-        <div>
-          <h2 className="text-xl font-semibold">Client Profile</h2>
-          <p>Name: {clientData.name}</p>
-          <p>Email: {clientData.email}</p>
-          <p>Phone Number: {clientData.phone}</p>
-          <p>GST: {clientData.gst}</p>
-        </div>
-      </div>
+        <button
+          onClick={() => {
+            handleEdit(ledgerData)
+          }} type='button'
+          className="block btn-primary rounded px-4 py-2 text-left text-sm hover:bg-gray-100" style={{position:'relative', zIndex:99,top:-80,right:-100}}
+        >
+          Edit Ledger
+        </button>      </div>
 
       {/* Ledger Section */}
       <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -111,26 +127,26 @@ const LedgerDetails = () => {
             <tr>
               <th className="py-2 px-4">NO.</th>
               <th className="py-2 px-4">Ledger ID</th>
-              <th className="py-2 px-4">Purpose</th>
               <th className="py-2 px-4">Date/Time</th>
-              <th className="py-2 px-4">Debit</th>
-              <th className="py-2 px-4">Credit</th>
+              <th className="py-2 px-4">Payment Type</th>
+              <th className="py-2 px-4">Voucher Type</th>
+              <th className="py-2 px-4">Amount</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {ledgerData.map((entry, index) => (
+            {ledgerVoucherData.map((entry, index) => (
               <tr
-                key={entry.ledgerId}
+                key={entry.id}
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
                 <td className="py-2 px-4">{index + 1}</td>
-                <td className="py-2 px-4">{entry.ledgerId}</td>
-                <td className="py-2 px-4">{entry.purpose}</td>
+                <td className="py-2 px-4">{entry.id}</td>
                 <td className="py-2 px-4">
-                  {new Date(entry.generationDate).toLocaleString()}
+                  {new Date(entry.createdAt).toLocaleString()}
                 </td>
-                <td className="py-2 px-4">₹{entry.debitAmount}</td>
-                <td className="py-2 px-4">₹{entry.creditAmount}</td>
+                <td className="py-2 px-4">{entry.paymentType}</td>
+                <td className="py-2 px-4">{entry.voucherType}</td>
+                <td className="py-2 px-4">{entry.amount}</td>
               </tr>
             ))}
           </tbody>

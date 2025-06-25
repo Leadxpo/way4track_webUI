@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-const CustomerForm = ({ editData }) => {
+
+const CustomerForm = () => {
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
+  const editData = location.state?.ledgerDetails || {};
   const [groupData, setGroupData] = useState([]);
   const [formData, setFormData] = useState({
-    name: editData?.customerName || '',
+    id:editData?.id ||'',
+    name: editData?.name || '',
     groupId: editData?.groupId || '',
-    groupName: editData?.groupName || '',
+    groupName: editData?.group || '',
     state: editData?.state || '',
     country: editData?.country || '',
     panNumber: editData?.panNumber || '',
     registrationType: editData?.registrationType || '',
-    tcsDeductable: editData?.tcsDeductable || '',
-    tdsDeductable: editData?.tdsDeductable || '',
-
-
-    gstNumber: editData?.gstNumber || '',
+    tcsDeductable: editData?.tdsDeductable || '',
+    tdsDeductable: editData?.tcsDeductable || '',
+    gstNumber: editData?.gstUinNumber || '',
   });
 
 
@@ -34,22 +36,23 @@ const CustomerForm = ({ editData }) => {
     e.preventDefault();
 
     const payload = {
-        name: formData.customerName,
-        group: formData.groupName,
-        groupId:formData.groupId,
-        state: formData.state,
-        country: formData.country,
-        panNumber: formData.panNumber,
-        registrationType: formData.registrationType,
-        tcsDeductable: Boolean(formData.tcsDeductable),
-tdsDeductable: Boolean(formData.tdsDeductable),
-        gstUinNumber: formData.gstNumber,
-        companyCode: initialAuthState?.companyCode,
-        unitCode: initialAuthState?.unitCode,
-      };
-      
+      name: formData.customerName,
+      group: formData.groupName,
+      groupId: formData.groupId,
+      state: formData.state,
+      country: formData.country,
+      panNumber: formData.panNumber,
+      registrationType: formData.registrationType,
+      tcsDeductable: Boolean(formData.tcsDeductable),
+      tdsDeductable: Boolean(formData.tdsDeductable),
+      gstUinNumber: formData.gstNumber,
+      companyCode: initialAuthState?.companyCode,
+      unitCode: initialAuthState?.unitCode,
+      ...(editData?.id && { id: editData.id }),
+    };
 
-    const url = editData ? '/ledger/updateStatus' : '/ledger/handleLedgerDetails';
+
+    const url = '/ledger/handleLedgerDetails';
 
     try {
       const response = await ApiService.post(url, payload);
@@ -67,55 +70,55 @@ tdsDeductable: Boolean(formData.tdsDeductable),
   };
 
 
-    const fetchGroups = async () => {
-      try {
-        const response = await ApiService.post('/groups/getGroupDataForTable', {
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        });
+  const fetchGroups = async () => {
+    try {
+      const response = await ApiService.post('/groups/getGroupDataForTable', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+      });
 
 
-        console.log("pppppp uuuuuuu",response.data)
-  
-        if (response.status) {
-          setGroupData(response.data);
-         if(groupData){
-          console.log("pppppp uuuuuuu groupData",groupData)
-         }
-        } else {
-          console.error('Failed to fetch group data');
-          setGroupData([]);
-          // setFilteredData([]);
+      console.log("pppppp uuuuuuu", response.data)
+
+      if (response.status) {
+        setGroupData(response.data);
+        if (groupData) {
+          console.log("pppppp uuuuuuu groupData", groupData)
         }
-      } catch (error) {
-        console.error('Error fetching group data:', error);
+      } else {
+        console.error('Failed to fetch group data');
+        setGroupData([]);
+        // setFilteredData([]);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching group data:', error);
+    }
+  };
 
-    useEffect(() => {
-        fetchGroups();
-      }, []);
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
-      const handleGroupChange = (e) => {
-        const selectedId = Number(e.target.value);
-        const selectedGroup = groupData.find(
-          (group) => group.id === selectedId
-        );
-      
-        if (selectedGroup) {
-          setFormData((prev) => ({
-            ...prev,
-            groupName: selectedGroup.name,
-            groupId: selectedId,
-          }));
-        } else {
-          setFormData((prev) => ({
-            ...prev,
-            groupName: '',
-            groupId: '',
-          }));
-        }
-      };
+  const handleGroupChange = (e) => {
+    const selectedId = Number(e.target.value);
+    const selectedGroup = groupData.find(
+      (group) => group.id === selectedId
+    );
+
+    if (selectedGroup) {
+      setFormData((prev) => ({
+        ...prev,
+        groupName: selectedGroup.name,
+        groupId: selectedId,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        groupName: '',
+        groupId: '',
+      }));
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex justify-center items-start">
@@ -128,7 +131,7 @@ tdsDeductable: Boolean(formData.tdsDeductable),
             <input
               type="text"
               name="customerName"
-              value={formData.customerName}
+              value={formData.name}
               onChange={handleChange}
               placeholder="Enter Name"
               required
@@ -148,22 +151,22 @@ tdsDeductable: Boolean(formData.tdsDeductable),
             />
           </div> */}
 
-<div>
-  <label className="block text-gray-700 font-semibold mb-1">Group</label>
-  <select
-    name="group"
-    value={formData.groupId}
-    onChange={handleGroupChange}
-    className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-  >
-    <option value="">Select Group</option>
-    {groupData.map((group) => (
-      <option key={group.id} value={group.id}>
-        {group.name}
-      </option>
-    ))}
-  </select>
-</div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Group</label>
+            <select
+              name="group"
+              value={formData.groupId}
+              onChange={handleGroupChange}
+              className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="">Select Group</option>
+              {groupData.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label className="block text-gray-700 font-semibold mb-1">State</label>
@@ -214,39 +217,39 @@ tdsDeductable: Boolean(formData.tdsDeductable),
           </div> */}
 
 
-<div>
-  <label className="block text-gray-700 font-semibold mb-1">TCS Deductable</label>
-  <div className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      name="tcsDeductable"
-      checked={formData.tcsDeductable}
-      onChange={(e) =>
-        handleChange({
-          target: { name: 'tcsDeductable', value: e.target.checked },
-        })
-      }
-    />
-    <span>{formData.tcsDeductable ? 'Yes' : 'No'}</span>
-  </div>
-</div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">TCS Deductable</label>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="tcsDeductable"
+                checked={formData.tcsDeductable}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: 'tcsDeductable', value: e.target.checked },
+                  })
+                }
+              />
+              <span>{formData.tcsDeductable ? 'Yes' : 'No'}</span>
+            </div>
+          </div>
 
-<div>
-  <label className="block text-gray-700 font-semibold mb-1">TDS Deductable</label>
-  <div className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      name="tdsDeductable"
-      checked={formData.tdsDeductable}
-      onChange={(e) =>
-        handleChange({
-          target: { name: 'tdsDeductable', value: e.target.checked },
-        })
-      }
-    />
-    <span>{formData.tdsDeductable ? 'Yes' : 'No'}</span>
-  </div>
-</div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">TDS Deductable</label>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="tdsDeductable"
+                checked={formData.tdsDeductable}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: 'tdsDeductable', value: e.target.checked },
+                  })
+                }
+              />
+              <span>{formData.tdsDeductable ? 'Yes' : 'No'}</span>
+            </div>
+          </div>
 
 
           <div>

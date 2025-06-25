@@ -70,7 +70,6 @@ const Table = ({
   const handleActionClick = (index) => {
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
-  console.log(data,"table data")
   return (
     <div className="overflow-hidden rounded-lg shadow">
       {columns.length === 0 || data.length === 0 ? (
@@ -81,7 +80,6 @@ const Table = ({
             <thead className="bg-gray-100 sticky top-0">
               <tr className="bg-blue-500 text-white text-left">
                 {columnNames.map((column, index) => {
-                  console.log("colum",column)
                   const minWidth = Math.max(column.length * 10, 120); // Ensure wider space for longer names
                   return (
                     <th
