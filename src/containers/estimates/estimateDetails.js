@@ -9,7 +9,6 @@ const EstimateDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const estimateID = location.state.estimateDetails.estimate.estimateNumber;
-  console.log(location.state.estimateDetails, 'Estimate IDDDDDDDDDDD');
 
   const [estimateData, setEstimateData] = useState({
     company: {},
@@ -55,12 +54,12 @@ const EstimateDetails = () => {
           products: estimateData.products.map((product, index) => ({
             id: index + 1,
             name: product.name,
-            // description: product.description || '',
             amount: product.amount,
             quantity: product.quantity,
             rate: product.costPerUnit,
             totalAmount: product.totalCost,
             hsnCode: product.hsnCode,
+            description: product.description,
           })),
           terms: estimateData.description,
           estimatePdfUrl: estimateData.estimatePdfUrl,

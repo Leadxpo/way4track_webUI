@@ -272,10 +272,21 @@ const branchId=localStorage.getItem("branch_id")
           unitCode: initialAuthState?.unitCode,
         }
       );
-
       if (response.status) {
-        setInvoiceList(response.data); // Assuming the structure is as expected
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const rrr = response?.data?.map(item => ({
+          id: item.id,
+          invoiceId: item.invoiceId,
+          estimateId: item.estimateId,
+          clientName: item.clientName,
+          PhoneNumber: item.clientPhoneNumber,
+          branchName:item.branchName,
+          date: item.updatedDate,
+          estimateAmount: item.totalAmount,
+          shippingAddress: item.shippingAddress
+        }));
+      console.log("rrr:",rrr)
+        setInvoiceList(rrr); // Assuming the structure is as expected
+        setFilteredData(rrr); // Assuming the structure is as expected
       } else {
         alert(response.data.message || 'Failed to fetch request details.');
       }

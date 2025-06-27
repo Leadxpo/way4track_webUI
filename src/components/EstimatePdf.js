@@ -355,7 +355,7 @@ export const EstimatePDF = ({ data }) => (
             <View style={estStyles.detailsTextBlock}>
               <Text style={estStyles.detailsText}>#</Text>
               <Text style={estStyles.detailsTextBold}>
-                :{data.estimateNumber}
+                :{data.estimateId}
               </Text>
             </View>
             <View style={estStyles.detailsTextBlock}>
@@ -423,7 +423,7 @@ export const EstimatePDF = ({ data }) => (
                   {index + 1}
                 </Text>
                 <Text style={[estStyles.tableRowText, estStyles.secondColumn]}>
-                  {row.productName}
+                  {row.productName}  {"\n"} {row.description}
                 </Text>
                 <Text style={estStyles.tableRowText}>{row.hsnCode}</Text>
                 <Text style={estStyles.tableRowText}>{row.quantity}</Text>

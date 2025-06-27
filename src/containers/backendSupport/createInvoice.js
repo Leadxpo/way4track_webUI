@@ -42,6 +42,7 @@ const CreateInvoice = () => {
       costPerUnit: product.amount || '',
       totalCost: product.amount || '',
       hsnCode: product.hsnCode || '',
+      description: product.description || '',
       type: 'product',
     })),
     terms: '',
@@ -329,7 +330,7 @@ const CreateInvoice = () => {
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+        { name: '', quantity: '', rate: '', amount: '', hsnCode: '', description: "" },
       ],
     }));
   };
@@ -376,10 +377,10 @@ const CreateInvoice = () => {
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
         totalCost: parseInt(item.totalCost, 10),
-        // totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.costPerUnit),
         type: item.type,
         hsnCode: item.hsnCode,
+        description: item.description,
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
@@ -803,29 +804,19 @@ const CreateInvoice = () => {
                       value={item.hsnCode}
                       onChange={(e) => handleItemChange(index, e)}
                       placeholder="HSN code"
+                      style={{ height: 150 }}
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
-
-                    {/* Remove Button */}
-                    {/* <button
-                      type="button"
-                      onClick={() => removeItem(index)}
-                      className="bg-gray-100 rounded-md w-fit p-2"
-                    >
-                      -
-                    </button> */}
+                    <textarea
+                      name="description"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="description"
+                      style={{width:500 }}
+                      className="w-full p-2 border rounded-md"
+                    />
                   </div>
                 ))}
-
-              {/* <div className="flex justify-end p-2">
-                <button
-                  type="button"
-                  onClick={addNewItem}
-                  className="text-blue-500 text-sm font-semibold mt-2 ml-2"
-                >
-                  + Add Item
-                </button>
-              </div> */}
             </div>
           </div>
 
@@ -862,9 +853,8 @@ const CreateInvoice = () => {
               />
               <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
                 <div
-                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${
-                    isGST ? 'translate-x-7' : ''
-                  }`}
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
                 ></div>
               </div>
             </label>
@@ -965,8 +955,8 @@ const CreateInvoice = () => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

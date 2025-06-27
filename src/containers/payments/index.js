@@ -86,6 +86,7 @@ response.data.forEach((item) => {
           quantity: 1,
           amount: formData.amount,
           hsnCode: '0000', // Total cost calculation
+          description: '', // Total cost calculation
         },
       ],
     };

@@ -9,7 +9,7 @@ const Invoices = () => {
   useEffect(() => {
     const perms = getPermissions('invoice');
     setPermissions(perms);
-  }, [permissions]);
+  }, [permissions]); 
 
   const handleEdit = (invoice) => {
     navigate('/edit-invoice', { state: { invoiceDetails: { invoice } } });

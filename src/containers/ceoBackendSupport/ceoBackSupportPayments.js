@@ -139,6 +139,7 @@ const CeoBackendSupportPayments = () => {
           quantity: 1,
           amount: formData.amount,
           hsnCode: '0000',
+          description: '',
         },
       ],
     };

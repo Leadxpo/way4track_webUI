@@ -110,14 +110,16 @@ const LedgerDetails = () => {
             </div>
           </div>
         )}
+
         <button
           onClick={() => {
             handleEdit(ledgerData)
           }} type='button'
-          className="block btn-primary rounded px-4 py-2 text-left text-sm hover:bg-gray-100" style={{position:'relative', zIndex:99,top:-80,right:-100}}
+          className="block btn-primary rounded px-4 py-2 text-left text-sm hover:bg-gray-100" style={{ position: 'relative', zIndex: 99, top: -80, right: -100 }}
         >
           Edit Ledger
-        </button>      </div>
+        </button>
+      </div>
 
       {/* Ledger Section */}
       <div className="bg-white p-6 rounded-lg shadow-lg">

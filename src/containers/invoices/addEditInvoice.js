@@ -94,6 +94,7 @@ const AddEditInvoice = () => {
         rate: '',
         amount: '',
         hsnCode: '',
+        description: '',
       },
     ],
     terms: termandcondition,
@@ -143,6 +144,7 @@ const AddEditInvoice = () => {
               rate: '',
               amount: '',
               hsnCode: '',
+              description: '',
             }
           : item
       ),
@@ -169,6 +171,7 @@ const AddEditInvoice = () => {
       setClients([]);
     }
   };
+  
   const fetchProducts = async () => {
     try {
       const res = await ApiService.post(
@@ -187,7 +190,6 @@ const AddEditInvoice = () => {
       const res = await ApiService.post(
         'ServiceType/getServiceTypeNamesDropDown'
       );
-      console.log('++==== producttttttt yyyy', res.data);
       setServices(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
@@ -196,7 +198,6 @@ const AddEditInvoice = () => {
   };
 
   const handleClientChange = (e) => {
-    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
     const selectedId = Number(e.target.value);
     const selectedClient = clients.find((client) => client.id === selectedId);
 
@@ -209,6 +210,8 @@ const AddEditInvoice = () => {
       clientNumber: selectedClient.phoneNumber || '',
       email: selectedClient.email || '',
       clientAddress: selectedClient.address || '',
+      billingAddress: selectedClient.address || '',
+      shippingAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
   };
@@ -321,7 +324,7 @@ const AddEditInvoice = () => {
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '',description:'' },
       ],
     }));
   };
@@ -347,7 +350,6 @@ const AddEditInvoice = () => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
       convertToInvoice: true,
-      estimateId: formData.estimateId || undefined,
       invoiceId: formData.invoiceId || undefined,
       GSTORTDS: formData.GSTORTDS || undefined,
       SCST: formData.SCST || 0,
@@ -360,7 +362,6 @@ const AddEditInvoice = () => {
       tdsPercentage: formData.tdsPercentage || 0,
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
-      convertToInvoice: formData.convertToInvoice || false,
       productDetails: formData.items.map((item) => ({
         productId: item.productId,
         type: item.type,
@@ -369,6 +370,7 @@ const AddEditInvoice = () => {
         totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.rate),
         hsnCode: item.hsnCode,
+        description: item.description,
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
@@ -428,10 +430,6 @@ const AddEditInvoice = () => {
       formDataPayload.append(
         'scstPercentage',
         estimateDto.scstPercentage || '0'
-      );
-      formDataPayload.append(
-        'convertToInvoice',
-        estimateDto.convertToInvoice || 'false'
       );
 
       // Append Product Details as JSON String
@@ -855,11 +853,21 @@ const AddEditInvoice = () => {
                       placeholder="HSN code"
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
+                    <textarea
+                      type="text"
+                      name="description"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="description"
+                      style={{width:500 }}
+                      className="col-span-2 p-2 border rounded-md w-full"
+                    />
 
                     {/* Remove Button */}
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
+                      style={{position:'relative',right:-450}}
                       className="bg-gray-100 rounded-md w-fit p-2"
                     >
                       -

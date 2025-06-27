@@ -21,7 +21,6 @@ const [appointment, setAppointment] = useState([]);
       if (response.data) {
         setAppointment(response.data || []);
         setAllAppointments(response.data || []); // Store original data
-        console.log("hi",response.data)
       } else {
         console.error("Error: API response is invalid");
       }

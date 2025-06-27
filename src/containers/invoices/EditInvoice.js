@@ -5,7 +5,6 @@ import { MyPDF } from '../../common/commonUtils';
 import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
-// import { EstimatePDF } from '../estimates/EstimatePDF';
 import { InvoicePDF } from './invoicePDF';
 
 const EditInvoice = () => {
@@ -14,10 +13,8 @@ const EditInvoice = () => {
   console.log(isGST, 'gst or tds');
 
   const location = useLocation();
-  const estimateDetails = location.state?.estimateDetails;
   const invoiceDetails = location.state?.invoiceDetails;
-  console.log(invoiceDetails,"invoice detailsssssssssssssss")
-  // console.log('rdddd cccc xxx ', estimateDetails);
+
   // Initial state for form
   const initialFormState = {
     id: '',
@@ -46,6 +43,7 @@ const EditInvoice = () => {
         rate: '',
         amount: '',
         hsnCode: '',
+        description: '',
       },
     ],
     terms: '',
@@ -99,15 +97,15 @@ const EditInvoice = () => {
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
 
+  console.log('++++++', products);
   useEffect(() => {
     fetchClients();
     fetchProducts();
     fetchServices();
+    fetchEstimation();
+
   }, []);
 
-  useEffect(() => {
-    fetchEstimation();
-  }, []);
 
   const fetchClients = async () => {
     try {
@@ -160,12 +158,12 @@ const EditInvoice = () => {
   // };
 
   const handleClientChange = (e) => {
-    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
+
     const selectedId = Number(e.target.value);
     const selectedClient = clients.find((client) => client.id === selectedId);
 
     if (!selectedClient) return;
-    console.log(selectedClient, 'sssssssssssssssssssssssss');
+
     setFormData((prevData) => ({
       ...prevData,
       client: selectedId,
@@ -175,7 +173,7 @@ const EditInvoice = () => {
       clientAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
-    console.log(formData, 'formdatraaaaaaaaaaaaa');
+
   };
 
   // Handle field changes
@@ -300,7 +298,7 @@ const EditInvoice = () => {
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+        { name: '', quantity: '', rate: '', amount: '', hsnCode: '', description: "" },
       ],
     }));
   };
@@ -321,6 +319,7 @@ const EditInvoice = () => {
       expireDate: formData.expireDate,
       productOrService: formData.items.map((item) => item.name).join(', '),
       description: formData.description,
+      convertToInvoice: true,
       totalAmount: formData.items.reduce(
         (total, item) => total + parseFloat(item.totalCost || 0),
         0
@@ -341,16 +340,15 @@ const EditInvoice = () => {
       tdsPercentage: formData.tdsPercentage || 0,
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
-      convertToInvoice: formData.convertToInvoice || false,
       productDetails: formData.items.map((item) => ({
         productId: item.productId,
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
         totalCost: parseInt(item.totalCost, 10),
-        // totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.costPerUnit),
         type: item.type,
         hsnCode: item.hsnCode,
+        description: item.description,
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
@@ -377,15 +375,14 @@ const EditInvoice = () => {
     };
 
     try {
-      console.log('bfkuyewfliegfdkqilhfbvawefhbgelfhbrg', estimateDto);
 
-      console.log('formDataPayload! invoice invoice');
+
+
       const pdfFile = await generatePdf(pdfData);
-      console.log('formDataPayload! invoice invoice');
+
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
       const includeTax = estimateDto.totalAmount + cgst + scst;
-      console.log('formDataPayload! invoice invoice');
       // Create FormData to send binary data
       const formDataPayload = new FormData();
 
@@ -393,8 +390,7 @@ const EditInvoice = () => {
       formDataPayload.append('clientId', estimateDto.clientId);
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
-      formDataPayload.append('estimatePdf', pdfFile); // Attach PDF file
-
+      formDataPayload.append('invoicePDF', pdfFile); // Attach PDF file
       formDataPayload.append('estimateDate', estimateDto.estimateDate);
       formDataPayload.append('expireDate', estimateDto.expireDate);
       formDataPayload.append('productOrService', serveProd);
@@ -402,6 +398,7 @@ const EditInvoice = () => {
       formDataPayload.append('totalAmount', estimateDto.totalAmount);
       formDataPayload.append('companyCode', 'WAY4TRACK');
       formDataPayload.append('unitCode', 'WAY4');
+      formDataPayload.append('convertToInvoice', true);
       formDataPayload.append('GSTORTDS', estimateDto.GSTORTDS || '');
       formDataPayload.append('CGST', cgst);
       formDataPayload.append('SCST', scst);
@@ -419,11 +416,9 @@ const EditInvoice = () => {
         estimateDto.scstPercentage || '0'
       );
       formDataPayload.append(
-        'estimateId',
-        invoiceDetails.invoice.estimateId
+        'invoiceId',
+        invoiceDetails.invoice.invoiceId
       );
-      // formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
-
       // Append Product Details as JSON String
       formDataPayload.append(
         'productDetails',
@@ -446,12 +441,12 @@ const EditInvoice = () => {
         }
       );
 
-      console.log('Invoice saved successfully!');
-      alert('Invoice updated successfully!');
-      navigate('/invoice');
+      console.log('Estimate saved successfully!');
+      alert('Estimate updated successfully!');
+      navigate('/estimate');
     } catch (err) {
-      console.error('Failed to save Invoice:', err);
-      alert('Failed to save Invoice!', err);
+      console.error('Failed to save estimate:', err);
+      alert('Failed to save estimate!', err);
     }
   };
 
@@ -497,7 +492,7 @@ const EditInvoice = () => {
           description: response.data[0].description,
           estimateDate: response.data[0].estimateDate,
           estimateId: response.data[0].estimateId,
-          estimatePdfUrl: response.data[0].estimatePdfUrl,
+          invoicePdfUrl: response.data[0].invoicePdfUrl,
           expireDate: response.data[0].expireDate,
 
           // CGST: response.data[0].CGST,
@@ -507,15 +502,6 @@ const EditInvoice = () => {
           invoicePdfUrl: response.data[0].invoicePdfUrl,
           productOrService: response.data[0].productOrService,
           items: response.data[0].products,
-          // items: response.data[0].products.map((item) => ({
-          //   productId: item.productId,
-          //   name: item.name,
-          //   quantity: item.quantity,
-          //   rate: item.costPerUnit,
-          //   amount: item.totalCost,
-          //   hsnCode: item.hsnCode,
-          // })),
- 
           unitCode: response.data[0].unitCode,
           vendorId: response.data[0].vendorId,
           vendorName: response.data[0].vendorName,
@@ -535,6 +521,7 @@ const EditInvoice = () => {
   };
 
   const fetchEstimation = async () => {
+    console.log("rrr :", invoiceDetails.invoice)
     try {
       const response = await ApiService.post('/estimate/getEstimateDetails', {
         estimateId: invoiceDetails.invoice.estimateId,
@@ -577,7 +564,7 @@ const EditInvoice = () => {
           description: data.description,
           estimateDate: data.estimateDate,
           estimateId: data.estimateId,
-          estimatePdfUrl: data.estimatePdfUrl,
+          invoicePdfUrl: data.invoicePdfUrl,
           expireDate: data.expireDate,
           id: data.id,
           invoiceId: data.invoiceId,
@@ -627,7 +614,6 @@ const EditInvoice = () => {
     fetchBranches();
   }, []);
 
-  console.log(formData, 'ownfienfi Form data exaplke');
   useEffect(() => {
     if (clients.length > 0 && formData.clientId) {
       const matchedClient = clients.find((c) => c.clientId === formData.clientId);
@@ -642,7 +628,7 @@ const EditInvoice = () => {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white rounded-xl w-11/12 max-w-4xl p-8 shadow-md">
         {/* Title */}
-        <h1 className="text-2xl font-bold mb-6 text-center">Edit Estimates</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Edit Invoice</h1>
         {/* Form */}
         <form className="space-y-6">
           {/* Client Info */}
@@ -934,11 +920,20 @@ const EditInvoice = () => {
                       placeholder="HSN code"
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
-
+                    <textarea
+                      type="text"
+                      name="description"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="description"
+                      style={{width:500 }}
+                      className="col-span-2 p-2 border rounded-md w-full"
+                    />
                     {/* Remove Button */}
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
+                      style={{position:'relative',right:-450}}
                       className="bg-gray-100 rounded-md w-fit p-2"
                     >
                       -
@@ -990,9 +985,8 @@ const EditInvoice = () => {
               />
               <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
                 <div
-                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${
-                    isGST ? 'translate-x-7' : ''
-                  }`}
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
                 ></div>
               </div>
             </label>

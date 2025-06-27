@@ -65,6 +65,7 @@ const InvoiceDetails = () => {
             rate: product.costPerUnit,
             totalAmount: product.totalCost,
             hsnCode: product.hsnCode,
+            description: product.description,
           })),
           terms: estimateData.description,
           estimatePdfUrl: estimateData.estimatePdfUrl,

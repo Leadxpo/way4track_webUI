@@ -14,7 +14,7 @@ const EditEstimate = () => {
 
   const location = useLocation();
   const estimateDetails = location.state?.estimateDetails;
-  console.log('rdddd cccc xxx ', estimateDetails);
+console.log("rrr :",estimateDetails);
   // Initial state for form
   const initialFormState = {
     id: '',
@@ -43,6 +43,7 @@ const EditEstimate = () => {
         rate: '',
         amount: '',
         hsnCode: '',
+        description: '',
       },
     ],
     terms: '',
@@ -87,9 +88,35 @@ const EditEstimate = () => {
   // };
 
   const changeServeProd = (index, e) => {
-    const updatedProducts = [...formData.products];
-    updatedProducts[index].type = e.target.value;
-    setFormData({ ...formData, products: updatedProducts });
+    handleProductItemChange(index, e);
+    const value = e.target.value;
+
+    // Update serveProd for the specific row
+    setServeProd((prev) => {
+      const updatedServeProd = [...prev];
+      updatedServeProd[index] = value;
+      return updatedServeProd;
+    });
+
+    // Update only the productId and name for the specific row
+    setFormData((prevData) => ({
+      ...prevData,
+      items: prevData.items.map((item, i) =>
+        i === index
+          ? {
+            ...item,
+            productId: '',
+            type: value,
+            name: '',
+            quantity: '',
+            rate: '',
+            amount: '',
+            hsnCode: '',
+            description: '',
+          }
+          : item
+      ),
+    }));
   };
 
   const [clients, setClients] = useState([]);
@@ -158,12 +185,12 @@ const EditEstimate = () => {
   // };
 
   const handleClientChange = (e) => {
-    console.log(e.target.value, 'cliejbfhjebfjrhehjv');
+
     const selectedId = Number(e.target.value);
     const selectedClient = clients.find((client) => client.id === selectedId);
 
     if (!selectedClient) return;
-    console.log(selectedClient, 'sssssssssssssssssssssssss');
+
     setFormData((prevData) => ({
       ...prevData,
       client: selectedId,
@@ -173,7 +200,7 @@ const EditEstimate = () => {
       clientAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
-    console.log(formData, 'formdatraaaaaaaaaaaaa');
+
   };
 
   // Handle field changes
@@ -228,22 +255,33 @@ const EditEstimate = () => {
 
   const handleProductItemChange = (index, e) => {
     const { name, value } = e.target;
-    console.log(value);
-
-    const selectedProduct = products.find(
-      (product) => product.productType.trim() === value.trim()
-    );
-
-    if (!selectedProduct) {
-      console.error('Selected product not found');
-      return; // Prevents further execution if no product is found
-    }
+    const type = formData.items[index]?.type;
 
     const updatedItems = [...formData.items];
+
+    let selectedItem;
+
+    if (type === 'product') {
+      selectedItem = products.find(
+        (product) => product.name.trim() === value.trim()
+      );
+    } else if (type === 'service') {
+      selectedItem = services.find(
+        (service) => service.name.trim() === value.trim()
+      );
+    }
+
+    if (!selectedItem) {
+      console.error('Selected item not found in', type);
+      return;
+    }
+
     updatedItems[index][name] = value;
-    updatedItems[index]['productId'] = selectedProduct.id;
-    updatedItems[index]['rate'] = selectedProduct.price;
-    updatedItems[index]['hsnCode'] = selectedProduct.hsnCode;
+    updatedItems[index]['productId'] = selectedItem.id;
+    updatedItems[index]['productName'] = selectedItem.name;
+    updatedItems[index['rate']] = selectedItem.price || 0;
+    updatedItems[index]['hsnCode'] = selectedItem.hsnCode || '';
+    updatedItems[index]['type'] = type;
 
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
@@ -298,7 +336,7 @@ const EditEstimate = () => {
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+        { name: '', quantity: '', rate: '', amount: '', hsnCode: '', description: '' },
       ],
     }));
   };
@@ -345,10 +383,10 @@ const EditEstimate = () => {
         productName: item.name,
         quantity: parseInt(item.quantity, 10),
         totalCost: parseInt(item.totalCost, 10),
-        // totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.costPerUnit),
         type: item.type,
         hsnCode: item.hsnCode,
+        description: item.description,
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
@@ -375,15 +413,14 @@ const EditEstimate = () => {
     };
 
     try {
-      console.log('bfkuyewfliegfdkqilhfbvawefhbgelfhbrg', estimateDto);
 
-      console.log('formDataPayload! estimate estimateeeee2');
+
+
       const pdfFile = await generatePdf(pdfData);
-      console.log('formDataPayload! estimate estimateeeee3');
+
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
       const includeTax = estimateDto.totalAmount + cgst + scst;
-      console.log('formDataPayload! estimate estimateeeee4');
       // Create FormData to send binary data
       const formDataPayload = new FormData();
 
@@ -432,9 +469,7 @@ const EditEstimate = () => {
       for (let pair of formDataPayload.entries()) {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
-      console.log('--- FormData Debug End ---');
 
-      // console.log('formDataPayload! estimate estimateeeee5',formDataPayload);
       // Send FormData with Binary PDF
       await ApiService.post(
         '/estimate/handleEstimateDetails',
@@ -461,7 +496,6 @@ const EditEstimate = () => {
         unitCode: initialAuthState.unitCode,
       });
       if (response.status) {
-        console.log('jjjjjj kkk lll', response.data);
 
         const CGST = parseFloat(response.data.CGST) || 0;
         const SCST = parseFloat(response.data.SCST) || 0;
@@ -505,15 +539,6 @@ const EditEstimate = () => {
           invoicePdfUrl: response.data[0].invoicePdfUrl,
           productOrService: response.data[0].productOrService,
           items: response.data[0].products,
-          // items: response.data[0].products.map((item) => ({
-          //   productId: item.productId,
-          //   name: item.name,
-          //   quantity: item.quantity,
-          //   rate: item.costPerUnit,
-          //   amount: item.totalCost,
-          //   hsnCode: item.hsnCode,
-          // })),
-
           unitCode: response.data[0].unitCode,
           vendorId: response.data[0].vendorId,
           vendorName: response.data[0].vendorName,
@@ -861,7 +886,7 @@ const EditEstimate = () => {
                         className="col-span-2 p-2 border rounded-md w-full"
                       >
                         <option value="">Select Product</option>
-                        {products.map((product) => (
+                        {products?.map((product) => (
                           <option key={product?.id} value={product?.name}>
                             {product?.name}
                           </option>
@@ -932,11 +957,19 @@ const EditEstimate = () => {
                       placeholder="HSN code"
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
-
+                    <textarea
+                      name="description"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="Add Terms and Conditions"
+                      className="w-full p-2 border rounded-md"
+                      style={{width:500 }}
+                    />
                     {/* Remove Button */}
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
+                      style={{position:'relative',right:-450}}
                       className="bg-gray-100 rounded-md w-fit p-2"
                     >
                       -
@@ -988,9 +1021,8 @@ const EditEstimate = () => {
               />
               <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
                 <div
-                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${
-                    isGST ? 'translate-x-7' : ''
-                  }`}
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
                 ></div>
               </div>
             </label>

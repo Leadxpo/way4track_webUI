@@ -6,13 +6,12 @@ import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { EstimatePDF } from './EstimatePDF';
-// import EstimatePDF from './EstimatePDF';
 
 const AddEstimate = () => {
   const navigate = useNavigate();
   const [isGST, setIsGST] = useState(true);
 
-  const termandcondition=`
+  const termandcondition = `
    
 AIS-140 MINING GPS
  
@@ -95,6 +94,7 @@ Warranty Claims:
         rate: '',
         amount: '',
         hsnCode: '',
+        description: '',
       },
     ],
     terms: termandcondition,
@@ -136,15 +136,16 @@ Warranty Claims:
       items: prevData.items.map((item, i) =>
         i === index
           ? {
-              ...item,
-              productId: '',
-              type: value,
-              name: '',
-              quantity: '',
-              rate: '',
-              amount: '',
-              hsnCode: '',
-            }
+            ...item,
+            productId: '',
+            type: value,
+            name: '',
+            quantity: '',
+            rate: '',
+            amount: '',
+            hsnCode: '',
+            description: '',
+          }
           : item
       ),
     }));
@@ -205,6 +206,8 @@ Warranty Claims:
       clientNumber: selectedClient.phoneNumber || '',
       email: selectedClient.email || '',
       clientAddress: selectedClient.address || '',
+      billingAddress: selectedClient.address,
+      shippingAddress: selectedClient.address,
       clientId: selectedClient.clientId || '',
     }));
   };
@@ -317,7 +320,7 @@ Warranty Claims:
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '' },
+        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '', description: "" },
       ],
     }));
   };
@@ -364,6 +367,7 @@ Warranty Claims:
         totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.rate),
         hsnCode: item.hsnCode,
+        description: item.description
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
@@ -374,7 +378,7 @@ Warranty Claims:
     const branchDetails = branches.find(
       (branch) => branch.id === Number(estimateDto.branchId)
     );
-console.log("aaa:",client)
+    console.log("aaa:", client)
     const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
@@ -848,15 +852,25 @@ console.log("aaa:",client)
                       placeholder="HSN code"
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
-
+                    <textarea
+                      name="description"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, e)}
+                      placeholder="description"
+                      className="p-2 border rounded-md"
+                      style={{width:500 }}
+                    />
                     {/* Remove Button */}
+                    <div>
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
                       className="bg-gray-100 rounded-md w-fit p-2"
+                      style={{position:'relative',right:-450}}
                     >
                       -
                     </button>
+                    </div>
                   </div>
                 ))}
 
@@ -898,9 +912,8 @@ console.log("aaa:",client)
               />
               <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
                 <div
-                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${
-                    isGST ? 'translate-x-7' : ''
-                  }`}
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
                 ></div>
               </div>
             </label>
@@ -993,7 +1006,7 @@ console.log("aaa:",client)
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"
               className="w-full p-2 border rounded-md"
-              style={{height:300}}
+              style={{ height: 300 }}
             />
           </div>
 
