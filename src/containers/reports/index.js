@@ -29,7 +29,6 @@ const Reports = () => {
       setData([]);
     }
   };
-
 const fetchPayments = async (selectedStocks) => {
   try {
     const payload = {

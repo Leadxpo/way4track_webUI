@@ -10,23 +10,17 @@ const AddEditProductAssign = () => {
   const role = localStorage.getItem('role');
   console.log(role, 'Role');
 
-  // const [imeiList, setImeiList] = useState([]);
-  // const [showDropdown1, setShowDropdown1] = useState(false);
-  // const [showDropdown2, setShowDropdown2] = useState(false);
-
   const [imeiList, setImeiList] = useState([]);
   const [showDropdown, setShowDropdown] = useState({
     from: false,
     to: false,
   });
 
-  console.log('imei number imeiListimeiListimeiList', imeiList);
   // Check if there's product data passed through location.state
   const productAssign = location.state?.productAssignDetails || {};
-  console.log(location.state?.productAssignDetails, ')))))))))))');
+
   // Initialize form data with existing product details if available
   const initialFormData = {
-    // id: productAssign?.productId || null,
     staffId: productAssign.staffId || '',
     assignTo: productAssign.assignTo || '',
     name: productAssign.name || '',
@@ -155,7 +149,7 @@ const AddEditProductAssign = () => {
         );
 
         setStaff(filteredStaff);
-        console.log(filteredStaff, 'Filtered Staff - Technicians');
+
       } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaff([]);
@@ -279,19 +273,13 @@ const AddEditProductAssign = () => {
       }
     });
     try {
-      const endpoint = formData.id
-        ? '/products/bulk-upload'
-        : '/products/bulk-upload';
+      const endpoint =  '/products/bulk-upload';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (response.status) {
-        alert(
-          formData.id
-            ? 'Product updated successfully!'
-            : 'Product added successfully!'
-        );
+        alert('Product assigned successfully!');
         navigate('/products');
       } else {
         alert('Failed to save product details. Please try again.');
@@ -513,14 +501,9 @@ const AddEditProductAssign = () => {
         {/* Photo Section */}
         <div>
           <label className="font-semibold mb-1 block">Bulk Upload File</label>
-          {/* <img
-            src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
-            alt="Employee"
-            className="w-24 h-24 rounded-full object-cover"
-          /> */}
+          
           <input
             type="file"
-            // accept="image/*"
             name="file"
             className="border p-2 rounded"
             onChange={handleFileChange}
@@ -546,7 +529,7 @@ const AddEditProductAssign = () => {
             onClick={handleSave}
             className="bg-green-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-green-700 transition-all"
           >
-            Save
+            Products Assinge
           </button>
           <button
             onClick={handleCancel}

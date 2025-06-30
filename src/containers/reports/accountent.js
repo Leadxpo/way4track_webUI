@@ -12,10 +12,6 @@ import CreditNoteRegister from '../../components/Reports/CreditNoteRegister';
 import DebitNoteRegister from '../../components/Reports/DebitNoteRegister';
 import GstriReport from '../../components/Reports/GstriReport';
 import PayableReport from '../../components/Reports/PayableReport';
-
-
-
-
 import CashBankReport from '../../components/Reports/CashBankReport';
 import CashFlowReport from '../../components/Reports/CashFlowStatement';
 import FixedAssetReport from '../../components/Reports/FixedAssertReport';
@@ -25,17 +21,6 @@ import SaleReturn from '../../components/Reports/SaleReturn';
 import TcsReport from '../../components/Reports/TcsReport';
 import TdsReport from '../../components/Reports/Tds';
 import TrailBalance from '../../components/Reports/TrailBalance';
-
-
-
-
-
-
-
-
-
-
-
 
 const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,13 +56,6 @@ const Reports = () => {
     useEffect(() => {
       fetchBranchDropDown();
     }, []);
-  
-
-
-
-
-
- 
 
   const handleOpenModal = (name) => {
     setSelectedStock(name);
@@ -105,7 +83,6 @@ const Reports = () => {
       setPreviewData(tdsReport);
     }
 
-    
     if(selectedStock==="trialbalance"){
       setPreviewData(trialBalance);
     }
@@ -146,20 +123,11 @@ const Reports = () => {
     setIsPreviewOpen(true);
   };
 
-  
-  
 
   const handleSearch = () => {
     console.log('Searching from:', fromDate, 'to:', toDate);
     // Call your API or filter data here
   };
-
- 
-
-
-
-
-
 
   return (
     <div>
@@ -526,26 +494,8 @@ const Reports = () => {
         onClose={() => setIsPreviewOpen(false)}
       />
     ) :
-  
-
-
-
-
-
-
-
-
   null
 )}
-
-
-
-
-
-
-
-
-
     </div>
   );
 };

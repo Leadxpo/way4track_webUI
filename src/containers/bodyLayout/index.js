@@ -57,7 +57,6 @@ import Payroll from '../payroll';
 import Payrolls from '../payroll/payrolls';
 import PayrollDetails from '../payroll/payrollDetails';
 import StaffDetails from '../staff/staffDetails';
-import InHandProductsForm from '../products/inHandProductForm';
 import Tracker from '../tracker';
 import RequestRaise from '../request-raise';
 import DeleteRequest from '../request-raise/deleteRequest';
@@ -141,6 +140,7 @@ import EditService from '../service/EditService';
 import EditVehicle from '../vehicle/EditVehicle';
 import AddVehicle from '../vehicle/AddVehicle';
 import ReportAccount from '../reports/accountent';
+import ProductsInventory from '../reports/products.js';
 import Groups from '../groups/index';
 import AddGroups from '../groups/addGroup';
 import AddLedger from '../ledger/addLedger';
@@ -496,6 +496,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/select-branch" element={<SelectBranch />} />
           <Route path="/receipt-form" element={<ReceiptForm />} />
           <Route path="/report-account" element={<ReportAccount />} />
+          <Route path="/products-inventory" element={<ProductsInventory />} />
           <Route path="/forms/Purchase" element={<PurchaseForm />} />
           <Route path="/forms/Payments" element={<PaymentForm />} />
           <Route path="/forms/Sale" element={<SaleForm />} />
@@ -566,7 +567,6 @@ const BodyLayout = ({ children }) => {
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/payrolls" element={<Payrolls />} />
           <Route path="/payroll-details" element={<PayrollDetails />} />
-          <Route path="/in-hand-product" element={<InHandProductsForm />} />
           <Route path="/tracker" element={<Tracker />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/add-appointment" element={<AddEditAppointmentForm />} />

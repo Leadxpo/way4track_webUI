@@ -432,32 +432,6 @@ const DownloadComponent = () => {
             {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF')}
           </PDFDownloadLink>
         )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
     </div>
   );

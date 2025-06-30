@@ -69,47 +69,6 @@ const AddInhandProduct = () => {
     }));
   };
 
-  // Handle form submission
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (
-  //     !formData.staffId ||
-  //     !formData.assignTime ||
-  //     !formData.productTypeId
-  //     // !formData.numberOfProducts
-  //   ) {
-  //     alert('Please fill all fields');
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await ApiService.post(
-  //       '/products/bulk-upload',
-  //       {
-  //         ...formData,
-  //         productTypeId: Number(formData.productTypeId),
-  //         numberOfProducts: Number(formData.numberOfProducts),
-  //         companyCode: initialAuthState.companyCode,
-  //         unitCode: initialAuthState.unitCode,
-  //       }
-  //     );
-
-  //     console.log('Submitting:', response);
-  //     alert('Product Handover successfully!');
-
-  //     // Reset Form
-  //     setFormData({
-  //       staffId: '',
-  //       assignTime: '',
-  //       productTypeId: 0,
-  //       numberOfProducts: 0,
-  //     });
-  //   } catch (error) {
-  //     console.error('Error submitting data:', error);
-  //     alert('Submission failed.');
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -117,7 +76,6 @@ const AddInhandProduct = () => {
       !formData.staffId ||
       !formData.assignTime ||
       !formData.productTypeId
-      // !formData.numberOfProducts
     ) {
       alert('Please fill all required fields.');
       return;

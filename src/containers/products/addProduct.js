@@ -59,7 +59,7 @@ const AddProductForm = () => {
         const response = await ApiService.post(
           '/vendor/getVendorNamesDropDown'
         );
-        console.log('res', response.data, '{{{{{{{{');
+
         const modifiedData = response.data.map((item) => ({
           ...item,
           vendorName: item.name,

@@ -139,6 +139,7 @@ export const menuOptions = [
     route: '/vouchers',
   },
   role?.toLowerCase() === "branch manager" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+  role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/products-inventory' },
   role?.toLowerCase() === "accountant" && {
     name: 'Reports',
     icon: <img src="./reports.png" />,
@@ -314,7 +315,6 @@ export const formattedPaths = {
   '/ledger-details': { name: 'Ledger Details', icon: <img src="./ledger_details.png" /> },
   '/purchase': { name: 'Purchase', icon: <img src="./purchase.png" /> },
   '/payroll': { name: 'Payroll', icon: <img src="./payroll.png" /> },
-  '/in-hand-product': { name: 'In Hand Products', icon: <img src="./in_hand_products.png" /> },
   '/tracker': { name: 'Tracker', icon: <img src="./tracker.png" /> },
   '/appointments': { name: 'Appointments', icon: <img src="./appointments.png" /> },
   '/add-appointment': { name: 'Add Appointment', icon: <img src="./appointments.png" /> },
