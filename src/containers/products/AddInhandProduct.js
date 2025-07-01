@@ -29,15 +29,6 @@ const AddInhandProduct = () => {
           unitCode: initialAuthState?.unitCode,
         }
       );
-
-      console.log('check2');
-
-      console.log(
-        'qqqqq',
-        response.data.staff.filter(
-          (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
-        )
-      );
       if (response.data) {
         setStaffList(
           response.data.staff.filter(

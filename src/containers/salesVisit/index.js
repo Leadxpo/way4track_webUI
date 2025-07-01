@@ -59,7 +59,9 @@ const SalesVisit = () => {
   const [client, setClient] = useState([]);
   const [voucher, setVoucher] = useState([]);
   const [staff, setStaff] = useState([]);
+  const [isReload, setIsReload] = useState([]);
   const [permissions, setPermissions] = useState({});
+
 
   const [isOpen, setIsOpen] = useState(false);
   const [popupData, setPopupData] = useState(null);
@@ -69,10 +71,24 @@ const SalesVisit = () => {
 
   useEffect(() => {
     const fetchStaff = async () => {
+      const branchName =localStorage.getItem("branchName");
       try {
-        const res = await ApiService.post('/staff/getStaffNamesDropDown');
-        setStaffList(res.data || []);
-      } catch (err) {
+        const response = await ApiService.post(
+          '/dashboards/getTotalStaffDetails',
+          {
+            branchName: branchName,
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
+          }
+        );
+        if (response.data) {
+          setStaffList(
+            response.data.staff.filter(
+              (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
+            )
+          );
+        }
+        } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaffList([]);
       }
@@ -82,12 +98,14 @@ const SalesVisit = () => {
 
   useEffect(() => {
     const fetchSalesDetails = async () => {
+      const branchName = localStorage.getItem("branchName");
       try {
         const response = await ApiService.post(
           'sales-works/getSalesSearchDetails',
           {
             companyCode: initialAuthState.companyCode,
             unitCode: initialAuthState.unitCode,
+            branch: branchName
           }
         );
         setSalesDetails(prev => prev = response.data);
@@ -98,7 +116,7 @@ const SalesVisit = () => {
       }
     };
     fetchSalesDetails();
-  }, []);
+  }, [isReload]);
 
   const leadStatusUpdate = (item) => {
     setSelectedLead(item);
@@ -126,6 +144,8 @@ const SalesVisit = () => {
       if (data.status) {
         if (payload.leadStatus === "allocated") {
           createWorkAllocation(selectedLead, selectedStaffId);
+        }else{
+          setIsReload(!isReload)
         }
       }
     } catch (error) {
@@ -157,8 +177,9 @@ const SalesVisit = () => {
       });
 
       if (response.status) {
-        alert('Work Allocation updated successfully!'
-        );
+        alert('Work Allocation updated successfully!');
+        setIsReload(!isReload)
+
       } else {
         alert('Failed to save work allocation. Please try again.');
       }
@@ -320,7 +341,7 @@ const SalesVisit = () => {
       </div>
 
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
-        {salesDetails.length === 0 ? (
+        {salesDetails?.length === 0 ? (
           <div className="text-center text-gray-500 text-lg p-5">
             No Data Found
           </div>
@@ -344,12 +365,11 @@ const SalesVisit = () => {
               </tr>
             </thead>
             <tbody>
-              {salesDetails.map((item, index) => {
+              {salesDetails?.map((item, index) => {
                 const formatDate = (dateString) => {
                   const [year, month, day] = dateString.split("T")[0].split("-");
                   return `${day}-${month}-${year}`;
                 };
-                console.log("remaingDetails:" + JSON.stringify(item.requirementDetails))
                 return (
                   <tr
                     key={item.id}
@@ -438,9 +458,9 @@ const SalesVisit = () => {
                   className="w-full p-2 border border-gray-300 rounded mb-4"
                 >
                   <option value="">Select Staff</option>
-                  {staffList.map((staff) => (
+                  {staffList?.map((staff) => (
                     <option key={staff.id} value={staff.id}>
-                      {staff.name} ({staff.staffId})
+                      {staff.staffName} ({staff.staffId})
                     </option>
                   ))}
                 </select>
@@ -450,10 +470,10 @@ const SalesVisit = () => {
               <>
                 <label className="block mb-2">Amount</label>
                 <input
-                  type='text'
-                  name={'paidAmount'}
+                  type="text"
+                  name="paidAmount"
                   value={paidAmt}
-                  onChange={setPaidAmt}
+                  onChange={(e) => setPaidAmt(e.target.value)}
                   className="px-4 py-2 border rounded-lg bg-gray-50"
                 />
               </>
