@@ -450,7 +450,6 @@ export default AddAppointment;
 //       fetchBranches();
 //     }, []);
 // if(branchData){
-//   console.log("++++++eee",branchData)
 // }
 
 //   return (

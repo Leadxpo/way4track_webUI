@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: 200,
+    height: 120,
     marginRight: 10,
   },
   companyName: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   companyDetails: {
-    fontSize: 9,
+    fontSize: 10, marginBottom: 3
   },
   invoiceTitleContainer: {
     justifyContent: 'center',
@@ -83,12 +83,12 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#f2f2f2',
-    paddingVertical: 5,
+    paddingVertical: 5, justifyContent: 'space-between',
     borderBottom: '1px solid black',
   },
   tableRow: {
     flexDirection: 'row',
-    paddingVertical: 5,
+    paddingVertical: 5, justifyContent: 'space-between',
     borderBottom: '1px solid #ddd',
   },
   tableColSN: {
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
   },
   footerTitle: {
     fontWeight: 'bold',
+    fontSize: 12,
     marginTop: 5,
   },
   footerText: {
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   amountDue: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -161,12 +162,11 @@ export const EstimatePDF = ({ data }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const totalAmount = (parseInt(data.CGST) + parseInt(data.SCST) + parseInt(data.totalAmount))
-    console.log("aaa :", totalAmount);
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
     const year = date.getFullYear();
-    console.log("rrr :", data)
+
     return `${day}-${month}-${year}`;
   };
   let totalCost = 0;
@@ -202,9 +202,10 @@ export const EstimatePDF = ({ data }) => {
               <View>
                 <Text style={styles.companyName}>SHARON TELEMATICS PRIVATE LIMITED</Text>
                 <Text style={styles.companyDetails}>Company ID: {data.branchDetails.CIN}</Text>
-                <Text style={styles.companyDetails}>{data.branchDetails.address}</Text>
-                <Text style={styles.companyDetails}>{data.branchDetails.addressLine2}</Text>
-                <Text style={styles.companyDetails}>{data.branchDetails.branchAddress}</Text>
+                <Text style={styles.companyDetails}> {data.branchDetails.addressLine1}</Text>
+                <Text style={styles.companyDetails}> {data.branchDetails.addressLine2}</Text>
+                <Text style={styles.companyDetails}> {data.branchDetails.city}</Text>
+                <Text style={styles.companyDetails}> {data.branchDetails.state}  Pincode : {data.branchDetails.pincode}</Text>
                 <Text style={styles.companyDetails}>GSTIN: {data.branchDetails.GST}</Text>
               </View>
             </View>
@@ -221,15 +222,20 @@ export const EstimatePDF = ({ data }) => {
               <Text style={styles.detailsText}>Pro Forma Quotation Date: {formatDate(data.estimateDate)}</Text>
             </View>
             <View style={styles.detailsColumnRight}>
-              <Text style={styles.detailsText}>Place of Supply: {data.shippingAddress}</Text>
+              <Text style={styles.detailsText}>Place of Supply: {data.supplyState}</Text>
             </View>
           </View>
-
-          {/* Bill To */}
-          <View style={styles.billTo}>
-            <Text style={styles.billToTitle}>Bill To</Text>
-            <Text style={styles.billToName}>{data.clientName}</Text>
-            <Text style={styles.billToGST}>{data.clientGST}</Text>
+          <View style={styles.detailsRow}>
+            <View style={styles.detailsColumnLeft}>
+              <Text style={styles.detailsText}>Bill To</Text>
+              <Text style={styles.detailsText}>{data.clientName}</Text>
+              <Text style={styles.detailsText}>{data.buildingAddress}</Text>
+            </View>
+            <View style={styles.detailsColumnRight}>
+              <Text style={styles.detailsText}>Shipping To</Text>
+              <Text style={styles.detailsText}>{data.clientName}</Text>
+              <Text style={styles.detailsText}>{data.shippingAddress}</Text>
+            </View>
           </View>
 
           {/* Table Header */}
@@ -239,10 +245,29 @@ export const EstimatePDF = ({ data }) => {
             <Text style={styles.tableCol}>HSN/SAC</Text>
             <Text style={styles.tableCol}>Qty</Text>
             <Text style={styles.tableCol}>Rate</Text>
-            <Text style={styles.tableColTax}>CGST%</Text>
-            <Text style={styles.tableColTax}>CGST Amt</Text>
-            <Text style={styles.tableColTax}>SGST%</Text>
-            <Text style={styles.tableColTax}>SGST Amt</Text>
+            {
+              data.GSTORTDS === "TDS" ?
+                (
+                  <>
+                    <Text style={styles.tableColTax}>TDS%</Text>
+                    <Text style={styles.tableColTax}>TDS Amt</Text>
+                  </>
+                ) : data.GSTORTDS === "IGST" ? (
+                  <>
+                    <Text style={styles.tableColTax}>IGST%</Text>
+                    <Text style={styles.tableColTax}>IGST Amt</Text>
+
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.tableColTax}>CGST%</Text>
+                    <Text style={styles.tableColTax}>CGST Amt</Text>
+
+                    <Text style={styles.tableColTax}>SGST%</Text>
+                    <Text style={styles.tableColTax}>SGST Amt</Text>
+                  </>
+                )
+            }
             <Text style={styles.tableCol}>Amount</Text>
           </View>
 
@@ -261,10 +286,29 @@ export const EstimatePDF = ({ data }) => {
                 <Text style={styles.tableCol}>{item.hsnCode}</Text>
                 <Text style={styles.tableCol}>{item.quantity}</Text>
                 <Text style={styles.tableCol}>{item.costPerUnit}</Text>
-                <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
-                <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
-                <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
-                <Text style={styles.tableColTax}>{sgst.toFixed(2)}</Text>
+                {
+                  data.GSTORTDS === "TDS" ?
+                    (
+                      <>
+                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+                      </>
+                    ) : data.GSTORTDS === "IGST" ? (
+                      <>
+                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+
+                      </>
+                    ) : (
+                      <>
+                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+
+                        <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
+                        <Text style={styles.tableColTax}>{sgst.toFixed(2)}</Text>
+                      </>
+                    )
+                }
                 <Text style={styles.tableCol}>{total.toFixed(2)}</Text>
               </View>
             );
@@ -281,17 +325,30 @@ export const EstimatePDF = ({ data }) => {
             <Text style={styles.tableColTax}>
               {(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)}
             </Text>
-            <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
-            <Text style={styles.tableColTax}>
-              {(data.totalAmount * parseFloat(data.scstPercentage) / 100).toFixed(2)}
-            </Text>
+            {
+              data.GSTORTDS === "GST" &&
+              <>
+                <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
+                <Text style={styles.tableColTax}>
+                  {(data.totalAmount * parseFloat(data.scstPercentage) / 100).toFixed(2)}
+                </Text>
+              </>
+            }
             <Text style={styles.tableCol}>{totalAmount.toFixed(2)}</Text>
           </View>
 
           {/* Total in Words + Bank Details */}
           <View style={styles.footerBlock}>
             <View style={styles.footerLeft}>
-              <Text style={styles.footerTitle}>Total In Words</Text>
+              <Text style={styles.footerTitle}>Total Amount</Text>
+              {data.GSTORTDS === "TDS" && <Text style={styles.footerTitle}>Total TDS</Text>}
+              {data.GSTORTDS === "IGST" && <Text style={styles.footerTitle}>Total IGST</Text>}
+              {data.GSTORTDS === "GST" &&
+                <>
+                  <Text style={styles.footerTitle}>Total CGST</Text>
+                  <Text style={styles.footerTitle}>Total SGST</Text>
+                </>}
+              <Text style={[styles.footerTitle, { fontSize: 10 }]}>Total In Words :</Text>
               <Text style={styles.footerText}>
                 {toWords.convert(totalAmount, { currency: false })}
               </Text>
@@ -318,7 +375,15 @@ export const EstimatePDF = ({ data }) => {
             </View>
 
             <View style={styles.footerRight}>
-              <Text style={styles.totalDueText}>Total: {totalAmount.toFixed(2)} Rs</Text>
+              <Text style={styles.footerTitle}>{parseFloat(data.totalAmount).toFixed(2)} RS</Text>
+              {data.GSTORTDS === "TDS" && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
+              {data.GSTORTDS === "IGST" && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
+              {data.GSTORTDS === "GST" &&
+                <>
+                  <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>
+                  <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.scstPercentage) / 100).toFixed(2)} Rs</Text>
+                </>}
+
               <Text style={styles.amountDue}>Amount Due: {totalAmount.toFixed(2)} RS</Text>
 
               <View style={styles.signatureBlock}>

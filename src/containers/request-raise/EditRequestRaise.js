@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -12,51 +12,41 @@ const EditRequestRaise = () => {
   const [branch, setBranch] = useState([]);
 
   const requestData = location.state?.requestDetails || {};
-  console.log("rrr edit",requestData);
-  
 
   const [formData, setFormData] = useState({
     requestType: '',
     requestFrom: '',
-    requestTo: '', branch: '',
+    requestTo: '',
+    branch: '',
     requestFor: '',
     description: '',
-    products:[{ productType: '', quantity: 0 }],
+    products: [{ productType: '', quantity: 0 }],
     createdDate: '',
     status: '',
     fromDate: "",
     toDate: "",
-    // subDealerId: Number(requestData.subDealerId) || '',
+    photo: '',
     requestId: '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
 
+  const [image, setImage] = useState(null); // Store selected image
+  const fileInputRef = useRef(null);        // Ref to trigger file input
 
-  // const fetchRequestRaise = async () => {
-  //   try {
-  //     const response = await ApiService.post('/requests/getRequestDetails',{id:
-  //       requestData.requestId,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode});
-        
-  //     if (response.status) {
-  //       // setRequestRaiseDetail(response.data);
+  const handleImageClick = () => {
+    fileInputRef.current.click(); // Trigger hidden input
+  };
 
-  //       console.log("fetchStaffData fetchStaffData", response.data)
-  //     } else {
-  //       console.error('Error fetching staff data');
-  //     }
-  //   } catch (e) {
-  //     console.error('Error fetching staff data', e);
-  //   }
-  // };
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setFormData({ ...formData, photo: file });
+      setImage(imageUrl);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchRequestRaise();
-  // }, []);
-
-  // getRequestDetails
   const fetchStaffData = async () => {
     try {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
@@ -105,10 +95,7 @@ const EditRequestRaise = () => {
 
 
   useEffect(() => {
-
-
     fetchBranches();
-
     fetchSubDealers();
     fetchStaffData();
   }, []);
@@ -135,6 +122,7 @@ const EditRequestRaise = () => {
 
   const handleSave = async () => {
     const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+    const requestFrom = localStorage.getItem('id');
 
     if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
       const { id, name } = userProfile?.Data[0];
@@ -143,29 +131,35 @@ const EditRequestRaise = () => {
     }
 
     try {
-      const payload = {
 
-        id: requestData.requestId,
-        requestId: requestData.requestNumber,
-        requestType: formData.requestType,
-        requestTo: Number(formData.requestTo),
-        // requestFrom: Number(formData.requestFrom),
-        requestFrom: Number(9),
-        branch: Number(formData.branch),
-        description: formData.description,
-        status: "pending",
-        products: formData.requestType === "products" ? formData?.products : null,
-        subDealerId: formData.subDealerId ? formData.subDealerId :null,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        requestFor: formData.requestFor,
-        fromDate: formData.fromDate,
-        toDate: formData.toDate,
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('id', requestData.requestId);
+      formDataToSend.append('requestId', requestData.requestNumber);
+      formDataToSend.append('requestType', formData.requestType);
+      formDataToSend.append('requestTo', formData.requestTo);
+      formDataToSend.append('requestFrom',  formData.requestFrom);
+      formDataToSend.append('branch', formData.branch);
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('companyCode', initialAuthState.companyCode);
+      formDataToSend.append('unitCode', initialAuthState.unitCode);
+      formDataToSend.append('requestFor', formData.requestFor);
+      formDataToSend.append('fromDate', formData.fromDate);
+      formDataToSend.append('toDate', formData.toDate);
+
+      if (formData.photo) {
+        formDataToSend.append('photo', formData.photo);
+      }
+
+      if (formData.requestType === 'products' && formData.products) {
+        formDataToSend.append('products', JSON.stringify(formData.products));
+      }
+
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
-        payload
-      );
+        formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
       if (response.status) {
         alert('Request updated successfully');
         navigate('/requests');
@@ -184,13 +178,13 @@ const EditRequestRaise = () => {
   };
 
 
-  const [rows, setRows] = useState([{ productType: '', quantity: 0  }]);
+  const [rows, setRows] = useState([{ productType: '', quantity: 0 }]);
 
   // Function to handle adding a new product row
   const addRow = () => {
     setFormData((prevData) => ({
       ...prevData,
-      products: [...prevData.products, { productType: '', quantity: 0  }],
+      products: [...prevData.products, { productType: '', quantity: 0 }],
     }));
   };
 
@@ -220,20 +214,20 @@ const EditRequestRaise = () => {
       fetchRequestRaiseById();
     }
   }, [requestData.requestId]);
-  
+
   const fetchRequestRaiseById = async () => {
     if (!requestData.requestId) return;
-  
+
     try {
       const response = await ApiService.post('/requests/getRequestDetails', {
         id: requestData.requestId,
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       });
-  
+
       if (response.status) {
         const data = response.data;
-  
+
         setFormData({
           requestId: data.requestId || '',
           requestType: data.requestType || '',
@@ -241,8 +235,9 @@ const EditRequestRaise = () => {
           requestFor: data.requestFor || '',
           fromDate: data.fromDate || '',
           toDate: data.toDate || '',
-          requestFrom: data.requestFrom || '',
+          requestFrom: data.requestFrom.id || '',
           requestTo: data.requestTo?.id || '',
+          photo: data.image || '',
           branch: data.branchId?.id || '',
           status: data.status || '',
           createdDate: data.createdDate || '',
@@ -252,6 +247,7 @@ const EditRequestRaise = () => {
             ? data.products
             : [{ productType: '', quantity: 0 }],
         });
+        setImage(data.image)
       } else {
         console.error('Error fetching request details');
       }
@@ -259,7 +255,7 @@ const EditRequestRaise = () => {
       console.error('Error fetching request details:', error);
     }
   };
-  
+
   const [productTypes, setProductTypes] = useState([]);
 
   useEffect(() => {
@@ -323,7 +319,7 @@ const EditRequestRaise = () => {
               <option value="leaveRequest">Leave Request</option>
             </select>
           </div>
-           
+
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
@@ -344,31 +340,6 @@ const EditRequestRaise = () => {
               </select>
             </div>
           </div>
-          <div>
-            {/* {subDealer.length > 0 && ( */}
-            {/* <div className="flex flex-col">
-                <label className="font-semibold mb-2">
-                  Request To subDealer:
-                </label>
-                <select
-                  name="subDealerId"
-                  value={formData.subDealerId}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Request To subDealer
-                  </option>
-                  {subDealer.map((staffMember) => (
-                    <option key={staffMember.id} value={staffMember.id}>
-                      {staffMember.name}
-                    </option>
-                  ))}
-                </select>
-              </div> */}
-            {/* )} */}
-          </div>
-
 
           <div>
             <div className="flex flex-col">
@@ -414,7 +385,7 @@ const EditRequestRaise = () => {
                   <div className="flex-1">
                     <label className="font-semibold">Product:</label>
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
-                    <select
+                      <select
                         name="productTypeId"
                         className="border p-2 rounded-md w-full"
                         // onChange={handleInputChange}
@@ -484,6 +455,29 @@ const EditRequestRaise = () => {
                 />
               </div>
             )}
+
+          {
+            formData.requestType === "money" && (
+              <>
+                <p className="font-semibold mb-1">Image</p>
+                <img
+                  src={image || "https://www.mariposakids.co.nz/wp-content/uploads/2014/08/image-placeholder2.jpg"} // Default image
+                  alt="Click to upload"
+                  onClick={handleImageClick}
+                  className="w-40 h-40 object-cover rounded-md cursor-pointer border"
+                />
+
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </>
+            )
+          }
 
           {formData?.requestType === "leaveRequest" && (<><div className="mt-4">
             <p className="font-semibold mb-1">Leave From Date</p>

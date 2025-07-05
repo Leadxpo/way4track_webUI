@@ -511,19 +511,19 @@ const BackendSupportPayments = () => {
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Client Name:
+                            Client:
                           </p>
                           <p
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Tech Support:
+                            Support:
                           </p>
                           <p
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Vehicle No:
+                            Vehicle:
                           </p>
                         </div>
                         <div>

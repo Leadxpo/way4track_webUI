@@ -6,6 +6,7 @@ import { PDFDownloadLink, pdf, PDFViewer } from '@react-pdf/renderer';
 import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { InvoicePDF } from './invoicePDF';
+import states from '../../mockData/state';
 
 const EditInvoice = () => {
   const navigate = useNavigate();
@@ -25,16 +26,16 @@ const EditInvoice = () => {
     clientAddress: '',
     buildingAddress: '',
     shippingAddress: '',
+    taxableState: '',
+    supplyState: '',
     estimateDate: '',
     expireDate: '',
-
     cgstPercentage: '',
     scstPercentage: '',
-    tdsPercentage: '',
     includeTax: '',
     CGST: 0,
     SCST: 0,
-    GSTORTDS: isGST ? 'gst' : 'tds',
+    GSTORTDS: '',
     items: [
       {
         productId: '',
@@ -66,27 +67,6 @@ const EditInvoice = () => {
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState('');
 
-  // const changeServeProd = (index, e) => {
-  //   setServeProd(e.target.value);
-
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     items: prevData.items.map((item, i) =>
-  //       i === index
-  //         ? {
-  //             ...item,
-  //             productId: '',
-  //             name: '',
-  //             quantity: '',
-  //             rate: '',
-  //             amount: '',
-  //             hsnCode: '',
-  //           }
-  //         : item
-  //     ),
-  //   }));
-  // };
-
   const changeServeProd = (index, e) => {
     const updatedProducts = [...formData.products];
     updatedProducts[index].type = e.target.value;
@@ -97,29 +77,39 @@ const EditInvoice = () => {
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
 
-  console.log('++++++', products);
   useEffect(() => {
     fetchClients();
     fetchProducts();
     fetchServices();
     fetchEstimation();
-
   }, []);
 
+  useEffect(() => {
+    if (isGST) {
+      setFormData((prevData) => ({
+        ...prevData,
+        GSTORTDS: formData.taxableState === formData.supplyState ? 'GST' : "IGST",
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        GSTORTDS: 'TDS',
+      }));
+    }
+  }, [isGST, formData.taxableState, formData.supplyState]);
 
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
-      console.log('hi ++++______ ++++++++++===== eeeee client', res.data);
       setClients(res.data || []);
     } catch (err) {
       console.error('Failed to fetch client details:', err);
       setClients([]);
     }
   };
+
   const fetchProducts = async () => {
     try {
-      // const res = await ApiService.post('/products/getAllproductDetails');
       const res = await ApiService.post(
         '/productType/getProductTypeNamesDropDown'
       );
@@ -144,19 +134,6 @@ const EditInvoice = () => {
     }
   };
 
-  // const handleClientChange = (e) => {
-  //   const selectedClient = clients.find(
-  //     (client) => client.clientId === e.target.value
-  //   );
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     client: selectedClient.name,
-  //     clientNumber: selectedClient.clientId,
-  //     email: selectedClient.email,
-  //     clientAddress: selectedClient.address,
-  //   }));
-  // };
-
   const handleClientChange = (e) => {
 
     const selectedId = Number(e.target.value);
@@ -171,16 +148,12 @@ const EditInvoice = () => {
       clientNumber: selectedClient.phoneNumber || '',
       email: selectedClient.email || '',
       clientAddress: selectedClient.address || '',
+      billingAddress: selectedClient.address || '',
+      shippingAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
 
   };
-
-  // Handle field changes
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({ ...prevData, [name]: value }));
-  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -256,26 +229,6 @@ const EditInvoice = () => {
     setFormData((prevData) => ({ ...prevData, items: updatedItems }));
   };
 
-  // const handleProductItemQuantityChange = (index, e) => {
-  //   const { name, value } = e.target;
-
-  //   const updatedItems = [...formData.items];
-  //   updatedItems[index][name] = value;
-
-  //   const costPerUnit = parseFloat(updatedItems[index].costPerUnit || 0);
-  //   const quantity = parseInt(value || 0, 10);
-
-  //   updatedItems[index].totalCost = costPerUnit * quantity;
-
-  //   const totalProductsAmount = calculateTotal(updatedItems);
-
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     totalAmount: totalProductsAmount,
-  //     items: updatedItems,
-  //   }));
-  // };
-
   const handleProductItemQuantityChange = (index, e) => {
     const { name, value } = e.target;
 
@@ -315,6 +268,8 @@ const EditInvoice = () => {
       clientId: formData.clientId,
       buildingAddress: formData.buildingAddress,
       shippingAddress: formData.shippingAddress,
+      taxableState: formData.taxableState,
+      supplyState: formData.supplyState,
       estimateDate: formData.estimateDate,
       expireDate: formData.expireDate,
       productOrService: formData.items.map((item) => item.name).join(', '),
@@ -328,8 +283,7 @@ const EditInvoice = () => {
       unitCode: initialAuthState.unitCode,
       estimateId: formData.estimateId || undefined,
       invoiceId: formData.invoiceId || undefined,
-      // GSTORTDS: formData.GSTORTDS || undefined,
-      GSTORTDS: 'GST',
+      GSTORTDS: formData.GSTORTDS || undefined,
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
       tds: formData.tds,
@@ -337,7 +291,6 @@ const EditInvoice = () => {
         (total, item) => total + parseInt(item.quantity, 10),
         0
       ),
-      tdsPercentage: formData.tdsPercentage || 0,
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
       productDetails: formData.items.map((item) => ({
@@ -390,6 +343,8 @@ const EditInvoice = () => {
       formDataPayload.append('clientId', estimateDto.clientId);
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
+      formDataPayload.append('taxableState', estimateDto.taxableState);
+      formDataPayload.append('supplyState', estimateDto.supplyState);
       formDataPayload.append('invoicePDF', pdfFile); // Attach PDF file
       formDataPayload.append('estimateDate', estimateDto.estimateDate);
       formDataPayload.append('expireDate', estimateDto.expireDate);
@@ -405,8 +360,6 @@ const EditInvoice = () => {
       formDataPayload.append('branchId', estimateDto.branchId);
       formDataPayload.append('accountId', estimateDto.accountId);
       formDataPayload.append('includeTax', includeTax);
-      formDataPayload.append('tdsPercentage', estimateDto.tdsPercentage);
-
       formDataPayload.append(
         'cgstPercentage',
         estimateDto.cgstPercentage || '0'
@@ -440,88 +393,16 @@ const EditInvoice = () => {
           headers: { 'Content-Type': 'multipart/form-data' }, // Important for binary data
         }
       );
-
-      console.log('Estimate saved successfully!');
       alert('Estimate updated successfully!');
-      navigate('/estimate');
+      navigate('/invoice');
     } catch (err) {
       console.error('Failed to save estimate:', err);
       alert('Failed to save estimate!', err);
     }
   };
 
-  const fetschEstimation = async () => {
-    try {
-      const response = await ApiService.post('/estimate/getEstimateDetails', {
-        estimateId: invoiceDetails.invoice.estimateId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
-      if (response.status) {
-        console.log('jjjjjj kkk lll', response.data);
-
-        const CGST = parseFloat(response.data.CGST) || 0;
-        const SCST = parseFloat(response.data.SCST) || 0;
-        const totalAmount = parseFloat(response.data.totalAmount) || 0;
-
-        const cgstPercentage = totalAmount
-          ? Math.round((CGST * 100) / totalAmount)
-          : 0;
-        const scstPercentage = totalAmount
-          ? Math.round((SCST * 100) / totalAmount)
-          : 0;
-        // setFormData(response.data[0]);
-        setFormData((prev) => ({
-          ...prev,
-          // CGST: response.data[0].CGST,
-          // SCST: response.data[0].SCST,
-
-          CGST,
-          SCST,
-          cgstPercentage,
-          scstPercentage,
-
-          buildingAddress: response.data[0].buildingAddress,
-          shippingAddress: response.data[0].shippingAddress,
-          clientAddress: response.data[0].clientAddress,
-          clientEmail: response.data[0].clientEmail,
-          clientId: response.data[0].clientId,
-          clientName: response.data[0].clientName,
-          clientPhoneNumber: response.data[0].clientPhoneNumber,
-          companyCode: response.data[0].companyCode,
-          description: response.data[0].description,
-          estimateDate: response.data[0].estimateDate,
-          estimateId: response.data[0].estimateId,
-          invoicePdfUrl: response.data[0].invoicePdfUrl,
-          expireDate: response.data[0].expireDate,
-
-          // CGST: response.data[0].CGST,
-          // SCST: response.data[0].SCST,
-          id: response.data[0].id,
-          invoiceId: response.data[0].invoiceId,
-          invoicePdfUrl: response.data[0].invoicePdfUrl,
-          productOrService: response.data[0].productOrService,
-          items: response.data[0].products,
-          unitCode: response.data[0].unitCode,
-          vendorId: response.data[0].vendorId,
-          vendorName: response.data[0].vendorName,
-          vendorPhoneNumber: response.data[0].vendorPhoneNumber,
-
-          totalAmount: response.data[0].totalAmount,
-          // cgstPercentage:
-          //   (response.data[0].CGST * 100) / response.data[0].totalAmount,
-          // sgstPercentage: response.data[0].SCST / response.data[0].totalAmount,
-        }));
-      } else {
-        console.error('Failed to fetch branches');
-      }
-    } catch (error) {
-      console.error('Error fetching branches:', error);
-    }
-  };
-
   const fetchEstimation = async () => {
-    console.log("rrr :", invoiceDetails.invoice)
+
     try {
       const response = await ApiService.post('/estimate/getEstimateDetails', {
         estimateId: invoiceDetails.invoice.estimateId,
@@ -544,7 +425,6 @@ const EditInvoice = () => {
           : 0;
 
         const matchedClient = clients.find((c) => c.clientId === data.clientId);
-        console.log(matchedClient, 'madmamamamamamam');
 
         setFormData({
           CGST,
@@ -554,11 +434,13 @@ const EditInvoice = () => {
           totalAmount,
           buildingAddress: data.buildingAddress,
           shippingAddress: data.shippingAddress,
+          taxableState: data.taxableState,
+          supplyState: data.supplyState,
           clientAddress: data.clientAddress,
           clientId: data.clientId,
           client: matchedClient?.id || '',
           clientName: matchedClient?.name || '',
-          clientNumber: data.clientPhoneNumber,
+          clientNumber: data.clientPhoneNumber, 
           email: data.clientEmail,
           companyCode: data.companyCode,
           description: data.description,
@@ -578,6 +460,9 @@ const EditInvoice = () => {
           branchId: data.branchId,
           accountId: data.accountId,
         });
+        if (data.GSTORTDS==="TDS") {
+          setIsGST(false)
+        }
       } else {
         console.error('Failed to fetch estimate details');
       }
@@ -633,22 +518,6 @@ const EditInvoice = () => {
         <form className="space-y-6">
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* <div>
-              <label className="block text-sm font-semibold mb-1">Client</label>
-              <select
-                name="client"
-                value={formData.clientId}
-                onChange={handleClientChange}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="">Select Client</option>
-                {clients.map((client) => (
-                  <option key={client.id} value={client.clientId}>
-                    {client.name}
-                  </option>
-                ))}
-              </select>
-            </div> */}
             <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
               <select
@@ -800,6 +669,44 @@ const EditInvoice = () => {
                 />
               </div>
             </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Taxable State
+              </label>
+              <select
+                name="taxableState"
+                value={formData.taxableState}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select State</option>
+                {states.map((state) => (
+                  <option key={state.gst_code} value={state.name}>
+                    {state.name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="mt-4">
+                <label className="block text-sm font-semibold mb-1">
+                  Supply State
+                </label>
+                <select
+                  name="supplyState"
+                  value={formData.supplyState}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="">Select Account</option>
+                  {states.map((state) => (
+                    <option key={state.gst_code} value={state.name}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
           </div>
 
           {/* Items */}
@@ -811,7 +718,6 @@ const EditInvoice = () => {
                 <span className="col-span-1 font-semibold">#</span>
                 <span className="col-span-2 font-semibold">Type</span>
                 <span className="col-span-2 font-semibold">Name</span>
-
                 <span className="col-span-2 font-semibold">Rate</span>
                 <span className="col-span-2 font-semibold">Quantity</span>
                 <span className="col-span-2 font-semibold">Amount</span>
@@ -856,15 +762,6 @@ const EditInvoice = () => {
                         ))}
                       </select>
                     ) : (
-                      // <input
-                      //   type="text"
-                      //   name="name"
-                      //   value={item.name}
-                      //   onChange={(e) => handleService(index, e)}
-                      //   placeholder="Service"
-                      //   className="col-span-2 p-2 border rounded-md w-full"
-                      // />
-
                       <select
                         name="name"
                         value={item.name}
@@ -976,7 +873,6 @@ const EditInvoice = () => {
                     ...prevData,
                     cgstPercentage: '',
                     scstPercentage: '',
-                    tdsPercentage: '',
                     CGST: '',
                     SCST: '',
                   }));
@@ -990,12 +886,8 @@ const EditInvoice = () => {
                 ></div>
               </div>
             </label>
-            <span
-              className={
-                isGST ? 'font-semibold text-blue-600' : 'text-gray-400'
-              }
-            >
-              GST Enabled
+            <span className={isGST ? 'font-semibold' : 'text-gray-400'}>
+              {formData.taxableState === formData.supplyState ? " GST Enabled" : "IGST Enable"}
             </span>
           </div>
 
@@ -1017,31 +909,34 @@ const EditInvoice = () => {
                   100
                 ).toFixed(2)}
               </p>
-
-              <label className="block text-sm font-semibold mb-1">SGST %</label>
-              <input
-                type="number"
-                name="scstPercentage"
-                value={formData.scstPercentage}
-                onChange={handleInputChange}
-                placeholder="SGST %"
-                className="w-full p-2 border rounded-md"
-              />
-              <p className="text-sm text-gray-700 mt-1">
-                SGST Amount: ₹
-                {(
-                  (+formData.totalAmount * +formData.scstPercentage) /
-                  100
-                ).toFixed(2)}
-              </p>
+              {formData.taxableState === formData.supplyState &&
+                <>
+                  <label className="block text-sm font-semibold mb-1">SGST %</label>
+                  <input
+                    type="number"
+                    name="scstPercentage"
+                    value={formData.scstPercentage}
+                    onChange={handleInputChange}
+                    placeholder="SGST %"
+                    className="w-full p-2 border rounded-md"
+                  />
+                  <p className="text-sm text-gray-700 mt-1">
+                    SGST Amount: ₹
+                    {(
+                      (+formData.totalAmount * +formData.scstPercentage) /
+                      100
+                    ).toFixed(2)}
+                  </p>
+                </>
+              }
             </div>
           ) : (
             <div>
               <label className="block text-sm font-semibold mb-1">TDS %</label>
               <input
                 type="number"
-                name="tdsPercentage"
-                value={formData.tdsPercentage}
+                name="cgstPercentage"
+                value={formData.cgstPercentage}
                 onChange={handleInputChange}
                 placeholder="TDS %"
                 className="w-full p-2 border rounded-md"
@@ -1049,20 +944,27 @@ const EditInvoice = () => {
               <p className="text-sm text-gray-700 mt-1">
                 TDS Amount: ₹
                 {(
-                  (+formData.totalAmount * +formData.tdsPercentage) /
+                  (+formData.totalAmount * +formData.cgstPercentage) /
                   100
                 ).toFixed(2)}
               </p>
             </div>
           )}
-
           <div>
-            <strong className="col-span-2 font-semibold">
-              Total Estimate Amount (Include Tax) :{' '}
-              {formData.totalAmount +
-                (formData.totalAmount * formData.cgstPercentage) / 100 +
-                (formData.totalAmount * formData.scstPercentage) / 100}
-            </strong>
+            {isGST ? (
+              <strong className="col-span-2 font-semibold">
+                Total Estimate Amount (Include Tax) :{' '}
+                {formData.totalAmount +
+                  (formData.totalAmount * formData.cgstPercentage) / 100 +
+                  (formData.totalAmount * formData.scstPercentage) / 100}
+              </strong>
+            ) : (
+              <strong className="col-span-2 font-semibold">
+                Total Estimate Amount (Include Tax) :{' '}
+                {formData.totalAmount +
+                  (formData.totalAmount * formData.cgstPercentage) / 100}
+              </strong>
+            )}
           </div>
 
           {/* Terms & Conditions */}
@@ -1076,6 +978,7 @@ const EditInvoice = () => {
               onChange={handleInputChange}
               placeholder="Add Terms and Conditions"
               className="w-full p-2 border rounded-md"
+              style={{ height: 300 }}
             />
           </div>
 

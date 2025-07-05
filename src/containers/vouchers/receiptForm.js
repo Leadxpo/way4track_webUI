@@ -368,8 +368,6 @@ const ReceiptForm = () => {
         ledgerId: selectedPartyName, // Add this only if your API expects it
       });
 
-      console.log("setPendingVouchers+++++++++", response);
-
       if (response.status) {
         const filteredVouchers = response.data.filter(voucher =>
           voucher.voucherType === "SALE" &&

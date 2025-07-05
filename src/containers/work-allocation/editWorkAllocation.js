@@ -190,7 +190,6 @@ const EditWorkAllocation = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     const payload = { ...selectedWorkAllocation };
-    console.log(payload, '+++++++++++++++++++++++');
     try {
       const endpoint = selectedWorkAllocation.workAllocationNumber
         ? '/work-allocations/handleWorkAllocationDetails'

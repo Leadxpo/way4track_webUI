@@ -427,7 +427,6 @@ const EditPaymentForm = (props) => {
         ledgerId: selectedPartyName, // Add this only if your API expects it
       });
 
-      console.log('setPendingVouchers+++++++++', response);
 
       if (response.status) {
         console.log('tttt', response.data);

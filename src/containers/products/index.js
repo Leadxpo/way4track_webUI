@@ -8,6 +8,60 @@ import Table from '../../components/Table';
 import { getPermissions } from '../../common/commonUtils';
 
 const Products = () => {
+
+  const styles = {
+
+    appContainer: {
+      padding: "30px",
+      fontFamily: "Arial, sans-serif"
+    },
+    button: {
+      padding: "10px 20px",
+      backgroundColor: "#0066cc",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer"
+    },
+    closeButton: {
+      marginTop: "20px",
+      padding: "8px 16px",
+      backgroundColor: "#cc0000",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer"
+    },
+    modalOverlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000
+    },
+    modal: {
+      backgroundColor: "#fff",
+      padding: "25px 30px",
+      borderRadius: "10px",
+      width: "90%",
+      maxWidth: "450px",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.25)"
+    },
+    heading: {
+      marginTop: 0,
+      color: "#333"
+    },
+    paragraph: {
+      margin: "8px 0",
+      fontSize: "14px"
+    }
+  };
+
   const [selected, setSelected] = useState(() => {
     const role = localStorage.getItem('role'); // adjust the key if needed
     if (role === 'Branch Manager') return 'branchstock';
@@ -15,7 +69,7 @@ const Products = () => {
     if (role === 'CEO') return '';
     return ''; // default fallback
   });
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const localStorageBranchName = localStorage.getItem('branchName');
   const localStorageSubdealerId = localStorage.getItem('userId');
   const localStorageStaffId = localStorage.getItem('userId');
@@ -31,10 +85,11 @@ const Products = () => {
   const [subDealerNames, setSubDealerNames] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [stock, setStock] = useState(null);
+  const [searchByNumber, setSearchByNumber] = useState(null);
   const [allProductsStock, setAllProductsStock] = useState(null);
   const [unassignedData, setUnassignedData] = useState([]);
+  const [filterNumber, setFilterNumber] = useState([]);
   // if (branchStock) {
-  //   console.log('++++++++ R', branchStock);
   // }
   console.log('Selected:', selected);
 
@@ -43,6 +98,7 @@ const Products = () => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
   };
+
   const [filters, setFilters] = useState({
     staffId: '',
     staffName: '',
@@ -77,11 +133,6 @@ const Products = () => {
   const [branches, setBranches] = useState([]);
   const [permissions, setPermissions] = useState({});
   const [assignPermissions, setAssignPermissions] = useState({});
-  // const [searchData, setSearchData] = useState({
-  //   productId: '',
-  //   productName: '',
-  //   location: '',
-  // });
   const [productCounts, setProductCounts] = useState({
     totalAssignedQty: 0,
     totalInHandsQty: 0,
@@ -89,6 +140,7 @@ const Products = () => {
   });
   const [tableData, setTableData] = useState([]);
   const [columns, setColumns] = useState([]);
+
   const fetchData = async (branchName) => {
     try {
       const payload = {
@@ -305,6 +357,44 @@ const Products = () => {
     console.log('Search triggered with:', searchData);
   };
 
+  function searchDevices(data, query) {
+    if (!query) return [];
+
+    return data.filter(item => {
+      const imei = item.imeiNumber?.toString() || '';
+      const sim = item.simNumber?.toString() || '';
+      return imei.includes(query) || sim.includes(query);
+    });
+  }
+
+
+  const fetchIMEIProductDetails = async () => {
+    try {
+      const payload = {
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode,
+      };
+      console.log('payload :', payload)
+      const response = await ApiService.post('/products/getAllproductDetails', payload);
+      const allProducts = response?.data || [];
+      console.log("allProducts :", allProducts)
+
+      const filteredResults = searchDevices(allProducts, searchByNumber);
+
+      setFilterNumber(filteredResults);
+      setIsModalOpen(true);
+      console.log("filteredResults",filterNumber);
+
+    } catch (error) {
+      console.error('Error fetching products inventory details:', error?.response?.data || error.message);
+    }
+  };
+
+  const handleSearchByNumbers = () => {
+    console.log('Search triggered with:', searchByNumber);
+    fetchIMEIProductDetails()
+  };
+
   // Choose which data to display based on the selected stock type
   const displayedData =
     selected === 'branchstock'
@@ -506,6 +596,24 @@ const Products = () => {
           </button>
         </div>
       </div>
+      <div className="flex flex-row items-center justify-around gap-4">
+        <input
+          type="text"
+          name="searchByNumber"
+          placeholder="Search By Number"
+          value={searchByNumber}
+          onChange={(e) => setSearchByNumber(e.target.value)}
+          className="flex-grow h-12 border border-gray-300 rounded-md px-3 shadow-sm"
+        />
+
+        <button
+          onClick={handleSearchByNumbers}
+          className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center shadow-md hover:bg-green-800"
+        >
+          <FaSearch className="mr-2" /> Search
+        </button>
+      </div>
+
       {role !== 'CEO' ||
         role !== 'Accountant' ||
         role !== 'sub dealer' ||
@@ -587,7 +695,7 @@ const Products = () => {
                 </div>
               </>
             )}
-            {role !== 'Technician' && role !== 'Sales Man' && role !== 'Branch Manager' &&(
+            {role !== 'Technician' && role !== 'Sales Man' && role !== 'Branch Manager' && (
 
               <div
                 className="bg-green-400 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:scale-105 transition"
@@ -785,6 +893,31 @@ const Products = () => {
             </div>
           </>
         )}
+{isModalOpen && 
+filterNumber?.map((sampleData) => {
+  console.log("item :",sampleData.productName)
+  return(
+  <div key={sampleData.id} style={styles.modalOverlay}>
+    <div style={styles.modal}>
+      <h2 style={styles.heading}>Product Details</h2>
+      <p style={styles.paragraph}><strong>Product Name:</strong> {sampleData.productName}</p>
+      <p style={styles.paragraph}><strong>IMEI Number:</strong> {sampleData.imeiNumber}</p>
+      <p style={styles.paragraph}><strong>Status:</strong> {sampleData.status}</p>
+      <p style={styles.paragraph}><strong>Product Status:</strong> {sampleData.productStatus}</p>
+      <p style={styles.paragraph}><strong>Location:</strong> {sampleData.location}</p>
+
+      <hr />
+      <h4 style={styles.heading}>Subdealer Info</h4>
+      <p style={styles.paragraph}><strong>Name:</strong> {sampleData.subDealerId?.name || "N/A"}</p>
+      <p style={styles.paragraph}><strong>Phone:</strong> {sampleData.subDealerId?.subDealerPhoneNumber || "N/A"}</p>
+      <p style={styles.paragraph}><strong>Address:</strong> {sampleData.subDealerId?.address || "N/A"}</p>
+
+      <button style={styles.closeButton} onClick={() => setIsModalOpen(false)}>
+        Close
+      </button>
+    </div>
+  </div>
+)})}
     </div>
   );
 };

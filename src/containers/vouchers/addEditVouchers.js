@@ -68,10 +68,6 @@ const AddEditVouchers = () => {
         //   value: account.id,
         //   label: account.accountName,
         // }));
-        console.log(
-          '+++++++====================================',
-          formattedOptions
-        );
         setBankOptions(formattedOptions);
       } catch (error) {
         console.error('Error fetching bank options:', error);

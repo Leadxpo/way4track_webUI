@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -23,12 +23,13 @@ const AddRequestRaise = () => {
     status: '',
     fromDate: null,
     toDate: null,
-    // subDealerId: Number(requestData.subDealerId) || '',
+    photo: '',
     requestId: '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
-
+  const [image, setImage] = useState(null); // Store selected image
+  const fileInputRef = useRef(null);        // Ref to trigger file input
 
   const fetchStaffData = async () => {
     try {
@@ -77,11 +78,21 @@ const AddRequestRaise = () => {
   };
 
 
+  const handleImageClick = () => {
+    fileInputRef.current.click(); // Trigger hidden input
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setFormData({ ...formData, photo: file });
+      setImage(imageUrl);
+    }
+  };
+
   useEffect(() => {
-
-
     fetchBranches();
-
     fetchSubDealers();
     fetchStaffData();
   }, []);
@@ -92,7 +103,7 @@ const AddRequestRaise = () => {
   };
 
   const handleSave = async () => {
-    const id = JSON.parse(localStorage.getItem('id'));
+    const requestFrom = JSON.parse(localStorage.getItem('id'));
 
     // if (userProfile && userProfile.Data && userProfile.Data.length > 0) {
     //     const { id, name } = userProfile?.Data[0];
@@ -103,29 +114,34 @@ const AddRequestRaise = () => {
     // }
 
     try {
-      const payload = {
-        requestType: formData.requestType,
-        requestTo: Number(formData.requestTo),
-        requestFrom: id,
-        branch: Number(formData.branch),
-        // requestFor: formData.description,
-        requestFor: formData.requestFor,
-        status: "pending",
-        products: formData.requestType === "products" ? formData.products : null,
-        description: formData.description,
-        // subDealerId: formData.subDealerId || 1,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-        requestFor: formData.requestFor,
-        fromDate: formData.fromDate,
-        toDate: formData.toDate,
-      };
+      const formDataToSend = new FormData();
+    formDataToSend.append('requestType', formData.requestType);
+    formDataToSend.append('requestTo', formData.requestTo);
+    formDataToSend.append('requestFrom', requestFrom);
+    formDataToSend.append('branch', formData.branch);
+    formDataToSend.append('description', formData.description || '');
+    formDataToSend.append('companyCode', initialAuthState.companyCode);
+    formDataToSend.append('unitCode', initialAuthState.unitCode);
+    formDataToSend.append('requestFor', formData.requestFor);
+    formDataToSend.append('fromDate', formData.fromDate);
+    formDataToSend.append('toDate', formData.toDate);
+
+    if (formData.photo) {
+      formDataToSend.append('photo', formData.photo);
+    }
+
+    if (formData.requestType === 'products' && formData.products) {
+      formDataToSend.append('products', JSON.stringify(formData.products));
+    }
+
 
 
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
-        payload
-      );
+        formDataToSend,{
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
       if (response.status) {
         alert('Request saved successfully');
         navigate('/requests');
@@ -398,28 +414,53 @@ const AddRequestRaise = () => {
                 />
               </div>
             )}
+          {
+            formData.requestType === "money" && (
+              <>
+                <p className="font-semibold mb-1">Image</p>
+                <img
+                  src={image || "https://www.mariposakids.co.nz/wp-content/uploads/2014/08/image-placeholder2.jpg"} // Default image
+                  alt="Click to upload"
+                  onClick={handleImageClick}
+                  className="w-40 h-40 object-cover rounded-md cursor-pointer border"
+                />
 
-          {formData.requestType === "leaveRequest" && (<><div className="mt-4">
-            <p className="font-semibold mb-1">Leave From Date</p>
-            <input
-              type="date"
-              name="fromDate"
-              value={formData.fromDate || ""}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </>
+            )
+          }
+          {formData.requestType === "leaveRequest" && (
+            <>
+              <div className="mt-4">
+                <p className="font-semibold mb-1">Leave From Date</p>
+                <input
+                  type="date"
+                  name="fromDate"
+                  value={formData.fromDate || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+              </div>
 
-            <div className="mt-4">
-              <p className="font-semibold mb-1">Leave To Date</p>
-              <input
-                type="date"
-                name="toDate"
-                value={formData.toDate || ""}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              />
-            </div></>)}
+              <div className="mt-4">
+                <p className="font-semibold mb-1">Leave To Date</p>
+                <input
+                  type="date"
+                  name="toDate"
+                  value={formData.toDate || ""}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+              </div>
+            </>)
+          }
 
         </div>
         {/* Buttons */}

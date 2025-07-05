@@ -33,11 +33,6 @@ const Estimates = () => {
         showEdit={permissions.edit}
         showDetails={permissions.view}
       />
-      {/* <div style={{ height: '100vh', width: '50vw' }}>
-        <PDFViewer style={{ width: '100%', height: '100%' }}>
-          <TaxInvoicePDF data={{}} />
-        </PDFViewer>
-      </div> */}
     </>
   );
 };

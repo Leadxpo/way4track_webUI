@@ -3,6 +3,7 @@ import TableWithDateFilter from '../tablesDateFilter';
 import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { FaEllipsisV } from 'react-icons/fa';
+import DateConvert from '../../components/dateConvert';
 
 const RequestRaise = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const RequestRaise = () => {
           branchName: item.branchName,
           branchId: item.req_branch_id,
           requestType: item.requestType,
+          requestDate: item.requestDate,
           status: item.status,
         }));
 
@@ -219,6 +221,9 @@ const RequestRaise = () => {
                         requestType
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
+                        requestData
+                      </th>
+                      <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
                         status
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
@@ -259,6 +264,9 @@ const RequestRaise = () => {
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
                             {record.requestType}
+                          </td>
+                          <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
+                            {DateConvert(record.requestDate) }
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
                             {record.status}
@@ -316,9 +324,9 @@ const RequestRaise = () => {
       {activeTab === 'requests' && (
         <div>
           <TableWithDateFilter
-            type="requests"
-            onEdit={handleVendorEdit}
-            onDelete={handleDelete}
+            type="requests" 
+            onEdit={handleVendorEdit} showEdit={true}
+            onDelete={handleDelete} showDelete={false}
             onDetails={handleDetails}
             showDateFilters={false}
           />

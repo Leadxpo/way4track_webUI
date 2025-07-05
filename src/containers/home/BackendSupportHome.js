@@ -483,33 +483,49 @@ const BackendSupportHome = () => {
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Client Name:
+                            Client:
                           </p>
                           <p
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Tech Support:
+                            Support:
                           </p>
                           <p
                             className="text-lg font-semibold text-gray-500"
                             style={{ fontSize: '15px' }}
                           >
-                            Vehicle Number:
+                            Vehicle :
                           </p>
                         </div>
                         <div>
                           <p
-                            className="text-lg font-bold text-gray-800"
-                            style={{ fontSize: '16px' }}
+                            className="text-lg font-bold text-gray-800 truncate w-60"
+                            style={{
+                              fontSize: '16px',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}
                           >
                             {card.clientName}
+                          </p>
+                          <p
+                            className="text-lg font-bold text-gray-800 truncate w-60"
+                            style={{
+                              fontSize: '16px',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}
+                          >
+                            {card.staffName}
                           </p>
                           <p
                             className="text-lg font-bold text-gray-800"
                             style={{ fontSize: '16px' }}
                           >
-                            {card.staffName}
+                            {card.vehicleNumber}
                           </p>
                         </div>
                       </div>
