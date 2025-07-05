@@ -89,7 +89,6 @@ const PayrollDetailsView = ({ payrollData }) => {
           initialData={payrollData}
           onClose={() => setIsEditing(false)}
           onSave={async (updatedData) => {
-            console.log('Updated Payroll Data:', updatedData);
 
             const payrollPayload = {
               id: updatedData.id,
@@ -122,20 +121,20 @@ const PayrollDetailsView = ({ payrollData }) => {
               daysOutLate6HoursOrMore: updatedData.daysOutLate6HoursOrMore,
               netSalary: updatedData.netSalary || 0,
               salaryStatus: updatedData.salaryStatus,
-              carryForwardLeaves: updatedData.carryForwardLeaves,
+              carryForwardLeaves: updatedData.carryForwardLeaves||0,
               professionalTax: updatedData.professionalTax || 0,
               incentives: updatedData.incentives || 0,
               foodAllowance: updatedData.foodAllowance || 0,
               leaveEncashment: updatedData.leaveEncashment || 0,
               plBikeNeedToPay: updatedData.plBikeNeedToPay || false,
               plBikeAmount: updatedData.plBikeAmount || 0,
-              payableAmount: updatedData.payableAmount,
-              advanceAmount: updatedData.advanceAmount, // Fixed typo
-
-              // Additional fields from initialAuthState
+              payableAmount: updatedData.payableAmount ||0,
+              adavnceAmount: updatedData.advanceAmount || 0, // Fixed typo
               companyCode: initialAuthState?.companyCode,
               unitCode: initialAuthState?.unitCode,
             };
+            console.log('Updated Payroll Data:', payrollPayload);
+
             try {
               const response = await ApiService.post(
                 'PAYROLL/createOrUpdatePayroll',

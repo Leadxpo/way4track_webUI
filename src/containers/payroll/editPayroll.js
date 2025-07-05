@@ -76,7 +76,6 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           'payableAmount',
           'salaryStatus',
         ].map((field) => {
-          console.log("rrr :", field)
           switch (field) {
             case "extraHalfSalary":
               return <Controller
