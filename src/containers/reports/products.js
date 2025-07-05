@@ -48,20 +48,34 @@ const Reports = () => {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
       };
-  
+
       const response = await ApiService.post('/products/getAllproductDetails', payload);
       const allProducts = response?.data || [];
-    
+
       // Filter based on selected filters
       const filteredProducts = allProducts.filter((item) => {
         const matchesBranch = selectedBranch ? item?.branchId?.branchName === selectedBranch : true;
         const matchesProduct = selectedProduct ? item?.productType === selectedProduct : true;
         const matchesSubdealer = selectedSubdealer ? String(item?.subDealerId?.id) === String(selectedSubdealer) : true;
         const matchesStaff = selectedStaff ? String(item?.staffId?.id) === String(selectedStaff) : true;
-  
-        return matchesBranch && matchesProduct && matchesSubdealer && matchesStaff;
+
+        // Convert to Date objects and strip time
+        const inDate = new Date(item.inDate);
+        const inDateOnly = new Date(inDate.getFullYear(), inDate.getMonth(), inDate.getDate());
+
+        const from = fromDate ? new Date(fromDate) : null;
+        const fromOnly = from ? new Date(from.getFullYear(), from.getMonth(), from.getDate()) : null;
+
+        const to = toDate ? new Date(toDate) : null;
+        const toOnly = to ? new Date(to.getFullYear(), to.getMonth(), to.getDate()) : null;
+
+        const matchesDate =
+          (!fromOnly || inDateOnly >= fromOnly) &&
+          (!toOnly || inDateOnly <= toOnly);
+
+        return matchesBranch && matchesProduct && matchesSubdealer && matchesStaff && matchesDate;
       });
-  
+
       console.log("Filtered products count:", filteredProducts.length);
       setData(filteredProducts);
       handlePreview(filteredProducts);
@@ -70,7 +84,7 @@ const Reports = () => {
       setData([]);
     }
   };
-  
+
   const fetchClientInventory = async () => {
     try {
       const payload = {
@@ -79,16 +93,30 @@ const Reports = () => {
       };
       let response = await ApiService.post('/technician/getBackendSupportWorkAllocation', payload);
       const allData = response?.data || [];
-
       const filteredProducts = allData.filter((item) => {
         const matchesBranch = selectedBranch ? item?.branchName === selectedBranch : true;
         const matchesProduct = selectedProduct ? item?.productName === selectedProduct : true;
         const matchesSubdealer = selectedSubdealer ? String(item?.subDealerId) === String(selectedSubdealer) : true;
         const matchesStaff = selectedStaff ? String(item?.staffId) === String(selectedStaff) : true;
-  
-        return matchesBranch && matchesProduct && matchesSubdealer && matchesStaff;
+        const matchesServices = selectedService ? String(item?.service) === String(selectedService) : true;
+        const matchesClient = selectedClient ? String(item?.clientName) === String(selectedClient) : true;
+
+        const inDate = new Date(item.startDate);
+        const inDateOnly = new Date(inDate.getFullYear(), inDate.getMonth(), inDate.getDate());
+
+        const from = fromDate ? new Date(fromDate) : null;
+        const fromOnly = from ? new Date(from.getFullYear(), from.getMonth(), from.getDate()) : null;
+
+        const to = toDate ? new Date(toDate) : null;
+        const toOnly = to ? new Date(to.getFullYear(), to.getMonth(), to.getDate()) : null;
+
+        const matchesDate =
+          (!fromOnly || inDateOnly >= fromOnly) &&
+          (!toOnly || inDateOnly <= toOnly);
+
+        return matchesBranch && matchesProduct && matchesSubdealer && matchesStaff && matchesServices && matchesClient && matchesDate;
       });
-  
+
       console.log("Filtered products count:", filteredProducts.length);
       setData(filteredProducts);
       handlePreview(filteredProducts);
@@ -231,7 +259,7 @@ const Reports = () => {
       case "Staff":
         setSelectedSubdealer("");
         break;
-    
+
       default:
         setSelectedSubdealer("");
         setSelectedStaff("");
@@ -308,18 +336,24 @@ const Reports = () => {
             <h2 className="text-center text-green-600 font-bold">{selectedBranch}</h2>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-lg justify-between">
-              <input
-                type="date"
-                className="border border-gray-300 w-full rounded-md px-3 py-2 text-sm"
-                value={fromDate}
-                onChange={e => setFromDate(e.target.value)}
-              />
-              <input
-                type="date"
-                className="border border-gray-300 w-full rounded-md px-3 py-2 text-sm"
-                value={toDate}
-                onChange={e => setToDate(e.target.value)}
-              />
+              <div>
+                <label>From Date</label>
+                <input
+                  type="date"
+                  className="border border-gray-300 w-full rounded-md px-3 py-2 text-sm"
+                  value={fromDate}
+                  onChange={e => setFromDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label>To Date</label>
+                <input
+                  type="date"
+                  className="border border-gray-300 w-full rounded-md px-3 py-2 text-sm"
+                  value={toDate}
+                  onChange={e => setToDate(e.target.value)}
+                />
+              </div>
 
             </div>
 
@@ -478,7 +512,7 @@ const Reports = () => {
                 if (selectedStock.includes("Products")) {
                   fetchProductStockDetails()
                   setIsModalOpen(false);
-                }else{
+                } else {
                   fetchClientInventory()
                   setIsModalOpen(false);
                 }

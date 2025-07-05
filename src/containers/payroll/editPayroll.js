@@ -11,7 +11,11 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
   const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: initialData,
   });
-  const formData = watch();
+
+  useEffect(()=>{
+
+    console.log("initialData :",initialData);
+  })
 
   // useEffect(() => {
   //     if (formData.actualSalary && formData.monthDays) {
@@ -72,7 +76,7 @@ const EditPayroll = ({ initialData, onClose, onSave }) => {
           'PF_Employer2',
           'professionalTax',
           'netSalary',
-          'advanceAmount',
+          'adavnceAmount',
           'payableAmount',
           'salaryStatus',
         ].map((field) => {

@@ -18,11 +18,12 @@ const Payroll = () => {
   );
   const [permissions, setPermissions] = useState({});
   useEffect(() => {
-    const perms = getPermissions('attendance');
-    setPermissions(perms);
+    const rrr=()=>{
+      const perms = getPermissions('attendance');
+      setPermissions(perms);
+    }
+    rrr()
   }, [permissions]);
-
-  const location = useLocation();
   const navigate = useNavigate();
   const fetchPayrollData = async (branchName = 'All') => {
     console.log('selected data : ', selectedDate);

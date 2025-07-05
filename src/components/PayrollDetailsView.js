@@ -10,9 +10,14 @@ const PayrollDetailsView = ({ payrollData }) => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
 
+  console.log("www :",payrollData)
   useEffect(() => {
-    const perms = getPermissions('attendance');
-    setPermissions(perms);
+    const rrr=()=>{
+
+      const perms = getPermissions('attendance');
+      setPermissions(perms);
+    }
+    rrr()
   }, [permissions]);
   return (
     <div className="max-w-7xl w-full bg-white shadow-lg rounded-lg p-6">
@@ -75,6 +80,12 @@ const PayrollDetailsView = ({ payrollData }) => {
         <p>
           <strong>Net Salary:</strong> ₹{payrollData.netSalary}
         </p>
+        <p>
+          <strong>Net Salary:</strong> ₹{payrollData.netSalary}
+        </p>
+        <p>
+          <strong>Advance Amount:</strong> ₹{payrollData.adavnceAmount}
+        </p>
       </div>
 
 {permissions.edit && <button
@@ -89,7 +100,7 @@ const PayrollDetailsView = ({ payrollData }) => {
           initialData={payrollData}
           onClose={() => setIsEditing(false)}
           onSave={async (updatedData) => {
-
+            console.log('Payroll Data:', updatedData);
             const payrollPayload = {
               id: updatedData.id,
               staffId: updatedData.staffId,
@@ -129,7 +140,7 @@ const PayrollDetailsView = ({ payrollData }) => {
               plBikeNeedToPay: updatedData.plBikeNeedToPay || false,
               plBikeAmount: updatedData.plBikeAmount || 0,
               payableAmount: updatedData.payableAmount ||0,
-              adavnceAmount: updatedData.advanceAmount || 0, // Fixed typo
+              adavnceAmount: updatedData.adavnceAmount || 0, // Fixed typo
               companyCode: initialAuthState?.companyCode,
               unitCode: initialAuthState?.unitCode,
             };
