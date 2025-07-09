@@ -107,7 +107,7 @@ export const menuOptions = [
     icon: <img src="./users.png" />,
     route: '/sub-staff-details',
   },
-  hasPermission(permission, "product-type", "view") && {
+  hasPermission(permission, "product-type", "view") &&  {
     name: 'Product Type',
     icon: <img src="./products_box.png" />,
     route: '/product-type',
@@ -174,7 +174,8 @@ export const menuOptions = [
     icon: <img src="./payroll.png" />,
     route: '/payroll',
   },
-  hasPermission(permission, "voucher", "view") && {
+  hasPermission(permission, "voucher", "view") || role?.toLowerCase() === "backend support executive"&& 
+  {
     name: 'Payments',
     icon: <img src="./payments.png" />,
     route: '/payments',
