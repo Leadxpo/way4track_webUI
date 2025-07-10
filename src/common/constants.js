@@ -156,6 +156,11 @@ export const menuOptions = [
     icon: <img src="./estimate.png" />,
     route: '/estimate',
   },
+  hasPermission(permission, "estimate", "view") && {
+    name: 'Invoice',
+    icon: <img src="./estimate.png" />,
+    route: '/invoice',
+  },
   hasPermission(permission, "voucher", "view") && {
     name: 'Day Book',
     icon: <img src="./day_book.png" />,
@@ -174,8 +179,7 @@ export const menuOptions = [
     icon: <img src="./payroll.png" />,
     route: '/payroll',
   },
-  hasPermission(permission, "voucher", "view") || role?.toLowerCase() === "backend support executive"&& 
-  {
+  (hasPermission(permission, "voucher", "view") || role?.toLowerCase() === "backend support executive") && {
     name: 'Payments',
     icon: <img src="./payments.png" />,
     route: '/payments',

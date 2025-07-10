@@ -717,7 +717,7 @@ const EditSaleForm = (props) => {
                   <label className="font-semibold text-gray-600">
                     Company Name:
                   </label>
-                  <p>{gstData.taxpayerInfo.tradeNam}</p>
+                  <p>{gstData?.taxpayerInfo?.tradeNam}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">

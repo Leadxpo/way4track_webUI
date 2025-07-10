@@ -11,8 +11,12 @@ const Ledger = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
   useEffect(() => {
-    const perms = getPermissions('voucher');
-    setPermissions(perms);
+    const rrr=()=>{
+
+      const perms = getPermissions('voucher');
+      setPermissions(perms);
+    }
+    rrr()
   }, [permissions]);
 
   const [searchData, setSearchData] = useState({

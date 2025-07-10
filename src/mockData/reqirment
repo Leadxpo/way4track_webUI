@@ -8,11 +8,22 @@ vendor download PDF should add
 dispatch multi photo upload
 dispatch transice user and date/dispatch user and date/delivered user and date
 product return products with imei number
+client edit few entities mising cpmpare to the add client
+estimate/invoice PDF tds and GST toggle button should appear,
+invoice /estimate prefix customize should done
+sale visit table replace  primary staffId  with staff name
+sale visit customer agreed status
+branch managers add sales visit in the sales visit
+work Allocation table replace  primary staffId  with staff name,
 asset taxable value with taxable amount like (road tax/GST/SESS)
 asset toggle button with if tax apply /not apply to the asset amount
-in invetory manager/staff only table should visable moredetails option should not visiable
+in inventory manager/staff only table should visable moredetails option should not visiable
 attendence report download with preview
 branch manager staff should mention in the ticket
 reporting manager(new update)
 report for in add request and description for edit request
 multiple request photos in request raise (new update)
+
+
+APP(sales)
+sales visit not intrsted toggle button should add

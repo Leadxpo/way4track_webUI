@@ -124,16 +124,6 @@ const JournalForm = () => {
     'CreditNote',
   ];
 
-  const [invoices, setInvoices] = useState([
-    { id: '73HFUEY63', amount: 100000 },
-    { id: '73HFUEY63', amount: 30000 },
-    { id: '73HFUEY63', amount: 20000 },
-  ]);
-
-  const [entries, setEntries] = useState([
-    { invoice: '', amount: '', paid: '', remaining: '' },
-  ]);
-
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [bank, setBank] = useState('');
@@ -166,9 +156,6 @@ const JournalForm = () => {
   const toggleDropdown = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-
-  const totalAmount = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-  const balanceAmount = 20000;
 
   const handleBranchClick = () => {
     setIsPopupOpen(true);
@@ -249,7 +236,7 @@ const JournalForm = () => {
     payload.append('upiId', formData.upiId);
     payload.append('checkNumber', formData.checkNumber);
     payload.append('cardNumber', formData.cardNumber);
-    payload.append('amount', Number(formData.amountPaid));
+    payload.append('amountPaid', Number(formData.amountPaid));
     payload.append('companyCode', initialAuthState.companyCode);
     payload.append('unitCode', initialAuthState.unitCode);
 

@@ -5,8 +5,7 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 const CustomerForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const editData = location.state?.ledgerDetails || {};
+  const editData = location.state?.ledgerDetails || null;
   const [groupData, setGroupData] = useState([]);
   const [formData, setFormData] = useState({
     id:editData?.id ||'',
@@ -36,7 +35,7 @@ const CustomerForm = () => {
     e.preventDefault();
 
     const payload = {
-      name: formData.customerName,
+      name: formData.name,
       group: formData.groupName,
       groupId: formData.groupId,
       state: formData.state,
@@ -48,7 +47,7 @@ const CustomerForm = () => {
       gstUinNumber: formData.gstNumber,
       companyCode: initialAuthState?.companyCode,
       unitCode: initialAuthState?.unitCode,
-      ...(editData?.id && { id: editData.id }),
+      ...(editData?.id && { id: editData?.id }),
     };
 
 
@@ -58,7 +57,7 @@ const CustomerForm = () => {
       const response = await ApiService.post(url, payload);
 
       if (response.status) {
-        alert(`Ledger ${editData ? 'updated' : 'created'} successfully!`);
+        alert(`Ledger ${editData? 'updated' : 'created'} successfully!`);
         navigate('/ledger'); // ✅ Navigate to Ledger list page
       } else {
         alert(response.data.message || 'Something went wrong');
@@ -77,9 +76,6 @@ const CustomerForm = () => {
         unitCode: initialAuthState?.unitCode,
       });
 
-
-      console.log("pppppp uuuuuuu", response.data)
-
       if (response.status) {
         setGroupData(response.data);
         if (groupData) {
@@ -97,7 +93,7 @@ const CustomerForm = () => {
 
   useEffect(() => {
     fetchGroups();
-  }, []);
+  }, [groupData]);
 
   const handleGroupChange = (e) => {
     const selectedId = Number(e.target.value);
@@ -130,11 +126,10 @@ const CustomerForm = () => {
             <label className="block text-gray-700 font-semibold mb-1">Customer Name</label>
             <input
               type="text"
-              name="customerName"
+              name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter Name"
-              required
               className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>

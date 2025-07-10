@@ -186,9 +186,9 @@ const validate = (fieldName, value) => {
   }
 
   // Email validation
-  if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-    error = 'Please enter a valid email.';
-  }
+  // if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+  //   error = 'Please enter a valid email.';
+  // }
 
   // Phone number validation (10 digits)
   if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
@@ -211,10 +211,10 @@ const handleChange = useCallback(
     });
 
     // Validate the field and set the error if needed
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: validate(name, value),
-    }));
+    // setErrors((prevErrors) => ({
+    //   ...prevErrors,
+    //   [name]: validate(name, value),
+    // }));
   },
   []
 );
