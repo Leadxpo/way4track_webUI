@@ -221,25 +221,6 @@ const PaymentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //   console.log("qqqqqqqq",formData)
-    //   const payload = new FormData();
-
-    //   payload.append('date', formData.date);
-    //   payload.append('day', formData.day);
-    //   payload.append('bankAccountNumber', formData.bankAccountNumber);
-    //   payload.append('pendingInvoices', formData.pendingInvoices);
-    //   payload.append('purpose', formData.purpose);
-
-    //   payload.append('branchId',Number(localStorage.getItem("branchId")));
-    //   payload.append('voucherType', formData.voucherType);
-    //   payload.append('paymentType', paymentType.toLowerCase());
-    // payload.append('upiId', formData.upiId);
-    // payload.append('checkNumber', formData.checkNumber);
-    // payload.append('cardNumber', formData.cardNumber);
-    // payload.append('amountPaid', Number(formData.amountPaid));
-    //   payload.append('companyCode', initialAuthState.companyCode);
-    //   payload.append('unitCode', initialAuthState.unitCode);
-    //   console.log("qqqqqqqqpayload",payload)
 
     const selectedAccount = bankAccount.find(
       (acc) => acc.accountNumber === formData.bankAccountNumber
@@ -293,6 +274,7 @@ const PaymentForm = () => {
       return null;
     }
   };
+
   const handleLedgerChange = (e) => {
     const selectedId = Number(e.target.value); // Convert string to number
     const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
@@ -306,23 +288,6 @@ const PaymentForm = () => {
     console.log('formdata', formData);
     getPendingVouchers(selectedId);
   };
-
-  // const handleBankChange = (e) => {
-  //   const selectedAccountNumber = e.target.value;
-
-  //   const selectedBank = bankAccount.find(
-  //     (bank) => bank.accountNumber === selectedAccountNumber
-  //   );
-
-  //   if (selectedBank) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       bankAmount: selectedBank.totalAmount || "0.00",
-  //       bankAccountNumber: selectedAccountNumber || "",
-  //     }));
-  //   }
-
-  // };
 
   const handleBankChange = (e) => {
     const selectedAccountNumber = e.target.value;

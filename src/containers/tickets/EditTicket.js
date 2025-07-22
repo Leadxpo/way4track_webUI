@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
 import ApiService, { initialAuthState } from "../../services/ApiService";
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 export default function EditTicket() {
   const location = useLocation();
@@ -14,19 +15,48 @@ export default function EditTicket() {
     problem: "",
     date: null,
     addressingDepartment: "",
+    reportingStaffId: '',
     workStatus: "",
     description: "",
   });
+  const [selectedStaffId, setSelectedStaffId] = useState('');
+  const [staffList, setStaffList] = useState([]);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+
+      try {
+        const response = await ApiService.post(
+          '/dashboards/getTotalStaffDetails',
+          {
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
+          }
+        );
+        if (response.data) {
+          setStaffList(
+            response.data.staff.filter(
+              (staff) => staff.staffDesignation !== 'Technician' || staff.staffDesignation !== 'Sr.Technician'
+            )
+          );
+        }
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaffList([]);
+      }
+    };
+    fetchStaff();
+  }, []);
 
   const fetchTicketById = async () => {
     try {
       const response = await ApiService.post("/tickets/getTicketDetailsById", {
-        id: ticket.id,
+        id: ticket?.id,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
   
-      console.log("fetch ticket details: fetchTicketById ticket pen", response.data);
+      console.log("fetch ticket details: fetchTicketById ticket pen", (response.status && response.data));
   
       if (response.status && response.data) {
         const ticketData = response.data;
@@ -34,9 +64,11 @@ export default function EditTicket() {
           problem: ticketData.problem || "",
           date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
           designationRelation:ticketData.designationRelation.id,
+          reportingStaffId:ticketData?.reportingStaff?.id,
           workStatus: ticketData.workStatus || "",
           description: ticketData.description || "",
         });
+        setSelectedStaffId(ticketData?.reportingStaff?.id)
       } else {
         console.error("Error: API response is invalid or no data found");
       }
@@ -136,8 +168,23 @@ export default function EditTicket() {
             className="w-full p-2 border rounded-md"
           />
         </div>
-
-        <div className="mb-4">
+        <label className="block mb-2">Reporting Staff</label>
+        <select
+          value={formData.reportingStaffId}
+          name={'reportingStaffId'}
+          onChange={(e) => {setSelectedStaffId(e.target.value)
+            setFormData((prev) => ({ ...prev, 'reportingStaffId': e.target.value }));
+          }}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
+        >
+          <option value="">Select Staff</option>
+          {staffList?.map((staff) => (
+            <option key={staff.id} value={staff.id}>
+              {staff.staffName} ({staff.staffId})
+            </option>
+          ))}
+        </select>
+                <div className="mb-4">
           <label className="block font-medium mb-1">Designation Relation</label>
           <select
             name="designation_id"
@@ -156,23 +203,12 @@ export default function EditTicket() {
 
         <div>
           <label className="block text-sm font-medium">Work Status</label>
-          <select
+          <input
+            type="text"
             name="workStatus"
-            value={formData.workStatus}
-            onChange={handleChange}
-            required
+            value={formData.workStatus} disabled
             className="w-full p-2 border rounded-md"
-          >
-            <option value="">Select Status</option>
-            <option value="pending">Pending</option>
-            <option value="Processing">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="allocated">Allocated</option>
-            <option value="incomplete">Incomplete</option>
-            <option value="install">Install</option>
-            <option value="accept">Accept</option>
-            <option value="activate">Activate</option>
-          </select>
+          />
         </div>
 
         <div>

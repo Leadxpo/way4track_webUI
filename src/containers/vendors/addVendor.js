@@ -6,11 +6,14 @@ import { initialAuthState } from '../../services/ApiService';
 const AddEditVendor = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [errors, setErrors] = useState({ purchaseGst: '' });
   const vendorData = location.state?.vendorDetails || {};
+  const [isGST, setIsGST] = useState(true);
+  const [gstData, setGstData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const initialFormData = {
-    id: vendorData?.id || null,
+    id: vendorData?.vendorId || null,
     name: vendorData.name || '',
     vendorPhoneNumber: vendorData.vendorPhoneNumber || '',
     alternatePhoneNumber: vendorData.alternatePhoneNumber || '',
@@ -29,8 +32,46 @@ const AddEditVendor = () => {
   const [bankName, setBankName] = useState(vendorData?.bankDetails?.split(",")[0] || '');
   const [accountHolderName, setAccountHolderName] = useState(initialFormData?.bankDetails?.split(",")[1] || '');
   const [accountNumber, setAccountNumber] = useState(initialFormData?.bankDetails?.split(",")[2] || '');
+  const [confirmAccountNumber, setConfirmAccountNumber] = useState(initialFormData?.bankDetails?.split(",")[2] || '');
   const [accountIFSC, setAccountIFSC] = useState(initialFormData?.bankDetails?.split(",")[3] || '');
 
+  const handleFetchGSTData = async () => {
+    const gstNumber = formData.GSTNumber;
+    if (!gstNumber) {
+      alert('Please enter a GST number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        'https://appyflow.in/api/verifyGST',
+        {
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
+          gstNo: gstNumber,
+        }
+      );
+      setGstData(response);
+      setIsGST(response.error)
+      if (response.error) {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number Invalid',
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number valid',
+        }));
+      }
+
+    } catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,6 +79,10 @@ const AddEditVendor = () => {
   };
 
   const handleSave = async () => {
+    if (String(accountNumber) !== String(confirmAccountNumber)) {
+      alert("Account number and confirmation do not match.");
+      return; // Stop execution if the account numbers don't match
+    }
     const payload = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'photo' && value instanceof File) {
@@ -48,6 +93,7 @@ const AddEditVendor = () => {
         payload.append(key, value);
       }
     });
+
     try {
       const endpoint = formData.id
         ? '/vendor/handleVendorDetails'
@@ -88,8 +134,13 @@ const AddEditVendor = () => {
   };
   useEffect(() => {
     const getVendorDetails = async () => {
+      const payload = {
+        vendorId: formData?.id,
+        companyCode: initialAuthState.companyCode,
+        unitCode: initialAuthState.unitCode
+      }
       try {
-        const response = await ApiService.post('/vendor/getVendorDetailsById');
+        const response = await ApiService.post('/vendor/getVendorDetailsById', payload);
         setFormData(response.data);
       } catch (error) {
         console.error(error);
@@ -188,16 +239,98 @@ const AddEditVendor = () => {
             />
           </div>
           {/* GST Number */}
-          <div>
-            <p className="font-semibold mb-1">GST Number</p>
-            <input
-              type="text"
-              name="GSTNumber"
-              value={formData.GSTNumber}
-              onChange={handleInputChange}
-              placeholder="Enter Email ID"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
+          <div className="">
+            <div className="relative z-[10]">
+              <input
+                type="text"
+                placeholder="Purchase GST:"
+                name="GSTNumber"
+                value={formData.GSTNumber}
+                maxLength={15}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg pr-36 pl-3 py-2 text-black text-lg font-medium border-gray-400 bg-white h-[45px]"
+              />
+              <button
+                onClick={handleFetchGSTData}
+                type="button"
+                disabled={loading || formData.GSTNumber?.length !== 15}
+                className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
+              >
+                {loading ? '...' : 'Get'}
+              </button>
+            </div>
+
+            {errors.purchaseGst && (
+              <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
+            )}
+
+            {!isGST && (
+              <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  GST Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700 text-sm">
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Company Name:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.tradeNam}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      GST Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.gstin}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Type Of Company:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.dty}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Incorporate Type:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.ctb}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">Status:</label>
+                    <p>{gstData?.taxpayerInfo?.sts}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Pan Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.panNo}</p>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="font-semibold text-gray-600">
+                      Address:
+                    </label>
+                    <p className="leading-relaxed">
+                      {gstData?.taxpayerInfo?.pradr.addr.bno &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.bno}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.st &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.st}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.loc &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.loc}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.dst &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.dst}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.stcd} -{' '}
+                      {gstData?.taxpayerInfo?.pradr.addr.pncd}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', marginTop: '10px' }}>
+                  <label className="font-semibold text-gray-600">State:</label>
+                  <p>{gstData?.taxpayerInfo?.pradr.addr.stcd}</p>
+                </div>
+              </div>
+            )}
+
           </div>
           {/* State */}
           <div>
@@ -257,6 +390,21 @@ const AddEditVendor = () => {
               placeholder="Enter Bank Account Number"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
+          </div>
+          <div>
+            <p className="font-semibold mb-1">Bank Account Number</p>
+            <input
+              type="text"
+              name="confirmAccountNumber"
+              value={confirmAccountNumber}
+              onChange={(e) => setConfirmAccountNumber(e.target.value)}
+              placeholder="Enter Confirmation Bank Account Number"
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+            {String(accountNumber) !== String(confirmAccountNumber) &&
+              <p className="font-semibold mb-1" style={{ backgroundColor: "red", color: '#f3f3f3', padding: 5, borderBottomRightRadius: 8, borderBottomLeftRadius: 8, fontSize: 10 }} >Confirmation Bank Account Number not Matching</p>
+
+            }
           </div>
 
           <div>

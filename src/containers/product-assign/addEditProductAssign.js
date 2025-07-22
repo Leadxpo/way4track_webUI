@@ -52,8 +52,6 @@ const AddEditProductAssign = () => {
   const [subDealerNames, setSubDealerNames] = useState([]);
   const [errors, setErrors] = useState({});
 
-  console.log(staff, 'stafrf names');
-
   useEffect(() => {
     const getProductNamesDropDown = async () => {
       try {
@@ -218,38 +216,6 @@ const AddEditProductAssign = () => {
     }));
   };
 
-  // const getActiveStatus = async (productAssignId) => {
-  //   const payload = { productAssignId };
-  //   const res = await ApiService.post('/product-assign/markIsAssign', payload);
-  //   if (res.status) {
-  //     alert(res.internalMessage);
-  //     handleSave();
-  //   } else {
-  //     alert('Failed to update assignment status.');
-  //   }
-  // };
-
-  // const getActiveStatusInHands = async (productAssignId) => {
-  //   const payload = { productAssignId };
-  //   const res = await ApiService.post('/product-assign/markInHands', payload);
-  //   if (res.status) {
-  //     alert(res.internalMessage);
-  //     handleSave();
-  //   } else {
-  //     alert('Failed to update in-hands status.');
-  //   }
-  // };
-
-  // const switchStatus = (record) => {
-  //   getActiveStatus(record.id);
-  // }
-
-  // const switchInHandsStatus = (record) => {
-  //   getActiveStatusInHands(record.id);
-  // }
-
-  console.log(formData, 'formdata');
-
   const handleSave = async () => {
     const newErrors = {};
 
@@ -265,6 +231,8 @@ const AddEditProductAssign = () => {
     setErrors({});
 
     const payload = new FormData();
+    payload.append('isReturn',false);
+
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
         payload.append(key, value);
@@ -272,7 +240,8 @@ const AddEditProductAssign = () => {
         payload.append(key, value);
       }
     });
-    try {
+
+      try {
       const endpoint =  '/products/bulk-upload';
       const response = await ApiService.post(endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -280,7 +249,7 @@ const AddEditProductAssign = () => {
 
       if (response.status) {
         alert('Product assigned successfully!');
-        navigate('/products');
+        // navigate('/products');
       } else {
         alert('Failed to save product details. Please try again.');
       }
@@ -372,8 +341,6 @@ const AddEditProductAssign = () => {
       original: branch,
     })),
   ];
-
-  console.log(unifiedData, 'UNIFID');
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">

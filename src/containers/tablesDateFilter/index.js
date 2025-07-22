@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Table from '../../components/Table';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaEye, FaDownload } from 'react-icons/fa';
 import estimatesData from '../../mockData/mockEstimates.json';
 import invoicesData from '../../mockData/mockInvoices.json';
 import paymentsData from '../../mockData/mockPayments.json';
@@ -9,6 +9,8 @@ import { pageTitles } from '../../common/constants';
 import { initialAuthState } from '../../services/ApiService';
 import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import DateConvert from '../../components/dateConvert';
 
 const TableWithDateFilter = ({
   type,
@@ -66,6 +68,8 @@ const TableWithDateFilter = ({
   const [searchInvoice, setSearchInvoice] = useState('');
   const [subdealerList, setSubdealerList] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
+
+
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
@@ -129,7 +133,7 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-const branchId=localStorage.getItem("branch_id")
+        const branchId = localStorage.getItem("branch_id")
         // Remove null values and format data
         const formattedData = response.data.map(
           ({
@@ -146,7 +150,7 @@ const branchId=localStorage.getItem("branch_id")
               : '',
           })
         );
-        const rrr=formattedData.filter((item)=>(String(item.branch)===String(branchId)))
+        const rrr = formattedData.filter((item) => (String(item.branch) === String(branchId)))
         setSubdealerList(rrr);
         setFilteredData(rrr);
       } else {
@@ -276,15 +280,15 @@ const branchId=localStorage.getItem("branch_id")
         const rrr = response?.data?.map(item => ({
           id: item.id,
           invoiceId: item.invoiceId,
-          estimateId: item.estimateId,
+          // estimateId: item.estimateId,
           clientName: item.clientName,
           PhoneNumber: item.clientPhoneNumber,
-          branchName:item.branchName,
-          date: item.updatedDate,
+          branchName: item.branchName,
+          date: DateConvert(item.estimateDate) ,
           estimateAmount: item.totalAmount,
           shippingAddress: item.shippingAddress
         }));
-      console.log("rrr:",rrr)
+        console.log("rrr:", rrr)
         setInvoiceList(rrr); // Assuming the structure is as expected
         setFilteredData(rrr); // Assuming the structure is as expected
       } else {
@@ -321,46 +325,55 @@ const branchId=localStorage.getItem("branch_id")
     }
   }, [type]);
 
-  // useEffect(() => {
-  //   let dataSource = [];
-  //   switch (type) {
-  //     case 'estimate':
-  //       dataSource = filteredData;
-  //       break;
-  //     case 'invoice':
-  //       dataSource = filteredData.filter((item) => !!item.invoiceId);
-  //       break;
-  //     case 'payments':
-  //       dataSource = filteredData;
-  //       break;
-  //     case 'requests':
-  //       dataSource = filteredData;
-  //       break;
-  //     case 'vendors':
-  //       dataSource = filteredData;
-  //       break;
-  //     case 'sub_dealers':
-  //       dataSource = filteredData;
-  //       break;
-  //     default:
-  //       dataSource = [];
-  //   }
-  //   setPageTitle(pageTitles[type]);
-  //   const allKeys = Object.keys(dataSource[0] || {});
-  //   const visibleKeys = type === 'invoice'
-  //     ? allKeys.filter(key => key.toLowerCase() !== 'products') // remove 'product' column
-  //     : allKeys;
-  //   setColumns(visibleKeys);
-  //   setColumnNames(visibleKeys);
-  //   setData(dataSource);
-  //   setFilteredData(dataSource);
+  const handleDownload = (type) => {
+    let data;
+    let filename;
 
-  //   // Extract unique statuses
-  //   const uniqueStatuses = [...new Set(dataSource.map((item) => item.status))];
-  //   setStatuses(uniqueStatuses);
-  // }, [type, filteredData]);
+    switch (type) {
+      case 'sub_dealers':
+        data = filteredData;
+        filename = 'sub_dealers.xlsx';
+        break;
+      case 'estimate':
+        data = filteredData;
+        filename = 'estimate.xlsx';
+        break;
+      case 'payments':
+        data = filteredData;
+        filename = 'payments.xlsx';
+        break;
+      case 'requests':
+        data = filteredData;
+        filename = 'requests.xlsx';
+        break;
+      case 'invoice':
+        data = filteredData;
+        filename = 'requests.xlsx';
+        break;
+      case 'vendors':
+        data = filteredData;
+        filename = 'vendors.xlsx';
+        break;
+      default:
+        alert('Invalid type selected.');
+        return;
+    }
 
-  // Handle status filter change
+    if (!data || data.length === 0) {
+      alert('No data available to download.');
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, type);
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error generating Excel file:', error);
+      alert('Failed to generate the Excel file. Please try again.');
+    }
+  };
 
   useEffect(() => {
     let dataSource = [];
@@ -463,7 +476,17 @@ const branchId=localStorage.getItem("branch_id")
 
   return (
     <div className="p-10">
+
       <p className="font-bold text-xl">{pageTitle}</p>
+     {showDetails && <div className="flex justify-between items-center">
+        <button
+          onClick={() => handleDownload(type)}
+          className="bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
+        >
+          <FaDownload className="text-white" />
+          Download {type} Excel Sheet
+        </button>
+      </div>}
       {/* Create New Button Row */}
       <div className="flex justify-end mb-4">
         {showCreateBtn && (
@@ -475,7 +498,7 @@ const branchId=localStorage.getItem("branch_id")
           </button>
         )}
       </div>
-
+ 
       {type === 'sub_dealers' && (
         <div className="flex mb-4">
           <div className="flex-grow mx-2">

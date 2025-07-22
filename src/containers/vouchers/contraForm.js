@@ -51,19 +51,19 @@ const ContraForm = () => {
     fetchBankAccounts();
   }, []);
 
-  const handleLedgerChange = (e) => {
-    const selectedId = Number(e.target.value); // Convert string to number
+  // const handleLedgerChange = (e) => {
+  //   const selectedId = Number(e.target.value); // Convert string to number
 
-    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+  //   const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
 
-    if (selectedLedger) {
-      setFormData((prev) => ({
-        ...prev,
-        partyName: selectedLedger.name,
-        ledgerId: selectedLedger.id,
-      }));
-    }
-  };
+  //   if (selectedLedger) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       partyName: selectedLedger.name,
+  //       ledgerId: selectedLedger.id,
+  //     }));
+  //   }
+  // };
 
   useEffect(() => {
     const fetchLedgers = async () => {
@@ -107,7 +107,7 @@ const ContraForm = () => {
     partyName: '',
     bankAccountNumber: '',
     purpose: '',
-    ledgerId: '',
+    ledgerId: null,
     voucherType: 'CONTRA',
     upiId: '',
     checkNumber: '',
@@ -237,8 +237,10 @@ const ContraForm = () => {
     payload.append('generationDate', formData.date);
     payload.append('day', formData.day);
     payload.append('branchId', Number(localStorage.getItem('branchId')));
-    payload.append('ledgerId', Number(formData?.ledgerId));
-    payload.append('bankAccountNumber', formData.bankAccountNumber);
+    if (formData.ledgerId) {
+      payload.append('ledgerId', formData.ledgerId);
+    }
+        payload.append('bankAccountNumber', formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
     payload.append('journalType', selected);
@@ -401,7 +403,7 @@ const ContraForm = () => {
             }}
           />
           
-          <select
+          {/* <select
             value={formData.ledgerId}
             onChange={handleLedgerChange}
             name="partyName"
@@ -423,7 +425,7 @@ const ContraForm = () => {
                 {party.name}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
         {/* From Bank */}
         <div>

@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import hasPermission from '../../common/permission'
+import * as XLSX from "xlsx";
+import { FaPlus, FaSearch, FaEllipsisV, FaFileDownload } from 'react-icons/fa';
 const Attendance = () => {
   const navigate = useNavigate();
   const location = useLocation();
   var permission = localStorage.getItem("userPermissions");
   const employeeData = location.state?.staffDetails || {};
   const branchData = location.state?.branchDetails || {};
-
+  const [previewData, setPreviewData] = useState([]);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [profiles, setProfiles] = useState([]);
   const [staffId, setStaffId] = useState(employeeData.staffId || '');
   const [fromDate, setFromDate] = useState(
@@ -58,6 +61,33 @@ const Attendance = () => {
       alert('Failed to fetch attendance details.');
     }
   };
+  const handlePreview = () => {
+    if (profiles.length === 0) {
+      alert("No group data available to preview.");
+      return;
+    }
+    setPreviewData(profiles);
+    setIsPreviewOpen(true);
+  };
+  const handleDownload = () => {
+    if (!previewData || previewData.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(previewData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Group_Data");
+      XLSX.writeFile(workbook, "Filtered_Groups.xlsx");
+
+      setIsPreviewOpen(false);
+    } catch (error) {
+      console.error("Error generating Excel file:", error);
+      alert("Failed to generate the Excel file. Please try again.");
+    }
+  };
+
 
   useEffect(() => {
     fetchAttendanceDetails();
@@ -66,6 +96,12 @@ const Attendance = () => {
   return (
     <div className="p-6">
       <div className="flex justify-end mb-4">
+      <button
+          onClick={handlePreview}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+        >
+          <FaFileDownload className="mr-2" /> Download
+        </button>
       {hasPermission(permission, "attendance", "add") &&
         <button
           className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 transition h-10"
@@ -197,6 +233,49 @@ const Attendance = () => {
             })}
         </tbody>
       </table>
+
+      {isPreviewOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+            <h4 className="text-xl font-semibold mb-4">Preview Data</h4>
+            <div className="overflow-x-auto max-h-60 border border-gray-300 rounded-lg">
+              <table className="min-w-full border">
+                <thead className="bg-gray-200 text-gray-700">
+                  <tr>
+                    {Object.keys(previewData[0]).map((key, index) => (
+                      <th key={index} className="p-2 text-left border">{key}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewData.map((row, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}>
+                      {Object.values(row).map((value, i) => (
+                        <td key={i} className="p-2 border">{value}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2 hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Download Excel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

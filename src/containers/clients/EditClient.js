@@ -10,28 +10,65 @@ const EditClient = () => {
     id: clientData?.id || null,
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
-    // gstNumber: clientData.gstNumber || '',
-    // clientId: clientData.clientId || '',
+    gstNumber: clientData.gstNumber || '',
     branch: clientData.branchId || '',
     branchName: clientData.branch || '', 
     email: clientData.email || '',
     address: clientData.address || '',
-    // joiningDate: clientData.joiningDate,
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
     file: clientData?.file || null,
+    state:clientData.state
   };
   
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
-  const [image, setImage] = useState(clientData?.file || '');
+  const [image, setImage] = useState(clientData?.clientPhoto || '');
   const [errors, setErrors] = useState({});
+  const [gstErrors, setGstErrors] = useState({ purchaseGst: '' });
+  const [isGST, setIsGST] = useState(true);
+  const [gstData, setGstData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-if(errors)
-{
-  console.log("==========+++===>",errors)
-}
+  const handleFetchGSTData = async () => {
+    const gstNumber = formData.gstNumber;
+    if (!gstNumber) {
+      alert('Please enter a GST number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        'https://appyflow.in/api/verifyGST',
+        {
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
+          gstNo: gstNumber,
+        }
+      );
+      setGstData(response);
+      setIsGST(response.error)
+      if (response.error) {
+        setGstErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number Invalid',
+        }));
+      } else {
+        setGstErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number valid',
+        }));
+      }
+
+    } catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });    
@@ -73,9 +110,6 @@ if(errors)
     fetchBranches();
   }, []);
 
-
-
-
   const handleSave = async () => {
 
     if (errors.email || errors.phoneNumber) {
@@ -96,7 +130,7 @@ if(errors)
       const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  console.log("rrr : ",response);
+
       if (response.status) {
         alert('Client updated successfully!');
         navigate('/clients');
@@ -223,18 +257,100 @@ return (
           </div>
 
 
-         {/* Phone Number */}
-          {/* <div>
-            <p className="font-semibold mb-1">GST Number</p>
-            <input
-              type="text"
-              name="gstNumber"
-              value={formData.gstNumber}
-              onChange={handleInputChange}
-              placeholder="Enter Gst Number"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div> */}
+         {/* GST */}
+         <div className="">
+            <div className="relative z-[10]">
+              <input
+                type="text"
+                placeholder="Client GST:"
+                name="gstNumber"
+                value={formData.gstNumber}
+                maxLength={15}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg pr-36 pl-3 py-2 text-black text-lg font-medium border-gray-400 bg-white h-[45px]"
+              />
+              <button
+                onClick={handleFetchGSTData}
+                type="button"
+                disabled={loading || formData.gstNumber?.length !== 15}
+                className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
+              >
+                {loading ? '...' : 'Get'}
+              </button>
+            </div>
+
+            {gstErrors.purchaseGst && (
+              <p className="text-red-500 text-sm mt-1">{gstErrors.purchaseGst}</p>
+            )}
+
+            {!isGST && (
+              <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  GST Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700 text-sm">
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Company Name:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.tradeNam}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      GST Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.gstin}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Type Of Company:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.dty}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Incorporate Type:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.ctb}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">Status:</label>
+                    <p>{gstData?.taxpayerInfo?.sts}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Pan Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.panNo}</p>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="font-semibold text-gray-600">
+                      Address:
+                    </label>
+                    <p className="leading-relaxed">
+                      {gstData?.taxpayerInfo?.pradr.addr.bno &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.bno}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.st &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.st}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.loc &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.loc}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.dst &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.dst}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.stcd} -{' '}
+                      {gstData?.taxpayerInfo?.pradr.addr.pncd}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', marginTop: '10px' }}>
+                  <label className="font-semibold text-gray-600">State:</label>
+                  <p>{gstData?.taxpayerInfo?.pradr.addr.stcd}</p>
+                </div>
+              </div>
+            )}
+
+          </div>
 
 
           {/* Branch */}
@@ -284,18 +400,17 @@ return (
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-        </div>
-
-        {/* <div>
-          <p className="font-semibold mb-1">Joining Date</p>
+          <div>
+          <p className="font-semibold mb-1">state</p>
           <input
-            type="date"
-            name="joiningDate"
-           value={formData.joiningDate?.split('T')[0]}
+            type="text"
+            name="state"
+            value={formData.state}
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           />
-        </div> */}
+        </div>
+        </div>
       </div>
 
       {/* Buttons */}

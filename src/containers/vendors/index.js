@@ -25,6 +25,7 @@ const Vendors = () => {
   const handleDetails = (vendorDetails) => {
     navigate('/vendor-profile', { state: { vendorDetails } });
   };
+
   return (
     <TableWithDateFilter
       type="vendors"

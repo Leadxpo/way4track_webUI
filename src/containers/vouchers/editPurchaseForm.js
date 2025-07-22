@@ -366,7 +366,7 @@ const EditPurchaseForm = (props) => {
       const response = await ApiService.post(
         'https://appyflow.in/api/verifyGST',
         {
-          key_secret: 'JqwMCeWBEDNCjxmEhUYSeMoluSB2',
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
           gstNo: gstNumber,
         }
       );
@@ -695,52 +695,52 @@ const EditPurchaseForm = (props) => {
                   <label className="font-semibold text-gray-600">
                     GST Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.gstin}</p>
+                  <p>{gstData?.taxpayerInfo.gstin}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Type Of Company:
                   </label>
-                  <p>{gstData.taxpayerInfo.dty}</p>
+                  <p>{gstData?.taxpayerInfo.dty}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Incorporate Type:
                   </label>
-                  <p>{gstData.taxpayerInfo.ctb}</p>
+                  <p>{gstData?.taxpayerInfo.ctb}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">Status:</label>
-                  <p>{gstData.taxpayerInfo.sts}</p>
+                  <p>{gstData?.taxpayerInfo.sts}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Pan Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.panNo}</p>
+                  <p>{gstData?.taxpayerInfo.panNo}</p>
                 </div>
                 <div className="sm:col-span-2">
                   <label className="font-semibold text-gray-600">
                     Address:
                   </label>
                   <p className="leading-relaxed">
-                    {gstData.taxpayerInfo.pradr.addr.bno &&
-                      `${gstData.taxpayerInfo.pradr.addr.bno}, `}
-                    {gstData.taxpayerInfo.pradr.addr.st &&
-                      `${gstData.taxpayerInfo.pradr.addr.st}, `}
-                    {gstData.taxpayerInfo.pradr.addr.loc &&
-                      `${gstData.taxpayerInfo.pradr.addr.loc}, `}
-                    {gstData.taxpayerInfo.pradr.addr.dst &&
-                      `${gstData.taxpayerInfo.pradr.addr.dst}, `}
-                    {gstData.taxpayerInfo.pradr.addr.stcd} -{' '}
-                    {gstData.taxpayerInfo.pradr.addr.pncd}
+                    {gstData?.taxpayerInfo.pradr.addr.bno &&
+                      `${gstData?.taxpayerInfo.pradr.addr.bno}, `}
+                    {gstData?.taxpayerInfo.pradr.addr.st &&
+                      `${gstData?.taxpayerInfo.pradr.addr.st}, `}
+                    {gstData?.taxpayerInfo.pradr.addr.loc &&
+                      `${gstData?.taxpayerInfo.pradr.addr.loc}, `}
+                    {gstData?.taxpayerInfo.pradr.addr.dst &&
+                      `${gstData?.taxpayerInfo.pradr.addr.dst}, `}
+                    {gstData?.taxpayerInfo.pradr.addr.stcd} -{' '}
+                    {gstData?.taxpayerInfo.pradr.addr.pncd}
                   </p>
                 </div>
               </div>
 
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <label className="font-semibold text-gray-600">State:</label>
-                <p>{gstData.taxpayerInfo.pradr.addr.stcd}</p>
+                <p>{gstData?.taxpayerInfo.pradr.addr.stcd}</p>
               </div>
             </div>
           )}

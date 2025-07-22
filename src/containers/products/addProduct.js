@@ -48,10 +48,14 @@ const AddProductForm = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [vendors, setVendors] = useState([]);
   const [image, setImage] = useState(null);
+  const [isReturn, setIsReturn] = useState(false);
   const [bulkFile, setBulkFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+  const toggleSwitch = () => {
+    setIsReturn(prev => !prev);
+  };
   // Fetch vendors
   useEffect(() => {
     const fetchVendors = async () => {
@@ -110,6 +114,7 @@ const AddProductForm = () => {
       const bulkPayload = new FormData();
       bulkPayload.append('file', bulkFile);
       bulkPayload.append('productTypeId', formData.productTypeId);
+      bulkPayload.append('isReturn', isReturn);
       bulkPayload.append('companyCode', initialAuthState.companyCode);
       bulkPayload.append('unitCode', initialAuthState.unitCode);
       try {
@@ -266,66 +271,28 @@ const AddProductForm = () => {
 
       <form className="space-y-4 w-1/2">
         <div>
-          {/* <label className="font-semibold mb-1 block">Product Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} /> */}
           {image && (
             <img src={image} alt="Preview" className="mt-4 w-24 h-24 rounded" />
           )}
         </div>
 
-        {/* {vendors.length > 0 && (
-          <div>
-            <p className="font-semibold mb-1">Vendor</p>
-            <select
-              name="vendorName"
-              value={formData.vendorId}
-              onChange={handleVendorChange}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option value="" disabled>
-                Select a Vendor
-              </option>
-              {vendors.map((vendor) => (
-                <option key={vendor.vendorId} value={vendor.vendorId}>
-                  {vendor.vendorName}
-                </option>
-              ))}
-            </select>
-          </div>
-        )} */}
-        {/* <a
-          href="https://storage.googleapis.com/way4track-application/productAssign_photos/assigned_products_xl_format.xlsx"
-          download
-        >
-          <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm">
-            Download Sample format
-          </button>
-        </a> */}
-
-        {/* {renderField('Date of Purchase', 'dateOfPurchase', 'date')}
-        {renderField('Product Name', 'productName')}
-        {renderField('Description', 'productDescription')}
-        {renderField('IMEI Number', 'imeiNumber')}
-        {renderField('Price', 'price', 'number')}
-        {renderField('Quantity', 'quantity', 'number')}
-        {renderField('Supplier Name', 'supplierName')}
-        {renderField('Serial Number', 'serialNumber')}
-        {renderField('Primary Number', 'primaryNo')}
-        {renderField('Secondary Number', 'secondaryNo')}
-        {renderField('Primary Network', 'primaryNetwork')}
-        {renderField('Secondary Network', 'secondaryNetwork')}
-        {renderField('SIM Status', 'simStatus')}
-        {renderField('Plan Name', 'planName')}
-        {renderField('Remarks 1', 'remarks1')}
-        {renderField('Remarks 2', 'remarks2')}
-        {renderField('Device Model', 'deviceModel')}
-        {renderField('Category Name', 'categoryName')}
-        {renderField('Remarks 3', 'remarks3')}
-        {renderField('BASKET_NAME', 'BASKET_NAME')}
-        {renderField('SIM_IMSI', 'SIM_IMSI')}
-        {renderField('SIM_NO', 'SIM_NO')}
-        {renderField('MOBILE_NUMBER', 'MOBILE_NUMBER')} */}
-
+        <div>
+          <label className="flex items-center cursor-pointer">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={isReturn}
+                onChange={toggleSwitch}
+                className="sr-only"
+              />
+              <div className={`w-10 h-4 bg-gray-400 rounded-full shadow-inner ${isReturn ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+              <div
+                className={`dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition ${isReturn ? 'translate-x-full' : ''}`}
+              ></div>
+            </div>
+            <span className="ml-3 text-sm">{isReturn ? 'Return Products' : 'New Products'}</span>
+          </label>
+        </div>
         <div>
           <label className="font-semibold mb-1 block">
             Select Product Type

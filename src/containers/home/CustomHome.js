@@ -4,8 +4,7 @@ import ApiService from '../../services/ApiService';
 import * as XLSX from 'xlsx';
 const CustomHome = () => {
   const branchName = localStorage.getItem('branchName');
-  console.log('Branch Name:', branchName);
-  console.log('Branch Name:', Boolean(branchName));
+
   const [searchStaffData, setSearchStaffData] = useState({ name: '' });
   const [staffList, setStaffList] = useState([]);
   const [allStaffs, setAllStaffs] = useState([]);
@@ -30,33 +29,6 @@ const CustomHome = () => {
 
     fetchStaff();
   }, []);
-
-  // useEffect(() => {
-  //     const fetchStaff = async () => {
-  //         try {
-  //             const res = await ApiService.post('/staff/getStaffDetails');
-  //             console.log("staff details:", res.data);
-  //             const allStaff = res.data || [];
-
-  //             // Get branchName from localStorage
-  //             const branchName = localStorage.getItem("branchName");
-
-  //             // Filter staff by branchName if it exists
-  //             const filteredStaff = branchName
-  //                 ? allStaff.filter(staff => staff.branchName === branchName)
-  //                 : allStaff;
-
-  //             setStaffList(filteredStaff);
-  //             setAllStaffs(allStaff);
-  //         } catch (err) {
-  //             console.error('Error fetching staff:', err);
-  //         } finally {
-  //             setLoading(false);
-  //         }
-  //     };
-
-  //     fetchStaff();
-  // }, []);
 
   const handleStaffSearch = () => {
     const query = searchStaffData.name.trim().toLowerCase();
@@ -345,7 +317,7 @@ const CustomHome = () => {
       console.error('Error generating Excel file:', error);
       alert('Failed to generate the Excel file. Please try again.');
     }
-  };
+  }; 
 
   return (
     <>

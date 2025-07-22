@@ -23,57 +23,82 @@ const AddDispatch = () => {
         receiverName: appointmentDetails?.receiverName || '',
         dispatcherName: appointmentDetails?.dispatcherName || '',
         trackingURL: appointmentDetails?.trackingURL || '',
-        staffId: appointmentDetails?.staffId || '',
-        clientId: appointmentDetails?.clientId || '',
-        subDealerId: appointmentDetails?.subDealerId || '',
-        dispatchBoxImage: appointmentDetails?.dispatchBoxImage || '',
+        dispatchDescription: appointmentDetails?.dispatchDescription || '',
+        dispatchBoxImage: appointmentDetails?.dispatchBoxImage || [],
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
     });
-
-    const [clients, setClients] = useState([]);
-    const [subDealers, setSubDealers] = useState([]);
-    const [staff, setStaff] = useState([]);
-    const [assignedProducts, setAssignedProducts] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [subDealerRes, productRes, clientRes, staffRes] = await Promise.all([
-                    ApiService.post('/subdealer/getSubDealerNamesDropDown'),
-                    ApiService.post('/product-assign/getAllProductAssign', {
-                        companyCode: initialAuthState.companyCode,
-                        unitCode: initialAuthState.unitCode,
-                    }),
-                    ApiService.post('/client/getClientNamesDropDown'),
-                    ApiService.post('/staff/getStaffNamesDropDown'),
-                ]);
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setFormData((prev) => ({
+            ...prev,
+            dispatchBoxImage: [...prev.dispatchBoxImage, ...files],
+        }));
 
-                setSubDealers(subDealerRes.data || []);
-                setAssignedProducts(productRes.data || []);
-                setClients(clientRes.data || []);
-                setStaff(staffRes.data || []);
-            } catch (error) {
-                console.error('Error fetching data:', error);
+        const newPreviews = files.map((file) => URL.createObjectURL(file));
+        setImagePreviews((prev) => [...prev, ...newPreviews]);
+    };
+
+    const handleReplaceImage = (index) => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setFormData((prev) => {
+                    const updated = [...prev.dispatchBoxImage];
+                    updated[index] = file;
+                    return { ...prev, dispatchBoxImage: updated };
+                });
+                setImagePreviews((prev) => {
+                    const updated = [...prev];
+                    updated[index] = URL.createObjectURL(file);
+                    return updated;
+                });
             }
         };
-        fetchData();
-    }, []);
+        fileInput.click();
+    };
+    const removeImage = (index) => {
+        const updatedImages = [...formData.dispatchBoxImage];
+        updatedImages.splice(index, 1);
+        setFormData((prev) => ({
+            ...prev,
+            dispatchBoxImage: updatedImages,
+        }));
+    };
+
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
         const payload = new FormData();
 
         Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null && value !== undefined) {
-                payload.append(key, value);
+            if (key === 'dispatchBoxImage') {
+                value.forEach((file) => payload.append('dispatchBoximage', file)); // 👈 use field name your backend expects
+            } else {
+                if (value !== null && value !== undefined) {
+                    payload.append(key, value);
+                }
             }
         });
+        const ID = localStorage.getItem("userId")
+        const role = localStorage.getItem("role")
+        if (role === "sub_dealer") {
 
+            payload.append("subDealerId", ID);
+        } else {
+            console.log("rrr :", ID)
+            payload.append("staffId", ID);
+        }
         try {
             const response = await ApiService.post('/dispatch/handleDispatchDetails', payload, {
                 headers: {
@@ -140,8 +165,8 @@ const AddDispatch = () => {
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 >
                     <option value="" disabled>Select Status</option>
-                    <option value="ON_THE_WAY">On The Way</option>
                     <option value="DISPATCHED">Dispatched</option>
+                    <option value="ON_THE_WAY">On The Way</option>
                     <option value="DELIVERED">Delivered</option>
                 </select>
             </div>
@@ -201,78 +226,6 @@ const AddDispatch = () => {
                 />
             </div>
 
-            {subDealers.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Sub Dealer:</label>
-                    <select
-                        name="subDealerId"
-                        value={formData.subDealerId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Sub Dealer</option>
-                        {subDealers.map(({ subDealerId, name }) => (
-                            <option key={subDealerId} value={subDealerId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {clients.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Client:</label>
-                    <select
-                        name="clientId"
-                        value={formData.clientId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Client</option>
-                        {clients.map(({ clientId, name }) => (
-                            <option key={clientId} value={clientId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {staff.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Assign To Staff:</label>
-                    <select
-                        name="staffId"
-                        value={formData.staffId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Staff</option>
-                        {staff.map(({ staffId, name }) => (
-                            <option key={staffId} value={staffId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {/* {assignedProducts.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Assign prosduct:</label>
-                    <select
-                        name="assignedTo"
-                        value={formData.assignedTo}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            Select prosduct
-                        </option>
-                        {assignedProducts.map((staffMember) => (
-                            <option key={staffMember.id} value={staffMember.id}>
-                                {staffMember.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )} */}
-
             <div className="flex flex-col">
                 <label className="font-semibold mb-2">Transport ID:</label>
                 <input
@@ -295,21 +248,42 @@ const AddDispatch = () => {
                 />
             </div>
             <div className="flex flex-col">
-                <label className="font-semibold mb-2">Package ID:</label>
-                <input
-                    label="Dispatch Box Image"
-                    name="dispatchBoxImage"
-                    type="file"
-                    onChange={(e) =>
-                        setFormData((prev) => ({
-                            ...prev,
-                            dispatchBoxImage: e.target.files[0],
-                        }))
-                    }
+                <label className="font-semibold mb-2">Description:</label>
+                <textarea
+                    type="text"
+                    name="dispatchDescription"
+                    placeholder='Dispatch Description'
+                    value={formData.dispatchDescription}
+                    onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
             </div>
 
+            <div className="flex flex-col">
+                <label className="font-semibold mb-2">Package Images:</label>
+                <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+                <div className="flex flex-wrap gap-4 mt-4">
+                    {imagePreviews.map((src, index) => (
+                        <div key={index} className="relative">
+                            <img
+                                src={src}
+                                alt={`Preview ${index}`}
+                                className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                                onClick={() => handleReplaceImage(index)}
+                            />
+                            <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                                Click to Replace
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </div>
             <button type="submit" className="w-full py-3 text-white bg-blue-500 hover:bg-blue-700 rounded-md">
                 {formData.id ? 'Update Dispatch' : 'Create Dispatch'}
             </button>

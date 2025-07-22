@@ -27,7 +27,9 @@ const EditAsset = () => {
     assertsName: assetData.assertsName,
     quantity: assetData.quantity,
     assertsAmount: assetData.price,
-    purchaseDate: assetData.purchaseDate.split('T')[0] || "N/A"
+    purchaseDate: assetData.purchaseDate.split('T')[0] || "N/A",
+    taxableAmount: assetData.taxableAmount,
+
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -247,6 +249,16 @@ const EditAsset = () => {
           name="assertsAmount"
           value={formData.assertsAmount}
           placeholder="Enter Amount"
+          onChange={handleInputChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
+        />
+        <p className="font-semibold mb-1">Taxable Amount</p>
+        <input
+          type="text"
+          name="taxableAmount"
+          value={formData.taxableAmount}
+          placeholder="Enter Taxable Amount"
           onChange={handleInputChange}
           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}

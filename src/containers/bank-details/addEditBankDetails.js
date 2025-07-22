@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 
@@ -10,7 +10,7 @@ const AddEditBankDetails = () => {
   // Check if there's bank data passed through location.state
   const bankData = location.state?.bankDetails || {};
 
-
+console.log("aaa :",bankData)
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -28,24 +28,18 @@ const AddEditBankDetails = () => {
     fetchBranches();
   }, []);
 
-
-
-
-
-
   // Initialize form data with existing bank details if available
   const initialFormData = {
-    id: bankData?.id || null,
-    accountHolderName: bankData.accountName || '',
-    name: bankData.name || '',
-    totalAmount: bankData.totalAmount || 0,
-    accountType: bankData.accountType || '',
-    accountNumber: bankData.accountNumber || '',
-    branch: bankData.branchId || '',
-    ifscCode: bankData.ifscCode || '',
-    bankPhoneNumber: bankData.phoneNumber || '',
-    // bankNumber: bankData.bankNumber || '',
-    bankAddress: bankData.address || '',
+    id: bankData?.ac_id || null,
+    accountHolderName: bankData.ac_name || '',
+    name: bankData.ac_account_name || '',
+    totalAmount: bankData.ac_total_amount || 0,
+    accountType: bankData.ac_account_type || '',
+    accountNumber: bankData.ac_account_number || '',
+    branch: bankData.ac_branch_id || '',
+    ifscCode: bankData.ac_ifsc_code || '',
+    bankPhoneNumber: bankData.ac_phone_number || '',
+    bankAddress: bankData.ac_address || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   };
@@ -61,10 +55,8 @@ const AddEditBankDetails = () => {
 
     const payload = {
       ...formData,
-      branchId: formData.branch, 
+      branchId: formData.branch,
     };
-
-    // const payload = new FormData();
 
     try {
       const endpoint = formData.id
@@ -80,7 +72,7 @@ const AddEditBankDetails = () => {
         );
         // navigate('/bank-details');
         navigate('/bank-details-dashboard');
-        
+
       } else {
         alert('Failed to save account details. Please try again.');
       }
@@ -102,44 +94,28 @@ const AddEditBankDetails = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-            {bankData.accountHolderName
+            {bankData.ac_account_number
               ? 'Edit Bank Details'
               : 'Add Bank Details'}
           </h1>
         </div>
 
-        {/* Photo Section */}
-        {/* <div className="flex items-center space-x-2 mb-6">
-          <div className="p-8 bg-gray-200 rounded-full">
-            {bankData.accountHolderName ? (
-              <img
-                src="logo-square.png"
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            ) : (
-              <FaFileCirclePlus className="text-gray-800" size={30} />
-            )}
-          </div>
-          <button className="ml-4 border p-2 rounded">Add Photo</button>
-          <button className="ml-2 text-red-500">Remove</button>
-        </div> */}
-
         {/* Form Fields */}
         <div className="space-y-4">
           {/* Account Holder Name */}
           <div>
-            <p className="font-semibold mb-1">Account Holder Name</p>
+            <p className="font-semibold mb-1">Bank Name</p>
             <input
               type="text"
               name="accountHolderName"
-              value={formData.accountName}
+              value={formData.accountHolderName}
               onChange={handleInputChange}
               placeholder="Enter Account Holder Name"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
           <div>
-            <p className="font-semibold mb-1">Bank Name</p>
+            <p className="font-semibold mb-1">Account Holder Name</p>
             <input
               type="text"
               name="name"
@@ -177,21 +153,21 @@ const AddEditBankDetails = () => {
           </div>
 
           <div>
-  <p className="font-semibold mb-1">Branch</p>
-  <select
-    name="branch"
-    value={formData.branch}
-    onChange={handleInputChange}
-    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-  >
-    <option value="">Select Branch</option>
-    {branches.map((branch) => (
-      <option key={branch.id} value={branch.id}>
-        {branch.branchName}
-      </option>
-    ))}
-  </select>
-</div>
+            <p className="font-semibold mb-1">Branch</p>
+            <select
+              name="branch"
+              value={formData.branch}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option value="">Select Branch</option>
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.branchName}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <p className="font-semibold mb-1">Amount</p>
@@ -228,18 +204,6 @@ const AddEditBankDetails = () => {
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
           </div>
-          {/* Bank Number */}
-          {/* <div>
-            <p className="font-semibold mb-1">Bank Number</p>
-            <input
-              type="text"
-              name="bankNumber"
-              value={formData.bankNumber}
-              onChange={handleInputChange}
-              placeholder="Enter Bank Number"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div> */}
           {/* Bank Address */}
           <div>
             <p className="font-semibold mb-1">Bank Address</p>

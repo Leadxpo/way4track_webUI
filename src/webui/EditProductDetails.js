@@ -70,8 +70,6 @@ function EditProductDetails() {
     setProductDetails((prev) => ({ ...prev, [field]: value }));
   };
 
-  console.log(productDetails, 'productsdfnie');
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

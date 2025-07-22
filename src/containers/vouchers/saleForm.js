@@ -8,7 +8,9 @@ const SaleForm = () => {
   const location = useLocation();
   const [ledger, setLedger] = useState([]);
   const [errors, setErrors] = useState({ purchaseGst: '' });
-  console.log("Sales")
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [productData, setProductData] = useState(['GPS Tracker', 'OBD Device', 'Dash Cam', 'Fleet Box']);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [formData, setFormData] = useState({
     date: null,
     day: '',
@@ -38,8 +40,6 @@ const SaleForm = () => {
     purpose: '',
   });
 
-  console.log(formData.productDetails, 'Product Details');
-
   const taxData = [
     { name: 'CGST', percent: '0%' },
     { name: 'SGST', percent: '0%' },
@@ -47,6 +47,70 @@ const SaleForm = () => {
     { name: 'TDS', percent: '0%' },
     { name: 'TCS', percent: '0%' },
   ];
+
+  // const [amount, setAmount] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [bank, setBank] = useState('');
+  // const [paymentMode, setPaymentMode] = useState('');
+  // const [date, setDate] = useState('');
+  // const [day, setDay] = useState('');
+  // const [partyName, setPartyName] = useState('');
+  // const [purchaseLedger, setPurchaseLedger] = useState('');
+  // const [supplierInvoice, setSupplierInvoice] = useState('');
+  // const [supplierLocation, setSupplierLocation] = useState('');
+  // const [purchaseGST, setPurchaseGST] = useState('');
+  // const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  // const [paymentType, setPaymentType] = useState('');
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [selectedTaxType, setSelectedTaxType] = useState('CGST');
+
+  // const [gstNumber, setGstNumber] = useState('');
+  const [gstData, setGstData] = useState(null);
+  const [isGST, setIsGST] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const fetchProductAndServiceNames = async () => {
+    try {
+      const [productRes, serviceRes] = await Promise.all([
+        ApiService.post('/productType/getProductTypeNamesDropDown'),
+        ApiService.post('/ServiceType/getServiceTypeNamesDropDown'),
+      ]);
+
+      const productNames = productRes.data || [];
+      const serviceNames = serviceRes.data || [];
+
+      const combinedNames = [...productNames, ...serviceNames];
+      setProductData(combinedNames);
+    } catch (err) {
+      console.error('Failed to fetch product/service names:', err);
+      setProductData([]);
+    }
+  };
+
+  // Call this inside useEffect
+  useEffect(() => {
+    fetchProductAndServiceNames();
+  }, []);
+
+  const handleAutoInputChange = (e, index) => {
+    const userInput = e.target.value || '';
+
+    // Combine product and service names into simple strings (if not already done)
+    const filtered = productData.filter((item) =>
+      item.name?.toLowerCase().includes(userInput.toLowerCase())
+    );
+
+    setFilteredSuggestions(filtered); // set suggestions for dropdown
+    setShowSuggestions(true); // display dropdown
+    handleEntryChange(index, 'productName', userInput); // update entry in form
+  };
+
+  const handleSelect = (item, index) => {
+    setFilteredSuggestions([]);
+    setShowSuggestions(false);
+    handleEntryChange(index, 'productName', item)
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -112,6 +176,10 @@ const SaleForm = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "supplierInvoiceNumber") {
+      verifyVoucherInvoiceID(value)
+    }
   };
 
   const branchData = [
@@ -124,27 +192,6 @@ const SaleForm = () => {
     'DebitNote',
     'CreditNote',
   ];
-
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
-  const [bank, setBank] = useState('');
-  const [paymentMode, setPaymentMode] = useState('');
-  const [date, setDate] = useState('');
-  const [day, setDay] = useState('');
-  const [partyName, setPartyName] = useState('');
-  const [purchaseLedger, setPurchaseLedger] = useState('');
-  const [supplierInvoice, setSupplierInvoice] = useState('');
-  const [supplierLocation, setSupplierLocation] = useState('');
-  const [purchaseGST, setPurchaseGST] = useState('');
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [openIndex, setOpenIndex] = useState(null);
-  const [selectedTaxType, setSelectedTaxType] = useState('CGST');
-
-  const [gstNumber, setGstNumber] = useState('');
-  const [gstData, setGstData] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const filteredTaxData = taxData.filter((tax) => {
     if (selectedTaxType === 'CGST') {
@@ -260,15 +307,15 @@ const SaleForm = () => {
     const calculatedAmount = Number(
       selectedTaxType === 'CGST'
         ? totalAmount +
-            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+        (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+        (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
         : selectedTaxType === 'IGST'
           ? totalAmount +
-            (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+          (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
           : selectedTaxType === 'TDS'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+            (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+            (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
             : totalAmount
     );
 
@@ -283,6 +330,7 @@ const SaleForm = () => {
       supplierLocation: formData.supplierLocation,
       voucherGST: formData.purchaseGst,
       amount: calculatedAmount,
+      reminigAmount: calculatedAmount,
       productDetails: formData.productDetails.map((item) => ({
         ...item,
         quantity: Number(item.quantity),
@@ -338,26 +386,38 @@ const SaleForm = () => {
       const response = await ApiService.post(
         'https://appyflow.in/api/verifyGST',
         {
-          key_secret: 'JqwMCeWBEDNCjxmEhUYSeMoluSB2',
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
           gstNo: gstNumber,
         }
       );
-
-      console.log(response, 'response gst');
-
+      console.log("rrr :",response.error)
       setGstData(response);
-
-      // if (response?.data) {
-      //   setGstData(response.data);
-      // } else {
-      //   alert('No data found');
-      //   setGstData(null);
-      // }
+      setIsGST(response.error)
+      if (response.error) {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number Invalid',
+        }));
+      }
     } catch (error) {
       console.error('GST Fetch Error:', error);
       alert('Error fetching GST data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const verifyVoucherInvoiceID = async (invoiceID) => {
+    const endpoint = '/voucher/getVouchersByInvoice';
+    try {
+      const response = await ApiService.post(endpoint, { invoiceId: invoiceID }, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log("rrr", response.data);
+    }
+    catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
     }
   };
 
@@ -600,25 +660,6 @@ const SaleForm = () => {
           }}
         />
 
-        {/* <input
-          type="text"
-          placeholder="Purchase GST:"
-          value={formData.purchaseGst}
-          name="purchaseGst"
-          onChange={handleInputChange}
-          className="w-full border rounded p-2"
-          style={{
-            height: '45px',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            borderRadius: '8px',
-            borderWidth: '1px',
-            borderColor: '#A2A2A2',
-            fontSize: '20px',
-            fontWeight: '500',
-          }}
-        /> */}
-
         <div className="">
           <div className="relative">
             <input
@@ -654,7 +695,7 @@ const SaleForm = () => {
             <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
           )}
 
-          {gstData && (
+          {!isGST && (
             <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
               <h3 className="text-xl font-bold text-gray-800 mb-4">
                 GST Details
@@ -671,55 +712,56 @@ const SaleForm = () => {
                   <label className="font-semibold text-gray-600">
                     GST Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.gstin}</p>
+                  <p>{gstData?.taxpayerInfo?.gstin}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Type Of Company:
                   </label>
-                  <p>{gstData.taxpayerInfo.dty}</p>
+                  <p>{gstData?.taxpayerInfo?.dty}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Incorporate Type:
                   </label>
-                  <p>{gstData.taxpayerInfo.ctb}</p>
+                  <p>{gstData?.taxpayerInfo?.ctb}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">Status:</label>
-                  <p>{gstData.taxpayerInfo.sts}</p>
+                  <p>{gstData?.taxpayerInfo?.sts}</p>
                 </div>
                 <div>
                   <label className="font-semibold text-gray-600">
                     Pan Number:
                   </label>
-                  <p>{gstData.taxpayerInfo.panNo}</p>
+                  <p>{gstData?.taxpayerInfo?.panNo}</p>
                 </div>
                 <div className="sm:col-span-2">
                   <label className="font-semibold text-gray-600">
                     Address:
                   </label>
                   <p className="leading-relaxed">
-                    {gstData.taxpayerInfo.pradr.addr.bno &&
-                      `${gstData.taxpayerInfo.pradr.addr.bno}, `}
-                    {gstData.taxpayerInfo.pradr.addr.st &&
-                      `${gstData.taxpayerInfo.pradr.addr.st}, `}
-                    {gstData.taxpayerInfo.pradr.addr.loc &&
-                      `${gstData.taxpayerInfo.pradr.addr.loc}, `}
-                    {gstData.taxpayerInfo.pradr.addr.dst &&
-                      `${gstData.taxpayerInfo.pradr.addr.dst}, `}
-                    {gstData.taxpayerInfo.pradr.addr.stcd} -{' '}
-                    {gstData.taxpayerInfo.pradr.addr.pncd}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.bno &&
+                      `${gstData?.taxpayerInfo?.pradr?.addr?.bno}, `}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.st &&
+                      `${gstData?.taxpayerInfo?.pradr?.addr?.st}, `}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.loc &&
+                      `${gstData?.taxpayerInfo?.pradr?.addr?.loc}, `}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.dst &&
+                      `${gstData?.taxpayerInfo?.pradr?.addr?.dst}, `}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.stcd} -{' '}
+                    {gstData?.taxpayerInfo?.pradr?.addr?.pncd}
                   </p>
                 </div>
               </div>
 
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <label className="font-semibold text-gray-600">State:</label>
-                <p>{gstData.taxpayerInfo.pradr.addr.stcd}</p>
+                <p>{gstData?.taxpayerInfo?.pradr?.addr?.stcd}</p>
               </div>
             </div>
           )}
+    
         </div>
       </div>
 
@@ -760,15 +802,6 @@ const SaleForm = () => {
                 borderRadius: '6px',
               }}
             >
-              <input
-                placeholder="Name:"
-                name="productName"
-                value={entry.productName}
-                onChange={(e) =>
-                  handleEntryChange(index, 'productName', e.target.value)
-                }
-                className="w-1/4 border rounded p-2"
-              />
               <select
                 name="type"
                 value={entry.type}
@@ -778,12 +811,34 @@ const SaleForm = () => {
                 className="w-1/4 border rounded p-2"
               >
                 <option value="">Select Type</option>
-                <option value="Rectifications">Rectifications</option>
-                <option value="Renewables">Renewables</option>
                 <option value="ProductSales">ProductSales</option>
                 <option value="ServiceSales">ServiceSales</option>
-                <option value="Others">Others</option>
               </select>
+
+              <div className="relative w-1/4">
+                <input
+                  type="text"
+                  placeholder="Product Name"
+                  value={entry.productName}
+                  onChange={(e) => handleAutoInputChange(e, index)}
+                  className="w-full border rounded p-2"
+                />
+
+                {showSuggestions && filteredSuggestions.length > 0 && (
+                  <ul className="absolute bg-white border mt-1 w-full max-h-40 overflow-y-auto rounded shadow z-10">
+                    {filteredSuggestions.map((item, i) => (
+                      <li
+                        key={i}
+                        onClick={() => handleSelect(item.name, index)}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        {item.name} {"("}{item.type}{")"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+              </div>
 
               <input
                 placeholder="Description:"
@@ -907,15 +962,15 @@ const SaleForm = () => {
           Total Amount (Including Tax) :
           {selectedTaxType === 'CGST'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
             : selectedTaxType === 'IGST'
               ? totalAmount +
-                (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+              (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
               : selectedTaxType === 'TDS'
                 ? totalAmount +
-                  (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-                  (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+                (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
                 : totalAmount}
         </p>
       </div>

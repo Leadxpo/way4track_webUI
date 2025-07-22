@@ -13,7 +13,7 @@ const RequestDetails = () => {
   const [branch, setBranch] = useState([]);
 
   const requestData = location.state?.requestDetails || {};
-  
+
 
   const [formData, setFormData] = useState({
     requestType: '',
@@ -21,10 +21,11 @@ const RequestDetails = () => {
     requestTo: '', branch: '',
     requestFor: '',
     description: '',
-    products: [{ productType: '', quantity: 0}],
+    products: [{ productType: '', quantity: 0 }],
     createdDate: '',
     status: '',
     fromDate: "",
+    photo: "",
     toDate: "",
     // subDealerId: Number(requestData.subDealerId) || '',
     requestId: '',
@@ -82,10 +83,7 @@ const RequestDetails = () => {
 
 
   useEffect(() => {
-
-
     fetchBranches();
-
     fetchSubDealers();
     fetchStaffData();
   }, []);
@@ -105,16 +103,13 @@ const RequestDetails = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-
-
-
   const [rows, setRows] = useState([{ productType: '', quantity: 0 }]);
 
   // Function to handle adding a new product row
   const addRow = () => {
     setFormData((prevData) => ({
       ...prevData,
-      products: [...prevData.products, { productType: '', quantity: 0}],
+      products: [...prevData.products, { productType: '', quantity: 0 }],
     }));
   };
 
@@ -138,6 +133,10 @@ const RequestDetails = () => {
     });
   };
 
+  const handleCancel = () => {
+    // Handle cancel action
+    navigate('/requests');
+  };
 
   useEffect(() => {
     if (requestData.requestId) {
@@ -158,22 +157,21 @@ const RequestDetails = () => {
       });
 
       if (response.status) {
-        console.log("10th class", response.data)
+
         const data = response.data;
         setFormData({
           id: data.requestId || '',
           requestType: data.requestType || '',
           description: data.description || '',
           requestFor: data.requestFor || '',
+          requestFrom: data.requestFrom.id || '',
           fromDate: data?.fromDate || '',
           toDate: data?.toDate || '',
-          requestTo:data?.requestTo.id
-          ,
-          branch:data?.branchId
-          .id,
-          
+          requestTo: data?.requestTo.id,
+          photo: data?.image,
+          branch: data?.branchId.id,
           products: data.products || '',
-
+          status: data.status
         });
       } else {
         console.error('Error fetching request details');
@@ -183,7 +181,62 @@ const RequestDetails = () => {
     }
   };
 
+    const handleSave = async () => {
+    try {
 
+      const formDataToSend = new FormData();
+    if (formData.photo && formData.photo.length > 0) {
+        await Promise.all(
+            formData.photo?.map(async (item) => {
+              console.log("rrr",item)
+                const response = await fetch(item);
+                const blob = await response.blob();
+                const filename = item.split('/').pop();
+                const file = new File([blob], filename, { type: blob.type });
+                formDataToSend.append("photo", file);
+            })
+        );
+    }
+
+      formDataToSend.append('id', requestData.requestId);
+      formDataToSend.append('requestId', requestData.requestNumber);
+      formDataToSend.append('status', formData.status);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('requestType', formData.requestType);
+      formDataToSend.append('requestTo', formData.requestTo);
+      formDataToSend.append('requestFrom',  formData.requestFrom);
+      formDataToSend.append('branch', formData.branch);
+      formDataToSend.append('companyCode', initialAuthState.companyCode);
+      formDataToSend.append('unitCode', initialAuthState.unitCode);
+      formDataToSend.append('requestFor', formData.requestFor);
+      formDataToSend.append('fromDate', formData.fromDate);
+      formDataToSend.append('toDate', formData.toDate);
+
+      if (formData.photo) {
+        formData.photo.forEach((file) => formDataToSend.append('photo', file)); // 👈 use field name your backend expects
+      }
+
+      if (formData.requestType === 'products' && formData.products) {
+        formDataToSend.append('products', JSON.stringify(formData.products));
+      }
+
+      const response = await ApiService.post(
+        '/requests/handleRequestDetails',
+        formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status) {
+        alert('Request updated successfully');
+        navigate('/requests');
+      } else {
+        alert('failed to raise request');  
+      }
+    } catch (error) {
+      console.error(error);
+      alert('failed to raise request from catch');
+    }
+  };
 
 
   return (
@@ -192,7 +245,7 @@ const RequestDetails = () => {
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-          View Request Details
+            View Request Details
           </h1>
         </div>
 
@@ -202,7 +255,7 @@ const RequestDetails = () => {
           <div>
             <p className="font-semibold mb-1">Request Type</p>
             <select
-            disabled
+              disabled
               name="requestType"
               value={formData.requestType}
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -215,12 +268,12 @@ const RequestDetails = () => {
               <option value="leaveRequest">Leave Request</option>
             </select>
           </div>
-          
+
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Request To:</label>
               <select
-              disabled
+                disabled
                 name="requestTo"
                 value={formData.requestTo}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -244,7 +297,7 @@ const RequestDetails = () => {
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Branch</label>
               <select
-              disabled
+                disabled
                 name="branch"
                 value={formData.branch}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -260,20 +313,6 @@ const RequestDetails = () => {
               </select>
             </div>
           </div>
-
-          {/* Address */}
-          <div>
-            <p className="font-semibold mb-1">Description</p>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              placeholder="Enter Address"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-
-
           {formData?.requestType === "products" ? (
             <>
               {formData?.products?.map((row, index) => (
@@ -302,8 +341,6 @@ const RequestDetails = () => {
                       className="w-full border rounded-md p-2 bg-gray-100"
                     />
                   </div>
-
-             
                 </div>
               ))}
 
@@ -322,7 +359,9 @@ const RequestDetails = () => {
               </div>
             )}
 
-          {formData?.requestType === "leaveRequest" && (<><div className="mt-4">
+          {formData?.requestType === "leaveRequest" && (
+            <>
+            <div className="mt-4">
             <p className="font-semibold mb-1">Leave From Date</p>
             <input
               type="date"
@@ -340,10 +379,76 @@ const RequestDetails = () => {
                 value={formData?.toDate.slice(0, 10) || ""}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               />
-            </div></>)}
+            </div>
+          </>)}
 
         </div>
-      
+        <div className="flex flex-col">
+          <label className="font-semibold mb-2">Images:</label>
+
+          <div className="flex flex-wrap gap-4 mt-2">
+            {Array.isArray(formData.photo) && formData.photo.length > 0 ? (
+              formData.photo.map((src, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={src}
+                    alt={`Preview ${index}`}
+                    className="w-24 h-24 object-cover rounded-md border border-gray-300 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">No images uploaded.</p>
+            )}
+          </div>
+        </div>
+        {/* Address */}
+        <div>
+          <div className="flex flex-col">
+            <label className="font-semibold mb-2">Status</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={(e)=>handleInputChange(e)}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            >
+              <option>
+                Select status
+              </option>
+              <option value="pending">  PENDING </option>
+              <option value="sent">  SENT </option>
+              <option value="rejected">  REJECTED </option>
+              <option value="accepted">  ACCEPTED </option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold mb-1">Remark</p>
+          <textarea
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={(e)=>handleInputChange(e)}
+            placeholder="Enter Remarks"
+            className="w-full p-3 border rounded-md bg-gray-200"
+          />
+        </div>
+
+        <div className="flex justify-center space-x-4 mt-6">
+          <button
+            onClick={handleSave}
+            className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleCancel}
+            className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
+          >
+            Cancel
+          </button>
+        </div>
+
       </div>
     </div>
   );

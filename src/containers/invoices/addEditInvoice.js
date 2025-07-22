@@ -83,10 +83,14 @@ const AddEditInvoice = () => {
     expiryDate: '',
     cgstPercentage: '',
     scstPercentage: '',
+    tdsPercentage: '',
     includeTax: '',
+    invoicePrefix: '',
     CGST: '',
     SCST: '',
-    GSTORTDS: '',
+    TDS: '',
+    isGST: false,
+    isTDS: false,
     items: [
       {
         productId: '',
@@ -116,14 +120,32 @@ const AddEditInvoice = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState('');
-
+  const [extension, setExtension] = useState(0);
+  const [invoicePrefix, setInvoicePrefix] = useState([]);
   const [serveProd, setServeProd] = useState(
     Array(formData.items.length).fill('')
   );
 
+  useEffect(() => {
+    const getEstimatesPrefix = async () => {
+      try {
+        const res = await ApiService.post('/estimate/getEstimatInvoicePrefixeDetails', {
+          "companyCode": "WAY4TRACK",
+          "unitCode": "WAY4"
+        });
+        setInvoicePrefix(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch client details:', err);
+        setInvoicePrefix([]);
+      }
+    }
+    getEstimatesPrefix()
+  }, [])
+
   const changeServeProd = (index, e) => {
     handleProductItemChange(index, e);
     const value = e.target.value;
+
 
     // Update serveProd for the specific row
     setServeProd((prev) => {
@@ -138,16 +160,16 @@ const AddEditInvoice = () => {
       items: prevData.items.map((item, i) =>
         i === index
           ? {
-              ...item,
-              productId: '',
-              type: value,
-              name: '',
-              quantity: '',
-              rate: '',
-              amount: '',
-              hsnCode: '',
-              description: '',
-            }
+            ...item,
+            productId: '',
+            type: value,
+            name: '',
+            quantity: '',
+            rate: '',
+            amount: '',
+            hsnCode: '',
+            description: '',
+          }
           : item
       ),
     }));
@@ -156,26 +178,12 @@ const AddEditInvoice = () => {
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
+
   useEffect(() => {
     fetchClients();
     fetchProducts();
     fetchServices();
   }, []);
-
-  useEffect(() => {
-    if (isGST) {
-      setFormData((prevData) => ({
-        ...prevData,
-        GSTORTDS: formData.taxableState === formData.supplyState ? 'GST' : "IGST",
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        GSTORTDS: 'TDS',
-      }));
-    }
-  }, [isGST, formData.taxableState, formData.supplyState]);
-
 
 
   const fetchClients = async () => {
@@ -188,7 +196,7 @@ const AddEditInvoice = () => {
       setClients([]);
     }
   };
-  
+
   const fetchProducts = async () => {
     try {
       const res = await ApiService.post(
@@ -260,6 +268,16 @@ const AddEditInvoice = () => {
       }));
     }
   };
+  const handlePrefixChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      invoicePrefix: value
+    }));
+    const rrr = invoicePrefix.find((item) => (item.invoicePrefix === value))
+    const newExtension = String(Number(rrr?.count) + 1).padStart(4, '0');
+    setExtension(newExtension);
+  }
 
   // Handle items dynamically
   const handleItemChange = (index, e) => {
@@ -341,7 +359,7 @@ const AddEditInvoice = () => {
       ...prevData,
       items: [
         ...prevData.items,
-        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '',description:'' },
+        { name: '', type: '', quantity: '', rate: '', amount: '', hsnCode: '', description: '' },
       ],
     }));
   };
@@ -358,6 +376,7 @@ const AddEditInvoice = () => {
       shippingAddress: formData.shippingAddress,
       taxableState: formData.taxableState,
       supplyState: formData.supplyState,
+      invoiceId: `${formData.invoicePrefix}-${extension}`,
       estimateDate: formData.estimateDate,
       expireDate: formData.expiryDate,
       productOrService: formData.items.map((item) => item.name).join(', '),
@@ -368,17 +387,20 @@ const AddEditInvoice = () => {
       ),
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
-      convertToInvoice: true,
-      invoiceId: formData.invoiceId || undefined,
-      GSTORTDS: formData.GSTORTDS || undefined,
+      isGST: formData.isGST || false,
+      isTDS: formData.isTDS || false,
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
+      TDS: formData.TDS || 0,
+      invoicePrefix: formData.invoicePrefix,
       quantity: formData.items.reduce(
         (total, item) => total + parseInt(item.quantity, 10),
         0
       ),
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
+      tdsPercentage: formData.tdsPercentage || 0,
+      convertToInvoice: true,
       productDetails: formData.items.map((item) => ({
         productId: item.productId,
         type: item.type,
@@ -387,14 +409,14 @@ const AddEditInvoice = () => {
         totalCost: parseFloat(item.rate) * parseInt(item.quantity, 10),
         costPerUnit: parseFloat(item.rate),
         hsnCode: item.hsnCode,
-        description: item.description,
+        description: item.description
       })),
       branchId: formData.branchId,
       accountId: formData.accountId,
     };
 
     // Get Client Details
-    const client = clients.find((c) => c.id === estimateDto.clientId);
+    const client = clients.find((c) => String(c.clientId) === String(estimateDto.clientId));
     const branchDetails = branches.find(
       (branch) => branch.id === Number(estimateDto.branchId)
     );
@@ -416,12 +438,15 @@ const AddEditInvoice = () => {
 
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
-      const includeTax = estimateDto.totalAmount + cgst + scst;
+      const tds = (estimateDto.totalAmount * formData.tdsPercentage) / 100;
+
+      const includeTax = estimateDto.totalAmount + cgst + scst + tds;
 
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append('invoicePDF', pdfFile); // Attach PDF file
       formDataPayload.append('clientId', estimateDto.clientId);
+      formDataPayload.append('invoiceId', `${formData.invoicePrefix}-${extension}`);
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
       formDataPayload.append('taxableState', estimateDto.taxableState);
@@ -433,13 +458,16 @@ const AddEditInvoice = () => {
       formDataPayload.append('totalAmount', estimateDto.totalAmount);
       formDataPayload.append('companyCode', 'WAY4TRACK');
       formDataPayload.append('unitCode', 'WAY4');
-      formDataPayload.append('convertToInvoice', true);
-      formDataPayload.append('GSTORTDS', estimateDto.GSTORTDS || '');
+      formDataPayload.append('isGST', estimateDto.isGST ? 1 : 0);
+      formDataPayload.append('isTDS', estimateDto.isTDS ? 1 : 0);
       formDataPayload.append('CGST', cgst);
+      formDataPayload.append('TDS', tds);
+      formDataPayload.append('invoicePrefix', estimateDto.invoicePrefix);
       formDataPayload.append('SCST', scst);
       formDataPayload.append('branchId', estimateDto.branchId);
       formDataPayload.append('accountId', estimateDto.accountId);
       formDataPayload.append('includeTax', includeTax);
+
       formDataPayload.append(
         'cgstPercentage',
         estimateDto.cgstPercentage || '0'
@@ -448,12 +476,18 @@ const AddEditInvoice = () => {
         'scstPercentage',
         estimateDto.scstPercentage || '0'
       );
+      formDataPayload.append(
+        'tdsPercentage',
+        estimateDto.tdsPercentage || '0'
+      );
+      formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
 
       // Append Product Details as JSON String
       formDataPayload.append(
         'productDetails',
         JSON.stringify(estimateDto.productDetails)
       );
+
 
       // Send FormData with Binary PDF
       const response = await ApiService.post(
@@ -478,13 +512,15 @@ const AddEditInvoice = () => {
     }
   };
 
-  const gridData = {
-    consigneeName: 'Nava Durga Stone Crusher',
-    gstin: '37ACFPN5800Q1Z5',
-    stateAddress: 'Andhra Pradesh',
-    stateCode: '37',
-    supplyPlace: 'Andhra Pradesh',
-  };
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      cgstPercentage: '',
+      scstPercentage: '',
+      CGST: '',
+      SCST: '',
+    }));
+  }, [formData.supplyState, formData.taxableState])
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -509,6 +545,44 @@ const AddEditInvoice = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">Create Invoice</h1>
         {/* Form */}
         <form className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Prefix
+              </label>
+              <input
+                type="text"
+                name="invoicePrefix"
+                list="prefix-options"
+                value={formData.invoicePrefix}
+                onChange={handlePrefixChange}
+                placeholder="Prefix"
+                className="w-full p-2 border rounded-md"
+              />
+              <datalist id="prefix-options">
+                {invoicePrefix.map((prefix) => (
+                  <option key={prefix.count} value={prefix.invoicePrefix} />
+                ))}
+              </datalist>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Extention
+              </label>
+              <input
+                type="text"
+                name="extension"
+                value={extension}
+                onChange={(e) => setExtension(e.target.value)}
+                placeholder="Extension"
+                className="w-full p-2 border rounded-md"
+
+              />
+            </div>
+          </div>
+
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -811,7 +885,7 @@ const AddEditInvoice = () => {
                       value={item.description}
                       onChange={(e) => handleItemChange(index, e)}
                       placeholder="description"
-                      style={{width:500 }}
+                      style={{ width: 500 }}
                       className="col-span-2 p-2 border rounded-md w-full"
                     />
 
@@ -819,7 +893,7 @@ const AddEditInvoice = () => {
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
-                      style={{position:'relative',right:-450}}
+                      style={{ position: 'relative', right: -450 }}
                       className="bg-gray-100 rounded-md w-fit p-2"
                     >
                       -
@@ -843,21 +917,21 @@ const AddEditInvoice = () => {
           </strong>
 
           <div className="flex items-center space-x-2">
-            <span className={isGST ? 'text-gray-400' : 'font-semibold'}>
-              TDS Enabled
+            <span className={formData.isGST ? 'text-gray-400' : 'font-semibold'}>
+              {formData.taxableState === formData.supplyState ? " GST Enabled" : "IGST Enable"}
             </span>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                checked={isGST}
+                checked={formData.isGST}
                 onChange={() => {
-                  setIsGST(!isGST);
                   setFormData((prevData) => ({
                     ...prevData,
                     cgstPercentage: '',
                     scstPercentage: '',
                     CGST: '',
                     SCST: '',
+                    isGST: !formData.isGST
                   }));
 
                 }}
@@ -870,11 +944,35 @@ const AddEditInvoice = () => {
                 ></div>
               </div>
             </label>
-            <span className={isGST ? 'font-semibold' : 'text-gray-400'}>
-              {formData.taxableState === formData.supplyState ? " GST Enabled" : "IGST Enable"}
-            </span>
           </div>
-          {isGST ? (
+          <div className="flex items-center space-x-2">
+            <span className={formData.isTDS ? 'text-gray-400' : 'font-semibold'}>
+              TDS Enable
+            </span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isTDS}
+                onChange={() => {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    tdsPercentage: '',
+                    TDS: '',
+                    isTDS: !formData.isTDS
+                  }));
+
+                }}
+                className="sr-only peer"
+              />
+              <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
+                <div
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
+                ></div>
+              </div>
+            </label>
+          </div>
+          {formData.isGST && (
             <div>
               <label className="block text-sm font-semibold mb-1">CGST %</label>
               <input
@@ -914,13 +1012,15 @@ const AddEditInvoice = () => {
                 </>
               }
             </div>
-          ) : (
+          )
+          }
+          {formData.isTDS && (
             <div>
               <label className="block text-sm font-semibold mb-1">TDS %</label>
               <input
                 type="number"
-                name="cgstPercentage"
-                value={formData.cgstPercentage}
+                name="tdsPercentage"
+                value={formData.tdsPercentage}
                 onChange={handleInputChange}
                 placeholder="TDS %"
                 className="w-full p-2 border rounded-md"
@@ -928,7 +1028,7 @@ const AddEditInvoice = () => {
               <p className="text-sm text-gray-700 mt-1">
                 TDS Amount: ₹
                 {(
-                  (+formData.totalAmount * +formData.cgstPercentage) /
+                  (+formData.totalAmount * +formData.tdsPercentage) /
                   100
                 ).toFixed(2)}
               </p>
@@ -936,22 +1036,16 @@ const AddEditInvoice = () => {
           )}
 
           <div>
-            {isGST ? (
-              <strong className="col-span-2 font-semibold">
-                Total Estimate Amount (Include Tax) :{' '}
-                {formData.totalAmount +
-                  (formData.totalAmount * formData.cgstPercentage) / 100 +
-                  (formData.totalAmount * formData.scstPercentage) / 100}
-              </strong>
-            ) : (
-              <strong className="col-span-2 font-semibold">
-                Total Estimate Amount (Include Tax) :{' '}
-                {formData.totalAmount +
-                  (formData.totalAmount * formData.cgstPercentage) / 100}
-              </strong>
-            )}
-          </div>
+            <strong className="col-span-2 font-semibold">
+              Total Estimate Amount (Include Tax) :{' '}
+              {formData.totalAmount +
+                (formData.totalAmount * formData.cgstPercentage) / 100 +
+                (formData.totalAmount * formData.scstPercentage) / 100 +
+                (formData.totalAmount * formData.tdsPercentage) / 100
+              }
+            </strong>
 
+          </div>
           {/* Terms & Conditions */}
           <div>
             <label className="block text-sm font-semibold mb-1">

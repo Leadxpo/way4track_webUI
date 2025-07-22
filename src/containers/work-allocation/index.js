@@ -52,7 +52,6 @@ const WorkAllocation = () => {
 
   const [clientName, setClientName] = useState('');
   const [productName, setProductName] = useState('');
-  console.log(detailedWorkAllocation, 'wwwwwwwwwwwwwwwwwwwwwwwww');
 
   useEffect(() => {
     const perms = getPermissions('work-allocation');
@@ -1013,7 +1012,7 @@ const WorkAllocation = () => {
                       height: '60px',
                     }}
                   >
-                    {item.staffId}
+                    {item.staffName}
                   </td>
                   <td
                     className="px-4 py-2"
@@ -1026,17 +1025,6 @@ const WorkAllocation = () => {
                   >
                     {item.amount}
                   </td>
-                  {/* <td
-                    className="px-4 py-2"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: '500',
-                      color: '#000000',
-                      height: '60px',
-                    }}
-                  >
-                    {item.paymentStatus}
-                  </td> */}
                   <td
                     className="px-4 py-2"
                     style={{
@@ -1060,29 +1048,6 @@ const WorkAllocation = () => {
           </tbody>
         </table>
       </div>
-
-      {/* {popupData && (
-        <div
-          className="popup-menu absolute bg-white border border-gray-300 shadow-md rounded-lg py-2 w-40"
-          style={{
-            top: `${popupData.position.top}px`,
-            left: `${popupData.position.left}px`,
-          }}  >
-          <button className="block px-4 py-2 text-left w-full hover:bg-gray-100">
-            More Details
-          </button>
-        </div>
-      )} */}
-
-      {/* <TableWithSearchFilter
-        type="work-allocations"
-        onEdit={handleEdit}
-        onDetails={handleOpenMoreDetailsModal}
-        showCreateBtn={false}
-        showDelete={false}
-        showEdit={permissions.edit}
-        showDetails={permissions.view}
-      /> */}
     </div>
   );
 };

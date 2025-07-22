@@ -12,6 +12,7 @@ const Staff = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const employeeData = location.state?.staffDetails || {};
+  const role = localStorage.getItem("role");
 
   const [selectedBranch, setSelectedBranch] = useState('');
   const [branches, setBranches] = useState([]);
@@ -66,7 +67,7 @@ const Staff = () => {
 
       if (response.status) {
         const rawData = response.data || [];
-        console.log('rrttttt', rawData);
+
         // Define a mapping from your API response keys to the column names
         const columnMapping = {
           id: 'ID',
@@ -78,8 +79,6 @@ const Staff = () => {
           branch_name: 'Branch Name',
           branch_branch_number: 'Branch Number',
           branch_branch_address: 'Branch Address',
-          // branch_address_line1: 'Address Line 1',
-          // branch_address_line2: 'Address Line 2',
           branch_city: 'City',
           branch_state: 'State',
           branch_pincode: 'Pincode',
@@ -279,57 +278,6 @@ const Staff = () => {
         </button>
       </div>
       {/* Staff Table */}
-      {/* {isGridView ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
-          {profiles.map((profile, index) => (
-            <div
-              key={index}
-              className="relative bg-white p-6 rounded-lg shadow-lg border border-gray-400"
-            >
-              <div
-                className="absolute top-4 right-4 text-gray-400 cursor-pointer"
-                onClick={() => toggleMenu(index)}
-              >
-                <FaEllipsisVertical />
-              </div>
-              {menuOpenIndex === index && (
-                <div className="absolute top-10 right-4 bg-white border border-gray-300 rounded-md shadow-md p-2 z-10">
-                  <button
-                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.edit ? '' : ' cursor-not-allowed opacity-50'}`}
-                    onClick={() => handleEdit(profile)}
-                    disabled={!permissions.edit}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={`block w-full text-left text-red-500 px-2 py-1 text-sm hover:bg-gray-100 ${permissions.delete ? '' : ' cursor-not-allowed opacity-50'}`}
-                    disabled={!permissions.delete}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className={`block w-full text-left px-2 py-1 text-sm hover:bg-gray-100 ${permissions.view ? '' : ' cursor-not-allowed opacity-50'}`}
-                    onClick={() => handleMoreDetails(profile)}
-                    disabled={!permissions.view}
-                  >
-                    More Details
-                  </button>
-                </div>
-              )}
-              <img
-                className="rounded-full mx-auto h-24 w-24 object-cover"
-                src={`https://i.pravatar.cc/150?img=${index + 1}`}
-                alt="Profile"
-              />
-              <div className="text-center mt-4">
-                <h2 className="text-lg font-semibold">{profile.staffName}</h2>
-                <p className="text-gray-500">{profile.designation}</p>
-                <p className="text-gray-400">{profile.branch_name}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : ( */}
       <Table
         columns={columns}
         columnNames={columnNames}
@@ -337,7 +285,7 @@ const Staff = () => {
         onEdit={handleEdit}
         showDelete={permissions.delete}
         showEdit={permissions.edit}
-        showDetails={permissions.view}
+        showDetails={(permissions.view || role?.toLowerCase() !== "warehouse manager" ||role?.toLowerCase() !== "inventory operational analyst")}
         onDetails={handleMoreDetails}
 
         data={

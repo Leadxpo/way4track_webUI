@@ -138,15 +138,15 @@ const Letters = () => {
     payslipLabel: {
       fontWeight: "extrabold",
       fontSize: 13, fontFamily: "Times-Roman",
-      marginVertical: 5
+      marginVertical: 5,
     },
     text: {
       fontSize: 11, fontFamily: "Times-Roman",
-      marginLeft: 20, lineHeight: 1.3,
+      marginLeft: 20, lineHeight: 1.5,
       textAlign: "justify", letterSpacing: 0.5
     },
     headText: {
-      fontSize: 11, fontFamily: "Times-Roman", lineHeight: 1.2,
+      fontSize: 11, fontFamily: "Times-Roman", lineHeight: 1.5,
       textAlign: "justify", marginVertical: 4,
     },
     greetingText: {
@@ -171,7 +171,7 @@ const Letters = () => {
       marginTop: 10,
     },
     logo: {
-      width: 120,
+      width: 200,
       height: 100,
     },
     companyDetails: {
@@ -204,7 +204,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -276,13 +278,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Employee wellness programs.  </Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Work Schedule:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs. </Text>
-              </View>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -304,14 +299,22 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <View style={{ flexDirection: "row" }}>
 
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs. </Text>
+              </View>
+            </View>
 
             <View style={styles.section}>
               <Text style={styles.label}>Market Research:</Text>
@@ -381,32 +384,7 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Attend industry events, trade shows, and networking opportunities to develop new sales leads.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Sales Administration:</Text>
-              <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Prepare and submit regular sales reports to your manager.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
-              </View>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Sales Administration:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Prepare and submit regular sales reports to your manager.</Text>
-              </View>
-            </View>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -427,7 +405,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -435,12 +415,24 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={styles.label}>Sales Administration:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Accurately record all sales activities, customer interactions, and transactions in the CRM system. </Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}> Prepare and submit regular sales reports to your manager.</Text>
+              </View>
+
+            </View>
+
+            <View style={styles.section}>
               <View style={{ flexDirection: "row" }}>
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Collaborate with other team members and departments to ensure smooth sales operations and customer satisfaction.</Text>
               </View>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.label}>Team Collaboration:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -455,27 +447,61 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
             </View>
 
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+
+            </View>
+
+            {/* Footer */}
+            Offer Letter Footer:
+
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega,</Text>
+              <Text style={styles.footerText}>Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>Corporate Identity Number: U74999AP2018PTC108597</Text>
+              <Text style={styles.footerText}>Phone: 0891 2702244 +91 7032213434</Text>
+              <Text style={styles.footerText}>Email: info@Sharontelematics.com | Website: www.Sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+
+        {/* Page 4 */}
+        <Page style={styles.page}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
+              </View>
+
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
+            </View>
+            <View style={styles.section}>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -517,7 +543,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -591,15 +619,6 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Work Schedule:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Overtime may be required during peak periods, such as year-end financial close.</Text>
-              </View>
-            </View>
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -620,13 +639,23 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Overtime may be required during peak periods, such as year-end financial close.</Text>
+              </View>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Accountant:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -681,27 +710,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Prepare and present detailed financial analysis reports to senior management, including recommendations for enhancing financial performance.</Text>
               </View>
             </View>
-
-            <View style={styles.section}>
-              <Text style={styles.label}>Process Improvement:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Identify and implement best practices and process improvements in financial management and payroll operations.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Utilize the latest tools and technologies to enhance efficiency and accuracy in accounting and payroll functions.</Text>
-              </View>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Bank Reconciliation:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular bank reconciliations to verify the accuracy of financial transactions and statements.</Text>
-              </View>
-            </View>
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -722,7 +730,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -730,6 +740,25 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={styles.label}>Process Improvement:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Identify and implement best practices and process improvements in financial management and payroll operations.</Text>
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Utilize the latest tools and technologies to enhance efficiency and accuracy in accounting and payroll functions.</Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Bank Reconciliation:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular bank reconciliations to verify the accuracy of financial transactions and statements.</Text>
+              </View>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
               </View>
@@ -738,28 +767,58 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Reconcile payroll-related accounts and resolve any discrepancies in payroll data.</Text>
               </View>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>•    There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•   As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 15 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega,</Text>
+              <Text style={styles.footerText}>Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>Corporate Identity Number: U74999AP2018PTC108597</Text>
+              <Text style={styles.footerText}>Phone: 0891 2702244 +91 7032213434</Text>
+              <Text style={styles.footerText}>Email: info@Sharontelematics.com | Website: www.Sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+        {/* Page 4*/}
+        <Page style={styles.page}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
+              </View>
+
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -799,7 +858,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -865,21 +926,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Overtime may be required as per business needs.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Digital Marketing Strategy</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement comprehensive digital marketing strategies to increase brand awareness, drive traffic, and generate leads.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and analyze the performance of digital marketing campaigns, making data-driven decisions to optimize results.</Text>
-              </View>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -901,11 +947,32 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Digital Marketing Strategy</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement comprehensive digital marketing strategies to increase brand awareness, drive traffic, and generate leads.</Text>
+              </View>
+
+            </View>
+
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and analyze the performance of digital marketing campaigns, making data-driven decisions to optimize results.</Text>
               </View>
             </View>
 
@@ -947,17 +1014,9 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•   As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•    Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
             </View>
 
             {/* Footer */}
@@ -980,20 +1039,32 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 10 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
+            </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1030,11 +1101,12 @@ const Letters = () => {
         <Page style={styles.page}>
           <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
 
-
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -1105,12 +1177,6 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Work Schedule:</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
-              </View>
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1132,13 +1198,22 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
+              </View>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Roles and Responsibilities:</Text>
               <View style={{ flexDirection: "row" }}>
@@ -1214,26 +1289,7 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Market Research:</Text>
-              <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Stay informed about market trends, competitors, and industry developments.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.label}>Team Collaboration:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Participate in sales meetings, training sessions, and team-building activities.</Text>
-              </View>
-
-            </View>
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1255,7 +1311,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -1263,18 +1321,76 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={styles.label}>Market Research:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Stay informed about market trends, competitors, and industry developments.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Team Collaboration:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Participate in sales meetings, training sessions, and team-building activities.</Text>
+              </View>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Share best practices and strategies with colleagues to help the team achieve its collective goals.</Text>
               </View>
             </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Market Research:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Stay informed about market trends, competitors, and industry developments.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Provide feedback to the sales team and management on customer preferences, market conditions, and product needs.</Text>
+              </View>
+            </View>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega,</Text>
+              <Text style={styles.footerText}>Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>Corporate Identity Number: U74999AP2018PTC108597</Text>
+              <Text style={styles.footerText}>Phone: 0891 2702244 +91 7032213434</Text>
+              <Text style={styles.footerText}>Email: info@Sharontelematics.com | Website: www.Sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+
+        {/* Page 4 */}
+        <Page style={styles.page}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
+              </View>
+
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
             </View>
 
             <View style={styles.section}>
@@ -1284,11 +1400,11 @@ const Letters = () => {
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1329,7 +1445,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -1401,18 +1519,6 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-
-              <Text style={styles.label}>Applications:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Act as a liaison with the business community in all aspects of report, data feed, and application development.</Text>
-              </View>
-            </View>
-
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1433,13 +1539,25 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+
+              <Text style={styles.label}>Applications:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Act as a liaison with the business community in all aspects of report, data feed, and application development.</Text>
+              </View>
+            </View>
+
             <Text style={styles.label}>System Maintenance:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -1484,19 +1602,10 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Acceptance:</Text>
-              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
-              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
-            </View>
-
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -1516,19 +1625,33 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Acceptance:</Text>
+              <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
+              <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
+            </View>
+
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -1568,7 +1691,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -1642,15 +1767,6 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Work Schedule:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
-              </View>
-            </View>
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1671,11 +1787,20 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
               </View>
             </View>
             <View style={styles.section}>
@@ -1725,29 +1850,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and oversee standardized operating procedures and best practices to ensure consistent service delivery and operational excellence.</Text>
               </View>
 
-              <Text style={styles.label}>Budget and Resource Management:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Prepare and manage branch budgets, ensuring cost-effective operations and resource allocation.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Oversee procurement and inventory management to ensure timely and cost-effective acquisition of necessary equipment and supplies.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and control expenses to stay within budgetary limits while meeting operational needs.</Text>
-              </View>
-
-              <Text style={styles.label}>Project Management:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Lead and manage operational projects such as branch expansions, relocations, or system upgrades, ensuring projects are completed on time and within budget.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Coordinate with other departments and external vendors to achieve project goals and address any arising issues.</Text>
-              </View>
             </View>
 
 
@@ -1771,13 +1873,39 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+
+            <Text style={styles.label}>Budget and Resource Management:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Prepare and manage branch budgets, ensuring cost-effective operations and resource allocation.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Oversee procurement and inventory management to ensure timely and cost-effective acquisition of necessary equipment and supplies.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and control expenses to stay within budgetary limits while meeting operational needs.</Text>
+              </View>
+
+              <Text style={styles.label}>Project Management:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Lead and manage operational projects such as branch expansions, relocations, or system upgrades, ensuring projects are completed on time and within budget.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Coordinate with other departments and external vendors to achieve project goals and address any arising issues.</Text>
+              </View>
             <Text style={styles.label}>Reporting and Analysis:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -1814,27 +1942,9 @@ const Letters = () => {
 
               <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Address and resolve any customer complaints or issues that arise, ensuring timely and effective solutions.</Text>
             </View>
-            <View>
-              <Text style={styles.label}>Strategic Planning:</Text>
-              <View style={{ flexDirection: "row" }}>
+            
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Contribute to strategic planning and goal-setting for branch operations, aligning branch activities with overall company objectives.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
 
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Support the implementation of company-wide initiatives and strategies at the branch level.</Text>
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
-            </View>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -1853,13 +1963,36 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View>
+              <Text style={styles.label}>Strategic Planning:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Contribute to strategic planning and goal-setting for branch operations, aligning branch activities with overall company objectives.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Support the implementation of company-wide initiatives and strategies at the branch level.</Text>
+              </View>
+            </View>
+            <View style={styles.section}>
+            <Text style={styles.label}>Employment Terms:</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
@@ -1867,12 +2000,43 @@ const Letters = () => {
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 25 }]}>
+            <Text style={[styles.greetingText,{marginBottom: 5, fontWeight: 'bold'}]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText,{marginBottom: 5, fontWeight: 'bold'}]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText,{marginBottom: 5, fontWeight: 'bold'}]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText,{marginBottom: 5, fontWeight: 'bold'}]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText,{marginBottom: 5, fontWeight: 'bold'}]}>{employee.greetingPhoneNo} </Text>
+            
+
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
+              <Text style={styles.footerText}>Registered Office: Door No: 21-27 Viman Nagar, Airport road, Near INS Dega,</Text>
+              <Text style={styles.footerText}>Visakhapatnam-530009</Text>
+              <Text style={styles.footerText}>Corporate Identity Number: U74999AP2018PTC108597</Text>
+              <Text style={styles.footerText}>Phone: 0891 2702244 +91 7032213434</Text>
+              <Text style={styles.footerText}>Email: info@Sharontelematics.com | Website: www.Sharontelematics.com</Text>
+            </View>
+          </View>
+        </Page>
+        {/* Page 5 */}
+        <Page style={styles.page}>
+          <View style={{ padding: 20, height: "100%", borderRadius: 5 }}>
+
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
+              </View>
+
+              <View style={{ width: "40%", flexWrap: "wrap" }}>
+                <Text style={styles.companyDetails}>
+                  Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
+                </Text>
+              </View>
+            </View>
+            
+
+            <View style={[styles.section, { marginTop: 15 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -1912,7 +2076,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -1978,15 +2144,7 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-
-              <Text style={styles.label}>Sales Strategy and Planning:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
-              </View>
-            </View>
+            
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2007,7 +2165,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2015,6 +2175,13 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+
+              <Text style={styles.label}>Sales Strategy and Planning:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
+              </View>
               <View style={{ flexDirection: "row" }}>
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Develop and implement effective sales strategies to achieve company sales goals and revenue targets.</Text>
@@ -2023,9 +2190,7 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Analyze market trends and customer needs to identify new business opportunities.</Text>
               </View>
-
             </View>
-
             <Text style={styles.label}>Team Management:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2074,12 +2239,8 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
             </View>
 
             {/* Footer */}
@@ -2102,7 +2263,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2110,17 +2273,24 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2161,7 +2331,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2227,16 +2399,7 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-
-              <Text style={styles.label}>Sales Strategy and Planning:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
-              </View>
-
-            </View>
+            
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2257,14 +2420,25 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
 
+              <Text style={styles.label}>Sales Strategy and Planning:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Direct all operational aspects including distribution operations, customer service, human resources, administration, and sales.</Text>
+              </View>
+
+            </View>
             <View style={styles.section}>
               <View style={{ flexDirection: "row" }}>
 
@@ -2324,13 +2498,9 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
             </View>
+
 
 
             {/* Footer */}
@@ -2352,7 +2522,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2360,17 +2532,25 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
             <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2409,7 +2589,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2471,20 +2653,6 @@ const Letters = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.label}>Roles and Responsibilities:</Text>
-
-              <Text style={styles.label}>System Maintenance:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and maintain the health and performance of the company’s back-end systems and servers.</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular system updates, patches, and backups to ensure data security and system integrity.</Text>
-              </View>
-
-            </View>
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2505,13 +2673,30 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Roles and Responsibilities:</Text>
+
+              <Text style={styles.label}>System Maintenance:</Text>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Monitor and maintain the health and performance of the company’s back-end systems and servers.</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform regular system updates, patches, and backups to ensure data security and system integrity.</Text>
+              </View>
+
+            </View>
+
             <Text style={styles.label}>Troubleshooting:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2565,13 +2750,9 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
             </View>
+
 
             {/* Footer */}
             <View style={styles.footer}>
@@ -2593,7 +2774,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2601,19 +2784,28 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
 
-            <View style={[styles.section, { marginTop: 25 }]}>
+            <View style={[styles.section, { marginTop: 5 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
@@ -2653,7 +2845,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2723,10 +2917,6 @@ const Letters = () => {
 
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Install, maintain, and rectify the equipment and systems as per company standards and client requirements.</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform routine maintenance checks and troubleshoot issues to ensure optimal operation.</Text>
-              </View>
 
             </View>
             {/* Footer */}
@@ -2749,13 +2939,23 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <View style={{ flexDirection: "row" }}>
+
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Perform routine maintenance checks and troubleshoot issues to ensure optimal operation.</Text>
+              </View>
+
+            </View>
+
             <Text style={styles.label}>Technical Support:</Text>
             <View style={{ flexDirection: "row" }}>
 
@@ -2809,12 +3009,9 @@ const Letters = () => {
 
             <View style={styles.section}>
               <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
             </View>
 
             {/* Footer */}
@@ -2837,7 +3034,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2845,16 +3044,22 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
+            </View>
+
+            <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
               <Text style={styles.headText}>We look forward to having you join Sharon Telematics Pvt Ltd and are confident that your contributions will be significant.</Text>
             </View>
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
             <View style={[styles.section, { marginTop: 25 }]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
@@ -2895,7 +3100,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -2964,16 +3171,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Employee wellness programs.</Text>
               </View>
             </View>
-
-            <View style={styles.section}>
-              <Text style={styles.label}>Work Schedule:</Text>
-              <View style={{ flexDirection: "row" }}>
-
-                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
-              </View>
-            </View>
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -2994,14 +3191,22 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
                 </Text>
               </View>
             </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Work Schedule:</Text>
+              <View style={{ flexDirection: "row" }}>
 
+                <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Your regular work hours will be Monday to Saturday, 9:00 AM to 6:00 PM. Additional hours or weekend work may be required based on business needs.</Text>
+              </View>
+            </View>
             <View style={styles.section}>
               <Text style={styles.label}>Roles and Responsibilities:</Text>
 
@@ -3069,15 +3274,6 @@ const Letters = () => {
                 <Text style={styles.text}>•     </Text>   <Text style={[styles.headText, { width: "92%" }]}>Participate in team meetings and contribute ideas for improving processes and sales strategies.</Text>
               </View>
             </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Employment Terms:</Text>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>This offer is contingent upon the successful completion of a background check and reference check. </Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text></View>
-            </View>
-
-
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sharon Telematics Private Limited</Text>
@@ -3098,7 +3294,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -3106,9 +3304,15 @@ const Letters = () => {
               </View>
             </View>
             <View style={styles.section}>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>During bond period, termination of employment by the employee will require reimbursement of <Text style={{ fontWeight: "ultrabold" }}>{formData.ReimbursementAmount} Rs</Text> to cover training and on boarding costs.</Text></View>
-              <View style={{ flexDirection: 'row', marginVertical: 2 }}><Text style={[styles.text, { fontWeight: "bold" }]}>•   </Text> <Text style={styles.text}>There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text></View>
+            <Text style={styles.label}>Employment Terms:</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    This offer is contingent upon the successful completion of a background check and reference check. </Text>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•    As an employee of Sharon Telematics Pvt Ltd, you will be expected to comply with all company policies and procedures.</Text>
+            <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   Your employment with Sharon Telematics Pvt Ltd is a Permanent employment, with an initial bond period of 2 years.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   You should give proper 2 months’ notice period after resigning from your position, if you leave within 2 years of joining, you'll need to pay 2 months' salary as penalty if you don't serve the notice period. For spot resignations, the same penalty applies if notice period isn't served.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   During bond period, termination of employment by the employee will require reimbursement of {formData.ReimbursementAmount} Rs to cover training and on boarding costs.</Text>
+              <Text style={[styles.text, { fontWeight: "bold", lineHeight: 1.6, marginBottom: 8 }]}>•   There are no unplanned Leaves and unplanned permissions for 6 months from the Joining date.</Text>
             </View>
+
             <View style={styles.section}>
               <Text style={styles.label}>Acceptance:</Text>
               <Text style={styles.headText}>To accept this offer, please sign and date this letter and return it by {getIndiaJoiningData(employee?.joiningDate)}. If you have any questions, please contact{employee.greetingTo} - {employee.greetingDesignation}, contact: {employee.greetingPhoneNo}. </Text>
@@ -3116,19 +3320,19 @@ const Letters = () => {
             </View>
 
             <Text style={[styles.greetingText, { marginTop: 10, marginBottom: 5, fontWeight: 'bold' }]}>Sincerely,</Text>
-            <Text style={styles.greetingText}>{employee.greetingTo}</Text>
-            <Text style={styles.greetingText}>{employee.greetingDesignation}</Text>
-            <Text style={styles.greetingText}>Sharon Telematics Pvt Ltd</Text>
-            <Text style={styles.greetingText}>{employee.greetingEmail} </Text>
-            <Text style={styles.greetingText}>{employee.greetingPhoneNo} </Text>
-            <View style={[styles.section, { marginTop: 25 }]}>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingTo}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingDesignation}</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>Sharon Telematics Pvt Ltd</Text>
+            <Text style={[styles.greetingText, { marginBottom: 5, fontWeight: 'bold' }]}>{employee.greetingEmail} </Text>
+            <Text style={[styles.greetingText, {  fontWeight: 'bold' }]}>{employee.greetingPhoneNo} </Text>
+            <View style={[styles.section]}>
               <Text style={styles.label}>Acceptance Offer:</Text>
               <Text style={styles.headText}>I accept this offer of employement with Sharon Telematics Pvt Ltd as outline in this letter. </Text>
             </View>
 
-            <View style={styles.signatureSection}>
+            <View >
               <View style={styles.signatureBlock}>
-                <Text style={styles.headText}>Signature: ___________________________</Text>
+                <Text >Signature: ___________________________</Text>
                 <Text style={styles.headText}>Date: ___________________________</Text>
               </View>
             </View>
@@ -3160,7 +3364,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -3251,7 +3457,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -3340,7 +3548,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.
@@ -3457,7 +3667,9 @@ const Letters = () => {
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={{ width: "60%" }}>
+                <Image src="/logo.png" style={styles.logo} />
               </View>
+
               <View style={{ width: "40%", flexWrap: "wrap" }}>
                 <Text style={styles.companyDetails}>
                   Door No: 21-27 Viman Nagar, Airport road, Near INS Dega, Visakhapatnam-530009, Andhra Pradesh, India.

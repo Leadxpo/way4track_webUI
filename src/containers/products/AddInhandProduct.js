@@ -76,6 +76,7 @@ const AddInhandProduct = () => {
 
     const payload = new FormData();
     payload.append('staffId', formData.staffId);
+    payload.append('isReturn',false);
     payload.append('assignTime', formData.assignTime);
     payload.append('productTypeId', formData.productTypeId);
     payload.append('companyCode', initialAuthState.companyCode);

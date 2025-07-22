@@ -161,7 +161,7 @@ export const InvoicePDF = ({ data }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-console.log("rrr :",data)
+    console.log("rrr :", data)
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
@@ -172,16 +172,23 @@ console.log("rrr :",data)
   let totalCost = 0;
   let totalCGST = 0;
   let totalSGST = 0;
-
+  let totalTDS = 0;
   const cgstRate = data.cgstPercentage / 100;
   const sgstRate = data.scstPercentage / 100;
-
+  const tdsRate = data.tdsPercentage / 100;
+  
   data.productDetails?.forEach(item => {
+    console.log("item :",item)
     totalCost += item.totalCost;
     totalCGST += item.totalCost * cgstRate;
     totalSGST += item.totalCost * sgstRate;
+    totalTDS += item.totalCost * tdsRate;
   });
-  const totalAmount = (parseInt(totalCost) + parseInt(totalCGST) + parseInt(totalSGST))
+  console.log("totalCost :",totalCost);
+  console.log("totalCGST :",totalCGST);
+  console.log("totalSGST :",totalSGST);
+  console.log("totalTDS :",totalTDS);
+  const totalAmount = (parseInt(totalCost) + parseInt(totalCGST) + parseInt(totalSGST) + parseInt(totalTDS))
   const accountDetails = data.branchDetails?.accounts?.find(
     (account) => {
       console.log("ttt :", Number(account.id) + " === " + Number(data.accountId))
@@ -247,27 +254,30 @@ console.log("rrr :",data)
             <Text style={styles.tableCol}>Qty</Text>
             <Text style={styles.tableCol}>Rate</Text>
             {
-              data.GSTORTDS === "TDS" ?
-                (
-                  <>
-                    <Text style={styles.tableColTax}>TDS%</Text>
-                    <Text style={styles.tableColTax}>TDS Amt</Text>
-                  </>
-                ) : data.GSTORTDS === "IGST" ? (
-                  <>
-                    <Text style={styles.tableColTax}>IGST%</Text>
-                    <Text style={styles.tableColTax}>IGST Amt</Text>
+              data.isTDS &&
+              (
+                <>
+                  <Text style={styles.tableColTax}>TDS%</Text>
+                  <Text style={styles.tableColTax}>TDS Amt</Text>
+                </>
+              )
+            }
+            {data.isGST &&
+              (data.taxableState !== data.supplyState ? (
+                <>
+                  <Text style={styles.tableColTax}>IGST%</Text>
+                  <Text style={styles.tableColTax}>IGST Amt</Text>
 
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.tableColTax}>CGST%</Text>
-                    <Text style={styles.tableColTax}>CGST Amt</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.tableColTax}>CGST%</Text>
+                  <Text style={styles.tableColTax}>CGST Amt</Text>
 
-                    <Text style={styles.tableColTax}>SGST%</Text>
-                    <Text style={styles.tableColTax}>SGST Amt</Text>
-                  </>
-                )
+                  <Text style={styles.tableColTax}>SGST%</Text>
+                  <Text style={styles.tableColTax}>SGST Amt</Text>
+                </>
+              ))
             }
             <Text style={styles.tableCol}>Amount</Text>
           </View>
@@ -276,7 +286,8 @@ console.log("rrr :",data)
           {data?.productDetails?.map((item, index) => {
             const cgst = (item.totalCost * parseFloat(data.cgstPercentage)) / 100;
             const sgst = (item.totalCost * parseFloat(data.scstPercentage)) / 100;
-            const total = item.totalCost + cgst + sgst;
+            const tds = (item.totalCost * parseFloat(data.tdsPercentage)) / 100;
+            const total = item.totalCost + cgst + sgst + tds;
 
             return (
               <View style={styles.tableRow} key={index}>
@@ -286,27 +297,30 @@ console.log("rrr :",data)
                 <Text style={styles.tableCol}>{item.quantity}</Text>
                 <Text style={styles.tableCol}>{item.costPerUnit}</Text>
                 {
-                  data.GSTORTDS === "TDS" ?
-                    (
-                      <>
-                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
-                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
-                      </>
-                    ) : data.GSTORTDS === "IGST" ? (
-                      <>
-                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
-                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+                  data.isTDS &&
 
-                      </>
-                    ) : (
-                      <>
-                        <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
-                        <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
-
-                        <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
-                        <Text style={styles.tableColTax}>{sgst.toFixed(2)}</Text>
-                      </>
-                    )
+                  (
+                    <>
+                      <Text style={styles.tableColTax}>{data.tdsPercentage}%</Text>
+                      <Text style={styles.tableColTax}>{tds.toFixed(2)}</Text>
+                    </>
+                  )
+                }
+                {data.isGST &&
+                  (data.taxableState === data.supplyState ? (
+                    <>
+                      <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                      <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+                      <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
+                      <Text style={styles.tableColTax}>{sgst.toFixed(2)}</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                      <Text style={styles.tableColTax}>{cgst.toFixed(2)}</Text>
+                    </>
+                  )
+                  )
                 }
                 <Text style={styles.tableCol}>{total.toFixed(2)}</Text>
               </View>
@@ -320,12 +334,24 @@ console.log("rrr :",data)
             <Text style={styles.tableCol}></Text>
             <Text style={styles.tableCol}>{data.quantity}</Text>
             <Text style={styles.tableCol}></Text>
-            <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
-            <Text style={styles.tableColTax}>
-              {(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)}
-            </Text>
+            {data.isTDS &&
+              <>
+                <Text style={styles.tableColTax}>{data.tdsPercentage}%</Text>
+                <Text style={styles.tableColTax}>
+                  {(data.totalAmount * parseFloat(data.tdsPercentage) / 100).toFixed(2)}
+                </Text>
+              </>
+            }
+            {data.isGST &&
+              <>
+                <Text style={styles.tableColTax}>{data.cgstPercentage}%</Text>
+                <Text style={styles.tableColTax}>
+                  {(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)}
+                </Text>
+              </>
+            }
             {
-              data.GSTORTDS === "GST" &&
+              (data.taxableState === data.supplyState && data.isGST) &&
               <>
                 <Text style={styles.tableColTax}>{data.scstPercentage}%</Text>
                 <Text style={styles.tableColTax}>
@@ -340,9 +366,9 @@ console.log("rrr :",data)
           <View style={styles.footerBlock}>
             <View style={styles.footerLeft}>
               <Text style={styles.footerTitle}>Total Amount</Text>
-              {data.GSTORTDS === "TDS" && <Text style={styles.footerTitle}>Total TDS</Text>}
-              {data.GSTORTDS === "IGST" && <Text style={styles.footerTitle}>Total IGST</Text>}
-              {data.GSTORTDS === "GST" &&
+              {data.isTDS && <Text style={styles.footerTitle}>Total TDS</Text>}
+              {(data.taxableState !== data.supplyState && data.isGST) && <Text style={styles.footerTitle}>Total IGST</Text>}
+              {(data.taxableState === data.supplyState && data.isGST) &&
                 <>
                   <Text style={styles.footerTitle}>Total CGST</Text>
                   <Text style={styles.footerTitle}>Total SGST</Text>
@@ -375,9 +401,9 @@ console.log("rrr :",data)
 
             <View style={styles.footerRight}>
             <Text style={styles.footerTitle}>{parseFloat(data.totalAmount).toFixed(2)} RS</Text>
-              {data.GSTORTDS === "TDS" && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
-              {data.GSTORTDS === "IGST" && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
-              {data.GSTORTDS === "GST" &&
+              {data.isTDS && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.tdsPercentage) / 100).toFixed(2)} Rs</Text>}
+              {(data.taxableState !== data.supplyState && data.isGST) && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
+              {(data.taxableState === data.supplyState && data.isGST) &&
                 <>
                   <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>
                   <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.scstPercentage) / 100).toFixed(2)} Rs</Text>

@@ -325,7 +325,7 @@ const RequestRaise = () => {
         <div>
           <TableWithDateFilter
             type="requests" 
-            onEdit={handleVendorEdit} showEdit={true}
+            onEdit={handleVendorEdit} showEdit={false}
             onDelete={handleDelete} showDelete={false}
             onDetails={handleDetails}
             showDateFilters={false}

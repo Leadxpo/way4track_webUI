@@ -7,6 +7,7 @@ import { getPermissions } from '../../common/commonUtils';
 import { FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
+import DateConvert from '../../components/dateConvert';
 
 const data = [
   {
@@ -358,7 +359,7 @@ const SalesVisit = () => {
                 <th className="p-3">Contact</th>
                 <th className="p-3">Date of Visit</th>
                 <th className="p-3" >Estimate Date</th>
-                <th className="p-3">Staff ID</th>
+                <th className="p-3">Staff</th>
                 <th className="p-3">Branch</th>
                 <th className="p-3">Lead Status</th>
                 <th className="p-3">Action</th>
@@ -382,9 +383,9 @@ const SalesVisit = () => {
                     <td className="p-3">{item.visitingNumber}</td>
                     <td className="p-3 font-semibold">{item.name}</td>
                     <td className="p-3">{item.phoneNumber}</td>
-                    <td className="p-3 font-semibold" width={200}>{formatDate(item.date)}</td>
-                    <td className="p-3" width={100}>{formatDate(item.estimateDate)}</td>
-                    <td className="p-3">{item.staffId ? item.staffId : "N/A"}</td>
+                    <td className="p-3 font-semibold" width={200}> {item.date ? DateConvert(item.date): "N/A"}</td>
+                    <td className="p-3" width={100}>{item.estimateDate ? DateConvert(item.estimateDate): "N/A"}</td>
+                    <td className="p-3">{item.staffName ? item.staffName : "N/A"}</td>
                     <td className="p-3">{item.branchName ? item.branchName : "N/A"}</td>
                     <td className="p-3" onClick={() => leadStatusUpdate(item)}>{item.leadStatus}</td>
                     <td className=" p-2 relative">
@@ -443,6 +444,7 @@ const SalesVisit = () => {
             >
               <option value="">Select Status</option>
               <option value="allocated">ALLOCATED</option>
+              <option value="customer agreed">CUSTOMER AGREED</option>
               <option value="incomplete">INCOMPLETE</option>
               <option value="paymentPending">PAYMENT_PENDING</option>
               <option value="partiallyPaid">PARTIALLY_PAID</option>
@@ -466,6 +468,7 @@ const SalesVisit = () => {
                 </select>
               </>
             )}
+
             {(updatedLeadStatus === 'partiallyPaid' || updatedLeadStatus === 'completed') && (
               <>
                 <label className="block mb-2">Amount</label>

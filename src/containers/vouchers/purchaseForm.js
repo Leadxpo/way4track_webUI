@@ -107,25 +107,27 @@ const PurchaseForm = () => {
     'CreditNote',
   ];
 
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
-  const [bank, setBank] = useState('');
-  const [paymentMode, setPaymentMode] = useState('');
-  const [date, setDate] = useState('');
-  const [day, setDay] = useState('');
-  const [partyName, setPartyName] = useState('');
-  const [purchaseLedger, setPurchaseLedger] = useState('');
-  const [supplierInvoice, setSupplierInvoice] = useState('');
-  const [supplierLocation, setSupplierLocation] = useState('');
-  const [purchaseGST, setPurchaseGST] = useState('');
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  // const [amount, setAmount] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [bank, setBank] = useState('');
+  // const [paymentMode, setPaymentMode] = useState('');
+  // const [date, setDate] = useState('');
+  // const [day, setDay] = useState('');
+  // const [partyName, setPartyName] = useState('');
+  // const [purchaseLedger, setPurchaseLedger] = useState('');
+  // const [supplierInvoice, setSupplierInvoice] = useState('');
+  // const [supplierLocation, setSupplierLocation] = useState('');
+  // const [purchaseGST, setPurchaseGST] = useState('');
+  // const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  // const [paymentType, setPaymentType] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedTaxType, setSelectedTaxType] = useState('CGST');
-
+  const [isGST, setIsGST] = useState(true);
   const [gstData, setGstData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+
 
   const filteredTaxData = taxData.filter((tax) => {
     if (selectedTaxType === 'CGST') {
@@ -234,15 +236,15 @@ const PurchaseForm = () => {
     const calculatedAmount = Number(
       selectedTaxType === 'CGST'
         ? totalAmount +
-            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+        (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+        (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
         : selectedTaxType === 'IGST'
           ? totalAmount +
-            (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+          (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
           : selectedTaxType === 'TDS'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+            (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+            (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
             : totalAmount
     );
 
@@ -314,21 +316,19 @@ const PurchaseForm = () => {
       const response = await ApiService.post(
         'https://appyflow.in/api/verifyGST',
         {
-          key_secret: 'JqwMCeWBEDNCjxmEhUYSeMoluSB2',
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
           gstNo: gstNumber,
         }
       );
-
-      console.log(response, 'response gst');
-
       setGstData(response);
+      setIsGST(response.error)
+      if (response.error) {
+        setErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number Invalid',
+        }));
+      }
 
-      // if (response?.data) {
-      //   setGstData(response.data);
-      // } else {
-      //   alert('No data found');
-      //   setGstData(null);
-      // }
     } catch (error) {
       console.error('GST Fetch Error:', error);
       alert('Error fetching GST data');
@@ -336,7 +336,7 @@ const PurchaseForm = () => {
       setLoading(false);
     }
   };
-
+ 
   const handleDueDateChange = (e) => {
     const value = e.target.value;
 
@@ -626,7 +626,7 @@ const PurchaseForm = () => {
             <p className="text-red-500 text-sm mt-1">{errors.purchaseGst}</p>
           )}
 
-          {gstData && (
+          {!isGST && (
             <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
               <h3 className="text-xl font-bold text-gray-800 mb-4">
                 GST Details
@@ -692,6 +692,7 @@ const PurchaseForm = () => {
               </div>
             </div>
           )}
+
         </div>
       </div>
 
@@ -855,15 +856,15 @@ const PurchaseForm = () => {
           Total Amount (Including Tax) :
           {selectedTaxType === 'CGST'
             ? totalAmount +
-              (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
-              (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
+            (totalAmount * (parseFloat(formData['CGST']) || 0)) / 100 +
+            (totalAmount * (parseFloat(formData['SGST']) || 0)) / 100
             : selectedTaxType === 'IGST'
               ? totalAmount +
-                (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
+              (totalAmount * (parseFloat(formData['IGST']) || 0)) / 100
               : selectedTaxType === 'TDS'
                 ? totalAmount +
-                  (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
-                  (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
+                (totalAmount * (parseFloat(formData['TDS']) || 0)) / 100 +
+                (totalAmount * (parseFloat(formData['TCS']) || 0)) / 100
                 : totalAmount}
         </p>
       </div>

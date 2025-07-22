@@ -195,6 +195,7 @@ const Vouchers = () => {
               <th className="p-3">Voucher ID</th>
               <th className="p-3">Branch</th>
               <th className="p-3">Voucher Type</th>
+              <th className="p-3">Voucher ID</th>
               <th className="p-3">Generation Date/Time</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Payment Mode</th>
@@ -209,7 +210,7 @@ const Vouchers = () => {
                 <td className="p-3">{voucher.voucherId}</td>
                 <td className="p-3">{voucher.branchName}</td>
                 <td className="p-3">{voucher.voucherType}</td>
-                {/* <td className="p-3 ">{voucher.generationDate}</td> */}
+                <td className="p-3 ">{voucher.invoiceId}</td>
                 <td className="p-3 ">
                   {new Date(voucher.generationDate).toLocaleDateString('en-GB')}
                 </td>

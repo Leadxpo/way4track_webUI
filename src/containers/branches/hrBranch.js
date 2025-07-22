@@ -32,6 +32,7 @@ const BranchList = () => {
             staffId: staff.staffId?.trim() || "",
             name: staff.name?.trim() || "",
             dob: staff.dob || "",
+            staffPhoto:staff.staffPhoto ||"https://storage.googleapis.com/way4track-application/Sharlon_App_usage/Screenshot_20250708_113150.jpg",
             gender: staff.gender || "",
             location: staff.location?.trim() || "",
             phoneNumber: staff.phoneNumber?.trim() || "",
@@ -92,6 +93,7 @@ const BranchList = () => {
             staffId: staff.staffId?.trim() || "",
             name: staff.name?.trim() || "",
             dob: staff.dob || "",
+            staffPhoto:staff.staffPhoto ||"https://storage.googleapis.com/way4track-application/Sharlon_App_usage/Screenshot_20250708_113150.jpg",
             gender: staff.gender || "",
             location: staff.location?.trim() || "",
             phoneNumber: staff.phoneNumber?.trim() || "",
@@ -119,14 +121,7 @@ const BranchList = () => {
             mobileNumber: staff.mobileNumber?.trim() || "",
             designation: staff.designation?.trim() || "",
             experience: staff?.totalExperience || "",
-
-            // ✅ Fixed Qualifications Mapping
             qualifications: JSON.stringify(staff.qualifications),
-            //     ? staff.qualifications.map((rec) => ({
-            //         marksOrCgpa: rec.marksOrCgpa || "",
-            //         qualificationName: rec.qualificationName || "",
-            //       }))
-            //     : [],
           }));
 
           setEmployees(staffData);
@@ -201,7 +196,6 @@ const BranchList = () => {
     const filteredEmployees = employees.filter(emp =>
       !selectedStaff || emp.staffId.toLowerCase().includes(selectedStaff.toLowerCase())
     );
-   console.log("jjjj",filteredEmployees);
     const formattedData = formatExcelData(filteredEmployees);
 
     if (formattedData.length === 0) {

@@ -1,100 +1,87 @@
 
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
-import { initialAuthState } from '../../services/ApiService';
 
 const EditDispatch = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-    const appointmentDetails = location.state?.dispatch || null;
-
+    const location = useLocation();
+    const initialData = location.state?.dispatch || null;
     const [formData, setFormData] = useState({
-        fromAddress: '',
-        toAddress: '',
-        id: null,
-        dispatchCompanyName: '',
-        dispatchDate: '',
-        arrivalDate: '',
-        status: '',
-        transportId: '',
-        packageId: '',
-        assignedProductsId: '',
-        receiverName: '',
-        dispatcherName: '',
-        trackingURL: '',
-        staffId: '',
-        clientId: '',
-        subDealerId: '',
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
+        id: initialData.id || '',
+        fromAddress: initialData.fromAddress || '',
+        toAddress: initialData.toAddress || '',
+        dispatchDate: initialData.dispatchDate ? initialData.dispatchDate.split('T')[0] : '',
+        arrivalDate: initialData.arrivalDate ? initialData.arrivalDate.split('T')[0] : '',
+        status: initialData.status || '',
+        transportId: initialData.transportId || '',
+        packageId: initialData.packageId || '',
+        receiverName: initialData.receiverName || '',
+        dispatcherName: initialData.dispatcherName || '',
+        trackingURL: initialData.trackingURL || '',
+        dispatchCompanyName: initialData.dispatchCompanyName || '',
+        dispatchDescription: initialData.dispatchDescription || '',
+        dispatchPicks: initialData.dispatchPicks || [],
     });
 
-    useEffect(() => {
-        if (appointmentDetails) {
-            setFormData({
-                fromAddress: appointmentDetails.fromAddress || "",
-                toAddress: appointmentDetails.toAddress || "",
-                id: appointmentDetails.id || null,
-                dispatchCompanyName: appointmentDetails.dispatchCompanyName || "",
-                dispatchDate: appointmentDetails.dispatchDate || "",
-                arrivalDate: appointmentDetails.arrivalDate || "",
-                status: appointmentDetails.status || "",
-                transportId: appointmentDetails.transportId || "",
-                packageId: appointmentDetails.packageId || "",
-                assignedProductsId: appointmentDetails.assignedProductsId || "",
-                receiverName: appointmentDetails.receiverName || "",
-                dispatcherName: appointmentDetails.dispatcherName || "",
-                trackingURL: appointmentDetails.trackingURL || "",
-                staffId: appointmentDetails.staffId || "",
-                clientId: appointmentDetails.clientId || "",
-                subDealerId: appointmentDetails.subDealerId || "",
-                companyCode: initialAuthState.companyCode, // Keeping the initial value
-                unitCode: initialAuthState.unitCode, // Keeping the initial value
-            });
-        }
-    }, [appointmentDetails]);
-
-
-    const [clients, setClients] = useState([]);
-    const [subDealers, setSubDealers] = useState([]);
-    const [staff, setStaff] = useState([]);
-    const [assignedProducts, setAssignedProducts] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevState) => ({ ...prevState, [name]: value }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [subDealerRes, productRes, clientRes, staffRes] = await Promise.all([
-                    ApiService.post('/subdealer/getSubDealerNamesDropDown'),
-                    ApiService.post('/product-assign/getAllProductAssign', {
-                        companyCode: initialAuthState.companyCode,
-                        unitCode: initialAuthState.unitCode,
-                    }),
-                    ApiService.post('/client/getClientNamesDropDown'),
-                    ApiService.post('/staff/getStaffNamesDropDown'),
-                ]);
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+    };
 
-                setSubDealers(subDealerRes.data || []);
-                setAssignedProducts(productRes.data || []);
-                setClients(clientRes.data || []);
-                setStaff(staffRes.data || []);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
-    }, []);
+    // async function fetchImageAndAppend(url, formData, fieldName = 'dispatchBoximage') {
+    //     const response = await fetch(url);
+    //     const blob = await response.blob();
+
+    //     // Create a file from blob, give it a name
+    //     const filename = url.split('/').pop(); // use last part of URL
+    //     const file = new File([blob], filename, { type: blob.type });
+    //   return  formData.append(fieldName, file);
+    // }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await ApiService.post('/dispatch/handleDispatchDetails', formData);
+            const formPayload = new FormData();
+            // Append normal fields
+            for (const key in formData) {
+                if (key !== 'dispatchPicks') {
+                    formPayload.append(key, formData[key]);
+                }
+            }
+            // Append files
+            selectedFiles.length > 0 && (
+                selectedFiles.forEach((file) => {
+                    formPayload.append('dispatchBoximage', file);
+                })
+            )
+            if (formData.dispatchPicks && formData.dispatchPicks.length > 0) {
+                await Promise.all(
+                    formData.dispatchPicks?.map(async (item) => {
+                        const response = await fetch(item);
+                        const blob = await response.blob();
+                        const filename = item.split('/').pop();
+                        const file = new File([blob], filename, { type: blob.type });
+                        formPayload.append("dispatchBoximage", file);
+                    })
+                );
+            }
+            const response = await ApiService.post('/dispatch/handleDispatchDetails', formPayload, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
             if (response.status) {
                 alert('Dispatch updated successfully!');
                 navigate('/dispatch');
@@ -107,7 +94,6 @@ const EditDispatch = () => {
         }
     };
 
-
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto p-6 rounded-lg space-y-6">
             <h1 className="text-3xl font-bold mb-4">
@@ -119,7 +105,7 @@ const EditDispatch = () => {
                 <input
                     type="date"
                     name="dispatchDate"
-                    value={formData.dispatchDate.split('T')[0]}
+                    value={formData.dispatchDate}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
@@ -130,7 +116,7 @@ const EditDispatch = () => {
                 <input
                     type="date"
                     name="arrivalDate"
-                    value={formData.arrivalDate.split('T')[0]}
+                    value={formData.arrivalDate}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
@@ -148,21 +134,6 @@ const EditDispatch = () => {
             </div>
 
             <div className="flex flex-col">
-                <label className="font-semibold mb-2">Dispatch Status:</label>
-                <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                >
-                    <option value="" disabled>Select Status</option>
-                    <option value="ON_THE_WAY">On The Way</option>
-                    <option value="DISPATCHED">Dispatched</option>
-                    <option value="DELIVERED">Delivered</option>
-                </select>
-            </div>
-
-            <div className="flex flex-col">
                 <label className="font-semibold mb-2">To Address:</label>
                 <input
                     type="text"
@@ -171,6 +142,21 @@ const EditDispatch = () => {
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
+            </div>
+
+            <div className="flex flex-col">
+                <label className="font-semibold mb-2">Dispatch Status:</label>
+                <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                    <option value="" disabled>Select Status</option>
+                    <option value="DISPATCHED">Dispatched</option>
+                    <option value="ON_THE_WAY">On The Way</option>
+                    <option value="DELIVERED">Delivered</option>
+                </select>
             </div>
 
             <div className="flex flex-col">
@@ -217,78 +203,6 @@ const EditDispatch = () => {
                 />
             </div>
 
-            {subDealers.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Sub Dealer:</label>
-                    <select
-                        name="subDealerId"
-                        value={formData.subDealerId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Sub Dealer</option>
-                        {subDealers.map(({ subDealerId, name }) => (
-                            <option key={subDealerId} value={subDealerId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {clients.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Client:</label>
-                    <select
-                        name="clientId"
-                        value={formData.clientId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Client</option>
-                        {clients.map(({ clientId, name }) => (
-                            <option key={clientId} value={clientId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {staff.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Assign To Staff:</label>
-                    <select
-                        name="staffId"
-                        value={formData.staffId}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>Select Staff</option>
-                        {staff.map(({ staffId, name }) => (
-                            <option key={staffId} value={staffId}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {/* {assignedProducts.length > 0 && (
-                <div className="flex flex-col">
-                    <label className="font-semibold mb-2">Assign prosduct:</label>
-                    <select
-                        name="assignedTo"
-                        value={formData.assignedTo}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            Select prosduct
-                        </option>
-                        {assignedProducts.map((staffMember) => (
-                            <option key={staffMember.id} value={staffMember.id}>
-                                {staffMember.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )} */}
-
             <div className="flex flex-col">
                 <label className="font-semibold mb-2">Transport ID:</label>
                 <input
@@ -311,11 +225,47 @@ const EditDispatch = () => {
                 />
             </div>
 
+            <div className="flex flex-col">
+                <label className="font-semibold mb-2">Description:</label>
+                <textarea
+                    name="dispatchDescription"
+                    placeholder="Dispatch Description"
+                    value={formData.dispatchDescription}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+            </div>
+
+            <div className="flex flex-col">
+                <label className="font-semibold mb-2">Dispatch Photos:</label>
+                <input
+                    type="file"
+                    name="dispatchPicks"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+                {/* Preview existing images if editing */}
+                {formData.dispatchPicks.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.dispatchPicks?.map((url, idx) => (
+                            <img
+                                key={idx}
+                                src={url}
+                                alt={`Dispatch Pic ${idx + 1}`}
+                                className="w-20 h-20 object-cover rounded-md"
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <button type="submit" className="w-full py-3 text-white bg-blue-500 hover:bg-blue-700 rounded-md">
                 {formData.id ? 'Update Dispatch' : 'Create Dispatch'}
             </button>
         </form>
     );
 };
+
 
 export default EditDispatch;

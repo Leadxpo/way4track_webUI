@@ -83,10 +83,14 @@ Warranty Claims:
     expiryDate: '',
     cgstPercentage: '',
     scstPercentage: '',
+    tdsPercentage: '',
     includeTax: '',
+    prefix: '',
     CGST: '',
     SCST: '',
-    GSTORTDS: '',
+    TDS: '',
+    isGST: false,
+    isTDS: false,
     items: [
       {
         productId: '',
@@ -116,10 +120,27 @@ Warranty Claims:
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState('');
-
+  const [extension, setExtension] = useState(0);
+  const [prefix, setPrefix] = useState([]);
   const [serveProd, setServeProd] = useState(
     Array(formData.items.length).fill('')
   );
+
+  useEffect(() => {
+    const getEstimatesPrefix = async () => {
+      try {
+        const res = await ApiService.post('/estimate/getEstimatPrefixeDetails', {
+          "companyCode": "WAY4TRACK",
+          "unitCode": "WAY4"
+        });
+        setPrefix(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch client details:', err);
+        setPrefix([]);
+      }
+    }
+    getEstimatesPrefix()
+  }, [])
 
   const changeServeProd = (index, e) => {
     handleProductItemChange(index, e);
@@ -162,20 +183,6 @@ Warranty Claims:
     fetchServices();
   }, []);
 
-  useEffect(() => {
-    if (isGST) {
-      setFormData((prevData) => ({
-        ...prevData,
-        GSTORTDS: formData.taxableState === formData.supplyState ? 'GST' : "IGST",
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        GSTORTDS: 'TDS',
-      }));
-    }
-  }, [isGST, formData.taxableState, formData.supplyState]);
-
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
@@ -185,6 +192,7 @@ Warranty Claims:
       setClients([]);
     }
   };
+
   const fetchProducts = async () => {
     try {
       const res = await ApiService.post(
@@ -254,6 +262,17 @@ Warranty Claims:
       }));
     }
   };
+
+  const handlePrefixChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      prefix: value
+    }));
+    const rrr = prefix.find((item) => (item.prefix === value))
+    const newExtension = String(Number(rrr?.count) + 1).padStart(4, '0');
+    setExtension(newExtension);
+  }
 
   // Handle items dynamically
   const handleItemChange = (index, e) => {
@@ -352,6 +371,7 @@ Warranty Claims:
       shippingAddress: formData.shippingAddress,
       taxableState: formData.taxableState,
       supplyState: formData.supplyState,
+      estimateId: `${formData.prefix}-${extension}`,
       estimateDate: formData.estimateDate,
       expireDate: formData.expiryDate,
       productOrService: formData.items.map((item) => item.name).join(', '),
@@ -362,15 +382,19 @@ Warranty Claims:
       ),
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
-      GSTORTDS: formData.GSTORTDS || undefined,
+      isGST: formData.isGST || false,
+      isTDS: formData.isTDS || false,
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
+      TDS: formData.TDS || 0,
+      prefix: formData.prefix,
       quantity: formData.items.reduce(
         (total, item) => total + parseInt(item.quantity, 10),
         0
       ),
       cgstPercentage: formData.cgstPercentage || 0,
       scstPercentage: formData.scstPercentage || 0,
+      tdsPercentage: formData.tdsPercentage || 0,
       convertToInvoice: formData.convertToInvoice || false,
       productDetails: formData.items.map((item) => ({
         productId: item.productId,
@@ -388,7 +412,7 @@ Warranty Claims:
 
     // Get Client Details
     const client = clients.find((c) => String(c.clientId) === String(estimateDto.clientId));
-    console.log("aaa :", estimateDto)
+
     const branchDetails = branches.find(
       (branch) => branch.id === Number(estimateDto.branchId)
     );
@@ -411,10 +435,12 @@ Warranty Claims:
 
       const cgst = (estimateDto.totalAmount * formData.cgstPercentage) / 100;
       const scst = (estimateDto.totalAmount * formData.scstPercentage) / 100;
-      const includeTax = estimateDto.totalAmount + cgst + scst;
+      const tds = (estimateDto.totalAmount * formData.tdsPercentage) / 100;
+      const includeTax = estimateDto.totalAmount + cgst + scst + tds;
       // Create FormData to send binary data
       const formDataPayload = new FormData();
       formDataPayload.append('estimatePdf', pdfFile); // Attach PDF file
+      formDataPayload.append('estimateId', `${formData.prefix}-${extension}`);
       formDataPayload.append('clientId', (estimateDto.clientId));
       formDataPayload.append('buildingAddress', estimateDto.buildingAddress);
       formDataPayload.append('shippingAddress', estimateDto.shippingAddress);
@@ -427,8 +453,11 @@ Warranty Claims:
       formDataPayload.append('totalAmount', estimateDto.totalAmount);
       formDataPayload.append('companyCode', 'WAY4TRACK');
       formDataPayload.append('unitCode', 'WAY4');
-      formDataPayload.append('GSTORTDS', estimateDto.GSTORTDS || '');
+      formDataPayload.append('isGST', estimateDto.isGST ? 1 : 0);
+      formDataPayload.append('isTDS', estimateDto.isTDS ? 1 : 0);
       formDataPayload.append('CGST', cgst);
+      formDataPayload.append('TDS', tds);
+      formDataPayload.append('prefix', estimateDto.prefix);
       formDataPayload.append('SCST', scst);
       formDataPayload.append('branchId', estimateDto.branchId);
       formDataPayload.append('accountId', estimateDto.accountId);
@@ -441,6 +470,10 @@ Warranty Claims:
       formDataPayload.append(
         'scstPercentage',
         estimateDto.scstPercentage || '0'
+      );
+      formDataPayload.append(
+        'tdsPercentage',
+        estimateDto.tdsPercentage || '0'
       );
       formDataPayload.append("convertToInvoice", estimateDto.convertToInvoice || "false");
 
@@ -473,6 +506,15 @@ Warranty Claims:
     }
   };
 
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      cgstPercentage: '',
+      scstPercentage: '',
+      CGST: '',
+      SCST: '',
+    }));
+  }, [formData.supplyState, formData.taxableState])
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -501,6 +543,43 @@ Warranty Claims:
         {/* Form */}
         <form className="space-y-6">
           {/* Client Info */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Prefix
+              </label>
+              <input
+                type="text"
+                name="prefix"
+                list="prefix-options"
+                value={formData.prefix}
+                onChange={handlePrefixChange}
+                placeholder="Prefix"
+                className="w-full p-2 border rounded-md"
+              />
+              <datalist id="prefix-options">
+                {prefix.map((prefix) => (
+                  <option key={prefix} value={prefix.prefix} />
+                ))}
+              </datalist>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Extention
+              </label>
+              <input
+                type="text"
+                name="extension"
+                value={extension}
+                onChange={(e) => setExtension(e.target.value)}
+                placeholder="Extension"
+                className="w-full p-2 border rounded-md"
+
+              />
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
@@ -834,21 +913,21 @@ Warranty Claims:
           </strong>
 
           <div className="flex items-center space-x-2">
-            <span className={isGST ? 'text-gray-400' : 'font-semibold'}>
-              TDS Enabled
+            <span className={formData.isGST ? 'text-gray-400' : 'font-semibold'}>
+              {formData.taxableState === formData.supplyState ? " GST Enabled" : "IGST Enable"}
             </span>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                checked={isGST}
+                checked={formData.isGST}
                 onChange={() => {
-                  setIsGST(!isGST);
                   setFormData((prevData) => ({
                     ...prevData,
                     cgstPercentage: '',
                     scstPercentage: '',
                     CGST: '',
                     SCST: '',
+                    isGST: !formData.isGST
                   }));
 
                 }}
@@ -861,11 +940,35 @@ Warranty Claims:
                 ></div>
               </div>
             </label>
-            <span className={isGST ? 'font-semibold' : 'text-gray-400'}>
-              {formData.taxableState === formData.supplyState ? " GST Enabled" : "IGST Enable"}
-            </span>
           </div>
-          {isGST ? (
+          <div className="flex items-center space-x-2">
+            <span className={formData.isGST ? 'text-gray-400' : 'font-semibold'}>
+              TDS Enable
+            </span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isTDS}
+                onChange={() => {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    tdsPercentage: '',
+                    TDS: '',
+                    isTDS: !formData.isTDS
+                  }));
+
+                }}
+                className="sr-only peer"
+              />
+              <div className="w-14 h-7 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer-checked:bg-blue-600 relative">
+                <div
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full transition-transform ${isGST ? 'translate-x-7' : ''
+                    }`}
+                ></div>
+              </div>
+            </label>
+          </div>
+          {formData.isGST && (
             <div>
               <label className="block text-sm font-semibold mb-1">CGST %</label>
               <input
@@ -905,13 +1008,15 @@ Warranty Claims:
                 </>
               }
             </div>
-          ) : (
+          )
+          }
+          {formData.isTDS && (
             <div>
               <label className="block text-sm font-semibold mb-1">TDS %</label>
               <input
                 type="number"
-                name="cgstPercentage"
-                value={formData.cgstPercentage}
+                name="tdsPercentage"
+                value={formData.tdsPercentage}
                 onChange={handleInputChange}
                 placeholder="TDS %"
                 className="w-full p-2 border rounded-md"
@@ -919,7 +1024,7 @@ Warranty Claims:
               <p className="text-sm text-gray-700 mt-1">
                 TDS Amount: ₹
                 {(
-                  (+formData.totalAmount * +formData.cgstPercentage) /
+                  (+formData.totalAmount * +formData.tdsPercentage) /
                   100
                 ).toFixed(2)}
               </p>
@@ -927,20 +1032,15 @@ Warranty Claims:
           )}
 
           <div>
-            {isGST ? (
-              <strong className="col-span-2 font-semibold">
-                Total Estimate Amount (Include Tax) :{' '}
-                {formData.totalAmount +
-                  (formData.totalAmount * formData.cgstPercentage) / 100 +
-                  (formData.totalAmount * formData.scstPercentage) / 100}
-              </strong>
-            ) : (
-              <strong className="col-span-2 font-semibold">
-                Total Estimate Amount (Include Tax) :{' '}
-                {formData.totalAmount +
-                  (formData.totalAmount * formData.cgstPercentage) / 100}
-              </strong>
-            )}
+            <strong className="col-span-2 font-semibold">
+              Total Estimate Amount (Include Tax) :{' '}
+              {formData.totalAmount +
+                (formData.totalAmount * formData.cgstPercentage) / 100 +
+                (formData.totalAmount * formData.scstPercentage) / 100 +
+                (formData.totalAmount * formData.tdsPercentage) / 100
+              }
+            </strong>
+
           </div>
 
           {/* Terms & Conditions */}

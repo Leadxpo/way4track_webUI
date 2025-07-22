@@ -19,7 +19,6 @@ const EditRequestRaise = () => {
     requestTo: '',
     branch: '',
     requestFor: '',
-    description: '',
     products: [{ productType: '', quantity: 0 }],
     createdDate: '',
     status: '',
@@ -30,21 +29,48 @@ const EditRequestRaise = () => {
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
-
-  const [image, setImage] = useState(null); // Store selected image
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const fileInputRef = useRef(null);        // Ref to trigger file input
 
-  const handleImageClick = () => {
-    fileInputRef.current.click(); // Trigger hidden input
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...(prev || []), ...newPreviews]); // ensure imagePreviews is array
+  
+    setSelectedFiles(files);
+  };
+    
+  const handleReplaceImage = (index) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setFormData((prev) => {
+          const updated = [...prev.photo];
+          updated[index] = file;
+          return { ...prev, photo: updated };
+        });
+        setImagePreviews((prev) => {
+          const updated = [...prev];
+          updated[index] = URL.createObjectURL(file);
+          return updated;
+        });
+      }
+    };
+    fileInput.click();
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData({ ...formData, photo: file });
-      setImage(imageUrl);
-    }
+  const removeImage = (index) => {
+    const updatedImages = [...formData.photo];
+    updatedImages.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      photo: updatedImages,
+    }));
   };
 
   const fetchStaffData = async () => {
@@ -115,11 +141,6 @@ const EditRequestRaise = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-
-
-
-
-
   const handleSave = async () => {
     const userProfile = JSON.parse(localStorage.getItem('userProfile'));
     const requestFrom = localStorage.getItem('id');
@@ -130,16 +151,35 @@ const EditRequestRaise = () => {
       console.log("User profile data not found.");
     }
 
+
     try {
 
       const formDataToSend = new FormData();
+      console.log("eee",selectedFiles)
+      selectedFiles.length > 0 && (
+        selectedFiles.forEach((file) => {
+          formDataToSend.append('photo', file);
+        })
+    )
+    if (formData.photo && formData.photo.length > 0) {
+        await Promise.all(
+            formData.photo?.map(async (item) => {
+              console.log("rrr",item)
+                const response = await fetch(item);
+                const blob = await response.blob();
+                const filename = item.split('/').pop();
+                const file = new File([blob], filename, { type: blob.type });
+                formDataToSend.append("photo", file);
+            })
+        );
+    }
+
       formDataToSend.append('id', requestData.requestId);
       formDataToSend.append('requestId', requestData.requestNumber);
       formDataToSend.append('requestType', formData.requestType);
       formDataToSend.append('requestTo', formData.requestTo);
       formDataToSend.append('requestFrom',  formData.requestFrom);
       formDataToSend.append('branch', formData.branch);
-      formDataToSend.append('description', formData.description || '');
       formDataToSend.append('companyCode', initialAuthState.companyCode);
       formDataToSend.append('unitCode', initialAuthState.unitCode);
       formDataToSend.append('requestFor', formData.requestFor);
@@ -147,7 +187,7 @@ const EditRequestRaise = () => {
       formDataToSend.append('toDate', formData.toDate);
 
       if (formData.photo) {
-        formDataToSend.append('photo', formData.photo);
+        formData.photo.forEach((file) => formDataToSend.append('photo', file)); // 👈 use field name your backend expects
       }
 
       if (formData.requestType === 'products' && formData.products) {
@@ -164,11 +204,11 @@ const EditRequestRaise = () => {
         alert('Request updated successfully');
         navigate('/requests');
       } else {
-        alert('failed to raise request');
+        alert('failed to raise request');  
       }
     } catch (error) {
       console.error(error);
-      alert('failed to raise request');
+      alert('failed to raise request from catch');
     }
   };
 
@@ -231,7 +271,6 @@ const EditRequestRaise = () => {
         setFormData({
           requestId: data.requestId || '',
           requestType: data.requestType || '',
-          description: data.description || '',
           requestFor: data.requestFor || '',
           fromDate: data.fromDate || '',
           toDate: data.toDate || '',
@@ -247,7 +286,7 @@ const EditRequestRaise = () => {
             ? data.products
             : [{ productType: '', quantity: 0 }],
         });
-        setImage(data.image)
+        setImagePreviews(data.image)
       } else {
         console.error('Error fetching request details');
       }
@@ -290,18 +329,6 @@ const EditRequestRaise = () => {
 
         {/* Form Fields */}
         <div className="space-y-4">
-          {/* Form field for Name */}
-          {/* <div>
-            <p className="font-semibold mb-1">Request Type</p>
-            <select
-        name="requestType"
-        value={formData.requestType}
-        onChange={handleInputChange}
-        className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-      >
-        
-      </select>
-          </div> */}
 
           <div>
             <p className="font-semibold mb-1">Request Type</p>
@@ -332,7 +359,7 @@ const EditRequestRaise = () => {
                 <option value="" disabled>
                   Select Request To
                 </option>
-                {staffData.map((staffMember) => (
+                {staffData?.map((staffMember) => (
                   <option key={staffMember.id} value={staffMember.id}>
                     {staffMember.name}
                   </option>
@@ -353,7 +380,7 @@ const EditRequestRaise = () => {
                 <option value="" disabled>
                   Select Branch
                 </option>
-                {branch.map((branch) => (
+                {branch?.map((branch) => (
                   <option key={branch.id} value={branch.id}>
                     {branch.branchName}
                   </option>
@@ -361,20 +388,6 @@ const EditRequestRaise = () => {
               </select>
             </div>
           </div>
-
-          {/* Address */}
-          <div>
-            <p className="font-semibold mb-1">Description</p>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Enter Address"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
-
 
           {formData.requestType === "products" ? (
             <>
@@ -401,14 +414,6 @@ const EditRequestRaise = () => {
                             </option>
                           ))}
                       </select>
-
-                      {/* <input
-                        type="text"
-                        value={row.productType}
-                        onChange={(e) => handleInputProductChange(index, "productType", e.target.value)}
-                        placeholder="Enter Product"
-                        className="w-full bg-transparent outline-none"
-                      /> */}
                     </div>
                   </div>
 
@@ -456,29 +461,6 @@ const EditRequestRaise = () => {
               </div>
             )}
 
-          {
-            formData.requestType === "money" && (
-              <>
-                <p className="font-semibold mb-1">Image</p>
-                <img
-                  src={image || "https://www.mariposakids.co.nz/wp-content/uploads/2014/08/image-placeholder2.jpg"} // Default image
-                  alt="Click to upload"
-                  onClick={handleImageClick}
-                  className="w-40 h-40 object-cover rounded-md cursor-pointer border"
-                />
-
-                {/* Hidden file input */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </>
-            )
-          }
-
           {formData?.requestType === "leaveRequest" && (<><div className="mt-4">
             <p className="font-semibold mb-1">Leave From Date</p>
             <input
@@ -502,6 +484,33 @@ const EditRequestRaise = () => {
             </div></>)}
 
         </div>
+        <div className="flex flex-col">
+                  <label className="font-semibold mb-2">Package Images:</label>
+                  <input
+                    type="file"
+                    multiple
+                    name="photo"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                  />
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    {imagePreviews?.map((src, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={src}
+                          alt={`Preview ${index}`}
+                          className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                          onClick={() => handleReplaceImage(index)}
+                        />
+                        <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                          Click to Replace
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">
           <button

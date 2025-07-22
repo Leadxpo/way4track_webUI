@@ -226,29 +226,16 @@ const ReceiptForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //   console.log("qqqqqqqq",formData)
-    //   const payload = new FormData();
+    const selectedAccount = bankAccount.find(
+      (acc) => acc.accountNumber === formData.bankAccountNumber
+    );
 
-    //   payload.append('date', formData.date);
-    //   payload.append('day', formData.day);
-    //   payload.append('bankAccountNumber', formData.bankAccountNumber);
-    //   payload.append('pendingInvoices', formData.pendingInvoices);
-    //   payload.append('purpose', formData.purpose);
-
-    //   payload.append('branchId',Number(localStorage.getItem("branchId")));
-    //   payload.append('voucherType', formData.voucherType);
-    //   payload.append('paymentType', paymentType.toLowerCase());
-    // payload.append('upiId', formData.upiId);
-    // payload.append('checkNumber', formData.checkNumber);
-    // payload.append('cardNumber', formData.cardNumber);
-    // payload.append('amountPaid', Number(formData.amountPaid));
-    //   payload.append('companyCode', initialAuthState.companyCode);
-    //   payload.append('unitCode', initialAuthState.unitCode);
-    //   console.log("qqqqqqqqpayload",payload)
+    const fromAccountId = selectedAccount?.id || null;
 
     const payloadObj = {
       generationDate: formData.date,
       day: formData.day,
+      fromAccount:fromAccountId,
       bankAccountNumber: formData.bankAccountNumber,
       pendingInvoices: formData.pendingInvoices.map((item) => ({
         ...item,
@@ -269,6 +256,8 @@ const ReceiptForm = () => {
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
+
+    console.log("rrr:",payloadObj)
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -369,12 +358,14 @@ const ReceiptForm = () => {
       });
 
       if (response.status) {
+        console.log("eee :",response.data)
         const filteredVouchers = response.data.filter(voucher =>
-          voucher.voucherType === "SALE" &&
+          voucher.voucherType === "SALES" &&
           voucher.branchId?.id === Number(branch) 
           &&
-          Number(voucher.reminigAmount) !== 0
+          Number(voucher.reminigAmount) > 0
         );
+        console.log("rrr :",filteredVouchers)
         setPendingVouchers(filteredVouchers);
       } else {
         console.error('Failed to fetch ledger data');
@@ -417,7 +408,6 @@ const ReceiptForm = () => {
 
 
         );
-        console.log("setBankAccount22211111", response)
         if (response.status) {
           const filteredAccounts = response.data.filter(
             (account) => account.branchId === branchId
@@ -630,7 +620,7 @@ const ReceiptForm = () => {
         {/* Total Amount Section */}
         <div className="flex justify-end mt-4">
           <p className="font-bold text-xl">
-            Total receivale Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
+            Total receive Amount: {totalPayableAmount?.toLocaleString('en-IN')}/-
           </p>
         </div>
       </div>
@@ -737,15 +727,10 @@ const ReceiptForm = () => {
         </p>
         {/* Balance Text */}
 
-        {totalPaidAmount <= formData.bankAmount ? (
           <p className="mt-3 text-green-700 font-semibold italic text-lg">
-            Balance Amount : {formData.bankAmount - totalPaidAmount}/-
+            Balance Amount : {Number(formData.bankAmount) + Number(totalPaidAmount)}/-
           </p>
-        ) : (
-          <p className="mt-3 text-red-700 font-semibold italic text-lg">
-            Insufficient Bank Balance
-          </p>
-        )}
+       
       </div>
 
       {/* Description */}

@@ -3,38 +3,76 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 const AddClient = () => {
   const navigate = useNavigate();
-  
+
   const initialFormData = {
 
     name: '',
-    phoneNumber:'',
-    GSTNumber:'',
-    branch:'',
-    branchName:'', 
-    email:'',
-    address:'',
-    state:'',
+    phoneNumber: '',
+    GSTNumber: '',
+    branch: '',
+    branchName: '',
+    email: '',
+    address: '',
+    state: '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    file:null,
+    file: null,
   };
-  
+
 
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState('');
   const [errors, setErrors] = useState({});
+  const [gstErrors, setGstErrors] = useState({ purchaseGst: '' });
+  const [isGST, setIsGST] = useState(true);
+  const [gstData, setGstData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-if(errors)
-{
-  console.log("==========+++===>",errors)
-}
+  const handleFetchGSTData = async () => {
+    const gstNumber = formData.GSTNumber;
+    if (!gstNumber) {
+      alert('Please enter a GST number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        'https://appyflow.in/api/verifyGST',
+        {
+          key_secret: 'bOlgiziIVxPo7Nzqqmlga2YuAfy1',
+          gstNo: gstNumber,
+        }
+      );
+      setGstData(response);
+      setIsGST(response.error)
+      if (response.error) {
+        setGstErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number Invalid',
+        }));
+      } else {
+        setGstErrors((prev) => ({
+          ...prev,
+          purchaseGst: 'GST number valid',
+        }));
+      }
+
+    } catch (error) {
+      console.error('GST Fetch Error:', error);
+      alert('Error fetching GST data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    
-    
+
+
   };
 
 
@@ -77,7 +115,7 @@ if(errors)
     // }
 
     const payload = new FormData();
-  
+
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'file' && value instanceof File) {
         payload.append(key, value);
@@ -90,7 +128,7 @@ if(errors)
       const response = await ApiService.post('/client/handleClientDetails', payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+
       if (response.status) {
         alert('Client added successfully!');
         navigate('/clients');
@@ -102,7 +140,7 @@ if(errors)
       alert('Failed to save client details. Please try again.');
     }
   };
-  
+
 
   const handleCancel = () => {
     navigate('/clients');
@@ -110,114 +148,114 @@ if(errors)
 
 
 
-// Phone number validation with API call
-useEffect(() => {
-  const checkPhoneNumber = async () => {
-    if (!/^\d{10}$/.test(formData.phoneNumber)) return;
+  // Phone number validation with API call
+  useEffect(() => {
+    const checkPhoneNumber = async () => {
+      if (!/^\d{10}$/.test(formData.phoneNumber)) return;
 
-    try {
-      const response = await ApiService.post(
-        "/client/getClientVerification",
-        { phoneNumber: formData.phoneNumber },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      try {
+        const response = await ApiService.post(
+          "/client/getClientVerification",
+          { phoneNumber: formData.phoneNumber },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
 
-      if (response.status === false) {
+        if (response.status === false) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            phoneNumber: 'Phone number already exists.',
+          }));
+        }
+      } catch (apiError) {
+        console.error('Error checking phone number:', apiError);
         setErrors((prevErrors) => ({
           ...prevErrors,
-          phoneNumber: 'Phone number already exists.',
+          phoneNumber: 'Error validating phone number.',
         }));
       }
-    } catch (apiError) {
-      console.error('Error checking phone number:', apiError);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        phoneNumber: 'Error validating phone number.',
-      }));
+    };
+
+    if (formData.phoneNumber) {
+      checkPhoneNumber();
     }
-  };
-
-  if (formData.phoneNumber) {
-    checkPhoneNumber();
-  }
-}, [formData.phoneNumber]);
+  }, [formData.phoneNumber]);
 
 
-// Email validation with API call
-useEffect(() => {
-  const checkEmail = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) return;
+  // Email validation with API call
+  useEffect(() => {
+    const checkEmail = async () => {
+      if (!/^\S+@\S+\.\S+$/.test(formData.email)) return;
 
-    try {
-      const response = await ApiService.post(
-        "/client/getClientVerification",
-        { email: formData.email },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      try {
+        const response = await ApiService.post(
+          "/client/getClientVerification",
+          { email: formData.email },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
 
-      if (response.status === false) {
+        if (response.status === false) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            email: 'Email already exists.',
+          }));
+        }
+      } catch (apiError) {
+        console.error('Error checking email:', apiError);
         setErrors((prevErrors) => ({
           ...prevErrors,
-          email: 'Email already exists.',
+          email: 'Error validating email.',
         }));
       }
-    } catch (apiError) {
-      console.error('Error checking email:', apiError);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: 'Error validating email.',
-      }));
+    };
+
+    if (formData.email) {
+      checkEmail();
     }
+  }, [formData.email]);
+
+
+  const validate = (fieldName, value) => {
+    let error = '';
+
+
+    // General required field validation
+    if (value.trim() === '') {
+      error = `${fieldName} is required.`;
+    }
+
+    // Email validation
+    // if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+    //   error = 'Please enter a valid email.';
+    // }
+
+    // Phone number validation (10 digits)
+    if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
+      error = 'Phone number must be 10 digits.';
+    }
+
+
+
+    return error;
   };
 
-  if (formData.email) {
-    checkEmail();
-  }
-}, [formData.email]);
 
 
-const validate = (fieldName, value) => {
-  let error = '';
-  
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setFormData((prevData) => {
+        const updatedData = { ...prevData, [name]: value };
+        return updatedData;
+      });
 
-  // General required field validation
-  if (value.trim() === '') {
-    error = `${fieldName} is required.`;
-  }
-
-  // Email validation
-  // if (fieldName === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-  //   error = 'Please enter a valid email.';
-  // }
-
-  // Phone number validation (10 digits)
-  if (fieldName === 'phoneNumber' && value && !/^\d{10}$/.test(value)) {
-    error = 'Phone number must be 10 digits.';
-  }
-
-
-
-  return error;
-};
-
-
-
-const handleChange = useCallback(
-  (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, [name]: value };
-      return updatedData;
-    });
-
-    // Validate the field and set the error if needed
-    // setErrors((prevErrors) => ({
-    //   ...prevErrors,
-    //   [name]: validate(name, value),
-    // }));
-  },
-  []
-);
+      // Validate the field and set the error if needed
+      // setErrors((prevErrors) => ({
+      //   ...prevErrors,
+      //   [name]: validate(name, value),
+      // }));
+    },
+    []
+  );
 
 
 
@@ -227,7 +265,7 @@ const handleChange = useCallback(
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
           <h1 className="text-3xl font-bold">
-           Add Customer
+            Add Customer
           </h1>
         </div>
         {/* Photo Section */}
@@ -282,22 +320,104 @@ const handleChange = useCallback(
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
             {errors && (
-                <span className="text-red-500 text-sm mt-2">{errors.phoneNumber}</span>
-              )}
+              <span className="text-red-500 text-sm mt-2">{errors.phoneNumber}</span>
+            )}
           </div>
 
 
-         {/* GST Number */}
-          <div>
-            <p className="font-semibold mb-1">GST Number</p>
-            <input
-              type="text"
-              name="GSTNumber"
-              value={formData.GSTNumber}
-              onChange={handleInputChange}
-              placeholder="Enter Gst Number"
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
+          {/* GST Number */}
+          <div className="">
+            <div className="relative z-[10]">
+              <input
+                type="text"
+                placeholder="Purchase GST:"
+                name="GSTNumber"
+                value={formData.GSTNumber}
+                maxLength={15}
+                onChange={handleInputChange}
+                className="w-full border rounded-lg pr-36 pl-3 py-2 text-black text-lg font-medium border-gray-400 bg-white h-[45px]"
+              />
+              <button
+                onClick={handleFetchGSTData}
+                type="button"
+                disabled={loading || formData.GSTNumber?.length !== 15}
+                className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
+              >
+                {loading ? '...' : 'Get'}
+              </button>
+            </div>
+
+            {gstErrors.purchaseGst && (
+              <p className="text-red-500 text-sm mt-1">{gstErrors.purchaseGst}</p>
+            )}
+
+            {!isGST && (
+              <div className="mt-6 p-6 rounded-xl shadow-lg bg-white border border-gray-200">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  GST Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700 text-sm">
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Company Name:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.tradeNam}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      GST Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.gstin}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Type Of Company:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.dty}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Incorporate Type:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.ctb}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">Status:</label>
+                    <p>{gstData?.taxpayerInfo?.sts}</p>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600">
+                      Pan Number:
+                    </label>
+                    <p>{gstData?.taxpayerInfo?.panNo}</p>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="font-semibold text-gray-600">
+                      Address:
+                    </label>
+                    <p className="leading-relaxed">
+                      {gstData?.taxpayerInfo?.pradr.addr.bno &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.bno}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.st &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.st}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.loc &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.loc}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.dst &&
+                        `${gstData?.taxpayerInfo?.pradr.addr.dst}, `}
+                      {gstData?.taxpayerInfo?.pradr.addr.stcd} -{' '}
+                      {gstData?.taxpayerInfo?.pradr.addr.pncd}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', marginTop: '10px' }}>
+                  <label className="font-semibold text-gray-600">State:</label>
+                  <p>{gstData?.taxpayerInfo?.pradr.addr.stcd}</p>
+                </div>
+              </div>
+            )}
+
           </div>
 
 
@@ -333,9 +453,9 @@ const handleChange = useCallback(
               placeholder="Enter Email ID"
               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
             />
-             {errors && (
-                <span className="text-red-500 text-sm mt-2">{errors.email}</span>
-              )}
+            {errors && (
+              <span className="text-red-500 text-sm mt-2">{errors.email}</span>
+            )}
           </div>
           {/* Address */}
           <div>

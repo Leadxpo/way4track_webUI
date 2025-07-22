@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useLocation, useNavigate } from 'react-router';
+import DateConvert from '../../components/dateConvert';
 
 const LedgerDetails = () => {
   const navigate = useNavigate();
@@ -28,28 +29,13 @@ const LedgerDetails = () => {
         if (response.status) {
           const ledgerEntries = response.data;
           console.log("rrr :", ledgerEntries)
-          // Extract client details from the first valid entry
-          // if (firstEntry) {
-          //   setledgerData({
-          //     name:
-          //       firstEntry.clientName ||
-          //       firstEntry.vendorName ||
-          //       firstEntry.subDealerName ||
-          //       ledgerData.name,
-          //     phone: firstEntry.phoneNumber || ledgerData.phone,
-          //     email: firstEntry.email || ledgerData.email,
-          //     gst: firstEntry.GSTNumber || ledgerData.gst,
-          //     image:
-          //       firstEntry.clientPhoto ||
-          //       firstEntry.vendorPhoto ||
-          //       firstEntry.subDealerPhoto ||
-          //       '',
-          //   });
-          // }
-
           // Set ledger data
           setLedgerData(ledgerEntries);
-          setLedgerVoucherData(ledgerEntries.vouchers)
+
+          const rrr = ledgerEntries.vouchers?.filter(
+            (item) => item.voucherType !== "CONTRA" && item.voucherType !== "PURCHASE"
+          );
+          setLedgerVoucherData(rrr)
         }
       } catch (error) {
         console.error('Error fetching ledger details:', error);
@@ -66,10 +52,20 @@ const LedgerDetails = () => {
     });
   };
   // Calculate total amount
-  const totalAmount = ledgerData?.vouchers?.reduce(
-    (total, entry) => total + (parseInt(entry?.amount) || 0),
-    0
-  );
+  const totalAmount = ledgerVoucherData.reduce((total, entry) => {
+    switch (entry?.voucherType) {
+      case 'PAYMENT':
+        return total + (parseInt(entry?.amount) || 0);
+      case 'RECEIPT':
+        return total - (parseInt(entry?.amount) || 0); // Example: subtract receipts
+      case 'DEBITNOTE':
+        return total + (parseInt(entry?.amount) || 0); // or custom logic
+      case 'CREDITNOTE':
+        return total - (parseInt(entry?.amount) || 0); // or custom logic
+      default:
+        return total;
+    }
+  }, 0);
 
   return (
     <div className="p-8 space-y-6">
@@ -128,7 +124,6 @@ const LedgerDetails = () => {
           <thead className="bg-gray-100">
             <tr>
               <th className="py-2 px-4">NO.</th>
-              <th className="py-2 px-4">Ledger ID</th>
               <th className="py-2 px-4">Date/Time</th>
               <th className="py-2 px-4">Payment Type</th>
               <th className="py-2 px-4">Voucher Type</th>
@@ -142,9 +137,8 @@ const LedgerDetails = () => {
                 className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
               >
                 <td className="py-2 px-4">{index + 1}</td>
-                <td className="py-2 px-4">{entry.id}</td>
                 <td className="py-2 px-4">
-                  {new Date(entry.createdAt).toLocaleString()}
+                  {DateConvert(entry.createdAt)}
                 </td>
                 <td className="py-2 px-4">{entry.paymentType}</td>
                 <td className="py-2 px-4">{entry.voucherType}</td>

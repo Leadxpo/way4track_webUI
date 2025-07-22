@@ -63,19 +63,19 @@ const EditContraForm = (props) => {
     fetchBankAccounts();
   }, []);
 
-  const handleLedgerChange = (e) => {
-    const selectedId = Number(e.target.value); // Convert string to number
+  // const handleLedgerChange = (e) => {
+  //   const selectedId = Number(e.target.value); // Convert string to number
 
-    const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
+  //   const selectedLedger = ledger.find((ledger) => ledger.id === selectedId);
 
-    if (selectedLedger) {
-      setFormData((prev) => ({
-        ...prev,
-        partyName: selectedLedger.name,
-        ledgerId: selectedLedger.id,
-      }));
-    }
-  };
+  //   if (selectedLedger) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       partyName: selectedLedger.name,
+  //       ledgerId: selectedLedger.id,
+  //     }));
+  //   }
+  // };
 
   useEffect(() => {
     const fetchLedgers = async () => {
@@ -124,7 +124,7 @@ const EditContraForm = (props) => {
         purpose: item.purpose || '',
         fromAccount: item.fromAccountId,
         toAccount: item.toAccountId,
-        ledgerId: item.ledgerId || '',
+        ledgerId:  null,
         upiId: item.upiId || '',
         checkNumber: item.checkNumber || '',
         cardNumber: item.cardNumber || '',
@@ -142,7 +142,7 @@ const EditContraForm = (props) => {
     partyName: '',
     bankAccountNumber: '',
     purpose: '',
-    ledgerId: '',
+    ledgerId: null,
     voucherType: 'CONTRA',
     upiId: '',
     checkNumber: '',
@@ -275,8 +275,9 @@ const EditContraForm = (props) => {
     payload.append('generationDate', formData.date);
     payload.append('day', formData.day);
     payload.append('branchId', Number(localStorage.getItem('branchId')));
-    payload.append('ledgerId', Number(formData?.ledgerId));
-    payload.append('bankAccountNumber', formData.bankAccountNumber);
+    if (formData.ledgerId) {
+      payload.append('ledgerId', formData.ledgerId);
+    }    payload.append('bankAccountNumber', formData.bankAccountNumber);
     payload.append('voucherType', formData.voucherType);
     payload.append('purpose', formData.purpose);
     payload.append('journalType', selected);
@@ -441,7 +442,7 @@ const EditContraForm = (props) => {
             }}
           />
 
-          <select
+          {/* <select
             value={formData.ledgerId}
             onChange={handleLedgerChange}
             name="partyName"
@@ -463,7 +464,7 @@ const EditContraForm = (props) => {
                 {party.name}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
         {/* From Bank */}
         <div>
@@ -534,83 +535,6 @@ const EditContraForm = (props) => {
         />
       </div>
 
-      {/* Payment Mode */}
-      <div
-        className="mt-2 font-bold cursor-pointer flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-100"
-        onClick={() => setShowPaymentPopup(!showPaymentPopup)}
-        style={{ marginBottom: '30px', height: '50px' }}
-      >
-        Payment Mode :
-        <span className="text-xs ml-2">{showPaymentPopup ? '▾' : '▸'}</span>
-      </div>
-
-      {/* Payment Popup */}
-      {showPaymentPopup && (
-        <div className="border border-gray-300 rounded-lg p-4 mt-2 bg-white">
-          <p className="font-bold mb-2">Select Payment Type</p>
-
-          {/* Payment Options */}
-          <div className="flex gap-2 mb-4">
-            {['Cash', 'UPI', 'Cheque', 'Card'].map((type) => (
-              <button
-                type="button"
-                key={type}
-                className={`px-4 py-2 rounded-md font-bold ${
-                  paymentType === type
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-300 text-gray-800'
-                }`}
-                style={{ height: '60px', width: '180px' }}
-                onClick={() => setPaymentType(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-
-          {/* Conditional Fields */}
-          <div
-            className="space-y-3"
-            style={{
-              display: 'flex',
-
-              alignItems: 'center',
-            }}
-          >
-            {(paymentType === 'UPI' ||
-              paymentType === 'Cheque' ||
-              paymentType === 'Card') && (
-              <div
-                className="mb-3 ml-6 sm:ml-4 w-full max-w-md"
-                style={{ marginLeft: '0px' }}
-              >
-                <input
-                  type="text"
-                  placeholder={`${
-                    paymentType === 'UPI'
-                      ? 'UPI ID'
-                      : paymentType === 'Cheque'
-                        ? 'Cheque ID'
-                        : 'Card ID'
-                  }`}
-                  onChange={handleIdChange}
-                  className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
-                  style={{ marginTop: '20px' }}
-                />
-              </div>
-            )}
-
-            {/* Amount Field (visible for all) */}
-            <div className="mb-3 ml-6 sm:ml-4 w-full max-w-md">
-              <input
-                type="number"
-                onChange={handleInputChange}
-                name="amountPaid"
-                placeholder="Enter Amount"
-                className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"
-              />
-            </div>
-          </div>
           <div className="mt-6 text-center">
             <button
               type="submit"
@@ -619,8 +543,6 @@ const EditContraForm = (props) => {
               Submit
             </button>
           </div>
-        </div>
-      )}
 
       {/* Submit Button */}
     </form>

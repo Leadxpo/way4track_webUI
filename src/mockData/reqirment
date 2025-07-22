@@ -1,29 +1,40 @@
+(finish)    photos reqiured in indiviual pdf download with properly
+(finish)    in letters PDF dowload left and right allinment need to be increase
+(finish)    add logo with name to  all letter
+(finish)    in hiring status Hold must be added
+(finish)    vendor conform account number should add to the form
+(finish)    vendor download PDF should add
+(finish)    dispatch multi photo upload
+(finish)    dispatch transice user and date/dispatch user and date/delivered user and date
+(finish)    product return products with imei number
+(finish)    client edit few entities mising cpmpare to the add client
+(finish)    product dropdown in sale voucher 
+(finish)    reciept voucher error need
+(finish)    estimate/invoice PDF tds and GST toggle button should appear
+(finish)    invoice /estimate prefix customize should done
+(finish)    saleVisit table replace  primary staffId  with staff name
+(finish)    saleVisit customer agreed status
+(finish)    account edit not redirecting
+(finish)    journal don't have bank account link 
+(finish)    contra from account deducting but to account not adding 
+(finish)    sale/purchase voucher invoice id should validate
+(finish)    debitnote-(ADD) in leger account
+(finish)    craditnote-(subtract) in leger account
+(finish)    in voucher table invoicec ID should display
+(finish)    work Allocation table replace  primary staffId  with staff name,
+(finish)    asset taxable value with taxable amount like (road tax/GST/SESS)
+(finish)    in inventory manager/staff only table should visable moredetails option should not visiable
+(finish)    attendence report download with preview
+(finish)    branch manager staff should mention in the ticket
+(finish)    reporting manager(new update)
+(finish)    report for in add request and description for edit request
+(finish)    multiple request photos in request raise (new update)
 
-photos reqiured in indiviual pdf download with properly
-in letters PDF dowload left and right allinment need to be increase
-add logo with name to  all letter
-in hiring status Hold must be added
-vendor conform account number should add to the form
-vendor download PDF should add
-dispatch multi photo upload
-dispatch transice user and date/dispatch user and date/delivered user and date
-product return products with imei number
-client edit few entities mising cpmpare to the add client
-estimate/invoice PDF tds and GST toggle button should appear,
-invoice /estimate prefix customize should done
-sale visit table replace  primary staffId  with staff name
-sale visit customer agreed status
-branch managers add sales visit in the sales visit
-work Allocation table replace  primary staffId  with staff name,
-asset taxable value with taxable amount like (road tax/GST/SESS)
-asset toggle button with if tax apply /not apply to the asset amount
-in inventory manager/staff only table should visable moredetails option should not visiable
-attendence report download with preview
-branch manager staff should mention in the ticket
-reporting manager(new update)
-report for in add request and description for edit request
-multiple request photos in request raise (new update)
-
+cradit note/ debit note  need to add product and services as sales voucher (new update)
+supply invioce ID in sale or purchase vouchor = debit/cradit note as orginal invoice ID (new update)
+branch managers add sales visit in the sales visit (new update)
+created sales follow up discreption (new update)
 
 APP(sales)
 sales visit not intrsted toggle button should add
+

@@ -8,10 +8,8 @@ import { useEffect } from 'react';
 const InvoiceDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const estimateID = location.state.invoiceDetails.invoice.estimateId;
   const invoiceDetails = location.state.invoiceDetails.invoice;
-  // const estimateID = location.state.estimateDetails.estimate.estimateNumber;
-  console.log(invoiceDetails, 'Invoice IDDDDDDDDDDD');
+  console.log(invoiceDetails.invoiceId, 'Invoice IDDDDDDDDDDD');
   const [estimateData, setEstimateData] = useState({
     company: {},
     estimateDetails: {},
@@ -25,13 +23,11 @@ const InvoiceDetails = () => {
 
   const getEstimateIDData = useCallback(async () => {
     try {
-      const response = await ApiService.post('/estimate/getEstimateDetails', {
-        estimateId: estimateID,
+      const response = await ApiService.post('/estimate/getInvoiceDetails', {
+        invoiceId: invoiceDetails.invoiceId,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-
-      console.log('hiiiiiii iiiii');
       if (response.status) {
         console.log(response.data, 'Response Data 0000000'); // Log data to verify it
         const estimateData = response.data[0]; // Access the first element of the array
@@ -79,13 +75,13 @@ const InvoiceDetails = () => {
       console.error('Error fetching estimate details:', error);
       alert('Failed to fetch estimate details.');
     }
-  }, [estimateID]);
+  }, [invoiceDetails.invoiceId]);
 
   useEffect(() => {
-    if (estimateID) {
+    if (invoiceDetails?.invoiceId) {
       getEstimateIDData();
     }
-  }, []);
+  }, [invoiceDetails?.invoiceId]);
 
   const handleConvertInvoice = () => {
     navigate('/add-invoice', {

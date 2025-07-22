@@ -9,16 +9,44 @@ export default function AddTicket() {
     problem: '',
     date: '',
     addressingDepartment: '',
-    workStatus: '',
+    reportingStaffId: '',
     description: '',
     designationRelation: null,
   });
-
+  const [selectedStaffId, setSelectedStaffId] = useState('');
+  const [staffList, setStaffList] = useState([]);
   const staffRole = localStorage.getItem('role');
 
   const userId = localStorage.getItem('id');
 
   const branchId = localStorage.getItem('branch_id');
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+
+      try {
+        const response = await ApiService.post(
+          '/dashboards/getTotalStaffDetails',
+          {
+            companyCode: initialAuthState?.companyCode,
+            unitCode: initialAuthState?.unitCode,
+          }
+        );
+        if (response.data) {
+          setStaffList(
+            response.data.staff.filter(
+              (staff) => staff.staffDesignation !== 'Technician' || staff.staffDesignation !== 'Sr.Technician'
+            )
+          );
+        }
+      } catch (err) {
+        console.error('Failed to fetch staff:', err);
+        setStaffList([]);
+      }
+    };
+    fetchStaff();
+  }, []);
+
 
   // Handle general form data changes
   const handleChange = (e) => {
@@ -38,15 +66,13 @@ export default function AddTicket() {
     const payload = {
       problem: formData.problem,
       date: formattedDate,
-      // addressingDepartment: formData.addressingDepartment,
       designationRelation: formData.designationRelation,
-      workStatus: formData.workStatus,
+      workStatus: "pending",
       description: formData.description,
       companyCode: initialAuthState?.companyCode,
       unitCode: initialAuthState?.unitCode,
-      // staffId: Number(staffDbId),
+      reportingStaffId: Number(formData.reportingStaffId),
       branchId: branchId ? Number(branchId) : null,
-      // branchId,
       ...(staffRole === 'Sub Dealer'
         ? { subDealerId: Number(userId) }
         : { staffId: Number(userId) }),
@@ -67,7 +93,6 @@ export default function AddTicket() {
           problem: '',
           date: '',
           addressingDepartment: '',
-          workStatus: '',
           description: '',
           designationRelation: null,
         });
@@ -145,6 +170,22 @@ export default function AddTicket() {
           />
         </div>
 
+        <label className="block mb-2">Reporting Staff</label>
+        <select
+          value={selectedStaffId}
+          name={'reportingStaffId'}
+          onChange={(e) => {setSelectedStaffId(e.target.value)
+            setFormData((prev) => ({ ...prev, 'reportingStaffId': e.target.value }));
+          }}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
+        >
+          <option value="">Select Staff</option>
+          {staffList?.map((staff) => (
+            <option key={staff.id} value={staff.id}>
+              {staff.staffName} ({staff.staffId})
+            </option>
+          ))}
+        </select>
         <div className="mb-4">
           <label className="block font-medium mb-1">Designation Relation</label>
           <select
@@ -161,28 +202,6 @@ export default function AddTicket() {
             ))}
           </select>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium">Work Status</label>
-          <select
-            name="workStatus"
-            value={formData.workStatus}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="">Select Status</option>
-            <option value="pending">Pending</option>
-            <option value="Processing">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="allocated">Allocated</option>
-            <option value="incomplete">Incomplete</option>
-            <option value="install">Install</option>
-            <option value="accept">Accept</option>
-            <option value="activate">Activate</option>
-          </select>
-        </div>
-
         <div>
           <label className="block text-sm font-medium">Description</label>
           <textarea

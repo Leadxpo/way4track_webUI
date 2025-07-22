@@ -147,9 +147,55 @@ const AssetDetails = () => {
             paddingLeft: '20px',
           }}
         >
-          Asset Amount: ₹{data.price}
+          Asset Amount: ₹{data.assertsAmount}
         </p>
       </div>
+      <div
+        className="rounded-lg py-4 mt-4 shadow-md"
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderRadius: '9px',
+          height: '60px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <p
+          className="p-2"
+          style={{
+            color: '#575757',
+            fontSize: '20px',
+            fontWeight: '600',
+            paddingLeft: '20px',
+          }}
+        >
+          Taxable Amount: ₹{data.taxableAmount}
+        </p>
+      </div>
+
+      <div
+        className="rounded-lg py-4 mt-4 shadow-md"
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderRadius: '9px',
+          height: '60px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <p
+          className="p-2"
+          style={{
+            color: '#575757',
+            fontSize: '20px',
+            fontWeight: '600',
+            paddingLeft: '20px',
+          }}
+        >
+          Total Amount: ₹{Number(data.taxableAmount)+Number(data.assertsAmount)}
+        </p>
+      </div>
+
       <div
         className="rounded-lg py-4 mt-4 shadow-md"
         style={{
@@ -172,28 +218,6 @@ const AssetDetails = () => {
           Asset Type: {data.assetType}
         </p>
       </div>
-      {/* <div
-        className="rounded-lg py-4 mt-4 shadow-md"
-        style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '9px',
-          height: '60px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <p
-          className="p-2"
-          style={{
-            color: '#575757',
-            fontSize: '20px',
-            fontWeight: '600',
-            paddingLeft: '20px',
-          }}
-        >
-          Price: ₹{data.assertsAmount}
-        </p>
-      </div> */}
       <div
         className="rounded-lg py-4 mt-4 shadow-md"
         style={{

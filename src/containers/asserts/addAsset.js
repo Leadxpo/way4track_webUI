@@ -27,6 +27,7 @@ const AddAsset = () => {
     assertsName: assetData.assertsName,
     quantity: assetData.quantity,
     assertsAmount: assetData.assertsAmount,
+    taxableAmount: assetData.taxableAmount,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -150,36 +151,6 @@ const AddAsset = () => {
       <div className="flex items-center space-x-4 mb-8">
         <h1 className="text-3xl font-bold">Add Asserts</h1>
       </div>
-
-      {/* Photo Section */}
-      {/* <div className="flex items-center space-x-4 mb-6">
-        <img
-          src={image || 'https://static.vecteezy.com/system/resources/previews/020/213/738/non_2x/add-profile-picture-icon-upload-photo-of-social-media-user-vector.jpg'}
-          alt="Employee"
-          className="w-24 h-24 rounded-full object-cover"
-        />
-        <button>
-          <input
-            type="file"
-            accept="image/*"
-            name="file"
-            className="ml-4 border p-2 rounded"
-            onChange={handleFileChange}
-          />
-        </button>
-        {formData.file && (
-          <button
-            onClick={() => {
-              setFormData({ ...formData, file: null });
-              setImage('');
-            }}
-            className="ml-2 text-red-500"
-          >
-            Remove
-          </button>
-        )}
-      </div> */}
-
       <div className="flex items-center space-x-4">
         {/* Circular Image Upload Placeholder */}
         <label htmlFor="imageUpload" className="cursor-pointer">
@@ -260,17 +231,6 @@ const AddAsset = () => {
           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
         />
-        {/* <select
-          name="assetType"
-          value={formData.assetType}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select assetType</option>
-          <option value="office asset">OFFICE_ASSET</option>
-          <option value="transport asset">TRANSPORT_ASSET</option>
-        </select> */}
-
         <p className="font-semibold mb-1">Assert Amount</p>
         <input
           type="text"
@@ -280,26 +240,18 @@ const AddAsset = () => {
           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
         />
-        {/* <select
-          name="assetType"
-          value={formData.assetType}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select assetType</option>
-          <option value="office asset">OFFICE_ASSET</option>
-          <option value="transport asset">TRANSPORT_ASSET</option>
-        </select> */}
 
-        <p className="font-semibold mb-1">Asset Type</p>
-        {/* <input
+        <p className="font-semibold mb-1">taxable Amount</p>
+        <input
           type="text"
-          name="assetType"
-          placeholder="Enter Assert Type"
+          name="taxableAmount"
+          placeholder="Enter road tax+GST+SESS"
           onChange={handleInputChange}
           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
-        /> */}
+        />
+
+        <p className="font-semibold mb-1">Asset Type</p>
         <select
           name="assetType"
           value={formData.assetType}
@@ -310,26 +262,6 @@ const AddAsset = () => {
           <option value="office asset">OFFICE_ASSET</option>
           <option value="transport asset">TRANSPORT_ASSET</option>
         </select>
-
-        {/* <p className="font-semibold mb-1">Price</p>
-        <input
-          type="text"
-          name="price"
-          placeholder="Enter price"
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
-        /> */}
-        {/* <select
-          name="assetType"
-          value={formData.assetType}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select assetType</option>
-          <option value="office asset">OFFICE_ASSET</option>
-          <option value="transport asset">TRANSPORT_ASSET</option>
-        </select> */}
 
         <div>
           <p className="font-semibold mb-1">Quantity</p>
@@ -348,18 +280,6 @@ const AddAsset = () => {
           <div className="space-y-4">
             <div>
               <p className="font-semibold mb-1">Branch</p>
-              {/* <input
-                type="text"
-                name="branch"
-                placeholder="Enter Branch"
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                style={{
-                  fontWeight: '500',
-                  fontSize: '15px',
-                  color: '#646464',
-                }}
-              /> */}
               <select
                 name="branchId"
                 value={formData.branchId}
@@ -430,26 +350,6 @@ const AddAsset = () => {
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
         />
       </div>
-      {/* <div>
-        <p className="font-semibold mb-1">Amount</p>
-        <input
-          type="text"
-          name="amount"
-          placeholder="Enter Amount"
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
-        />
-      </div> */}
-      {/* <div>
-        <p className="font-semibold mb-1">Quantity</p>
-        <input
-          type="number"
-          name="quantity"
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-        />
-      </div> */}
       {/* Buttons */}
       <div className="flex justify-center space-x-4 mt-6">
         <button
