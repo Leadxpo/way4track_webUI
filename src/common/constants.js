@@ -226,11 +226,11 @@ export const menuOptions = [
     icon: <img src="./work_allocation.png" />,
     route: '/sales_visit',
   },
-  hasPermission(permission, "work-allocation", "view") && {
-    name: 'Sales Visits',
-    icon: <img src="./work_allocation.png" />,
-    route: '/sales_visit',
-  },
+  // hasPermission(permission, "work-allocation", "view") && {
+  //   name: 'Sales Visits',
+  //   icon: <img src="./work_allocation.png" />,
+  //   route: '/sales_visit',
+  // },
   (role?.toLowerCase() === "ceo" ||role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst")  && {
     name: 'Dispatch',
     icon: <img src="./dispath.png" />,
