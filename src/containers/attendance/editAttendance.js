@@ -135,7 +135,7 @@ const EditAttendance = () => {
               name={key}
               value={
                 key === 'inTime' || key === 'outTime'
-                  ? convertFractionToTime(formData[key])
+                  ? formData[key]
                   : formData[key]
               }
               onChange={handleChange}

@@ -69,15 +69,17 @@ const TableWithDateFilter = ({
   const [subdealerList, setSubdealerList] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
 
-
+useEffect(()=>{
+  handleSearchSubdealer()
+},[subdealerList])
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
 
     if (searchQuery === '') {
-      setFilteredData(invoiceList); // Reset to original data
+      setFilteredData(subdealerList); // Reset to original data
     } else {
-      const filteredData = invoiceList.filter((item) =>
+      const filteredData = subdealerList.filter((item) =>
         Object.values(item).some((value) =>
           String(value).toLowerCase().includes(searchQuery)
         )
@@ -125,9 +127,6 @@ const TableWithDateFilter = ({
   const getSubDealerData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getSubDealerData', {
-        fromDate: dateFrom,
-        toDate: dateTo,
-        paymentStatus: subDealerData?.paymentStatus,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
@@ -150,9 +149,14 @@ const TableWithDateFilter = ({
               : '',
           })
         );
-        const rrr = formattedData.filter((item) => (String(item.branch) === String(branchId)))
-        setSubdealerList(rrr);
-        setFilteredData(rrr);
+        console.log("formattedData :",formattedData);
+        if (branchId) {
+          const rrr = formattedData.filter((item) => (String(item.branch) === String(branchId)))
+          setSubdealerList(rrr);
+          setFilteredData(rrr);
+        }else{
+          setSubdealerList(formattedData);
+        }
       } else {
         alert(response.data.message || 'Failed to fetch sub-dealer details.');
       }
@@ -160,7 +164,7 @@ const TableWithDateFilter = ({
       console.error('Error fetching sub-dealer details:', error);
       alert('Failed to fetch sub-dealer details.');
     }
-  }, [dateFrom, dateTo, subDealerData?.paymentStatus]);
+  }, [subdealerList]);
 
   const getEstimateData = useCallback(async () => {
     try {

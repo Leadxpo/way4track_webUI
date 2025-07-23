@@ -811,8 +811,11 @@ const SaleForm = () => {
                 className="w-1/4 border rounded p-2"
               >
                 <option value="">Select Type</option>
+                <option value="Rectifications">Rectifications</option>
+                <option value="Renewables">Renewables</option>
                 <option value="ProductSales">ProductSales</option>
                 <option value="ServiceSales">ServiceSales</option>
+                <option value="Others">Others</option>
               </select>
 
               <div className="relative w-1/4">
@@ -948,7 +951,7 @@ const SaleForm = () => {
                   Amount: ₹
                   {(
                     totalAmount *
-                    (1 + parseFloat(formData[tax.name] || 0) / 100)
+                    (parseFloat(formData[tax.name] || 0) / 100)
                   ).toFixed(2)}
                 </span>
               </div>

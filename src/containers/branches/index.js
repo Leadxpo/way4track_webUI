@@ -36,6 +36,7 @@ const Branches = () => {
           }
         );
         if (percentageResponse.status) {
+          console.log("eee :",percentageResponse)
           setPercentages(percentageResponse.data);
         } else {
           console.error('Failed to fetch percentages');
@@ -49,8 +50,9 @@ const Branches = () => {
   }, []);
 
   // Combine branches and percentages
+  console.log("rrr :",branches)
   const combinedBranches = branches.map((branch) => {
-    const percentageData = percentages.find((p) => p.id === branch.id) || {};
+    const percentageData = percentages.find((p) => p.branchName === branch.branchName) || {};
     return {
       ...branch,
       creditPercentage: percentageData.creditPercentage || 0,

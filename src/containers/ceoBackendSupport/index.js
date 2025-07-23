@@ -457,10 +457,12 @@ const CeoBackendSupportHome = () => {
                     .includes(searchPhone.toLowerCase())
               )
               .map((card, i) => {
-                const lastRemark = card?.remark?.[card.remark.length - 1].desc;
-                const lastRemarkName = card?.remark?.[card.remark.length - 1].name;
+                const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
+                const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
 
-                console.log("Last remark:", lastRemark); const cardBgColor =
+                console.log("Last remark:", lastRemark); 
+                
+                const cardBgColor =
                   {
                     install: 'bg-white-50 border-yellow-300',
                     accept: 'bg-white-50 border-blue-300',
@@ -693,16 +695,18 @@ const CeoBackendSupportHome = () => {
                             </div>
                           </div>
                         )}
-                        {lastRemarkName&&<div style={{backgroundColor:'#f3f3f3',borderTopLeftRadius:'10px',borderTopRightRadius:'10px',borderBottomLeftRadius:'10px',padding:8}}>
+                        {lastRemarkName && <div style={{ backgroundColor: '#f3f3f3', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', borderBottomLeftRadius: '10px', padding: 8 }}>
 
-                          
-                            <strong style={{fontSize:10,whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: 100, // you can adjust this width
-    display: 'inline-block'}}>{lastRemarkName}</strong>
-                            <p style={{fontSize:8}}>{lastRemark}</p>
-                          
+
+                          <strong style={{
+                            fontSize: 10, whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: 100, // you can adjust this width
+                            display: 'inline-block'
+                          }}>{lastRemarkName}</strong>
+                          <p style={{ fontSize: 8 }}>{lastRemark}</p>
+
                         </div>}
 
                         {hasPermission(permission, "backend", "edit") &&

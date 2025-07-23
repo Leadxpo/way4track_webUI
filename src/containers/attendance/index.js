@@ -51,7 +51,15 @@ const Attendance = () => {
       });
 
       if (response?.status && Array.isArray(response.data)) {
-        setProfiles(response.data); // Update with new data
+        const rrr=response.data?.map((item)=>({
+          ...item,
+          inTime: timeFormate(item.inTime),
+          outTime: timeFormate(item.outTime),
+          inTimeRemark: timeFormate(item.inTimeRemark),
+          outTimeRemark: timeFormate(item.outTimeRemark)
+        }
+        ))
+        setProfiles(rrr); // Update with new data
       } else {
         setProfiles([]); // Reset to empty array if no data found
       }
@@ -211,8 +219,8 @@ const Attendance = () => {
                   <td className="border p-2">{att.staffName.trim()}</td>
                   <td className="border p-2">{att.branchName}</td>
                   
-                  <td className="border p-2">{timeFormate(att.inTime)}</td>
-                  <td className="border p-2">{timeFormate(att.outTime)}</td>
+                  <td className="border p-2">{att.inTime}</td>
+                  <td className="border p-2">{att.outTime}</td>
                   <td className="border p-2">{att.status}</td>
                   <td className="border p-2">
                   {hasPermission(permission, "attendance", "edit") &&

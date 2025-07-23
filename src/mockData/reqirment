@@ -32,9 +32,22 @@
 
 cradit note/ debit note  need to add product and services as sales voucher (new update)
 supply invioce ID in sale or purchase vouchor = debit/cradit note as orginal invoice ID (new update)
-branch managers add sales visit in the sales visit (new update)
 created sales follow up discreption (new update)
 
 APP(sales)
+sales app date should selective
+branch managers add sales visit in the sales visit (new update)
 sales visit not intrsted toggle button should add
 
+
+//23-07-2025
+estimate seare functionality need to clear
+new add voucher frist data
+contra transfering amount to one bank to another branch bamk accounts
+invoiceID should dropdown in cradit/debit note
+client GST edit update should checks
+attendence out time remarks nshould chage as intime remarks
+respective branch staff should view in table onle more details should not visible
+staff offical numbers should not visible in table
+attendence should visible to thier own respective attendence
+notification should available for ticket,request

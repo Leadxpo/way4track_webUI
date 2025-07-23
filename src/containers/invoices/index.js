@@ -23,11 +23,11 @@ const Invoices = () => {
       onEdit={handleEdit}
       onDelete={() => { }}
       onDetails={handleDetails}
-      // showCreateBtn={permissions.add}
-      showCreateBtn={true}
+      showCreateBtn={permissions.add}
+      // showCreateBtn={true}
       showEdit={true}
       showDelete={permissions.delete}
-      showDetails={true}
+      showDetails={true} 
     />
   );
 };

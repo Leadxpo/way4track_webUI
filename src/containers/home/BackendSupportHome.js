@@ -329,20 +329,20 @@ const BackendSupportHome = () => {
   const filteredCards =
     selectedCardId === 'install'
       ? workRecords.filter(
+        (card) =>
+          card.branchName === selectedLocation &&
+          card.workStatus === selectedCardId &&
+          card.phoneNumber?.toLowerCase().includes(searchPhone.toLowerCase())
+      )
+      : ['accept', 'activate', 'pending'].includes(selectedCardId)
+        ? memberWorkRecords.filter(
           (card) =>
             card.branchName === selectedLocation &&
             card.workStatus === selectedCardId &&
-            card.phoneNumber?.toLowerCase().includes(searchPhone.toLowerCase())
+            card.phoneNumber
+              ?.toLowerCase()
+              .includes(searchPhone.toLowerCase())
         )
-      : ['accept', 'activate', 'pending'].includes(selectedCardId)
-        ? memberWorkRecords.filter(
-            (card) =>
-              card.branchName === selectedLocation &&
-              card.workStatus === selectedCardId &&
-              card.phoneNumber
-                ?.toLowerCase()
-                .includes(searchPhone.toLowerCase())
-          )
         : [];
   console.log(filteredCards, 'filtered cart list data install');
 
@@ -411,11 +411,10 @@ const BackendSupportHome = () => {
                       <div
                         key={i}
                         className={`cursor-pointer border px-3 py-2 rounded-md font-medium text-sm flex justify-between items-center transition-all duration-200 hover:scale-[1.01]
-                    ${
-                      selectedLocation === loc.branchName
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
-                    }
+                    ${selectedLocation === loc.branchName
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
+                          }
                   `}
                         onClick={() => setSelectedLocation(loc.branchName)}
                       >
@@ -432,8 +431,21 @@ const BackendSupportHome = () => {
 
       {selectedCardKey && selectedLocation && (
         <div className="mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredCards.map((card, i) => {
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          {workRecords
+            .filter(
+              (card) =>
+                card.branchName === selectedLocation &&
+                card.workStatus === selectedCardId &&
+                card.phoneNumber
+                  ?.toLowerCase()
+                  .includes(searchPhone.toLowerCase())
+            )
+            .map((card, i) => {
+              const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
+              const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
+
+              console.log("Last remark:", lastRemark);
               const cardBgColor =
                 {
                   install: 'bg-white-50 border-yellow-300',
@@ -644,44 +656,34 @@ const BackendSupportHome = () => {
                             >
                               {card.startDate
                                 ? calculateDuration(
-                                    card.startDate,
-                                    card.endDate
-                                  )
+                                  card.startDate,
+                                  card.endDate
+                                )
                                 : ''}
                             </p>
                           </div>
                         </div>
                       )}
 
-                      {/* <div className="mb-2">
-                        <button
-                          onClick={() => {
-                            let nextStatus;
-                            if (card.workStatus === 'install')
-                              nextStatus = 'accept';
-                            else if (card.workStatus === 'accept')
-                              nextStatus = 'activate';
-                            else nextStatus = card.workStatus;
-                            handleStatusChange(card, nextStatus);
-                          }}
-                          className={`text-xs font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
-                        >
-                          {card?.workStatus === 'install'
-                            ? 'In Progress'
-                            : card?.workStatus === 'accept'
-                              ? 'Activate'
-                              : card?.workStatus === 'activate'
-                                ? 'Activated'
-                                : card?.workStatus?.charAt(0).toUpperCase() +
-                                  card?.workStatus?.slice(1)}
-                        </button>
-                      </div> */}
+                      {lastRemarkName && <div style={{ backgroundColor: '#f3f3f3', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', borderBottomLeftRadius: '10px', padding: 8 }}>
+
+
+                        <strong style={{
+                          fontSize: 10, whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: 100, // you can adjust this width
+                          display: 'inline-block'
+                        }}>{lastRemarkName}</strong>
+                        <p style={{ fontSize: 8 }}>{lastRemark}</p>
+
+                      </div>}
 
                       <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                         {/* Conditional Status Control */}
                         <div className="mb-1">
                           {card.workStatus === 'accept' ||
-                          card.workStatus === 'pending' ? (
+                            card.workStatus === 'pending' ? (
                             <div className="relative">
                               <select
                                 onChange={(e) =>
@@ -737,7 +739,7 @@ const BackendSupportHome = () => {
                                 : card?.workStatus === 'activate'
                                   ? 'Activated'
                                   : card?.workStatus?.charAt(0).toUpperCase() +
-                                    card?.workStatus?.slice(1)}
+                                  card?.workStatus?.slice(1)}
                             </button>
                           )}
                         </div>
@@ -762,58 +764,61 @@ const BackendSupportHome = () => {
                 </div>
               );
             })}
-          </div>
         </div>
-      )}
-
-      {popupData && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 border border-gray-300 rounded-lg p-4 shadow-sm">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Work Details</h2>
-            <p>
-              <strong>ID:</strong> {popupData.id}
-            </p>
-            <p>
-              <strong>Product Name:</strong> {popupData.productName}
-            </p>
-            <p>
-              <strong>Service Name:</strong> {popupData.service}
-            </p>
-            <p>
-              <strong>Staff Name:</strong> {popupData.staffName}
-            </p>
-            <p>
-              <strong>Branch Name:</strong> {popupData.branchName}
-            </p>
-            <p>
-              <strong>Client Name:</strong> {popupData.clientName}
-            </p>
-            <p>
-              <strong>Phone Number:</strong> {popupData.phoneNumber}
-            </p>
-            <p>
-              <strong>Sim Number:</strong> {popupData.simNumber}
-            </p>
-            <p>
-              <strong>Vehicle Type:</strong> {popupData.vehicleType}
-            </p>
-            <p>
-              <strong>Date:</strong> {popupData.date}
-            </p>
-            <p>
-              <strong>Status:</strong> {popupData.status}
-            </p>
-
-            <button
-              onClick={() => setPopupData(null)}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
-            >
-              Close
-            </button>
-          </div>
         </div>
-      )}
+  )
+}
+
+{
+  popupData && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 border border-gray-300 rounded-lg p-4 shadow-sm">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-bold mb-4">Work Details</h2>
+        <p>
+          <strong>ID:</strong> {popupData.id}
+        </p>
+        <p>
+          <strong>Product Name:</strong> {popupData.productName}
+        </p>
+        <p>
+          <strong>Service Name:</strong> {popupData.service}
+        </p>
+        <p>
+          <strong>Staff Name:</strong> {popupData.staffName}
+        </p>
+        <p>
+          <strong>Branch Name:</strong> {popupData.branchName}
+        </p>
+        <p>
+          <strong>Client Name:</strong> {popupData.clientName}
+        </p>
+        <p>
+          <strong>Phone Number:</strong> {popupData.phoneNumber}
+        </p>
+        <p>
+          <strong>Sim Number:</strong> {popupData.simNumber}
+        </p>
+        <p>
+          <strong>Vehicle Type:</strong> {popupData.vehicleType}
+        </p>
+        <p>
+          <strong>Date:</strong> {popupData.date}
+        </p>
+        <p>
+          <strong>Status:</strong> {popupData.status}
+        </p>
+
+        <button
+          onClick={() => setPopupData(null)}
+          className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+        >
+          Close
+        </button>
+      </div>
     </div>
+  )
+}
+    </div >
   );
 
   // return (
