@@ -30,25 +30,9 @@ const Staff = () => {
     'Staff Name',
     'Designation',
     'Phone Number',
-    // 'Email',
+    'Email',
     'Branch Name',
-    'Branch Number',
-    'Branch Address',
-    // 'Address Line 1',
-    // 'Address Line 2',
-    'City',
-    'State',
-    'Pincode',
-    'Branch Opening',
-    // 'Branch Photo',
-    // 'Company Code',
-    // 'Unit Code',
-    // 'Latitude',
-    // 'Longitude',
-    // 'CIN',
-    // 'GST',
-
-    // 'Branch Name',
+    'address'
   ];
 
   // Fetch Staff Details using useCallback to memoize the function
@@ -75,16 +59,9 @@ const Staff = () => {
           staffName: 'Staff Name',
           designation: 'Designation',
           phoneNumber: 'Phone Number',
-          branch_email: 'Branch Email',
+          email: 'Email',
           branch_name: 'Branch Name',
-          branch_branch_number: 'Branch Number',
-          branch_branch_address: 'Branch Address',
-          branch_city: 'City',
-          branch_state: 'State',
-          branch_pincode: 'Pincode',
-          branch_branch_opening: 'Branch Opening',
-          branch_CIN: 'CIN',
-          branch_GST: 'GST',
+          address: 'address',
         };
 
         // Reorder the columns based on `columnNames`
@@ -285,7 +262,7 @@ const Staff = () => {
         onEdit={handleEdit}
         showDelete={permissions.delete}
         showEdit={permissions.edit}
-        showDetails={(permissions.view || role?.toLowerCase() !== "warehouse manager" ||role?.toLowerCase() !== "inventory operational analyst")}
+        showDetails={permissions.edit}
         onDetails={handleMoreDetails}
 
         data={

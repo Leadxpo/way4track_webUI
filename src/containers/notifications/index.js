@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import { useNavigate } from "react-router";
+import { useNotificationContext } from '../../common/notoficationsContext';
 
 function Notifications() {
+  const { refreshNotifications } = useNotificationContext();
   const [notifications, setNotifications] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('All');
   const [expandedNotification, setExpandedNotification] = useState(null);
   const [branches, setBranches] = useState([]);
-
+  const navigate = useNavigate();
   const getAllNotifications = async (branchName = 'All') => {
+    const notifyStaffId=localStorage.getItem("id")
+
     try {
       const payload = {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
+        notifyStaffId:notifyStaffId
       };
 
       if (branchName !== 'All') {
@@ -59,11 +65,13 @@ function Notifications() {
             notification.id === id ? { ...notification, isRead: 1 } : notification
           )
         );
+        refreshNotifications();
       }
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
   };
+  
   // Toggle expand/collapse for a notification and mark as read if expanded
   const toggleExpand = (id) => {
     setNotifications((prevNotifications) =>
@@ -82,7 +90,8 @@ function Notifications() {
         ids, // Send an array of all ids
         isRead: true,
         companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode      });
+        unitCode: initialAuthState.unitCode
+      });
       if (response.status) {
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) => ({
@@ -90,6 +99,7 @@ function Notifications() {
             isRead: 1,
           }))
         );
+        refreshNotifications()
       }
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
@@ -144,7 +154,14 @@ function Notifications() {
         {filteredNotifications.map((notification) => (
           <div
             key={notification.id}
-            onClick={() => markAsRead(notification.id)}
+            onClick={() => {
+              markAsRead(notification.id)
+              if (notification.notificationType === "Request") {
+                navigate('/request-details', { state: { requestDetails: {requestId:notification.requestId} } });
+              } else if (notification.notificationType === "Ticket") {
+                navigate("/view-ticket", { state: { ticket: {id:notification.ticketId} } })
+              }
+            }}
             className="bg-white shadow-md rounded-lg p-4 mb-3 flex items-start cursor-pointer transition-all duration-300"
           >
             <div

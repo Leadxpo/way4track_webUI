@@ -10,14 +10,14 @@ const EditClient = () => {
     id: clientData?.id || null,
     name: clientData.name || '',
     phoneNumber: clientData.phoneNumber || '',
-    gstNumber: clientData.gstNumber || '',
+    GSTNumber: clientData.gstNumber || '',
     branch: clientData.branchId || '',
     branchName: clientData.branch || '', 
     email: clientData.email || '',
     address: clientData.address || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
-    file: clientData?.file || null,
+    file: clientData?.file || null, 
     state:clientData.state
   };
   
@@ -32,7 +32,7 @@ const EditClient = () => {
   const [loading, setLoading] = useState(false);
 
   const handleFetchGSTData = async () => {
-    const gstNumber = formData.gstNumber;
+    const gstNumber = formData.GSTNumber;
     if (!gstNumber) {
       alert('Please enter a GST number');
       return;
@@ -263,8 +263,8 @@ return (
               <input
                 type="text"
                 placeholder="Client GST:"
-                name="gstNumber"
-                value={formData.gstNumber}
+                name="GSTNumber"
+                value={formData.GSTNumber}
                 maxLength={15}
                 onChange={handleInputChange}
                 className="w-full border rounded-lg pr-36 pl-3 py-2 text-black text-lg font-medium border-gray-400 bg-white h-[45px]"
@@ -272,7 +272,7 @@ return (
               <button
                 onClick={handleFetchGSTData}
                 type="button"
-                disabled={loading || formData.gstNumber?.length !== 15}
+                disabled={loading || formData.GSTNumber?.length !== 15}
                 className="absolute top-1 right-1 h-[37px] px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-60"
               >
                 {loading ? '...' : 'Get'}

@@ -219,13 +219,8 @@ const CeoBackendSupportHome = () => {
         (item) => item.vehicleNumber === null
       );
 
-      console.log(records, 'records');
-      console.log('Removed Records:', removedItems);
-
-      console.log(filteredRecords, 'filtered records');
-
       setWorkRecords(filteredRecords);
-      console.log('rrr :', workRecords);
+
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecords([]);
@@ -240,10 +235,6 @@ const CeoBackendSupportHome = () => {
       });
 
       const records = response.data || [];
-
-      // const filteredRecords = records.filter(
-      //   (item) => item.vehicleNumber !== null
-      // );
 
       console.log(records, 'setWorkRecordsCount');
       setWorkRecordsCount(records.overall || []);
@@ -271,13 +262,7 @@ const CeoBackendSupportHome = () => {
     fetchCardRecords();
   };
 
-  //   useEffect(() => {
-
-  //     fetchRecords();
-  //   }, []);
-
   const handleStatusChange = async (item, newStatus) => {
-    console.log(item, 'item');
 
     try {
       setRecords((prevRecords) =>
@@ -345,20 +330,6 @@ const CeoBackendSupportHome = () => {
 
   const [workDetailsState, setWorkDetailsState] = useState(workDetails);
 
-  // const handleStatusClick = (index) => {
-  //   setWorkDetailsState((prev) =>
-  //     prev.map((item, i) =>
-  //       i === index
-  //         ? {
-  //             ...item,
-  //             workStatus:
-  //               item.workStatus === 'install' ? 'accept' : item.status,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -366,7 +337,7 @@ const CeoBackendSupportHome = () => {
 
         <input
           type="text"
-          placeholder="Search by Phone Number"
+          placeholder="Phone No / vehicle No"
           value={searchPhone}
           onChange={(e) => setSearchPhone(e.target.value)}
           className="border px-4 py-2 rounded-md mb-4 w-full max-w-xs"
@@ -453,6 +424,9 @@ const CeoBackendSupportHome = () => {
                   card.branchName === selectedLocation &&
                   card.workStatus === selectedCardId &&
                   card.phoneNumber
+                    ?.toLowerCase()
+                    .includes(searchPhone.toLowerCase()) ||
+                    card.vehicleNumber
                     ?.toLowerCase()
                     .includes(searchPhone.toLowerCase())
               )

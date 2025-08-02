@@ -204,6 +204,8 @@ import Promocode from '../promocode/index.js';
 import EditVoucher from '../vouchers/editVoucher.js';
 import ViewWork from '../appointment/ViewWork.js';
 import CreateInvoice from '../backendSupport/createInvoice.js';
+import MyAttendance from '../attendance/myAttendence.js';
+import { useNotificationContext } from '../../common/notoficationsContext.js';
 
 const BodyLayout = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -216,7 +218,8 @@ const BodyLayout = ({ children }) => {
   const [userLocation, setUserLocation] = useState(null);
   let locationInterval = null;
   const role = localStorage.getItem('role');
-
+  const { requestCount, ticketCount } = useNotificationContext();
+  const total = requestCount + ticketCount;
   const webUI = localStorage.getItem('webUI');
   const getPathname = () => {
     return formattedPaths[location.pathname]?.name || '';
@@ -401,7 +404,7 @@ const BodyLayout = ({ children }) => {
               className="text-xl text-gray-600 cursor-pointer"
               onClick={() => navigate('/profile')}
             />
-            {(role === 'CEO' || role === 'HR')&& (
+            {(role === 'CEO' || role === 'HR') && (
               <FaCog
                 className="text-xl text-gray-600 cursor-pointer"
                 onClick={() => navigate('/settings')}
@@ -410,12 +413,52 @@ const BodyLayout = ({ children }) => {
 
             <div>
               {role === 'Sub Dealer' ? (
-                <FaBell onClick={() => navigate('/sub-dealer-notifications')} />
-              ) : (
-                <FaBell
-                  className="text-xl text-gray-600 cursor-pointer"
-                  onClick={() => navigate('/notifications')}
-                />
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <button style={{ position: 'relative' }} onClick={() => navigate('/sub-dealer-notifications')} >
+                    🔔
+                    {total > 0 && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          top: -5,
+                          right: -5,
+                          backgroundColor: 'red',
+                          color: 'white',
+                          borderRadius: '50%',
+                          fontSize: '10px',
+                          padding: '2px 6px',
+                        }}
+                      >
+                        {total}
+                      </span>
+                    )}
+                  </button>
+
+                </div>
+
+              ) : (<>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <button style={{ position: 'relative' }} onClick={() => navigate('/notifications')}>
+                    🔔
+                    {total > 0 && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          top: -5,
+                          right: -5,
+                          backgroundColor: 'red',
+                          color: 'white',
+                          borderRadius: '50%',
+                          fontSize: '10px',
+                          padding: '2px 6px',
+                        }}
+                      >
+                        {total}
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </>
               )}
             </div>
           </div>
@@ -433,7 +476,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-product-type" element={<EditProductType />} />
           <Route path="/show-product-type" element={<ShowProductType />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/add-inhand-product" element={<AddInhandProduct />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/my-attendance" element={<MyAttendance />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
           <Route path="/add-asset" element={<AddAsset />} />

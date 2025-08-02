@@ -19,6 +19,7 @@ const TableWithDateFilter = ({
   onDetails,
   showCreateBtn = true,
   showStatusFilter = false,
+  showBranchFilter = false,
   showDateFilters = true,
   showEdit = true,
   showDelete = true,
@@ -171,6 +172,7 @@ useEffect(()=>{
       const response = await ApiService.post('/dashboards/getEstimates', {
         fromDate: dateFrom,
         toDate: dateTo,
+        branch:branchFilter,
         status: statusFilter,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -178,7 +180,7 @@ useEffect(()=>{
 
       if (response.status) {
         const filteredData = response.data.map(
-          ({ productDetails, ...rest }) => rest
+          ({ productDetails,estimateDate, expiryDate, ...rest }) => ({...rest,estimateDate:DateConvert(estimateDate),expiryDate:DateConvert(expiryDate)})
         );
         setFilteredData(filteredData);
       } else {
@@ -188,7 +190,7 @@ useEffect(()=>{
       console.error('Error fetching estimate details:', error);
       alert('Failed to fetch estimate details.');
     }
-  }, [dateFrom, dateTo, statusFilter]);
+  }, [dateFrom, dateTo, statusFilter,branchFilter]);
 
   const warehouseManagerId = localStorage.getItem('id');
   // const warehouseManagerId=43;
@@ -576,7 +578,7 @@ useEffect(()=>{
             </div>
           )}
           <div className="flex-grow mx-2">
-            {showStatusFilter ? (
+            {showStatusFilter &&
               <select
                 value={statusFilter}
                 onChange={handleStatusChange}
@@ -589,7 +591,7 @@ useEffect(()=>{
                   </option>
                 ))}
               </select>
-            ) : (
+ } { showBranchFilter &&
               <div className="flex items-center space-x-2 mb-4">
                 <label className="text-gray-700 font-bold whitespace-nowrap">
                   Search by Branch :
@@ -607,14 +609,14 @@ useEffect(()=>{
                   ))}
                 </select>
               </div>
-            )}
+            }
           </div>
-          <button
+          {(showBranchFilter||showDateFilters||showStatusFilter)&&<button
             onClick={handleSearch}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
           >
             <FaSearch className="mr-2" /> Search
-          </button>
+          </button>}
         </div>
       )}
 

@@ -14,7 +14,7 @@ const PaymentForm = () => {
   const [bankAccount, setBankAccount] = useState([]);
 
   const handleIdChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value; 
 
     if (paymentType === 'UPI') {
       setFormData((prev) => ({ ...prev, upiId: value }));

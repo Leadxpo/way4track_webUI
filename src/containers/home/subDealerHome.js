@@ -195,25 +195,25 @@ const SubDealerHome = () => {
       });
 
       if (response.data?.subDealer?.length > 0) {
-        console.log("work cardsss",response.data?.subDealer);
-        const subdealerID=await localStorage.getItem("userId");
-        const rrr=response.data?.subDealer.find((item)=>item.subDealerId===subdealerID.toString());
-if(rrr){
-  console.log("exist :",rrr)
-  setWorkCards(rrr);
-}else{
-  console.log("not exist :",rrr)
+        console.log("work cardsss", response.data?.subDealer);
+        const subdealerID = await localStorage.getItem("userId");
+        const rrr = response.data?.subDealer.find((item) => item.subDealerId === subdealerID.toString());
+        if (rrr) {
+          console.log("exist :", rrr)
+          setWorkCards(rrr);
+        } else {
+          console.log("not exist :", rrr)
 
-  const aaa={
-    "subDealerId": subdealerID,
-    "totalInstallWork": "0",
-    "totalAcceptWork": "0",
-    "totalActivateWork": "0",
-    "totalPendingWork": "0",
-    "totalCompletedWork": "0"
-  }
-  setWorkCards(aaa);
-}
+          const aaa = {
+            "subDealerId": subdealerID,
+            "totalInstallWork": "0",
+            "totalAcceptWork": "0",
+            "totalActivateWork": "0",
+            "totalPendingWork": "0",
+            "totalCompletedWork": "0"
+          }
+          setWorkCards(aaa);
+        }
       } else {
         console.error("No subDealer data found");
       }
@@ -224,20 +224,20 @@ if(rrr){
 
 
   const idSub = localStorage.getItem('userId');
-  console.log("jjjj sub home ",idSub);
+  console.log("jjjj sub home ", idSub);
   const fetchSubdealerWorks = async () => {
-   
+
     try {
       const response = await ApiService.post(
         '/technician/getBackendSupportWorkAllocation',
         {
-          subDealerId:idSub,
+          subDealerId: idSub,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         }
       );
       setSubdealerWorks(response.data || []);
-    console.log("sub delar works ,>",response.data)
+      console.log("sub delar works ,>", response.data)
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setSubdealerWorks([]);
@@ -248,10 +248,6 @@ if(rrr){
     fetchWorkCards();
     fetchSubdealerWorks();
   }, []);
-
-
-
-
 
   return (
     <div className="m-2">
@@ -267,7 +263,7 @@ if(rrr){
 
           <span className="text-gray-800 font-medium">Total Install Works</span>
 
-          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalInstallWork||0}
+          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalInstallWork || 0}
           </div>
         </div>
 
@@ -277,7 +273,7 @@ if(rrr){
 
           <span className="text-gray-800 font-medium">Work In Prograss</span>
 
-          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalActivateWork||0}</div>
+          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalActivateWork || 0}</div>
         </div>
 
 
@@ -286,7 +282,7 @@ if(rrr){
 
           <span className="text-gray-800 font-medium">Total Accept Works</span>
 
-          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalAcceptWork||0}</div>
+          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalAcceptWork || 0}</div>
         </div>
 
 
@@ -300,13 +296,13 @@ if(rrr){
 
           <span className="text-gray-800 font-medium">Pending Works</span>
 
-          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalPendingWork||0}</div>
+          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalPendingWork || 0}</div>
         </div>
         <div className="bg-green-100 rounded-2xl p-6 shadow-lg flex flex-col justify-between"
           onClick={() => setSelected("completedworks")}>
 
           <span className="text-gray-800 font-medium">Completed Works</span>
-          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalCompletedWork||0}</div>
+          <div className="text-gray-800 text-6xl font-bold mt-4">{workCards.totalCompletedWork || 0}</div>
         </div>
       </div>
 
@@ -326,7 +322,7 @@ if(rrr){
               </tr>
             </thead>
             <tbody>
-            {subdealerWorks?.length > 0 ? (
+              {subdealerWorks?.length > 0 ? (
                 subdealerWorks?.filter(item => item.workStatus === 'install').map((item, index) => (
                   <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
                     <td className="px-6 py-4">{index + 1}</td>
@@ -358,7 +354,7 @@ if(rrr){
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                  No Details found
+                    No Details found
                   </td>
                 </tr>
               )}
@@ -415,7 +411,7 @@ if(rrr){
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                  No Details found
+                    No Details found
                   </td>
                 </tr>
               )}
@@ -428,72 +424,61 @@ if(rrr){
 
 
 
-{selected === "totalAcceptWork" && (<>
+      {selected === "totalAcceptWork" && (<>
 
-<div className="overflow-x-auto">
-  <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-    <thead>
-      <tr className="bg-gray-100 border-b">
-        <th className="px-6 py-3 text-left text-sm font-bold">S.No.</th>
-        <th className="px-6 py-3 text-left text-sm font-bold">Service</th>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead>
+              <tr className="bg-gray-100 border-b">
+                <th className="px-6 py-3 text-left text-sm font-bold">S.No.</th>
+                <th className="px-6 py-3 text-left text-sm font-bold">Service</th>
 
-        <th className="px-6 py-3 text-left text-sm font-bold">back Supportter Name</th>
-        <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {subdealerWorks?.length > 0 ? (
-        subdealerWorks?.filter(item => item.workStatus === 'accept').map((item, index) => (
-          <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
-            <td className="px-6 py-4">{index + 1}</td>
-            <td className="px-6 py-4">{item.service}</td>
-            <td className="px-6 py-4">{item.backSupportterName}</td>
-            <td className="px-6 py-4 text-center relative dropdown-container">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleDropdown(index);
-                }}
-                className="p-2 bg-white rounded-md focus:outline-none"
-              >
-                <FaEllipsisV className="cursor-pointer text-gray-700" />
-              </button>
+                <th className="px-6 py-3 text-left text-sm font-bold">back Supportter Name</th>
+                <th className="px-6 py-3 text-left text-sm font-bold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subdealerWorks?.length > 0 ? (
+                subdealerWorks?.filter(item => item.workStatus === 'accept').map((item, index) => (
+                  <tr key={item.id} className={`border-b ${index % 2 === 0 ? "bg-gray-200" : "bg-white"}`}>
+                    <td className="px-6 py-4">{index + 1}</td>
+                    <td className="px-6 py-4">{item.service}</td>
+                    <td className="px-6 py-4">{item.backSupportterName}</td>
+                    <td className="px-6 py-4 text-center relative dropdown-container">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDropdown(index);
+                        }}
+                        className="p-2 bg-white rounded-md focus:outline-none"
+                      >
+                        <FaEllipsisV className="cursor-pointer text-gray-700" />
+                      </button>
 
-              {dropdownOpen === index && (
-                <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
-                  <ul className="text-left">
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer" >Edit</li>
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer"  >Delete</li>
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer" >More Details</li>
-                  </ul>
-                </div>
+                      {dropdownOpen === index && (
+                        <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
+                          <ul className="text-left">
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer" >Edit</li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer"  >Delete</li>
+                            <li className="p-2 hover:bg-gray-100 cursor-pointer" >More Details</li>
+                          </ul>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    No Details found
+                  </td>
+                </tr>
               )}
-            </td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan="5" className="text-center py-4">
-          No Details found
-          </td>
-        </tr>
+            </tbody>
+          </table>
+        </div></>
+
       )}
-    </tbody>
-  </table>
-</div></>
-
-
-)}
-
-
-
-
-
-
-
-
-
-
       {selected === "pendingworks" && (<>
 
         <div className="overflow-x-auto">
@@ -597,15 +582,13 @@ if(rrr){
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                  No Details found
+                    No Details found
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div></>
-
-
       )}
     </div>
   );

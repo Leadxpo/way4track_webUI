@@ -438,8 +438,11 @@ const BackendSupportHome = () => {
                 card.branchName === selectedLocation &&
                 card.workStatus === selectedCardId &&
                 card.phoneNumber
-                  ?.toLowerCase()
-                  .includes(searchPhone.toLowerCase())
+                ?.toLowerCase()
+                .includes(searchPhone.toLowerCase()) ||
+                card.vehicleNumber
+                ?.toLowerCase()
+                .includes(searchPhone.toLowerCase())
             )
             .map((card, i) => {
               const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;

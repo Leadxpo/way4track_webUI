@@ -199,7 +199,9 @@ const RequestDetails = () => {
     }
 
       formDataToSend.append('id', requestData.requestId);
-      formDataToSend.append('requestId', requestData.requestNumber);
+      if (requestData?.requestNumber) {
+        formDataToSend.append('requestId', requestData?.requestNumber);
+      }
       formDataToSend.append('status', formData.status);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('requestType', formData.requestType);

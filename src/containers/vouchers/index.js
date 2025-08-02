@@ -3,6 +3,7 @@ import { FaPlus, FaEllipsisV } from 'react-icons/fa';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
 import { getPermissions } from '../../common/commonUtils';
+import DateConvert from '../../components/dateConvert';
 
 const Vouchers = () => {
   const navigate = useNavigate();
@@ -199,6 +200,7 @@ const Vouchers = () => {
               <th className="p-3">Generation Date/Time</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Payment Mode</th>
+              <th className="p-3">Date</th>
               <th className="p-3">Payment Status</th>
               <th className="p-3">Action</th>
             </tr>
@@ -212,10 +214,11 @@ const Vouchers = () => {
                 <td className="p-3">{voucher.voucherType}</td>
                 <td className="p-3 ">{voucher.invoiceId}</td>
                 <td className="p-3 ">
-                  {new Date(voucher.generationDate).toLocaleDateString('en-GB')}
+                  {new Date(voucher.generationDate).toLocaleDateString('en-IN')}
                 </td>
                 <td className="p-3">{voucher.amount}</td>
                 <td className="p-3">{voucher.paymentType}</td>
+                <td className="p-3">{DateConvert(voucher.createdAt)}</td>
                 <td className="p-3">{voucher.paymentStatus}</td>
                 <td
                   className="px-4 py-2 text-center"

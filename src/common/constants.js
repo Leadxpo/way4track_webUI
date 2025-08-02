@@ -241,6 +241,11 @@ export const menuOptions = [
     icon: <img src="./attendance.jpg" />,
     route: '/attendance',
   },
+  {
+    name: 'MyAttendance',
+    icon: <img src="./attendance.jpg" />,
+    route: '/my-attendance',
+  },
   role?.toLowerCase() === "ceo" && {
     name: 'Orders',
     icon: <img src="./sale.png" />,

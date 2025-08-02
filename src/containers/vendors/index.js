@@ -34,8 +34,8 @@ const Vendors = () => {
       showEdit={permissions.edit || true}
       showDetails={permissions.view || true}
       onEdit={handleVendorEdit}
-      onDelete={handleDelete}
-      onDetails={handleDetails}
+      onDelete={handleDelete} showStatusFilter={false}
+      onDetails={handleDetails}showDateFilters={false}
     />
   );
 };

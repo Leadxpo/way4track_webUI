@@ -131,7 +131,7 @@ const AdminDeviceReviews = () => {
 
     try {
       const response = await ApiService.post('/review/handleReviewDetails', {
-        id: currentReview.id,
+        id: currentReview?.id,
         adminReply: currentReview.adminReply,
       });
 
@@ -155,7 +155,7 @@ const AdminDeviceReviews = () => {
 //   };
 
 const handleDeleteReview = async (reviewId) => {
-  const updatedReviews = reviews.filter((review) => review.id !== reviewId);
+  const updatedReviews = reviews.filter((review) => review?.id !== reviewId);
 
   try {
     const response = await ApiService.post('/review/deleteReviewDetails', {
@@ -236,7 +236,7 @@ const handleDeleteReview = async (reviewId) => {
               {/* Delete Icon */}
               <button
                 className="AdminDeviceReviews-deleteButton"
-                onClick={() => handleDeleteReview(review.id)}
+                onClick={() => handleDeleteReview(review?.id)}
                 title="Delete Review"
               >
                 <MdDeleteForever size={30} />
@@ -244,10 +244,10 @@ const handleDeleteReview = async (reviewId) => {
             </div>
             <div className="AdminDeviceReviews-reviewMeta">
               <span className="AdminDeviceReviews-reviewAuthor">
-                {review.clientId.name}
+                {review.clientId?.name}
               </span>
-              <span> · Order ID: {review.orderId.id}</span>
-              <span> · Device: {review.deviceId.name}</span>
+              <span> · Order ID: {review.orderId?.id}</span>
+              <span> · Device: {review.deviceId?.name}</span>
               <span>
                 · Comment Date:{' '}
                 {review.updatedAt &&

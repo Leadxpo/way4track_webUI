@@ -171,7 +171,7 @@ const Home = () => {
 
   const fetchPurchaseCount = async () => {
     try {
-      const response = await ApiService.post('/dashboards/getPurchaseCount', {
+      const response = await ApiService.post('/dashboards/getAmountDetails', {
         companyCode: initialAuthState.companyCode,
         unitCode: initialAuthState.unitCode,
         userId: initialAuthState.userId,
@@ -188,7 +188,7 @@ const Home = () => {
           item.id === 4
             ? {
               ...item,
-              count: count ?? 0,
+              count:response.data.PurchaseAmount ?? 0,
             }
             : item
         )

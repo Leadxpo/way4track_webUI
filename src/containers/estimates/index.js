@@ -31,7 +31,7 @@ const Estimates = () => {
         showCreateBtn={permissions.add}
         showDelete={permissions.delete}
         showEdit={permissions.edit}
-        showDetails={permissions.view}
+        showDetails={permissions.view} showBranchFilter={true}
       />
     </>
   );

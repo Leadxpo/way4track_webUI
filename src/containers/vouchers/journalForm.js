@@ -9,7 +9,7 @@ const JournalForm = () => {
   const { id } = useParams();
   const [ledger, setLedger] = useState([]);
   const [bankAccount, setBankAccount] = useState([]);
-
+  const [pendingVouchers, setPendingVouchers] = useState([]);
   const handleDateChange = (e) => {
     const value = e.target.value;
 
@@ -25,6 +25,26 @@ const JournalForm = () => {
   };
 
   const branchId = Number(localStorage.getItem('branchId'));
+
+  const getPendingVouchers = async (selectedPartyName) => {
+    try {
+      const response = await ApiService.post('/voucher/getVoucherInvoices', {
+        companyCode: initialAuthState?.companyCode,
+        unitCode: initialAuthState?.unitCode,
+        ledgerId: selectedPartyName, // Add this only if your API expects it
+      });
+
+      if (response.status) {
+        // filter  branch purchse
+        setPendingVouchers(response.data);
+      } else {
+        console.error('Failed to fetch ledger data');
+      }
+    } catch (error) {
+      console.error('Error fetching ledger data:', error);
+    }
+  };
+
 
   useEffect(() => {
     const fetchBankAccounts = async () => {
@@ -60,6 +80,8 @@ const JournalForm = () => {
         ledgerId: selectedLedger.id,
       }));
     }
+    getPendingVouchers(selectedId);
+
   };
 
   useEffect(() => {
@@ -103,9 +125,9 @@ const JournalForm = () => {
     day: '',
     partyName: '',
     amount: '',
-    bankAccountNumber: '',
     purpose: '',
     ledgerId: '',
+    invoiceId:'',
     voucherType: 'JOURNAL',
     upiId: '',
     checkNumber: '',
@@ -182,68 +204,32 @@ const JournalForm = () => {
     }
   };
 
-  const handleBankChange = (e) => {
-    const selectedAccountNumber = e.target.value;
-
-    // If "Cash" is selected, reset bankAmount or treat as special case
-    if (selectedAccountNumber === 'cash') {
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: 'cash',
-      }));
-      return;
-    }
-
-    // Find the selected bank account from list
-    const selectedBank = bankAccount?.find(
-      (bank) => {
-        return String(bank.id) === String(selectedAccountNumber)
-      }
-    );
-    console.log("selectedBank :", selectedBank)
-    // Update formData with bankAmount if found
-    if (selectedBank) {
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: String(selectedAccountNumber),
-      }));
-    } else {
-      // If not found, reset values
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: '',
-      }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = new FormData();
-
-    payload.append('generationDate', formData.date);
-    payload.append('day', formData.day);
-    payload.append('branchId', Number(localStorage.getItem('branchId')));
-    payload.append('ledgerId', Number(formData?.ledgerId));
-    if (selected==="Debit") {
-      payload.append('toAccount', formData.bankAccountNumber);
-    }
-    payload.append('fromAccount', formData.bankAccountNumber);
-    payload.append('voucherType', formData.voucherType);
-    payload.append('purpose', formData.purpose);
-    payload.append('amount', formData.amount);
-    payload.append('journalType', selected);
-    payload.append('paymentType', paymentType.toLowerCase());
-    payload.append('upiId', formData.upiId);
-    payload.append('checkNumber', formData.checkNumber);
-    payload.append('cardNumber', formData.cardNumber);
-    payload.append('amountPaid', Number(formData.amountPaid));
-    payload.append('companyCode', initialAuthState.companyCode);
-    payload.append('unitCode', initialAuthState.unitCode);
-
+    const payload = {
+      generationDate: formData.date,
+      day: formData.day,
+      branchId: Number(localStorage.getItem('branchId')),
+      ledgerId: Number(formData?.ledgerId),
+      voucherType: formData.voucherType,
+      purpose: formData.purpose,
+      amount: formData.amount,
+      invoiceId: formData.invoiceId,
+      journalType: selected,
+      paymentType: paymentType.toLowerCase(),
+      upiId: formData.upiId,
+      checkNumber: formData.checkNumber,
+      cardNumber: formData.cardNumber,
+      amountPaid: Number(formData.amountPaid),
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode
+    };
+    
     try {
       const endpoint = '/voucher/saveVoucher';
+      console.log("payload",payload)
       const response = await ApiService.post(endpoint, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {'Content-Type': 'application/json' },
       });
 
       if (response.status) {
@@ -391,8 +377,8 @@ const JournalForm = () => {
               type="button"
               onClick={() => setSelected('Debit')}
               className={`px-6 py-2 font-bold transition ${selected === 'Debit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
                 }`}
             >
               Debit
@@ -401,8 +387,8 @@ const JournalForm = () => {
               type="button"
               onClick={() => setSelected('Credit')}
               className={`px-6 py-2 font-bold transition ${selected === 'Credit'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-700'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-gray-700'
                 }`}
             >
               Credit
@@ -433,14 +419,37 @@ const JournalForm = () => {
             ))}
           </select>
         </div>
+        <div className="border rounded-lg p-4">
+          {pendingVouchers?.map((entry, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center bg-[#f2f2f2] rounded-md px-4 py-3 mb-2"
+            >
+               <p className="font-semibold text-lg">
+                {entry.voucherType} -
+              </p>
+              <p className="font-semibold text-lg">
+                Invoice ID : {entry.invoiceId}
+              </p>
+             
+              <p className="font-semibold text-lg">
+                Payable Amt :
+                  { entry.amount ||0}
+              </p>
+              <p className="font-semibold text-lg">
+              Reminig Amt :  {
+                  entry.reminigAmount ||0 }
+              </p>
+            </div>
+          ))}
 
-        <select
-          value={formData.bankAccountNumber}
-          onChange={handleBankChange}
-          name="bankAccountNumber"
-          className="w-full border rounded p-2"
+        </div>
+        <input
+          placeholder="Invoice ID"
+          value={formData.invoiceId}
+          name="invoiceId"
           style={{
-            height: '45px',
+            height: '45px',width:'100%',
             backgroundColor: '#FFFFFF',
             color: '#000000',
             borderRadius: '8px',
@@ -449,14 +458,12 @@ const JournalForm = () => {
             fontSize: '20px',
             fontWeight: '500',
           }}
-        >
-          <option value="">Select Bank Name</option>
-          {bankAccount?.map((account) => (
-            <option key={account.id} value={account.id}>
-              {`${account.name} (${account.accountNumber})`}
-            </option>
-          ))}
-        </select>
+          onChange={(e) =>
+            handleInputChange(e)
+          }
+          className="w-1/4 border rounded p-2"
+        />
+
         <input
           type="text"
           placeholder="Amount:"
@@ -512,8 +519,8 @@ const JournalForm = () => {
                 type="button"
                 key={type}
                 className={`px-4 py-2 rounded-md font-bold ${paymentType === type
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-300 text-gray-800'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-300 text-gray-800'
                   }`}
                 style={{ height: '60px', width: '180px' }}
                 onClick={() => setPaymentType(type)}
@@ -542,10 +549,10 @@ const JournalForm = () => {
                   <input
                     type="text"
                     placeholder={`${paymentType === 'UPI'
-                        ? 'UPI ID'
-                        : paymentType === 'Cheque'
-                          ? 'Cheque ID'
-                          : 'Card ID'
+                      ? 'UPI ID'
+                      : paymentType === 'Cheque'
+                        ? 'Cheque ID'
+                        : 'Card ID'
                       }`}
                     onChange={handleIdChange}
                     className="bg-gray-300 text-gray-700 p-3 rounded-md w-full h-14"

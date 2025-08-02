@@ -8,7 +8,8 @@ const ContraForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [ledger, setLedger] = useState([]);
-  const [bankAccount, setBankAccount] = useState([]);
+  const [fromBankAccount, setFromBankAccount] = useState([]);
+  const [toBankAccount, setToBankAccount] = useState([]);
   const [fromAccount, setFromAccount] = useState('');
   const [toAccount, setToBank] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
@@ -33,13 +34,14 @@ const ContraForm = () => {
     const fetchBankAccounts = async () => {
       try {
         const response = await ApiService.post('/account/getAccountsDetails');
-        console.log('setBankAccount222', response);
+
         if (response.status) {
           const filteredAccounts = response.data.filter(
             (account) => account.branchId === branchId
           );
-
-          setBankAccount(filteredAccounts); // Set branches to state
+          
+          setToBankAccount(response.data); 
+          setFromBankAccount(filteredAccounts); 
         } else {
           console.error('Failed to fetch accounts');
         }
@@ -197,38 +199,38 @@ const ContraForm = () => {
     }
   };
 
-  const handleBankChange = (e) => {
-    const selectedAccountNumber = e.target.value;
+  // const handleBankChange = (e) => {
+  //   const selectedAccountNumber = e.target.value;
 
-    // If "Cash" is selected, reset bankAmount or treat as special case
-    if (selectedAccountNumber === 'cash') {
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: 'cash',
-      }));
-      return;
-    }
+  //   // If "Cash" is selected, reset bankAmount or treat as special case
+  //   if (selectedAccountNumber === 'cash') {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       bankAccountNumber: 'cash',
+  //     }));
+  //     return;
+  //   }
 
-    // Find the selected bank account from list
-    const selectedBank = bankAccount?.find(
-      (bank) => bank.accountNumber === selectedAccountNumber
-    );
+  //   // Find the selected bank account from list
+  //   const selectedBank = bankAccount?.find(
+  //     (bank) => bank.accountNumber === selectedAccountNumber
+  //   );
 
-    // Update formData with bankAmount if found
-    if (selectedBank) {
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: selectedAccountNumber,
-      }));
-    } else {
-      // If not found, reset values
-      setFormData((prev) => ({
-        ...prev,
-        bankAccountNumber: '',
-        bankAmount: '0.00',
-      }));
-    }
-  };
+  //   // Update formData with bankAmount if found
+  //   if (selectedBank) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       bankAccountNumber: selectedAccountNumber,
+  //     }));
+  //   } else {
+  //     // If not found, reset values
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       bankAccountNumber: '',
+  //       bankAmount: '0.00',
+  //     }));
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -437,7 +439,7 @@ const ContraForm = () => {
             required
           >
             <option value="">Select From Bank</option>
-            {bankAccount
+            {fromBankAccount
               .filter((bank) => bank.accountNumber !== toAccount)
               .map((bank) => (
                 <option key={bank.accountNumber} value={bank.id}>
@@ -457,11 +459,11 @@ const ContraForm = () => {
             required
           >
             <option value="">Select To Bank</option>
-            {bankAccount
+            {toBankAccount
               .filter((bank) => bank.accountNumber !== fromAccount)
               .map((bank) => (
                 <option key={bank.accountNumber} value={bank.id}>
-                  {bank.name} - {bank.accountNumber}
+                  {bank.name} - {bank.accountNumber}-{bank.branchName}
                 </option>
               ))}
           </select>

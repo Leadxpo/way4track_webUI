@@ -23,8 +23,6 @@ export default function ViewTicket() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...formData, id: ticket.id };
-
     try {
       const res = await ApiService.post("/tickets/handleTicketDetails", {id:ticket.id,remark:formData.remark,workStatus:formData.workStatus}, {
         headers: { 'Content-Type': 'application/json' },

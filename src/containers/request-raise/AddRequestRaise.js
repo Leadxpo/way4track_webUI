@@ -153,8 +153,6 @@ const AddRequestRaise = () => {
         formDataToSend.append('products', JSON.stringify(formData.products));
       }
 
-
-
       const response = await ApiService.post(
         '/requests/handleRequestDetails',
         formDataToSend, {

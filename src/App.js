@@ -5,6 +5,7 @@ import Login from './containers/login';
 import './index.css';
 
 import { useNavigate } from 'react-router';
+import { NotificationProvider } from './common/notoficationsContext';
 
 const App = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const App = () => {
       case 'HR':
         navigate('/hr-home');
         break;
-      default :
+      default:
         navigate('/custom-home');
         break;
 
@@ -103,7 +104,9 @@ const App = () => {
             >
               ☰
             </button>
-            <BodyLayout>{/* The rest of your app content */}</BodyLayout>
+            <NotificationProvider>
+              <BodyLayout>{/* The rest of your app content */}</BodyLayout>
+            </NotificationProvider>
           </div>
         </div>
       )}

@@ -328,7 +328,7 @@ export const InvoicePDF = ({ data }) => {
           })}
 
           {/* Totals Row */}
-          <View style={styles.tableRow}>
+          {/* <View style={styles.tableRow}>
             <Text style={styles.tableColSN}></Text>
             <Text style={styles.tableColDesc}>Totals</Text>
             <Text style={styles.tableCol}></Text>
@@ -360,7 +360,7 @@ export const InvoicePDF = ({ data }) => {
               </>
             }
             <Text style={styles.tableCol}>{totalAmount.toFixed(2)}</Text>
-          </View>
+          </View> */}
 
           {/* Total in Words + Bank Details */}
           <View style={styles.footerBlock}>
