@@ -52,21 +52,24 @@ const LedgerDetails = () => {
     });
   };
   // Calculate total amount
-  const totalAmount = ledgerVoucherData.reduce((total, entry) => {
-    switch (entry?.voucherType) {
-      case 'PAYMENT':
-        return total + (parseInt(entry?.amount) || 0);
-      case 'RECEIPT':
-        return total - (parseInt(entry?.amount) || 0); // Example: subtract receipts
-      case 'DEBITNOTE':
-        return total + (parseInt(entry?.amount) || 0); // or custom logic
-      case 'CREDITNOTE':
-        return total - (parseInt(entry?.amount) || 0); // or custom logic
-      default:
-        return total;
+  const totalDebit = ledgerVoucherData.reduce((total, entry) => {
+    const amount = parseFloat(entry?.amount) || 0;
+    if (['PAYMENT', 'DEBITNOTE', 'SALES'].includes(entry.voucherType)) {
+      return total + amount;
     }
+    return total;
   }, 0);
-
+  
+  const totalCredit = ledgerVoucherData.reduce((total, entry) => {
+    const amount = parseFloat(entry?.amount) || 0;
+    if (['RECEIPT', 'CREDITNOTE', 'JOURNAL', 'PURCHASE'].includes(entry.voucherType)) {
+      return total + amount;
+    }
+    return total;
+  }, 0);
+  
+  const closingBalance = totalDebit - totalCredit;
+  
   return (
     <div className="p-8 space-y-6">
       {/* Client Profile Section */}
@@ -127,29 +130,64 @@ const LedgerDetails = () => {
               <th className="py-2 px-4">Date/Time</th>
               <th className="py-2 px-4">Payment Type</th>
               <th className="py-2 px-4">Voucher Type</th>
-              <th className="py-2 px-4">Amount</th>
+              <th className="py-2 px-4">Debit</th>
+              <th className="py-2 px-4">Credit</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {ledgerVoucherData.map((entry, index) => (
-              <tr
-                key={entry.id}
-                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
-              >
-                <td className="py-2 px-4">{index + 1}</td>
-                <td className="py-2 px-4">
-                  {DateConvert(entry.createdAt)}
-                </td>
-                <td className="py-2 px-4">{entry.paymentType}</td>
-                <td className="py-2 px-4">{entry.voucherType}</td>
-                <td className="py-2 px-4">{entry.amount}</td>
-              </tr>
-            ))}
+            {ledgerVoucherData.map((entry, index) => {
+              let amountType = "";
+              switch (entry?.voucherType) {
+                case 'PAYMENT':
+                case 'DEBITNOTE':
+                case 'SALES':
+                  amountType = 'Debit';
+                  break;
+                case 'RECEIPT':
+                case 'CREDITNOTE':
+                case 'JOURNAL':
+                case 'PURCHASE':
+                  amountType = "Credit";
+                  break;
+                default:
+                  amountType = 0;
+              }
+              return (
+                <tr
+                  key={entry.id}
+                  className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                >
+                  <td className="py-2 px-4">{index + 1}</td>
+                  <td className="py-2 px-4">
+                    {DateConvert(entry.createdAt)}
+                  </td>
+                  <td className="py-2 px-4">{entry.paymentType}</td>
+                  <td className="py-2 px-4">{entry.voucherType}</td>
+                  <td className="py-2 px-4">{amountType === 'Debit' ? entry.amount : ""}</td>
+                  <td className="py-2 px-4">{amountType === 'Credit' ? entry.amount : ""}</td>
+                </tr>
+              )
+            })}
           </tbody>
+          <tbody>
+  <tr className="bg-gray-100 font-bold">
+    <td colSpan="4" className="py-2 px-4 text-right">Total</td>
+    <td className="py-2 px-4 text-green-700">₹{totalDebit.toFixed(2)}</td>
+    <td className="py-2 px-4 text-red-700">₹{totalCredit.toFixed(2)}</td>
+  </tr>
+  <tr className="bg-gray-50 font-bold">
+    <td colSpan="4" className="py-2 px-4 text-right">Closing Balance</td>
+    {totalDebit <= totalCredit  && 
+       <td className="py-2 px-4 text-right"> </td>
+      } 
+    <td colSpan='2' className="py-2 px-4 text-blue-700">
+      ₹{closingBalance.toFixed(2)} ({closingBalance >= 0 ? 'Dr' : 'Cr'})
+    </td>
+  </tr>
+</tbody>
+
         </table>
-        <div className="mt-4 text-right font-semibold">
-          Total Debit Amount: ₹{totalAmount}
-        </div>
+        
       </div>
     </div>
   );

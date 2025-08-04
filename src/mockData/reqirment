@@ -37,6 +37,7 @@ APP(sales)
 sales app date should selective
 branch managers add sales visit in the sales visit (new update)
 sales visit not intrsted toggle button should add
+attendence out time remarks nshould chage as intime remarks
 
 
 //23-07-2025
@@ -44,10 +45,18 @@ sales visit not intrsted toggle button should add
 (finish)    new add voucher frist data
 (finish)    contra transfering amount to one bank to another branch bank accounts
 (finish)    client GST edit update should checks
-attendence out time remarks nshould chage as intime remarks
 (finish)    respective branch staff should view in table onle more details should not visible
 (finish)    staff offical numbers should not visible in table
-(finish)    respective branch staff should view in table onle more details should not visible
 (finish)    attendence should visible to thier own respective attendence
-invoiceID should dropdown in cradit/debit note
-notification should available for ticket,request
+(finish)    invoiceID should dropdown in cradit/debit note
+(finish)    notification should available for ticket,request
+
+//4-08-2025
+ledger changes as ledger account
+cradit note -,
+debite note +,
+sales +
+purchase / journal  -
+payment + 
+receipt -
+

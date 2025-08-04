@@ -235,7 +235,7 @@ const ReceiptForm = () => {
     const payloadObj = {
       generationDate: formData.date,
       day: formData.day,
-      fromAccount:fromAccountId,
+      fromAccount: fromAccountId,
       bankAccountNumber: formData.bankAccountNumber,
       pendingInvoices: formData.pendingInvoices.map((item) => ({
         ...item,
@@ -257,7 +257,7 @@ const ReceiptForm = () => {
       unitCode: initialAuthState.unitCode,
     };
 
-    console.log("rrr:",payloadObj)
+    console.log("rrr:", payloadObj)
 
     try {
       const endpoint = '/voucher/saveVoucher';
@@ -358,14 +358,14 @@ const ReceiptForm = () => {
       });
 
       if (response.status) {
-        console.log("eee :",response.data)
+        console.log("eee :", response.data)
         const filteredVouchers = response.data.filter(voucher =>
           voucher.voucherType === "SALES" &&
-          voucher.branchId?.id === Number(branch) 
+          voucher.branchId?.id === Number(branch)
           &&
           Number(voucher.reminigAmount) > 0
         );
-        console.log("rrr :",filteredVouchers)
+        console.log("rrr :", filteredVouchers)
         setPendingVouchers(filteredVouchers);
       } else {
         console.error('Failed to fetch ledger data');
@@ -677,6 +677,9 @@ const ReceiptForm = () => {
                 placeholder="Amount"
                 value={entry.amount}
                 className="w-1/4 border rounded p-2"
+                onChange={(e) =>
+                  handleEntryChange(index, 'amount', e.target.value)
+                }
               />
               <input
                 placeholder="Paid Amount"
@@ -727,10 +730,10 @@ const ReceiptForm = () => {
         </p>
         {/* Balance Text */}
 
-          <p className="mt-3 text-green-700 font-semibold italic text-lg">
-            Balance Amount : {Number(formData.bankAmount) + Number(totalPaidAmount)}/-
-          </p>
-       
+        <p className="mt-3 text-green-700 font-semibold italic text-lg">
+          Balance Amount : {Number(formData.bankAmount) + Number(totalPaidAmount)}/-
+        </p>
+
       </div>
 
       {/* Description */}
