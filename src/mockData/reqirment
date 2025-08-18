@@ -63,14 +63,14 @@ receipt -
 7-08-2025
 (finish)    works and appointments should show all for frist and should sort accoring to the client phone number
 (finish)    client data desending order
-(finish)    client table date should visible remove branch ID----day1
+(finish)    client table date should visible remove branch ID
 (finish)    excel sheet download/with search date and branch
-(finish)    backend support branch wise sort and vechile number and phone number --day2
-report for backend supoort/warehouse/branch mananger/hr --day3
+(finish)    backend support branch wise sort and vechile number and phone number
 (finish)    remove password for more details details staff
-(finish) reset password for the individual staff
-(finish)    insurence company name add in add/edit staff -- day4
-staff terminated/resignation person should higylight in the table
+(finish)    reset password for the individual staff
+(finish)    insurence company name add in add/edit staff 
+(finish)    staff terminated/resignation person should higylight in the table
+report for backend supoort/warehouse/branch mananger/hr --day4
 notification should add to work allocation --day5
 workallocating add description to staff allocation for work while staus change to allocated
 add not intersted in salevisit
@@ -83,11 +83,13 @@ in invoce PDF remove pro forma --day7
 date of assign and assigned by should mentioned in the app works (mobile)
 seggment tab funtionality should done (mobile)
 add not intersted in salevisit (mobile) --day8
+services not showing to some people
 
 add/edit appointment mulitple photo update (new update)
 add/edit appointment should add new entity inbond/outbond (new update)
 add/edit appointment service dropdown(renewal/sale pitching/follow up) (new update)
 createdBy user should add in client/vendor/staff/branch/appointment (new update) --day9
+
 status change should be mentioned with user and time stamp (new update)
 product tracking history need to maintained with time/user stamp
 Asserts tracking history need to maintained with time/user stamp
