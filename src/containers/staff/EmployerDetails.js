@@ -5,6 +5,7 @@ import { getPermissions } from '../../common/commonUtils';
 const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
   const [data, setData] = useState({
     branch: '',
+    branchName:'',
     staffId: '',
     joiningDate: null,
     designation_id: '',
@@ -13,10 +14,13 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
     officeEmail: '',
     officePhoneNumber: '',
     bikeAllocation: 'No',
-    mobileAllocation: 'No',
-    // terminationDate: null,
+    bikeName: '',
+    bikeNumber: '',
+    mobileAllocation: 'No', 
+    mobileBrand: 'No', 
     // resignationDate: null,
     // finalSettlementDate: null, 
+    insuranceCompanyName: '',
     insuranceNumber: '',
     insuranceEligibilityDate: null,
     insuranceExpiryDate: null,
@@ -116,6 +120,7 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
       { label: 'Joining Date', name: 'joiningDate', type: 'date' },
       { label: 'Department', name: 'department', type: 'text' },
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'number' },
+      { label: 'Insurance Company Name', name: 'insuranceCompanyName', type: 'text' },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',
@@ -150,7 +155,7 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         <label className="block font-medium mb-1">Branch</label>
         <select
           name="branchId"
-          value={data.branchId} // Store branchId as a number
+          value={data.branch} // Store branchId as a number
           onChange={(e) => {
             const selectedBranch = branches.find(
               (branch) => branch.id === Number(e.target.value)
@@ -225,6 +230,17 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
       </div>
 
       {data.bikeAllocation === 'Yes' && (
+        <>
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Bike Name</label>
+          <input
+            type="text"
+            name="bikeName"
+            value={data.bikeName || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
         <div className="mb-4">
           <label className="block font-medium mb-1">Bike Number</label>
           <input
@@ -235,6 +251,7 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
             className="w-full p-2 border border-gray-300 rounded-lg"
           />
         </div>
+        </>
       )}
 
       <div className="mb-4">

@@ -476,7 +476,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-product-type" element={<EditProductType />} />
           <Route path="/show-product-type" element={<ShowProductType />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/add-inhand-product" element={<AddInhandProduct />} />
           <Route path="/my-attendance" element={<MyAttendance />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/asserts" element={<Asserts />} />
@@ -514,6 +514,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/add-dispatch" element={<AddDispatch />} />
           <Route path="/edit-dispatch" element={<EditDispatch />} />
           <Route path="/show-dispatch" element={<DispatchDetails />} />
+          <Route
+            path="/add-product-assign"
+            element={<AddEditProductAssign />}
+          />
           <Route
             path="/add-product-assign"
             element={<AddEditProductAssign />}

@@ -22,7 +22,7 @@ const Estimates = () => {
   };
   return (
     <>
-      <TableWithDateFilter
+      <TableWithDateFilter 
         type="estimate"
         onEdit={handleEdit}
         // onDelete={() => {}}

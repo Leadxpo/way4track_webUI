@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router';
 const EditEmployerDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const [data, setData] = useState({
     id: '',
     staffId: '',
@@ -17,10 +18,14 @@ const EditEmployerDetails = () => {
     officeEmail: '',
     officePhoneNumber: '',
     bikeAllocation: 'No',
+    bikeName: '',
+    bikeNumber: '',
     mobileAllocation: 'No',
+    mobileBrand:'',
     terminationDate: null,
     resignationDate: null,
     finalSettlementDate: null,
+    insuranceCompanyName: '',
     insuranceNumber: '',
     insuranceEligibilityDate: null,
     insuranceExpiryDate: null,
@@ -42,7 +47,7 @@ const EditEmployerDetails = () => {
     try {
       const response = await ApiService.post('/branch/getBranchNamesDropDown');
       if (response.status) {
-        console.log("hhyyy .....iii",response.data)
+
         setBranches(response.data);
       } else {
         console.error('Failed to fetch branch names.');
@@ -81,6 +86,9 @@ const EditEmployerDetails = () => {
       { label: 'Department', name: 'department', type: 'text' },
       { label: 'Designation', name: 'designation', type: 'select' },
 
+      { label: 'Bike Name', name: 'bikeName', type: 'text' },
+      { label: 'Bike Number', name: 'bikeNumber', type: 'text' },
+      { label: 'Mobile Brand', name: 'mobileBrand', type: 'text' },
       { label: 'Monthly Salary', name: 'monthlySalary', type: 'text' },
       { label: 'Office Email', name: 'officeEmail', type: 'email' },
       { label: 'Office Phone Number', name: 'officePhoneNumber', type: 'text' },
@@ -91,6 +99,7 @@ const EditEmployerDetails = () => {
         name: 'finalSettlementDate',
         type: 'date',
       },
+      { label: 'Insurance Company Name', name: 'insuranceCompanyName', type: 'text' },
       { label: 'Insurance Number', name: 'insuranceNumber', type: 'text' },
       {
         label: 'Insurance Eligibility Date',
@@ -131,7 +140,9 @@ const EditEmployerDetails = () => {
       officeEmail: data.officeEmail ?? '',
       officePhoneNumber: data.officePhoneNumber ?? '',
       bikeAllocation: data.bikeAllocation ?? '',
+      bikeNumber: data.bikeNumber ?? '',
       mobileAllocation: data.mobileAllocation ?? '',
+      mobileBrand: data.mobileBrand ?? '',
       insuranceNumber: data.insuranceNumber ?? '',
       description: data.description ?? '',
 
@@ -144,7 +155,6 @@ const EditEmployerDetails = () => {
       insuranceExpiryDate: formatDate(data.insuranceExpiryDate),
     };
 
-    console.log('qqqqqqqwwwwwww', payload);
     try {
       const endpoint = '/staff/handleStaffDetails';
       const response = await ApiService.post(endpoint, payload, {
@@ -169,43 +179,6 @@ const EditEmployerDetails = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">Employer Details</h3>
-
-      {/* Branch Dropdown */}
-      {/* <div className="mb-4">
-        <label className="block font-medium mb-1">Branch</label>
-        <select
-          name="branch"
-          value={data.branch}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select a Branch</option>
-          {branches.map((branch) => (
-            <option key={branch.id} value={branch.id}>
-              {branch.name}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
-      {/* Designation Dropdown */}
-      {/* <div className="mb-4">
-        <label className="block font-medium mb-1">Designation</label>
-        <select
-          name="designation"
-          value={data.designation}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select a Designation</option>
-          {designations.map((designation) => (
-            <option key={designation.id} value={designation.id}>
-              {designation.designation}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
       {/* Dynamic Input Fields */}
       {inputFields.map(({ label, name, type }) => (
         <div className="mb-4" key={name}>

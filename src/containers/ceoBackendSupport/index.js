@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaDownload } from 'react-icons/fa';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
@@ -212,7 +212,7 @@ const CeoBackendSupportHome = () => {
       const records = response.data || [];
 
       const filteredRecords = records.filter(
-        (item) => item.vehicleNumber !== null
+        (item) => (item.vehicleNumber !== null)
       );
 
       const removedItems = records.filter(
@@ -236,12 +236,30 @@ const CeoBackendSupportHome = () => {
 
       const records = response.data || [];
 
-      console.log(records, 'setWorkRecordsCount');
       setWorkRecordsCount(records.overall || []);
       setBranchesWorkRecordsCount(records.branchWise || []);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setWorkRecordsCount([]);
+    }
+  };
+
+  const handleDownload = (type) => {
+    let filename = type + "output.xlsx";
+
+    if (!filteredCards || filteredCards.length === 0) {
+      alert('No data available to download.');
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(filteredCards);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, type);
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error generating Excel file:', error);
+      alert('Failed to generate the Excel file. Please try again.');
     }
   };
 
@@ -261,6 +279,7 @@ const CeoBackendSupportHome = () => {
     fetchRecords();
     fetchCardRecords();
   };
+
 
   const handleStatusChange = async (item, newStatus) => {
 
@@ -328,7 +347,27 @@ const CeoBackendSupportHome = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  const [workDetailsState, setWorkDetailsState] = useState(workDetails);
+  const filterlist = () => {
+    return workRecords.filter((card) => {
+      const statusOk = !selectedCardId || card.workStatus === selectedCardId;
+  
+      const selectedBranch = selectedLocation;
+      const branchOk =
+        !selectedBranch ||
+        (card.branchName ?? "").toLowerCase().trim() ===
+          selectedBranch.toLowerCase().trim();
+  
+      const q = (searchPhone ?? "").toLowerCase().trim();
+      const searchOk =
+        !q ||
+        (String(card.phoneNumber ?? "").toLowerCase().includes(q) ||
+          String(card.vehicleNumber ?? "").toLowerCase().includes(q));
+  
+      return statusOk && branchOk && searchOk;
+    });
+  };
+  
+  const filteredCards =filterlist() ||[]
 
   return (
     <div className="p-6">
@@ -337,12 +376,18 @@ const CeoBackendSupportHome = () => {
 
         <input
           type="text"
-          placeholder="Phone No / vehicle No"
+          placeholder="vehicle No"
           value={searchPhone}
           onChange={(e) => setSearchPhone(e.target.value)}
           className="border px-4 py-2 rounded-md mb-4 w-full max-w-xs"
         />
-
+        <button
+          onClick={() => handleDownload('backendSupport')}
+          className="bg-green-700 text-white px-4 py-2 mx-5 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
+        >
+          <FaDownload className="text-white" />
+          Download works Excel Sheet
+        </button>
         <button
           onClick={onClickRefresh}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
@@ -402,7 +447,10 @@ const CeoBackendSupportHome = () => {
                             : 'bg-gray-100 text-gray-800 hover:bg-blue-50'
                           }
                   `}
-                        onClick={() => setSelectedLocation(loc.branchName)}
+                        onClick={() => {
+                          setSelectedLocation(loc.branchName)
+                        }
+                        }
                       >
                         <span>{loc.branchName}</span>
                         <span>{loc?.[item.key] || 0}</span>
@@ -420,22 +468,39 @@ const CeoBackendSupportHome = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {workRecords
               .filter(
-                (card) =>
-                  card.branchName === selectedLocation &&
-                  card.workStatus === selectedCardId &&
-                  card.phoneNumber
-                    ?.toLowerCase()
-                    .includes(searchPhone.toLowerCase()) ||
-                    card.vehicleNumber
-                    ?.toLowerCase()
-                    .includes(searchPhone.toLowerCase())
+                (card) => {
+
+                  const statusOk =  card.workStatus === selectedCardId;
+
+                  const selectedBranch =  selectedLocation
+
+                  const branchOk = (card.branchName ?? '').toLowerCase().trim() === selectedBranch.toLowerCase().trim();
+
+                  const q = (searchPhone ?? '').toLowerCase().trim();
+
+                  const searchOk =
+                    !q ||
+                    (String(card.phoneNumber ?? '').toLowerCase().includes(q) ||
+                      String(card.vehicleNumber ?? '').toLowerCase().includes(q));
+
+                  return statusOk && branchOk && searchOk;
+                  // console.log("cardLocation:", typeof (card.branchName) + "===" + typeof (selectedLocation))
+                  // return (
+                  //   card.workStatus === selectedCardId &&
+                  //   card.branchName === selectedLocation &&
+                  //   // card.vehicleNumber
+                  //   //   ?.toLowerCase()
+                  //   //   .includes(searchPhone.toLowerCase())||
+                  //   card.phoneNumber
+                  //     ?.toLowerCase()
+                  //     .includes(searchPhone.toLowerCase())
+                  // )
+                } 
               )
               .map((card, i) => {
                 const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
                 const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
 
-                console.log("Last remark:", lastRemark); 
-                
                 const cardBgColor =
                   {
                     install: 'bg-white-50 border-yellow-300',
@@ -468,15 +533,7 @@ const CeoBackendSupportHome = () => {
                           >
                             ID: {card.technicianNumber}
                           </span>
-                          {/* <span
-                              className="text-sm text-gray-500 flex items-center"
-                              style={{ fontSize: '12px' }}
-                            >
-                              <TfiTimer className="mr-1 text-black" />
-                              {card.startDate
-                                ? calculateDuration(card.startDate, card.endDate)
-                                : ''}
-                            </span> */}
+
                         </div>
                         <hr className="mb-2" />
                         <div className="mb-2 flex space-x-4">

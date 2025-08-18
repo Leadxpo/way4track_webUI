@@ -139,7 +139,10 @@ export const menuOptions = [
     route: '/vouchers',
   },
   role?.toLowerCase() === "branch manager" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
-  role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/products-inventory' },
+  // role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" &&
+   {
+     name: 'Reports', icon: <img src="./reports.png" />, route: '/products-inventory' 
+    },
   role?.toLowerCase() === "accountant" && {
     name: 'Reports',
     icon: <img src="./reports.png" />,
@@ -226,12 +229,17 @@ export const menuOptions = [
     icon: <img src="./work_allocation.png" />,
     route: '/sales_visit',
   },
+  hasPermission(permission, "sales-visit", "view") && {
+    name: 'Sales Visits',
+    icon: <img src="./work_allocation.png" />,
+    route: '/sales_visit',
+  },
   // hasPermission(permission, "work-allocation", "view") && {
   //   name: 'Sales Visits',
   //   icon: <img src="./work_allocation.png" />,
   //   route: '/sales_visit',
   // },
-  (role?.toLowerCase() === "ceo" ||role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst")  && {
+  (role?.toLowerCase() === "ceo" ||role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" ||role?.toLowerCase() === "branch manager")  && {
     name: 'Dispatch',
     icon: <img src="./dispath.png" />,
     route: '/dispatch',

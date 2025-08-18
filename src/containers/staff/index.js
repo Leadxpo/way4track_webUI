@@ -32,7 +32,8 @@ const Staff = () => {
     'Phone Number',
     'Email',
     'Branch Name',
-    'address'
+    'address',
+    'status'
   ];
 
   // Fetch Staff Details using useCallback to memoize the function
@@ -62,6 +63,7 @@ const Staff = () => {
           email: 'Email',
           branch_name: 'Branch Name',
           address: 'address',
+          status:'status'
         };
 
         // Reorder the columns based on `columnNames`
@@ -191,24 +193,6 @@ const Staff = () => {
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Staff Details</h2>
         <div className="flex items-center space-x-4">
-          {/* <button
-            className={`p-2 cursor-pointer ${!isGridView && 'border border-black'}`}
-            onClick={() => setIsGridView(false)}
-          >
-            <FaList size={18} />
-          </button>
-          <button
-            className={`p-2 cursor-pointer ${isGridView && 'border border-black'}`}
-            onClick={() => setIsGridView(true)}
-          >
-            <FaTh size={18} />
-          </button>
-          <button
-            className="flex items-center space-x-2 bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer"
-            onClick={() => navigate('/payroll')}
-          >
-            <span>Payroll</span>
-          </button>*/}
           <button
             className={`flex items-center space-x-2 text-white px-4 py-2 rounded-md cursor-pointer ${permissions.add ? 'bg-green-700' : 'bg-gray-400 cursor-not-allowed opacity-50'}`}
             onClick={() => navigate('/add-staff')}
@@ -382,13 +366,19 @@ const Table = ({
             <tbody>
               {data.map((row, rowIndex) => (
                 <tr
-                  key={rowIndex}
-                  className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                key={rowIndex}
+                className={`${
+                  row.status === "INACTIVE"
+                    ? "bg-red-50" // 👈 highlight inactive rows (change color as you like)
+                    : rowIndex % 2 === 0
+                    ? "bg-white"
+                    : "bg-gray-50"
+                }`}
                 // onClick={() => {
                 //   setSelectedRowData(row);
                 //   setShowRowPopup(true);
                 // }}
-                >
+              >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}

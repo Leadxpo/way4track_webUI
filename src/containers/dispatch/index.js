@@ -80,7 +80,8 @@ useEffect(() => {
     setPermissions(
         role?.toLowerCase() === "ceo" ||
         role?.toLowerCase() === "warehouse manager" ||
-        role?.toLowerCase() === "inventory operational analyst"
+        role?.toLowerCase() === "inventory operational analyst"||
+        role?.toLowerCase() === "branch manager"
     );
     console.log("role :", role);
     console.log("role :", permissions);

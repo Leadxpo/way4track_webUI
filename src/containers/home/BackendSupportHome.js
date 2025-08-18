@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaDownload } from 'react-icons/fa';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
@@ -106,6 +106,25 @@ const BackendSupportHome = () => {
   const backendId = Number(localStorage.getItem('id'));
   const [branchesWorkRecordsCount, setBranchesRecordsCount] = useState([]);
   console.log(branchesWorkRecordsCount, 'count');
+
+  const handleDownload = (type) => {
+    let filename = type + "output.xlsx";
+
+    if (!filteredCards || filteredCards.length === 0) {
+      alert('No data available to download.');
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(filteredCards);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, type);
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error generating Excel file:', error);
+      alert('Failed to generate the Excel file. Please try again.');
+    }
+  };
 
   useEffect(() => {
     const getBranchesWorkRecordsCount = (workRecords) => {
@@ -326,25 +345,27 @@ const BackendSupportHome = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  const filteredCards =
-    selectedCardId === 'install'
-      ? workRecords.filter(
-        (card) =>
-          card.branchName === selectedLocation &&
-          card.workStatus === selectedCardId &&
-          card.phoneNumber?.toLowerCase().includes(searchPhone.toLowerCase())
-      )
-      : ['accept', 'activate', 'pending'].includes(selectedCardId)
-        ? memberWorkRecords.filter(
-          (card) =>
-            card.branchName === selectedLocation &&
-            card.workStatus === selectedCardId &&
-            card.phoneNumber
-              ?.toLowerCase()
-              .includes(searchPhone.toLowerCase())
-        )
-        : [];
-  console.log(filteredCards, 'filtered cart list data install');
+  const filterlist = () => {
+    return workRecords.filter((card) => {
+      const statusOk = !selectedCardId || card.workStatus === selectedCardId;
+  
+      const selectedBranch = selectedLocation;
+      const branchOk =
+        !selectedBranch ||
+        (card.branchName ?? "").toLowerCase().trim() ===
+          selectedBranch.toLowerCase().trim();
+  
+      const q = (searchPhone ?? "").toLowerCase().trim();
+      const searchOk =
+        !q ||
+        (String(card.phoneNumber ?? "").toLowerCase().includes(q) ||
+          String(card.vehicleNumber ?? "").toLowerCase().includes(q));
+  
+      return statusOk && branchOk && searchOk;
+    });
+  };
+  
+  const filteredCards =filterlist() ||[]
 
   return (
     <div className="p-6">
@@ -357,6 +378,14 @@ const BackendSupportHome = () => {
           onChange={(e) => setSearchPhone(e.target.value)}
           className="border px-4 py-2 rounded-md mb-4 w-full max-w-xs"
         />
+                <button
+          onClick={() => handleDownload('backendSupport')}
+          className="bg-green-700 text-white px-4 py-2 mx-5 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
+        >
+          <FaDownload className="text-white" />
+          Download works Excel Sheet
+        </button>
+
         <button
           onClick={onClickRefresh}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
@@ -431,57 +460,76 @@ const BackendSupportHome = () => {
 
       {selectedCardKey && selectedLocation && (
         <div className="mt-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {workRecords
-            .filter(
-              (card) =>
-                card.branchName === selectedLocation &&
-                card.workStatus === selectedCardId &&
-                card.phoneNumber
-                ?.toLowerCase()
-                .includes(searchPhone.toLowerCase()) ||
-                card.vehicleNumber
-                ?.toLowerCase()
-                .includes(searchPhone.toLowerCase())
-            )
-            .map((card, i) => {
-              const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
-              const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {workRecords
+              .filter(
+                (card) => {
 
-              console.log("Last remark:", lastRemark);
-              const cardBgColor =
-                {
-                  install: 'bg-white-50 border-yellow-300',
-                  accept: 'bg-white-50 border-blue-300',
-                  activate: 'bg-white-50 border-green-300',
-                  pending: 'bg-white-50 border-orange-300',
-                  completed: 'bg-white-100 border-gray-300',
-                }[card.workStatus] || 'bg-white border-gray-200';
+                  const statusOk = card.workStatus === selectedCardId;
 
-              const statusButtonColor =
-                {
-                  install: 'bg-yellow-100 text-yellow-800',
-                  accept: 'bg-blue-100 text-blue-800',
-                  activate: 'bg-green-100 text-green-800',
-                  pending: 'bg-orange-100 text-orange-800',
-                  completed: 'bg-gray-300 text-gray-700',
-                }[card.workStatus] || 'bg-gray-100 text-gray-700';
+                  const selectedBranch = selectedLocation
 
-              return (
-                <div
-                  key={i}
-                  className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
-                >
-                  {card.staffName || card.subDealerName ? (
-                    <div className="flex flex-col h-full justify-between">
-                      <div className="flex justify-between items-center mb-2">
-                        <span
-                          className="text-lg font-semibold text-gray-700"
-                          style={{ fontSize: '18px', fontWeight: 'bold' }}
-                        >
-                          ID: {card.technicianNumber}
-                        </span>
-                        {/* <span
+                  const branchOk = (card.branchName ?? '')?.toLowerCase().trim() === selectedBranch?.toLowerCase().trim();
+
+                  const q = (searchPhone ?? '')?.toLowerCase().trim();
+
+                  const searchOk =
+                    !q ||
+                    (String(card.phoneNumber ?? '')?.toLowerCase().includes(q) ||
+                      String(card.vehicleNumber ?? '')?.toLowerCase().includes(q));
+
+                  return statusOk && branchOk && searchOk;
+                  // console.log("cardLocation:", typeof (card.branchName) + "===" + typeof (selectedLocation))
+                  // return (
+                  //   card.workStatus === selectedCardId &&
+                  //   card.branchName === selectedLocation &&
+                  //   // card.vehicleNumber
+                  //   //   ?.toLowerCase()
+                  //   //   .includes(searchPhone.toLowerCase())||
+                  //   card.phoneNumber
+                  //     ?.toLowerCase()
+                  //     .includes(searchPhone.toLowerCase())
+                  // )
+                }
+              )
+              .map((card, i) => {
+                const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
+                const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
+
+                console.log("Last remark:", lastRemark);
+                const cardBgColor =
+                  {
+                    install: 'bg-white-50 border-yellow-300',
+                    accept: 'bg-white-50 border-blue-300',
+                    activate: 'bg-white-50 border-green-300',
+                    pending: 'bg-white-50 border-orange-300',
+                    completed: 'bg-white-100 border-gray-300',
+                  }[card.workStatus] || 'bg-white border-gray-200';
+
+                const statusButtonColor =
+                  {
+                    install: 'bg-yellow-100 text-yellow-800',
+                    accept: 'bg-blue-100 text-blue-800',
+                    activate: 'bg-green-100 text-green-800',
+                    pending: 'bg-orange-100 text-orange-800',
+                    completed: 'bg-gray-300 text-gray-700',
+                  }[card.workStatus] || 'bg-gray-100 text-gray-700';
+
+                return (
+                  <div
+                    key={i}
+                    className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
+                  >
+                    {card.staffName || card.subDealerName ? (
+                      <div className="flex flex-col h-full justify-between">
+                        <div className="flex justify-between items-center mb-2">
+                          <span
+                            className="text-lg font-semibold text-gray-700"
+                            style={{ fontSize: '18px', fontWeight: 'bold' }}
+                          >
+                            ID: {card.technicianNumber}
+                          </span>
+                          {/* <span
                           className="text-sm text-gray-500 flex items-center"
                           style={{ fontSize: '12px' }}
                         >
@@ -490,120 +538,61 @@ const BackendSupportHome = () => {
                             ? calculateDuration(card.startDate, card.endDate)
                             : ''}
                         </span> */}
-                      </div>
-                      <hr className="mb-2" />
-                      <div className="mb-2 flex space-x-4">
-                        <div className="text-left">
-                          <p
-                            className="text-lg font-semibold text-gray-500"
-                            style={{ fontSize: '15px' }}
-                          >
-                            Client:
-                          </p>
-                          <p
-                            className="text-lg font-semibold text-gray-500"
-                            style={{ fontSize: '15px' }}
-                          >
-                            Support:
-                          </p>
-                          <p
-                            className="text-lg font-semibold text-gray-500"
-                            style={{ fontSize: '15px' }}
-                          >
-                            Vehicle :
-                          </p>
                         </div>
-                        <div>
-                          <p
-                            className="text-lg font-bold text-gray-800 truncate w-60"
-                            style={{
-                              fontSize: '16px',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis'
-                            }}
-                          >
-                            {card.clientName}
-                          </p>
-                          <p
-                            className="text-lg font-bold text-gray-800 truncate w-60"
-                            style={{
-                              fontSize: '16px',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis'
-                            }}
-                          >
-                            {card.staffName}
-                          </p>
-                          <p
-                            className="text-lg font-bold text-gray-800"
-                            style={{ fontSize: '16px' }}
-                          >
-                            {card.vehicleNumber}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        className="mb-2 flex space-x-8"
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        {/* Start Date */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            Start Date:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {convertToIST(card.startDate)}
-                          </p>
+                        <hr className="mb-2" />
+                        <div className="mb-2 flex space-x-4">
+                          <div className="text-left">
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Client:
+                            </p>
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Technician:
+                            </p>
+                            <p
+                              className="text-lg font-semibold text-gray-500"
+                              style={{ fontSize: '15px' }}
+                            >
+                              Vehicle :
+                            </p>
+                          </div>
+                          <div>
+                            <p
+                              className="text-lg font-bold text-gray-800 truncate w-60"
+                              style={{
+                                fontSize: '16px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}
+                            >
+                              {card.clientName}
+                            </p>
+                            <p
+                              className="text-lg font-bold text-gray-800 truncate w-60"
+                              style={{
+                                fontSize: '16px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}
+                            >
+                              {card.staffName}
+                            </p>
+                            <p
+                              className="text-lg font-bold text-gray-800"
+                              style={{ fontSize: '16px' }}
+                            >
+                              {card.vehicleNumber}
+                            </p>
+                          </div>
                         </div>
 
-                        {/* End Date */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            End Date:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {convertToIST(card.endDate)}
-                          </p>
-                        </div>
-
-                        {/* Duration */}
-                        <div className="flex flex-col">
-                          <p
-                            className="text-sm text-gray-600"
-                            style={{ fontSize: '14px' }}
-                          >
-                            Duration:
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-gray-700"
-                            style={{ fontSize: '13px' }}
-                          >
-                            {card.startDate
-                              ? calculateDuration(card.startDate, card.endDate)
-                              : ''}
-                          </p>
-                        </div>
-                      </div>
-
-                      {card.workStatus !== 'install' && (
                         <div
                           className="mb-2 flex space-x-8"
                           style={{
@@ -617,14 +606,13 @@ const BackendSupportHome = () => {
                               className="text-sm text-gray-600"
                               style={{ fontSize: '14px' }}
                             >
-                              Accepted Date:
+                              Start Date:
                             </p>
                             <p
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {/* {card.acceptStartDate?.slice(0, 10)} */}
-                              {convertToIST(card.acceptStartDate)}
+                              {convertToIST(card.startDate)}
                             </p>
                           </div>
 
@@ -634,14 +622,13 @@ const BackendSupportHome = () => {
                               className="text-sm text-gray-600"
                               style={{ fontSize: '14px' }}
                             >
-                              Activated Date:
+                              End Date:
                             </p>
                             <p
                               className="text-sm font-semibold text-gray-700"
                               style={{ fontSize: '13px' }}
                             >
-                              {/* {card.activateDate?.slice(0, 10)} */}
-                              {convertToIST(card.activeDate)}
+                              {convertToIST(card.endDate)}
                             </p>
                           </div>
 
@@ -658,481 +645,232 @@ const BackendSupportHome = () => {
                               style={{ fontSize: '13px' }}
                             >
                               {card.startDate
-                                ? calculateDuration(
-                                  card.startDate,
-                                  card.endDate
-                                )
+                                ? calculateDuration(card.startDate, card.endDate)
                                 : ''}
                             </p>
                           </div>
                         </div>
-                      )}
 
-                      {lastRemarkName && <div style={{ backgroundColor: '#f3f3f3', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', borderBottomLeftRadius: '10px', padding: 8 }}>
-
-
-                        <strong style={{
-                          fontSize: 10, whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxWidth: 100, // you can adjust this width
-                          display: 'inline-block'
-                        }}>{lastRemarkName}</strong>
-                        <p style={{ fontSize: 8 }}>{lastRemark}</p>
-
-                      </div>}
-
-                      <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                        {/* Conditional Status Control */}
-                        <div className="mb-1">
-                          {card.workStatus === 'accept' ||
-                            card.workStatus === 'pending' ? (
-                            <div className="relative">
-                              <select
-                                onChange={(e) =>
-                                  handleStatusChange(card, e.target.value)
-                                }
-                                defaultValue=""
-                                className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                        {card.workStatus !== 'install' && (
+                          <div
+                            className="mb-2 flex space-x-8"
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            {/* Start Date */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
                               >
-                                <option value="" disabled>
-                                  Change Status
-                                </option>
-                                {card.workStatus === 'accept' && (
-                                  <>
-                                    <option value="activate">Activate</option>
-                                    <option value="pending">Pending</option>
-                                  </>
-                                )}
-                                {card.workStatus === 'pending' && (
-                                  <>
-                                    <option value="activate">Activate</option>
-                                    <option value="cancel">Cancel</option>
-                                  </>
-                                )}
-                              </select>
-                              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                                <svg
-                                  className="w-4 h-4 text-gray-500"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
+                                Accepted Date:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {/* {card.acceptStartDate?.slice(0, 10)} */}
+                                {convertToIST(card.acceptStartDate)}
+                              </p>
                             </div>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                let nextStatus;
-                                if (card.workStatus === 'install')
-                                  nextStatus = 'accept';
-                                else nextStatus = card.workStatus;
-                                handleStatusChange(card, nextStatus);
-                              }}
-                              className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
-                            >
-                              {card?.workStatus === 'install'
-                                ? 'In Progress'
-                                : card?.workStatus === 'activate'
-                                  ? 'Activated'
-                                  : card?.workStatus?.charAt(0).toUpperCase() +
-                                  card?.workStatus?.slice(1)}
-                            </button>
-                          )}
+
+                            {/* End Date */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
+                              >
+                                Activated Date:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {/* {card.activateDate?.slice(0, 10)} */}
+                                {convertToIST(card.activeDate)}
+                              </p>
+                            </div>
+
+                            {/* Duration */}
+                            <div className="flex flex-col">
+                              <p
+                                className="text-sm text-gray-600"
+                                style={{ fontSize: '14px' }}
+                              >
+                                Duration:
+                              </p>
+                              <p
+                                className="text-sm font-semibold text-gray-700"
+                                style={{ fontSize: '13px' }}
+                              >
+                                {card.startDate
+                                  ? calculateDuration(
+                                    card.startDate,
+                                    card.endDate
+                                  )
+                                  : ''}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {lastRemarkName && <div style={{ backgroundColor: '#f3f3f3', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', borderBottomLeftRadius: '10px', padding: 8 }}>
+
+
+                          <strong style={{
+                            fontSize: 10, whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: 100, // you can adjust this width
+                            display: 'inline-block'
+                          }}>{lastRemarkName}</strong>
+                          <p style={{ fontSize: 8 }}>{lastRemark}</p>
+
+                        </div>}
+
+                        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                          {/* Conditional Status Control */}
+                          <div className="mb-1">
+                            {card.workStatus === 'accept' ||
+                              card.workStatus === 'pending' ? (
+                              <div className="relative">
+                                <select
+                                  onChange={(e) =>
+                                    handleStatusChange(card, e.target.value)
+                                  }
+                                  defaultValue=""
+                                  className="text-sm font-semibold pr-8 pl-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                                >
+                                  <option value="" disabled>
+                                    Change Status
+                                  </option>
+                                  {card.workStatus === 'accept' && (
+                                    <>
+                                      <option value="activate">Activate</option>
+                                      <option value="pending">Pending</option>
+                                    </>
+                                  )}
+                                  {card.workStatus === 'pending' && (
+                                    <>
+                                      <option value="activate">Activate</option>
+                                      <option value="cancel">Cancel</option>
+                                    </>
+                                  )}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                                  <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  let nextStatus;
+                                  if (card.workStatus === 'install')
+                                    nextStatus = 'accept';
+                                  else nextStatus = card.workStatus;
+                                  handleStatusChange(card, nextStatus);
+                                }}
+                                className={`text-sm font-semibold px-3 py-1 rounded-md ${statusButtonColor}`}
+                              >
+                                {card?.workStatus === 'install'
+                                  ? 'In Progress'
+                                  : card?.workStatus === 'activate'
+                                    ? 'Activated'
+                                    : card?.workStatus?.charAt(0).toUpperCase() +
+                                    card?.workStatus?.slice(1)}
+                              </button>
+                            )}
+                          </div>
+
+                          <button
+                            onClick={() =>
+                              navigate('/work-view-details', {
+                                state: { data: card },
+                              })
+                            }
+                            className="bg-green-600 text-white px-2 py-1 rounded-md hover:bg-green-700"
+                          >
+                            More Details
+                          </button>
                         </div>
-
-                        <button
-                          onClick={() =>
-                            navigate('/work-view-details', {
-                              state: { data: card },
-                            })
-                          }
-                          className="bg-green-600 text-white px-2 py-1 rounded-md hover:bg-green-700"
-                        >
-                          More Details
-                        </button>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-gray-400 italic">
-                      Empty
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-gray-400 italic">
+                        Empty
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
         </div>
-        </div>
-  )
-}
+      )
+      }
 
-{
-  popupData && (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 border border-gray-300 rounded-lg p-4 shadow-sm">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Work Details</h2>
-        <p>
-          <strong>ID:</strong> {popupData.id}
-        </p>
-        <p>
-          <strong>Product Name:</strong> {popupData.productName}
-        </p>
-        <p>
-          <strong>Service Name:</strong> {popupData.service}
-        </p>
-        <p>
-          <strong>Staff Name:</strong> {popupData.staffName}
-        </p>
-        <p>
-          <strong>Branch Name:</strong> {popupData.branchName}
-        </p>
-        <p>
-          <strong>Client Name:</strong> {popupData.clientName}
-        </p>
-        <p>
-          <strong>Phone Number:</strong> {popupData.phoneNumber}
-        </p>
-        <p>
-          <strong>Sim Number:</strong> {popupData.simNumber}
-        </p>
-        <p>
-          <strong>Vehicle Type:</strong> {popupData.vehicleType}
-        </p>
-        <p>
-          <strong>Date:</strong> {popupData.date}
-        </p>
-        <p>
-          <strong>Status:</strong> {popupData.status}
-        </p>
+      {
+        popupData && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 border border-gray-300 rounded-lg p-4 shadow-sm">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-bold mb-4">Work Details</h2>
+              <p>
+                <strong>ID:</strong> {popupData.id}
+              </p>
+              <p>
+                <strong>Product Name:</strong> {popupData.productName}
+              </p>
+              <p>
+                <strong>Service Name:</strong> {popupData.service}
+              </p>
+              <p>
+                <strong>Staff Name:</strong> {popupData.staffName}
+              </p>
+              <p>
+                <strong>Branch Name:</strong> {popupData.branchName}
+              </p>
+              <p>
+                <strong>Client Name:</strong> {popupData.clientName}
+              </p>
+              <p>
+                <strong>Phone Number:</strong> {popupData.phoneNumber}
+              </p>
+              <p>
+                <strong>Sim Number:</strong> {popupData.simNumber}
+              </p>
+              <p>
+                <strong>Vehicle Type:</strong> {popupData.vehicleType}
+              </p>
+              <p>
+                <strong>Date:</strong> {popupData.date}
+              </p>
+              <p>
+                <strong>Status:</strong> {popupData.status}
+              </p>
 
-        <button
-          onClick={() => setPopupData(null)}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  )
-}
+              <button
+                onClick={() => setPopupData(null)}
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )
+      }
     </div >
   );
-
-  // return (
-  //   <div className="p-6">
-  //     <div className="flex justify-between items-center mb-4">
-  //       <h2 className="text-xl font-bold">Work Records</h2>
-  //       <button
-  //         onClick={onClickRefresh}
-  //         className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
-  //       >
-  //         Refresh
-  //       </button>
-  //     </div>
-
-  //     {['accept'].map((workStatus) => {
-  //       const filteredRecords = workRecords.filter(
-  //         (item) => item.workStatus === workStatus
-  //       );
-
-  //       return (
-  //         <div key={workStatus} className="mb-6">
-  //           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-  //             <h3 className="text-lg font-bold mb-2">Accepted Works</h3>
-  //             <button
-  //               onClick={() => exportToExcel(filteredRecords, 'Accepted_Works')}
-  //               className="bg-green-500 text-white px-4 py-2 mb-2 rounded-lg shadow-md hover:bg-green-600 transition"
-  //             >
-  //               Generate XL
-  //             </button>
-  //           </div>
-  //           <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-  //             <table className="w-full border-collapse border border-gray-300">
-  //               <thead>
-  //                 <tr className="bg-gray-200 whitespace-nowrap">
-  //                   <th className="px-4 py-2">ID</th>
-  //                   <th className="px-4 py-2">Product Name</th>
-  //                   <th className="px-4 py-2">Service Name</th>
-  //                   <th className="px-4 py-2">Staff Name</th>
-  //                   <th className="px-4 py-2">Branch Name</th>
-  //                   <th className="px-4 py-2">Client Name</th>
-  //                   <th className="px-4 py-2">Phone Number</th>
-  //                   <th className="px-4 py-2">IMEI Number</th>
-  //                   <th className="px-4 py-2">Sim Number</th>
-  //                   <th className="px-4 py-2">Start Time</th>
-  //                   <th className="px-4 py-2">End Time</th>
-  //                   <th className="px-4 py-2">Duration</th>
-  //                   <th className="px-4 py-2">Vehicle Type</th>
-  //                   <th className="px-4 py-2">Date</th>
-  //                   <th className="px-4 py-2">Status</th>
-  //                   <th className="px-4 py-2">Action</th>
-  //                 </tr>
-  //               </thead>
-  //               <tbody>
-  //                 {filteredRecords.length > 0 ? (
-  //                   filteredRecords.map((item) => (
-  //                     <tr key={item.id} className="bg-white border-b">
-  //                       <td className="px-4 py-2">{item.id}</td>
-  //                       <td className="px-4 py-2">{item.productName}</td>
-  //                       <td className="px-4 py-2">{item.service}</td>
-  //                       <td className="px-4 py-2">{item.staffName}</td>
-  //                       <td className="px-4 py-2">{item.branchName}</td>
-  //                       <td className="px-4 py-2">{item.clientName}</td>
-  //                       <td className="px-4 py-2">{item.phoneNumber}</td>
-  //                       <td className="px-4 py-2">{item.imeiNumber}</td>
-  //                       <td className="px-4 py-2">{item.simNumber}</td>
-  //                       <td className="px-4 py-2">
-  //                         {convertToIST(item.startDate)}
-  //                       </td>
-  //                       <td
-  //                         className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
-  //                       >
-  //                         {item.endDate ? convertToIST(item.endDate) : '-'}
-  //                       </td>
-  //                       <td
-  //                         className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
-  //                       >
-  //                         {item.startDate
-  //                           ? `${calculateDuration(item.startDate, item.endDate)}`
-  //                           : ''}
-  //                       </td>
-
-  //                       <td className="px-4 py-2">{item.vehicleType}</td>
-  //                       <td className="px-4 py-2">{item.date}</td>
-  //                       <td className="px-4 py-2">
-  //                         <select
-  //                           value={item.workStatus}
-  //                           onChange={(e) =>
-  //                             handleStatusChange(item, e.target.value)
-  //                           }
-  //                           className="border rounded p-1"
-  //                         >
-  //                           {/* <option value="install">Install</option> */}
-  //                           <option value="accept">Accepted</option>
-  //                           <option value="activate">Activated</option>
-  //                         </select>
-  //                       </td>
-  //                       <td className="px-4 py-2 text-center">
-  //                         <FaEye
-  //                           className="cursor-pointer text-blue-500"
-  //                           onClick={() =>
-  //                             navigate('/work-view-details', {
-  //                               state: { data: item },
-  //                             })
-  //                           }
-  //                         />
-  //                       </td>
-  //                     </tr>
-  //                   ))
-  //                 ) : (
-  //                   <tr>
-  //                     <td
-  //                       colSpan="13"
-  //                       className="text-center py-4 text-gray-500"
-  //                     >
-  //                       No data found
-  //                     </td>
-  //                   </tr>
-  //                 )}
-  //               </tbody>
-  //             </table>
-  //           </div>
-  //         </div>
-  //       );
-  //     })}
-
-  //     <div className="flex justify-between gap-4 my-6">
-  //       {cardData.map((item, index) => (
-  //         <div
-  //           key={index}
-  //           className={`flex-1 ${item.color} shadow-md rounded-lg p-4 text-left border border-gray-300`}
-  //           style={{ height: '150px' }}
-  //         >
-  //           <h4
-  //             className="text-lg font-semibold text-gray-700"
-  //             style={{ fontSize: '25px' }}
-  //           >
-  //             {item.title}
-  //           </h4>
-  //           <p
-  //             className="text-xl font-bold text-blue-600"
-  //             style={{ fontSize: '45px', marginTop: '25px' }}
-  //           >
-  //             {workRecordsCount?.[item.key] || 0}
-  //           </p>
-  //         </div>
-  //       ))}
-  //     </div>
-
-  //     {['install'].map((workStatus) => {
-  //       const filteredRecords = workRecords.filter(
-  //         (item) => item.workStatus === workStatus
-  //       );
-
-  //       return (
-  //         <div key={workStatus} className="mb-6 mt-6">
-  //           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-  //             <h3 className="text-lg font-bold mb-2">Installed Works</h3>
-  //             <button
-  //               onClick={() =>
-  //                 exportToExcel(filteredRecords, 'Installed_Works')
-  //               }
-  //               className="bg-green-500 text-white px-4 py-2 mb-2 rounded-lg shadow-md hover:bg-green-600 transition"
-  //             >
-  //               Generate XL
-  //             </button>
-  //           </div>
-  //           <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-  //             <table className="w-full border-collapse border border-gray-300">
-  //               <thead>
-  //                 <tr className="bg-gray-200 whitespace-nowrap">
-  //                   <th className="px-4 py-2">ID</th>
-  //                   <th className="px-4 py-2">Product Name</th>
-  //                   <th className="px-4 py-2">Service Name</th>
-  //                   <th className="px-4 py-2">Staff Name</th>
-  //                   <th className="px-4 py-2">Branch Name</th>
-  //                   <th className="px-4 py-2">Client Name</th>
-  //                   <th className="px-4 py-2">Phone Number</th>
-  //                   <th className="px-4 py-2">IMEI Number</th>
-  //                   <th className="px-4 py-2">Sim Number</th>
-  //                   <th className="px-4 py-2">Start Time</th>
-  //                   <th className="px-4 py-2">End Time</th>
-  //                   <th className="px-4 py-2">Duration</th>
-  //                   <th className="px-4 py-2">Vehicle Type</th>
-  //                   <th className="px-4 py-2">Date</th>
-  //                   <th className="px-4 py-2">Status</th>
-  //                   <th className="px-4 py-2">Action</th>
-  //                 </tr>
-  //               </thead>
-  //               <tbody>
-  //                 {filteredRecords.length > 0 ? (
-  //                   filteredRecords.map((item) => (
-  //                     <tr key={item.id} className="bg-white border-b">
-  //                       <td className="px-4 py-2">{item.id}</td>
-  //                       <td className="px-4 py-2">{item.productName}</td>
-  //                       <td className="px-4 py-2">{item.service}</td>
-  //                       <td className="px-4 py-2">{item.staffName}</td>
-  //                       <td className="px-4 py-2">{item.branchName}</td>
-  //                       <td className="px-4 py-2">{item.clientName}</td>
-  //                       <td className="px-4 py-2">{item.phoneNumber}</td>
-  //                       <td className="px-4 py-2">{item.imeiNumber}</td>
-  //                       <td className="px-4 py-2">{item.simNumber}</td>
-
-  //                       <td className="px-4 py-2">
-  //                         {convertToIST(item.startDate)}
-  //                       </td>
-  //                       <td
-  //                         className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
-  //                       >
-  //                         {item.endDate ? convertToIST(item.endDate) : '-'}
-  //                       </td>
-  //                       <td
-  //                         className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
-  //                       >
-  //                         {item.startDate
-  //                           ? `${calculateDuration(item.startDate, item.endDate)}`
-  //                           : ''}
-  //                       </td>
-
-  //                       <td className="px-4 py-2">{item.vehicleType}</td>
-  //                       <td className="px-4 py-2">{item.date}</td>
-  //                       <td className="px-4 py-2">
-  //                         <select
-  //                           value={item.workStatus}
-  //                           onChange={(e) =>
-  //                             handleStatusChange(item, e.target.value)
-  //                           }
-  //                           className="border rounded p-1"
-  //                         >
-  //                           <option value="install">Install</option>
-  //                           <option value="accept">Accepted</option>
-  //                           {/* <option value="activate">Activated</option> */}
-  //                         </select>
-  //                       </td>
-  //                       <td className="px-4 py-2 text-center">
-  //                         <FaEye
-  //                           className="cursor-pointer text-blue-500"
-  //                           onClick={() =>
-  //                             navigate('/work-view-details', {
-  //                               state: { data: item },
-  //                             })
-  //                           }
-  //                         />
-  //                       </td>
-  //                     </tr>
-  //                   ))
-  //                 ) : (
-  //                   <tr>
-  //                     <td
-  //                       colSpan="13"
-  //                       className="text-center py-4 text-gray-500"
-  //                     >
-  //                       No data found
-  //                     </td>
-  //                   </tr>
-  //                 )}
-  //               </tbody>
-  //             </table>
-  //           </div>
-  //         </div>
-  //       );
-  //     })}
-
-  //     {popupData && (
-  //       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-  //         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-  //           <h2 className="text-xl font-bold mb-4">Work Details</h2>
-  //           <p>
-  //             <strong>ID:</strong> {popupData.id}
-  //           </p>
-  //           <p>
-  //             <strong>Product Name:</strong> {popupData.productName}
-  //           </p>
-  //           <p>
-  //             <strong>Service Name:</strong> {popupData.service}
-  //           </p>
-  //           <p>
-  //             <strong>Staff Name:</strong> {popupData.staffName}
-  //           </p>
-  //           <p>
-  //             <strong>Branch Name:</strong> {popupData.branchName}
-  //           </p>
-  //           <p>
-  //             <strong>Client Name:</strong> {popupData.clientName}
-  //           </p>
-  //           <p>
-  //             <strong>Phone Number:</strong> {popupData.phoneNumber}
-  //           </p>
-  //           <p>
-  //             <strong>Sim Number:</strong> {popupData.simNumber}
-  //           </p>
-  //           <p>
-  //             <strong>Vehicle Type:</strong> {popupData.vehicleType}
-  //           </p>
-  //           <p>
-  //             <strong>Date:</strong> {popupData.date}
-  //           </p>
-  //           <p>
-  //             <strong>Status:</strong> {popupData.status}
-  //           </p>
-
-  //           <button
-  //             onClick={() => setPopupData(null)}
-  //             className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
-  //           >
-  //             Close
-  //           </button>
-  //         </div>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 };
 
 export default BackendSupportHome;

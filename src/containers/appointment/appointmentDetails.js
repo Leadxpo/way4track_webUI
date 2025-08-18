@@ -12,7 +12,7 @@ const AppointmentDetails = () => {
     const fetchAppointmentDetails = async () => {
       try {
         const response = await ApiService.post('/appointment/getAppointmentDetails', {
-          appointmentId: appointmentDetailsFromState.appointmentId,
+          id: appointmentDetailsFromState.appointment_id,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });

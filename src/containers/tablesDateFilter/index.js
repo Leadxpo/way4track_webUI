@@ -294,7 +294,7 @@ useEffect(()=>{
           estimateAmount: item.totalAmount,
           shippingAddress: item.shippingAddress
         }));
-        console.log("rrr:", rrr)
+
         setInvoiceList(rrr); // Assuming the structure is as expected
         setFilteredData(rrr); // Assuming the structure is as expected
       } else {

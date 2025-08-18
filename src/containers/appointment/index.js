@@ -38,7 +38,7 @@ const Appointments = () => {
         '/dashboards/getAllAppointmentDetails',
         payload
       );
-      console.log('rrr', res.data);
+
       if (res.status) {
         const fetchedAppointments = res.data.appointments || [];
         setAppointments(fetchedAppointments);

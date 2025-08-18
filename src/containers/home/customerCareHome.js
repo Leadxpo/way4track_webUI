@@ -240,13 +240,20 @@ const CustomerCareHome = () => {
     };
 
     fetchBranches();
+    fetchAppointments();
+    fetchWork();
   }, []);
 
   const fetchAppointmentsApi = async (phoneNumber) => {
     setLoading(true);
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+      role: localStorage.getItem('role'),
+    };
     try {
       const response = await ApiService.post(
-        '/appointment/getAllAppointmentDetails'
+        '/appointment/getAllAppointmentDetails',payload
       );
       if (response.data) {
         const matched = response.data.filter(
@@ -286,6 +293,52 @@ const CustomerCareHome = () => {
         );
 
         setWork(matched || []);
+      } else {
+        console.error('Error: API response is invalid');
+      }
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const fetchAppointments = async () => {
+    setLoading(true);
+    const payload = {
+      companyCode: initialAuthState.companyCode,
+      unitCode: initialAuthState.unitCode,
+    };
+    try {
+      const response = await ApiService.post(
+        '/appointment/getAllAppointmentDetails',payload
+      );
+      if (response.data) {
+        
+
+        setAppointment(response.data || []);
+      } else {
+        console.error('Error: API response is invalid');
+      }
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const fetchWork = async () => {
+    setLoading(true);
+    try {
+      const response = await ApiService.post(
+        '/technician/getBackendSupportWorkAllocation',
+        {
+          companyCode: initialAuthState.companyCode,
+          unitCode: initialAuthState.unitCode,
+        }
+      );
+      if (response.data) {
+        setWork(response.data || []);
       } else {
         console.error('Error: API response is invalid');
       }

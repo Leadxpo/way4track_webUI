@@ -25,6 +25,8 @@ const Reports = () => {
   const [staffDropData, setStaffDropData] = useState([]);
   const [clientDropData, setClientDropData] = useState([]);
   const [serviceDropData, setServiceDropData] = useState([]);
+  var role = localStorage.getItem("role");
+
 
   useEffect(() => {
     fetchBranchDropDown();
@@ -314,10 +316,10 @@ const Reports = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
+     { role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" && <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">Product Inventory</p>
         <FaDownload className="text-xl text-white cursor-pointer" onClick={() => handleOpenModal('Products Inventory')} />
-      </div>
+      </div>}
 
       <div className="flex justify-between items-center p-4 my-8 border bg-green-600">
         <p className="text-xl text-white font-bold">client Inventory</p>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaEdit, FaPencilAlt, FaPrint } from 'react-icons/fa';
+import { FaEdit, FaPencilAlt } from 'react-icons/fa';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import StaffDetailsPDF from './StaffDetailsPDF';
@@ -72,15 +72,21 @@ const StaffDetails = () => {
       monthlySalary: '90,000',
       officeEmail: 'john.doe@company.com',
       officePhoneNumber: '9876543210',
+      mailAllocation: 'Yes',
       bikeAllocation: 'Yes',
+      bikeName: '',
       mobileAllocation: 'Yes',
+      mobileBrand: '',
       terminationDate: '2021-01-01',
       resignationDate: '2021-01-01',
       finalSettlementDate: '2021-01-01',
+      finalSettlementAmt: '2021-01-01',
+      insuranceCompanyName: '',
+      insuranceNumber: 'INS123456',
       insuranceNumber: 'INS123456',
       insuranceEligibilityDate: '2021-01-01',
       insuranceExpiryDate: '2026-01-01',
-      password: 'securePass123',
+      // password: 'securePass123',
       description: 'Senior Developer at IT Department',
     },
   });
@@ -98,6 +104,22 @@ const StaffDetails = () => {
   });
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
+  const [isTermenationModalOpen, setIsTermenationModalOpen] = useState(false);
+  const [terminationData, setTerminationData] = useState({
+    id: formData?.personnelDetails?.id || "",
+    terminationDate: "",
+    finalSettlementAmt: "",
+    staffStatus: "INACTIVE",
+  });
+
+  const [isResignationModalOpen, setIsResignationModalOpen] = useState(false);
+  const [resignationData, setResignationData] = useState({
+    id: state?.staffDetails?.id,
+    resignationDate: '',
+    finalSettlementAmt: '',
+    staffStatus: 'INACTIVE'
+  });
+
   useEffect(() => {
     const perms = getPermissions('staff');
     setPermissions(perms);
@@ -108,8 +130,6 @@ const StaffDetails = () => {
     setIsPasswordModalOpen(false);
     setIsOtpModalOpen(true);
   };
-
-  console.log(formData.employerDetails, 'employeers');
 
   const handleEdit = (path, data) => {
     navigate(path, { state: { data } });
@@ -175,6 +195,7 @@ const StaffDetails = () => {
             officeEmail: staff.officeEmail || '',
             officePhoneNumber: staff.officePhoneNumber || '',
             bikeAllocation: staff.bikeAllocation || '',
+            bikeName: staff.bikeName || '',
             bikeNumber: staff.bikeNumber || '',
             mobileAllocation: staff.mobileAllocation || '',
             drivingLicence: staff.drivingLicence || '',
@@ -184,10 +205,12 @@ const StaffDetails = () => {
             terminationDate: staff.terminationDate || '',
             resignationDate: staff.resignationDate || '',
             finalSettlementDate: staff.finalSettlementDate || '',
+            finalSettlementAmt: staff.finalSettlementAmt || '',
+            insuranceCompanyName: staff.insuranceCompanyName || '',
             insuranceNumber: staff.insuranceNumber || '',
             insuranceEligibilityDate: staff.insuranceEligibilityDate || '',
             insuranceExpiryDate: staff.insuranceExpiryDate || '',
-            password: staff.password || '',
+            // password: staff.password || '',
             description: staff.description || '',
           },
         });
@@ -257,34 +280,6 @@ const StaffDetails = () => {
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg shadow-md mb-6 p-3">
-      <div className="flex justify-between items-center mb-6">
-        {/* Left: Profile Image & Name */}
-        <div className="flex items-center gap-4">
-          {/* <img
-        src={""}
-        alt="Employee"
-        className="w-16 h-16 rounded-full object-cover shadow-md"
-      />
-      <h3 className="text-2xl font-bold">name</h3> */}
-        </div>
-
-        {/* Right: Print Button */}
-
-        {/* <PDFDownloadLink
-      document={<StaffDetailsPDF staff={formData} />}
-      fileName="Staff_Details.pdf"
-    >
-      {({ loading }) => (
-        <button
-          className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 flex items-center gap-2 border border-gray-300 shadow"
-        >
-          <FaPrint className="text-green-500" />
-          {loading ? "Generating..." : "Print"}
-        </button>
-      )}
-    </PDFDownloadLink> */}
-      </div>
-
       <div>
         <img
           src={staffPhoto || 'logo-square.png'}
@@ -292,7 +287,14 @@ const StaffDetails = () => {
           className="rounded-full w-24 h-24 mx-auto mb-4"
         />
       </div>
-
+      <div className='flex'>
+        <button className="bg-red-500 text-white m-4 bold px-4 py-2 rounded-lg hover:bg-red-800 flex items-center gap-2" onClick={() => (setIsTermenationModalOpen(true))}>
+          Termination
+        </button>
+        <button className="bg-red-500 text-white m-4 bold px-4 py-2 rounded-lg hover:bg-red-300 flex items-center gap-2" onClick={() => (setIsResignationModalOpen(true))}>
+          Resignation
+        </button>
+      </div>
       <DetailsCard
         title="Personnel Details"
         onEdit={() =>
@@ -370,55 +372,6 @@ const StaffDetails = () => {
       >
         <div className="flex flex-col gap-y-3">
           {Object.entries(formData.employerDetails).map(([key, value]) => {
-            if (key === 'password') {
-              return (
-                <div
-                  key={key}
-                  className="flex items-center p-2 rounded gap-4 justify-between bg-white-100 shadow"
-                >
-                  <div className="flex items-center gap-3 flex-1 justify-between mr-3">
-                    <div>
-                      <strong className="text-gray-700 mr-2 min-w-[160px]" style={{ textTransform: 'capitalize' }}>
-                        {key.replace(/([A-Z])/g, ' $1').trim()}:
-                      </strong>
-                      {isEditingPassword ? (
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          className="border p-1 rounded w-full"
-                          value={editedPassword}
-                          onChange={(e) => setEditedPassword(e.target.value)}
-                        />
-                      ) : (
-                        <span className="text-sm font-mono">
-                          {showPassword ? value : '•'.repeat(value.length)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center">
-                      {(role === "HR" || role === "CEO") && <button
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-gray-700 text-sm mr-3"
-                        title={showPassword ? 'Hide Password' : 'Show Password'}
-                      >
-                        {showPassword ? (
-                          <IoIosEye size={18} />
-                        ) : (
-                          <IoIosEyeOff size={18} />
-                        )}
-                      </button>}
-                      {permissions.edit && <button
-                        onClick={() => setIsConfirmModalOpen(true)}
-                        className="text-blue-600 hover:underline text-xs"
-                      >
-                        Edit
-                      </button>}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            // Skip bikeNumber if bikeAllocation is not 'Yes'
             if (
               key === 'bikeNumber' &&
               formData.employerDetails.bikeAllocation !== 'Yes'
@@ -573,6 +526,160 @@ const StaffDetails = () => {
                     className="text-sm px-4 py-1 rounded bg-green-600 text-white"
                   >
                     Verify OTP
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {isTermenationModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 w-[90%] max-w-sm">
+                {/* <h2 className="text-lg font-semibold mb-4">Enter OTP</h2> */}
+                <p className="text-lg font-semibold mb-4">
+                  Termination Form
+                </p>
+                <label className='my-1'>Termination Date</label>
+                <input
+                  type="date"
+                  placeholder="Termination Date"
+                  className="border w-full p-2 mb-4 rounded"
+                  value={terminationData.terminationDate}
+                  onChange={(e) =>
+                    setTerminationData((prev) => ({
+                      ...prev,
+                      terminationDate: e.target.value,
+                    }))
+                  }
+                />
+                <label className='my-1'>Final Settlement Amount</label>
+                <input
+                  type="text"
+                  placeholder="FinalSettlement Amount"
+                  className="border w-full p-2 mb-4 rounded"
+                  value={terminationData.finalSettlementAmt}
+                  onChange={(e) =>
+                    setTerminationData((prev) => ({
+                      ...prev,
+                      finalSettlementAmt: e.target.value,
+                    }))
+                  } />
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setIsTermenationModalOpen(false)}
+                    className="text-sm px-4 py-1 rounded bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const  payload={
+                        id: formData.personnelDetails.id,
+                        terminationDate: terminationData.terminationDate,
+                        finalSettlementAmt:  terminationData.finalSettlementAmt,
+                        staffStatus: "INACTIVE"
+                    }
+                      try {
+                        const endpoint = '/staff/handleStaffDetails';
+                        const response = await ApiService.post(endpoint, payload, {
+                          headers: { 'Content-Type': 'application/json' },
+                        });
+
+                        if (response.status) {
+                          alert('Employer details updated successfully!');
+                          setIsTermenationModalOpen(false)
+                          fetchStaffDetails()
+                          return response.data;
+                        } else {
+                          alert('Failed to update employer details.');
+                          return null;
+                        }
+                      } catch (error) {
+                        console.error('Error updating employer details:', error);
+                        alert('An error occurred while updating employer details.');
+                        return null;
+                      }
+                    }}
+
+                    className="text-sm px-4 py-1 rounded bg-green-600 text-white"
+                  >
+                    Terminate
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {isResignationModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 w-[90%] max-w-sm">
+                {/* <h2 className="text-lg font-semibold mb-4">Enter OTP</h2> */}
+                <p className="text-lg font-semibold mb-4">
+                  Retmination Form
+                </p>
+                <label className='my-1'>Resignation Date</label>
+                <input
+                  type="date"
+                  placeholder="Resignation Date"
+                  className="border w-full p-2 mb-4 rounded"
+                  value={resignationData.resignationDate}
+                  onChange={(e) =>
+                    setResignationData((prev) => ({
+                      ...prev,
+                      resignationDate: e.target.value,
+                    }))
+                  }
+                />
+                <label className='my-1'>Final Settlement Amount</label>
+                <input
+                  type="text"
+                  placeholder="FinalSettlement Amount"
+                  className="border w-full p-2 mb-4 rounded"
+                  value={resignationData.finalSettlementAmt}
+                  onChange={(e) =>
+                    setResignationData((prev) => ({
+                      ...prev,
+                      finalSettlementAmt: e.target.value,
+                    }))
+                  } />
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setIsResignationModalOpen(false)}
+                    className="text-sm px-4 py-1 rounded bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const  payload={
+                        id: formData.personnelDetails.id,
+                        terminationDate: resignationData.resignationDate,
+                        finalSettlementAmt:  resignationData.finalSettlementAmt,
+                        staffStatus: "INACTIVE"
+                    }
+                      try {
+                        const endpoint = '/staff/handleStaffDetails';
+                        const response = await ApiService.post(endpoint, payload, {
+                          headers: { 'Content-Type': 'application/json' },
+                        });
+
+                        if (response.status) {
+                          alert('Employer details updated successfully!');
+                          setIsResignationModalOpen(false)
+                          fetchStaffDetails()
+                          return response.data;
+                        } else {
+                          alert('Failed to update employer details.');
+                          return null;
+                        }
+                      } catch (error) {
+                        console.error('Error updating employer details:', error);
+                        alert('An error occurred while updating employer details.');
+                        return null;
+                      }
+                    }}
+
+                    className="text-sm px-4 py-1 rounded bg-green-600 text-white"
+                  >
+                    Resignation
                   </button>
                 </div>
               </div>

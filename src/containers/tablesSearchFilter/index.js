@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaDownload } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pageTitles } from '../../common/constants';
 import Table from '../../components/Table';
@@ -9,6 +9,8 @@ import receiptsData from '../../mockData/mockReceipts.json';
 import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
+import * as XLSX from 'xlsx';
+
 const TableWithSearchFilter = ({
   type,
   onCreateNew,
@@ -20,7 +22,7 @@ const TableWithSearchFilter = ({
   showEdit = true,
   showDelete = true,
   showDetails = true,
-  showActionColumn=true,
+  showActionColumn = true,
   editText = 'Edit',
   deleteText = 'Delete',
   detailsText = 'More Details',
@@ -39,7 +41,7 @@ const TableWithSearchFilter = ({
   const location = useLocation();
   const clientData = location.state?.clientDetails || {};
   const workData = location.state?.workData || {};
-  const [columnNames,setColumnNames]=useState([])
+  const [columnNames, setColumnNames] = useState([])
   const [qualifiedCount, setQualifiedCount] = useState(0);
 
   useEffect(() => {
@@ -69,14 +71,32 @@ const TableWithSearchFilter = ({
       );
 
       if (response.status) {
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const rrr = response.data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          phoneNumber: item.phoneNumber,
+          clientId: item.clientId,
+          userName: item.userName,
+          clientPhoto: item.clientPhoto,
+          branchName: item.branchName,
+          email: item.email,
+          address: item.address,
+          state: item.state,
+          companyCode: item.companyCode,
+          unitCode: item.unitCode,
+          status: item.status,
+          GSTNumber: item.GSTNumber,
+        }));
+
+        setFilteredData(rrr)
+        // Assuming the structure is as expected
         // const filteredClients = response.data.map(client => ({
         //   clientId: client.clientId,
         //   name: client.name,
         //   email: client.email,
         //   phoneNumber: client.phoneNumber,
         // }));
-  
+
         // setFilteredData(filteredClients);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
@@ -122,7 +142,7 @@ const TableWithSearchFilter = ({
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
-  
+
       if (response.status) {
         const filteredData = response.data.map(({ qualifications, ...rest }) => ({
           ...rest,
@@ -138,8 +158,8 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch client details.');
     }
   }, [searchID, searchName, status, initialAuthState]);
-  
- 
+
+
 
   const getTicketDetailsAgainstSearch = useCallback(async () => {
     try {
@@ -248,7 +268,7 @@ const TableWithSearchFilter = ({
       alert('Failed to fetch vendor details.');
     }
   }, [workData?.serviceOrProduct, searchName, workData?.workAllocationNumber]);
-  
+
   useEffect(() => {
     switch (type) {
       case 'tickets':
@@ -317,6 +337,59 @@ const TableWithSearchFilter = ({
     setStatuses(uniqueStatuses);
   }, [type, filteredData]);
 
+  const handleDownload = (type) => {
+    let data;
+    let filename = type + "output.xlsx";
+
+    switch (type) {
+      case 'vouchers':
+        data = filteredData; // Example mock data, replace with actual API integration if needed
+        break;
+      case 'work-allocations':
+        data = filteredData;
+        break;
+      case 'ledger':
+        data = ledgerData;
+        break;
+      case 'tickets':
+        data = filteredData;
+        break;
+      case 'hiring':
+        data = filteredData;
+        break;
+      case 'receipts':
+        data = filteredData;
+        break;
+      case 'Expenses':
+        data = totalExpenses;
+        break;
+      case 'Total Purchases':
+        data = totalPurchases;
+        break;
+      case 'clients':
+        data = filteredData;
+        break;
+      default:
+        data = [];
+    }
+
+    if (!data || data.length === 0) {
+      alert('No data available to download.');
+      return;
+    }
+
+    try {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, type);
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error generating Excel file:', error);
+      alert('Failed to generate the Excel file. Please try again.');
+    }
+  };
+
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -364,13 +437,13 @@ const TableWithSearchFilter = ({
   const handleHiringSearch = (e) => {
     const inputName = e.target.value;
     setStatusFilter(inputName);
-  
+
     const filtered = data.filter(
       (item) =>
         inputName === '' ||
         item.candidateName.toLowerCase().includes(inputName.toLowerCase())
     );
-  
+
     setFilteredData(filtered);
   };
   const handleSearch = async () => {
@@ -431,20 +504,29 @@ const TableWithSearchFilter = ({
       {/* Create New Button Row */}
 
       <div className="flex justify-end mb-4">
-      {type==="staff"&&(
-     <button
-     className="h-10 px-4 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 hover:cursor-pointer relative"
-     onClick={handleQualified}
-   >
-     Add Staff
-     
-     <span className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-       {qualifiedCount}
-     </span>
-   </button>)}
-        
+        {type === "staff" && (
+          <button
+            className="h-10 px-4 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 hover:cursor-pointer relative"
+            onClick={handleQualified}
+          >
+            Add Staff
+
+            <span className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {qualifiedCount}
+            </span>
+          </button>)}
+
       </div>
       <div className="flex justify-end mb-4">
+        {showDetails && <div className="flex justify-between items-center">
+          <button
+            onClick={() => handleDownload(type)}
+            className="bg-green-700 text-white px-4 py-2 mx-5 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
+          >
+            <FaDownload className="text-white" />
+            Download {type} Excel Sheet
+          </button>
+        </div>}
         {showCreateBtn && (
           <button
             className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
@@ -479,7 +561,7 @@ const TableWithSearchFilter = ({
           />
         </div>
         {/* Search by Name */}
-        
+
         <div className="flex-grow mx-2">
           <input
             type="text"
@@ -501,57 +583,45 @@ const TableWithSearchFilter = ({
             style={{ paddingLeft: '8px' }}
           />
         </div>
-        {type==="hiring"&&
-        <div className="flex-grow mx-2">
-          {showStatusFilter ? (
-            // <select
-            //   value={statusFilter}
-            //   onChange={handleStatusChange}
-            //   className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            // >
-            //   <option value="">All Statuses</option>
-            //   {statuses.map((status, index) => (
-            //     <option key={index} value={status}>
-            //       {status}
-            //     </option>
-            //   ))}
-            // </select>
+        {type === "hiring" &&
+          <div className="flex-grow mx-2">
+            {showStatusFilter && (
+              <select
+                value={status}
+                onChange={handleStatus}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              >
+                <option value="">All Statuses</option>
+                {[
+                  'pending',
+                  'Rejected',
+                  'Qualified',
+                  'APPLIED',
+                  'INTERVIEWED',
+                ].map((statusOption) => (
+                  <option key={statusOption} value={statusOption}>
+                    {statusOption}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
-            <select
-              value={status}
-              onChange={handleStatus}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="">All Statuses</option>
-              {[
-                'pending',
-                'Rejected',
-                'Qualified',
-                'APPLIED',
-                'INTERVIEWED',
-              ].map((statusOption) => (
-                <option key={statusOption} value={statusOption}>
-                  {statusOption}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <select
-              value={statusFilter}
-              onChange={type==="hiring"?handleHiringSearch:handleStatusChange}
-              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
-            >
-              <option value="branch" disabled>
-                Select a Branch
-              </option>
-              {branches.map((branch) => (
-                <option key={branch.id} value={branch.branchName}>
-                  {branch.branchName}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>}
+        }
+        <select
+          value={statusFilter}
+          onChange={type === "hiring" ? handleHiringSearch : handleStatusChange}
+          className="h-12 block w-[200px] mx-4 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+        >
+          <option value="branch" disabled>
+            Select a Branch
+          </option>
+          {branches.map((branch) => (
+            <option key={branch.id} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
         <button
           onClick={handleSearch}
           className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

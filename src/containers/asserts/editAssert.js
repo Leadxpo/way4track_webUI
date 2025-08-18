@@ -18,7 +18,7 @@ const EditAsset = () => {
     id: assetData.id,
     // branchId: assetData.branchId || '',
     assetType: assetData.assetType || '',
-    voucherId: assetData.voucherId || '',
+    // voucherId: assetData.voucherId || '',
     branchId: assetData.branchId || '',
     description: assetData.description || '',
     companyCode: initialAuthState.companyCode,
@@ -26,7 +26,7 @@ const EditAsset = () => {
     unitCode: initialAuthState.unitCode,
     assertsName: assetData.assertsName,
     quantity: assetData.quantity,
-    assertsAmount: assetData.price,
+    assertsAmount: assetData.assertsAmount,
     purchaseDate: assetData.purchaseDate.split('T')[0] || "N/A",
     taxableAmount: assetData.taxableAmount,
 

@@ -116,8 +116,8 @@ const Letters = () => {
     },
     header: {
       textAlign: "center",
-      fontSize: 12,
-      marginBottom: 10, fontFamily: "Times-Roman",
+      fontSize: 20,
+      marginBottom: 20, fontFamily: "Times-Roman",
       fontWeight: "ultrabold",
     },
     headerContainer: {
@@ -3375,25 +3375,26 @@ const Letters = () => {
             </View>
             <Text style={styles.header}>Termination Letter</Text>
 
-            <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row" }]}>
+            <View style={[styles.section, { justifyContent: "space-between", flexDirection: "row",marginBottom:10 }]}>
               <View style={{ width: 200 }}>
                 <Text style={styles.text}>{employee?.name},</Text>
                 <Text style={styles.text}>{employee.staffId}</Text>
                 <Text style={styles.text}>{employee.branch}</Text>
+                <Text style={styles.text}>{employee.designation}</Text>
+                <Text style={styles.text}>{employee.department}</Text>
+
               </View>
               <View style={{ flexWrap: "wrap", textAlign: 'left' }}>
                 <Text style={styles.text}>{todayData.split("T")[0]}</Text>
-                <Text style={styles.text}>{employee.designation}</Text>
-                <Text style={styles.text}>{employee.department}</Text>
               </View>
             </View>
             <View style={styles.section}>
-              <Text style={styles.text}>
+              <Text style={[styles.text,{marginTop:10}]}>
                 This is an official notice that your employment with Sharon Telematics
-                Pvt Ltd. is terminated effective {employee.date} for the following
+                Pvt Ltd. is terminated effective from {employee.terminationDate}, for the following Reasons :
               </Text>
 
-              <Text style={styles.text}> Reasons:</Text>
+              {/* <Text style={[styles.text,{marginTop:10}]}> :</Text> */}
               <Text style={styles.text}>{employee.description}</Text>
             </View>
 
@@ -3402,13 +3403,13 @@ const Letters = () => {
                 Review of Health Benefits to include health coverage company extends
                 to eligible employees.
               </Text>
-              <Text style={styles.text}>
+              <Text style={[styles.text,{marginTop:5}]}>
                 Return of Property: Please list and return any property of the company
                 that you have in your possession. In addition, please provide any
                 passwords and other information pertaining to accessing company
                 systems.
               </Text>
-              <Text style={styles.text}>
+              <Text style={[styles.text,{marginTop:5}]}>
                 Final Paycheck: Your last paycheck will be received within 45 days
                 from the date of your termination.
               </Text>
@@ -3418,15 +3419,15 @@ const Letters = () => {
               I wish you the best in finding new employment.
             </Text>
 
-            <View style={styles.signatureSection}>
-              <View style={styles.signatureBlock}>
-                <Text style={styles.text}>Sincerely,</Text>
+            <View style={[styles.signatureSection,{flexDirection:'row'}]}>
+              <View style={[styles.signatureBlock,{flex:2}]}>
+                <Text style={[styles.text,{marginBottom:10,marginTop:10}]}>Sincerely,</Text>
                 <Text style={styles.text}>{employee.greetingTo}</Text>
                 <Text style={styles.text}>{employee.greetingDesignation}</Text>
                 <Text style={styles.text}>Sharon Telematics Pvt. Ltd.</Text>
                 <Text style={styles.text}>Contact: {employee.greetingPhoneNo}</Text>
               </View>
-              <View style={[styles.signatureBlock, { marginTop: 30 }]}>
+              <View style={[styles.signatureBlock, { marginTop: 30,flex:1}]}>
                 <Text style={styles.text}>Signature:</Text>
                 <Text style={styles.text}>Date:</Text>
               </View>
@@ -3676,7 +3677,10 @@ const Letters = () => {
                 </Text>
               </View>
             </View>
-            <Text style={{ textAlign: 'center', marginTop: 100, textTransform: "uppercase", fontWeight: 'bold', fontSize: 18 }}>
+            <Text style={{ textAlign: 'center', marginTop: 100, textTransform: "uppercase", fontWeight: 'ultrabold', fontSize: 20 }}>
+              Sharotelematics Private Limited
+            </Text>
+            <Text style={{ textAlign: 'center', marginTop: 10, textTransform: "uppercase", fontWeight: 'hairline', fontSize: 16 }}>
               {payslipTitle}
             </Text>
 
@@ -4047,7 +4051,13 @@ const Letters = () => {
             />
           </div>
         )}
-
+<textarea
+              name="description"
+              placeholder="Description"
+              value={formData.description}
+              className="flex justify-between items-center w-full shadow-lg rounded-md p-4 my-8 border border-gray-200"
+              onChange={handleChange}
+            />
         <input
           type="date"
           name="joiningDate"

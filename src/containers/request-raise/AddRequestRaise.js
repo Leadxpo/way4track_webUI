@@ -56,7 +56,7 @@ const AddRequestRaise = () => {
         console.error('Error fetching sub dealers');
       }
     } catch (e) {
-      alert('Error in fetching sub dealers');
+      // alert('Error in fetching sub dealers');
       console.error('Error fetching sub dealers', e);
     }
   };

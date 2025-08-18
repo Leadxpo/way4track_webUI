@@ -17,6 +17,7 @@ const AssetDetails = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
+        console.log("rrr :",response.data)
         if (response.status) {
           setData(response.data || []);
         } else {

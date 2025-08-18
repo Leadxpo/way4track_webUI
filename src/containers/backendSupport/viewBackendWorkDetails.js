@@ -302,6 +302,7 @@ const ViewBackendWorkDetails = () => {
     addSectionTitle('Product Details');
     addField('Product Name', editedRecord.productName);
     addField('IMEI Number', editedRecord.imeiNumber);
+    addField('SIM Number', editedRecord.simNumber);
 
     // Vehicle Information
     addSectionTitle('Vehicle Information');
@@ -437,6 +438,13 @@ const ViewBackendWorkDetails = () => {
               editable={isEditing}
               onChange={handleChange}
               field="imeiNumber"
+            />
+            <DetailRow
+              label="SIM Number"
+              value={editedRecord.simNumber}
+              editable={isEditing}
+              onChange={handleChange}
+              field="simNumber"
             />
           </Section>
 
