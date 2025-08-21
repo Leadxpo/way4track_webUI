@@ -138,7 +138,7 @@ export const menuOptions = [
     icon: <img src="./vouchers.png" />,
     route: '/vouchers',
   },
-  role?.toLowerCase() === "branch manager" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
+  // role?.toLowerCase() === "branch manager" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
   // role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" &&
    {
      name: 'Reports', icon: <img src="./reports.png" />, route: '/products-inventory' 
@@ -153,7 +153,7 @@ export const menuOptions = [
     icon: <img src="./work_allocation.png" />,
     route: '/work_allocation',
   },
-  hasPermission(permission, "invoice", "view") && { name: 'Invoices', icon: <img src="./invoices.png" />, route: '/invoice' },
+  // hasPermission(permission, "invoice", "view") && { name: 'Invoices', icon: <img src="./invoices.png" />, route: '/invoice' },
   hasPermission(permission, "estimate", "view") && {
     name: 'Estimate',
     icon: <img src="./estimate.png" />,

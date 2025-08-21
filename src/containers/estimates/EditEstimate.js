@@ -127,6 +127,8 @@ Warranty Claims:
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState('');
 
+  
+
   const changeServeProd = (index, e) => {
     handleProductItemChange(index, e);
     const value = e.target.value;
@@ -173,6 +175,22 @@ Warranty Claims:
     fetchEstimation();
   }, []);
 
+  useEffect(()=>{
+    if (formData.supplyState===formData.taxableState) {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '9',
+        scstPercentage: '9',
+      }));
+      
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '18',
+        scstPercentage: '',
+      }));
+    }
+  },[formData.supplyState,formData.taxableState,formData.isGST])
 
   const fetchClients = async () => {
     try {

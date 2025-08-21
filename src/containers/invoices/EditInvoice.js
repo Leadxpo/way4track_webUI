@@ -78,7 +78,7 @@ const EditInvoice = () => {
     clientId: '',
     email: '',
     clientAddress: '',
-    billingAddress: '',
+    buildingAddress: '',
     shippingAddress: '',
     taxableState: '',
     supplyState: '',
@@ -89,6 +89,7 @@ const EditInvoice = () => {
     tdsPercentage: '',
     includeTax: '',
     invoicePrefix: '',
+    invoiceId: '',
     CGST: '',
     SCST: '',
     TDS: '',
@@ -106,7 +107,7 @@ const EditInvoice = () => {
         description: '',
       },
     ],
-    terms: termandcondition,
+    description: termandcondition,
     totalAmount: 0,
     branchId: '',
     accountId: '',
@@ -219,7 +220,7 @@ const EditInvoice = () => {
       clientNumber: selectedClient.phoneNumber || '',
       email: selectedClient.email || '',
       clientAddress: selectedClient.address || '',
-      billingAddress: selectedClient.address || '',
+      buildingAddress: selectedClient.address || '',
       shippingAddress: selectedClient.address || '',
       clientId: selectedClient.clientId || '',
     }));
@@ -347,16 +348,16 @@ const EditInvoice = () => {
     const estimateDto = {
       id: formData.id,
       clientId: formData.clientId,
-      buildingAddress: formData.billingAddress,
+      buildingAddress: formData.buildingAddress,
       shippingAddress: formData.shippingAddress,
       taxableState: formData.taxableState,
       supplyState: formData.supplyState,
       estimateDate: formData.estimateDate,
       expireDate: formData.expireDate,
       productOrService: formData.items.map((item) => item.name).join(', '),
-      description: formData.terms,
+      description: formData.description,
       totalAmount: formData.items.reduce(
-        (total, item) => total + parseFloat(item.amount || 0),
+        (total, item) => total + parseFloat(item.totalCost || 0),
         0
       ),
       companyCode: initialAuthState.companyCode,
@@ -366,6 +367,7 @@ const EditInvoice = () => {
       SCST: formData.SCST || 0,
       CGST: formData.CGST || 0,
       TDS: formData.TDS || 0,
+      invoiceId:formData.invoiceId,
       invoicePrefix: formData.invoicePrefix,
       quantity: formData.items.reduce(
         (total, item) => total + parseInt(item.quantity, 10),
@@ -398,7 +400,7 @@ const EditInvoice = () => {
     const pdfData = {
       ...estimateDto,
       clientName: client ? client.name : 'Unknown',
-      clientGST: client ? client.gstNumber : '',
+      clientGST: client ? client.GSTNumber : '',
       branchDetails,
     };
     // Generate PDF as Binary (Blob → File)
@@ -462,12 +464,6 @@ const EditInvoice = () => {
         JSON.stringify(estimateDto.productDetails)
       );
 
-      console.log('--- FormData Debug Start ---');
-      for (let pair of formDataPayload.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
-      console.log('--- FormData Debug End ---');
-
       // console.log('formDataPayload! estimate estimateeeee5',formDataPayload);
       // Send FormData with Binary PDF
       await ApiService.post(
@@ -478,7 +474,7 @@ const EditInvoice = () => {
         }
       );
       alert('Estimate updated successfully!');
-      navigate('/invoice');
+      // navigate('/invoice');
     } catch (err) {
       console.error('Failed to save estimate:', err);
       alert('Failed to save estimate!', err);
@@ -537,12 +533,12 @@ console.log("rrr :",data)
           companyCode: data.companyCode,
           description: data.description,
           estimateDate: data.estimateDate,
-          estimateId: data.estimateId,
           invoicePdfUrl: data.invoicePdfUrl,
           expireDate: data.expireDate,
           id: data.id,
           invoiceId: data.invoiceId,
           invoicePdfUrl: data.invoicePdfUrl,
+          invoicePrefix:data.invoicePrefix,
           productOrService: data.productOrService,
           items: data.products,
           unitCode: data.unitCode,

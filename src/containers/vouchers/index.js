@@ -50,7 +50,7 @@ const Vouchers = () => {
         });
 
         if (response.status) {
-          console.log('qqqqqqq', response.data);
+
           setVoucherList(response.data);
           setFilteredData(response.data); // show all vouchers initially
         } else {

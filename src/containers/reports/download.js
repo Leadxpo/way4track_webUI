@@ -8,7 +8,6 @@ import { TaxInvoicePDF } from '../../components/TaxInvoicePdf';
 import { PurchaseOrderPDF } from '../../common/commonUtils';
 
 
-
 const DownloadComponent = () => {
   const location = useLocation();
   const { filterData = [], name } = location.state || {};

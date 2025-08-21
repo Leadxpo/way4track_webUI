@@ -359,7 +359,7 @@ export const EstimatePDF = ({ data }) => (
               </Text>
             </View>
             <View style={estStyles.detailsTextBlock}>
-              <Text style={estStyles.detailsText}>Pro Forma Invoice Date</Text>
+              <Text style={estStyles.detailsText}>Invoice Date</Text>
               <Text style={estStyles.detailsTextBold}>
                 :{data.estimateDate}
               </Text>

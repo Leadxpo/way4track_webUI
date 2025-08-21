@@ -6,7 +6,7 @@ import { initialAuthState } from '../../services/ApiService';
 const VendorProfile = () => {
   const location = useLocation();
   const vendorDetailsFromState = location.state?.vendorDetails || {};
-  console.log(vendorDetailsFromState, "+============")
+
   const [vendorDetails, setVendorDetails] = useState({});
   const [vendorDetailsData, setVendorDetailsData] = useState([]);
   const [photoData, setPhotoData] = useState([]);
@@ -26,8 +26,11 @@ const VendorProfile = () => {
             name: vendor.name,
             phone: vendor.vendorPhoneNumber,
             email: vendor.emailId,
+            state: vendor.state,
+            bankDetails: vendor.bankDetails,
             alternatePhoneNumber: vendor.alternatePhoneNumber,
             aadharNumber: vendor.aadharNumber,
+            GSTNumber: vendor.GSTNumber,
             address: vendor.address,
             vendorPhoto: vendor.vendorPhoto,
             branch: vendor.branchName,
@@ -100,31 +103,46 @@ const VendorProfile = () => {
     <div className="p-6 space-y-8">
       {/* Vendor Information */}
       <p className="font-bold text-xl">Vendor ID: {vendorDetailsData[0]?.vendorId || 'N/A'}</p>
-      <div className="flex items-start space-x-8 bg-white p-6 rounded-lg shadow-md">
+      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
         <img
           src={vendorDetails.vendorPhoto}
           alt="Vendor"
-          className="w-32 h-32 rounded-full object-cover"
+          className="w-36 h-36 rounded-full object-cover shadow-md"
         />
-        <div className="space-y-2">
-          <p className="text-gray-800 font-bold text-xl">
-            Vendor Name : {vendorDetails.name}
-          </p>
-          <p className="text-gray-800">Phone number : {vendorDetails.phone}</p>
-          <p className="text-gray-800">Email : {vendorDetails.email}</p>
-          <p className="text-gray-800">
-            Alternate Phone number : {vendorDetails.alternatePhoneNumber}
-          </p>
-          {/* <p className="text-gray-800">Branch : {vendorDetails.branch}</p> */}
-          <p className="text-gray-800">
-            Aadhar Number : {vendorDetails.aadharNumber}
-          </p>
-          <p className="text-gray-800">Address : {vendorDetails.address}</p>
+
+        <div className="w-full space-y-3">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {vendorDetails.name}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-gray-700 text-sm">
+            <div>
+              <span className="font-medium">📞 Phone:</span> {vendorDetails.phone}
+            </div>
+            <div>
+              <span className="font-medium">📧 Email:</span> {vendorDetails.email}
+            </div>
+            <div>
+              <span className="font-medium">📱 Alternate Phone:</span> {vendorDetails.alternatePhoneNumber || "N/A"}
+            </div>
+            <div>
+              <span className="font-medium">🆔 Aadhar:</span> {vendorDetails.aadharNumber || "N/A"}
+            </div>
+            <div>
+              <span className="font-medium">🧾 GST:</span> {vendorDetails.GSTNumber || "N/A"}
+            </div>
+            <div>
+              <span className="font-medium">🏦 Bank:</span> {vendorDetails.bankDetails || "N/A"}
+            </div>
+            <div className="md:col-span-2">
+              <span className="font-medium">📍 Address:</span> {vendorDetails.address || "N/A"}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Product Cards */}
-      <div className="flex space-x-4">
+      {/* <div className="flex space-x-4">
         {photoData.map((product, index) => (
           <div
             key={index}
@@ -140,10 +158,10 @@ const VendorProfile = () => {
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Vendor Pitchers Table */}
-      <p className="font-bold text-xl">Vendor Pitchers</p>
+      {/* <p className="font-bold text-xl">Vendor Pitchers</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
@@ -181,7 +199,7 @@ const VendorProfile = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       {/* Save and Cancel Buttons */}
       {/* <div className="flex justify-center space-x-4">

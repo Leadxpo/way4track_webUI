@@ -89,21 +89,48 @@ useEffect(()=>{
     }
   };
 
-  const handleSearchInvoice = () => {
-    const searchQuery = searchInvoice.toLowerCase().trim();
-
-    if (searchQuery === '') {
-      setFilteredData(subdealerList); // Reset to original data
-    } else {
-      const filteredData = subdealerList.filter((item) =>
-        Object.values(item).some((value) =>
-          String(value).toLowerCase().includes(searchQuery)
-        )
-      );
-      setFilteredData(filteredData);
+  const parseEstimateDate = (rawDateStr) => {
+    if (!rawDateStr) return null;
+  
+    try {
+      const [datePart] = rawDateStr.split(';'); // e.g., "19/07/25"
+      const [day, month, shortYear] = datePart.split('/');
+  
+      const year = parseInt(shortYear, 10);
+      const fullYear = year < 50 ? 2000 + year : 1900 + year; // e.g., "25" → 2025
+  
+      return new Date(fullYear, parseInt(month, 10) - 1, parseInt(day, 10)); // month is 0-based
+    } catch (err) {
+      return null;
     }
   };
+  
+const handleSearchInvoice = () => {
+  const searchQuery = searchInvoice.toLowerCase().trim();
+  const fromDate = dateFrom ? new Date(dateFrom) : null;
+  const toDate = dateTo ? new Date(dateTo) : null;
 
+  const filtered = invoiceList.filter((item) => {
+    const matchesSearch =
+      searchQuery === '' ||
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(searchQuery)
+      );
+
+    const estimateDate = item.date ? parseEstimateDate(item.date) : null;
+
+    const matchesDate =
+      (!fromDate || (estimateDate && estimateDate >= fromDate)) &&
+      (!toDate || (estimateDate && estimateDate <= toDate));
+
+      console.log("rrr:",matchesSearch)
+
+    return matchesSearch && matchesDate;
+  });
+
+  setFilteredData(filtered);
+};
+    
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
@@ -226,8 +253,8 @@ useEffect(()=>{
           requestId: item.requestId,
           requestNumber: item.requestNumber,
           branchName: item.branchName,
-          branchId: item.req_branch_id,
           requestType: item.requestType,
+          RequestFrom: item.RequestFrom,
           status: item.status,
         }));
 
@@ -537,6 +564,33 @@ useEffect(()=>{
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
             />
           </div>
+          {showDateFilters && (
+            <div className="flex-grow mr-2">
+              <input
+                type="date"
+                id="dateFrom"
+                value={dateFrom}
+                placeholder="From"
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+          {showDateFilters && (
+            <div className="flex-grow mx-2">
+              <input
+                type="date"
+                id="dateTo"
+                value={dateTo}
+                placeholder="To"
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+                style={{ paddingLeft: '8px' }}
+              />
+            </div>
+          )}
+
           <button
             onClick={handleSearchInvoice}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

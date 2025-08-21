@@ -221,7 +221,7 @@ export const EstimatePDF = ({ data }) => {
           <View style={styles.detailsRow}>
             <View style={styles.detailsColumnLeft}>
               <Text style={styles.detailsText}>Quotation No.: {data.estimateId}</Text>
-              <Text style={styles.detailsText}>Pro Forma Quotation Date: {formatDate(data.estimateDate)}</Text>
+              <Text style={styles.detailsText}>Quotation Date: {formatDate(data.estimateDate)}</Text>
             </View>
             <View style={styles.detailsColumnRight}>
               <Text style={styles.detailsText}>Place of Supply: {data.supplyState}</Text>
@@ -232,6 +232,7 @@ export const EstimatePDF = ({ data }) => {
               <Text style={styles.detailsText}>Bill To</Text>
               <Text style={styles.detailsText}>{data.clientName}</Text>
               <Text style={styles.detailsText}>{data.buildingAddress}</Text>
+              <Text style={styles.detailsText}>{data.clientGST}</Text>
             </View>
             <View style={styles.detailsColumnRight}>
               <Text style={styles.detailsText}>Shipping To</Text>

@@ -4,8 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
-import { FaSearch } from 'react-icons/fa';
-import { FaEllipsisV } from 'react-icons/fa';
+import { FaSearch,FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import DateConvert from '../../components/dateConvert';
 
@@ -48,6 +47,7 @@ const SalesVisit = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // Check if there's workAllocation data passed through location.state
+  const [salesDetails, setSalesDetails] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [paidAmt, setPaidAmt] = useState(0);
@@ -62,13 +62,66 @@ const SalesVisit = () => {
   const [staff, setStaff] = useState([]);
   const [isReload, setIsReload] = useState([]);
   const [permissions, setPermissions] = useState({});
+  const [filters, setFilters] = useState({
+    phoneNumber: "",
+    staffName: "",
+    branchName: "",
+    leadStatus: "",
+    fromDate: "",
+    toDate: "",
+  });
 
+  const [filteredData, setFilteredData] = useState(salesDetails);
 
   const [isOpen, setIsOpen] = useState(false);
   const [popupData, setPopupData] = useState(null);
 
-  const [salesDetails, setSalesDetails] = useState([]);
   //Sales Data fetching
+
+  useEffect(() => {
+    let data = [...salesDetails];
+
+    if (filters.phoneNumber) {
+      data = data.filter((item) =>
+        item.phoneNumber?.toLowerCase().includes(filters.phoneNumber.toLowerCase())
+      );
+    }
+
+    if (filters.staffName) {
+      data = data.filter((item) =>
+        item.staffName?.toLowerCase().includes(filters.staffName.toLowerCase())
+      );
+    }
+
+    if (filters.branchName) {
+      data = data.filter((item) =>
+        item.branchName?.toLowerCase().includes(filters.branchName.toLowerCase())
+      );
+    }
+
+    if (filters.leadStatus) {
+      data = data.filter((item) =>
+        item.leadStatus?.toLowerCase().includes(filters.leadStatus.toLowerCase())
+      );
+    }
+
+    if (filters.fromDate && filters.toDate) {
+      const from = new Date(filters.fromDate);
+      const to = new Date(filters.toDate);
+
+      data = data.filter((item) => {
+        const createdAt = new Date(item.createdAt);
+        return createdAt >= from && createdAt <= to;
+      });
+    }
+
+    setFilteredData(data);
+  }, [filters, salesDetails]);
+
+  // 📌 Helper for updating filters
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -305,7 +358,7 @@ const SalesVisit = () => {
   }, []);
 
   const generateExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(salesDetails);
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Visits');
     XLSX.writeFile(workbook, 'Sales_Visits.xlsx');
@@ -317,30 +370,58 @@ const SalesVisit = () => {
         <p className="text-xl font-bold">Sales Visits</p>
       </div>
 
-      <div className="flex mb-4">
-        <input
-          type="text"
-          placeholder="Staff ID:"
-          className="h-12 block w-1/2 border border-gray-500 px-2 rounded"
-          style={{ height: '47px' }}
-        />
-        <input
-          type="text"
-          placeholder="Company Name:"
-          className="h-12 block w-1/2 border border-gray-500 px-2 mx-2 rounded"
-        />
+      <div className="grid grid-cols-3 gap-2 mb-4">
+  <input
+    type="text"
+    placeholder="Client Phone Number"
+    value={filters.phoneNumber}
+    onChange={(e) => handleFilterChange("phoneNumber", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  />
+  <input
+    type="text"
+    placeholder="Staff Name"
+    value={filters.staffName}
+    onChange={(e) => handleFilterChange("staffName", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  />
+  <input
+    type="text"
+    placeholder="Branch Name"
+    value={filters.branchName}
+    onChange={(e) => handleFilterChange("branchName", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  />
 
-        <button className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center ml-2">
-          <FaSearch />
-        </button>
-        <button
-          className="h-12 px-6 bg-green-600 text-white rounded-md flex items-center ml-2"
-          onClick={generateExcel}
-        >
-          Generate XL
-        </button>
-      </div>
+  {/* 🔽 Lead Status Select */}
+  <select
+    value={filters.leadStatus}
+    onChange={(e) => handleFilterChange("leadStatus", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  >
+    <option value="">Select Status</option>
+    <option value="allocated">ALLOCATED</option>
+    <option value="customer agreed">CUSTOMER AGREED</option>
+    <option value="incomplete">INCOMPLETE</option>
+    <option value="paymentPending">PAYMENT_PENDING</option>
+    <option value="partiallyPaid">PARTIALLY_PAID</option>
+    <option value="completed">COMPLETED</option>
+  </select>
 
+  <input
+    type="date"
+    value={filters.fromDate}
+    onChange={(e) => handleFilterChange("fromDate", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  />
+  <input
+    type="date"
+    value={filters.toDate}
+    onChange={(e) => handleFilterChange("toDate", e.target.value)}
+    className="border border-gray-500 px-2 rounded h-10"
+  />
+  <button color='#333333' className='bg-green-300 h-10 p-2 my-2 rounded' onClick={()=>generateExcel()}>Generate Excel</button>
+</div>
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
         {salesDetails?.length === 0 ? (
           <div className="text-center text-gray-500 text-lg p-5">
@@ -366,11 +447,11 @@ const SalesVisit = () => {
               </tr>
             </thead>
             <tbody>
-              {salesDetails?.map((item, index) => {
-                const formatDate = (dateString) => {
-                  const [year, month, day] = dateString.split("T")[0].split("-");
-                  return `${day}-${month}-${year}`;
-                };
+              {filteredData?.map((item, index) => {
+                // const formatDate = (dateString) => {
+                //   const [year, month, day] = dateString.split("T")[0].split("-");
+                //   return `${day}-${month}-${year}`;
+                // };
                 return (
                   <tr
                     key={item.id}

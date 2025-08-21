@@ -126,6 +126,23 @@ Warranty Claims:
     Array(formData.items.length).fill('')
   );
 
+  useEffect(()=>{
+    if (formData.supplyState===formData.taxableState) {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '9',
+        scstPercentage: '9',
+      }));
+      
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '18',
+        scstPercentage: '',
+      }));
+    }
+  },[formData.supplyState,formData.taxableState,formData.isGST])
+
   useEffect(() => {
     const getEstimatesPrefix = async () => {
       try {
@@ -510,9 +527,10 @@ Warranty Claims:
     setFormData((prevData) => ({
       ...prevData,
       cgstPercentage: '',
-      scstPercentage: '',
+      scstPercentage:'',
       CGST: '',
       SCST: '',
+      isGST:false
     }));
   }, [formData.supplyState, formData.taxableState])
 
@@ -923,8 +941,6 @@ Warranty Claims:
                 onChange={() => {
                   setFormData((prevData) => ({
                     ...prevData,
-                    cgstPercentage: '',
-                    scstPercentage: '',
                     CGST: '',
                     SCST: '',
                     isGST: !formData.isGST

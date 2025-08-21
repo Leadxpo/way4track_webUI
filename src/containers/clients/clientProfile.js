@@ -52,6 +52,7 @@ const ClientProfile = () => {
             name: client.name,
             phoneNumber: client.phoneNumber,
             email: client.email,
+            GSTNumber: client.GSTNumber,
             dob: client.dob,
             address: client.address,
             gstNumber: client.gstNumber,
@@ -124,15 +125,15 @@ const ClientProfile = () => {
           <p className="text-gray-800">
             Phone number : {clientDetails.phoneNumber}
           </p>
-          <p className="text-gray-800">Email : {clientDetails.email}</p>
+          <p className="text-gray-800">Email : {clientDetails.email || "N/A"}</p>
           {/* <p className="text-gray-800">
             Customer Branch : {clientDetails.branch}
           </p> */}
-          {/* <p className="text-gray-800">
-            GST Number : {clientDetails.gstNumber}
-          </p> */}
+          <p className="text-gray-800">
+            GST Number : {clientDetails.GSTNumber || "N/A"}
+          </p>
           {/* <p className="text-gray-800">Joining Date : {clientDetails.joiningDate}</p> */}
-          <p className="text-gray-800">Address : {clientDetails.address}</p>
+          <p className="text-gray-800">Address : {clientDetails.address || "N/A"}</p>
         </div>
       </div>
 
@@ -202,9 +203,10 @@ const ClientProfile = () => {
         <div><strong>Product Name:</strong> {selectedRow.productName}</div>
         <div><strong>Product Type:</strong> {selectedRow.pt_type || 'N/A'}</div>
         <div><strong>Service:</strong> {selectedRow.service || 'N/A'}</div>
-        <div><strong>Payment Status:</strong> {selectedRow.paymentStatus}</div>
+        <div><strong>Technician:</strong> {selectedRow.staff_name +"( "+selectedRow.staff_staff_id+" )" || 'N/A'}</div>
         <div><strong>Total Amount:</strong> {selectedRow.totalAmount ?? 'N/A'}</div>
         <div><strong>Paid Amount:</strong> {selectedRow.paidAmount ?? 'N/A'}</div>
+        <div><strong>Payment Status:</strong> {selectedRow.paymentStatus}</div>
         <div><strong>Work Status:</strong> {selectedRow.workStatus}</div>
         <div><strong>Start Date:</strong> {new Date(selectedRow.ve_start_date).toLocaleString()}</div>
         <div><strong>Installation Address:</strong> {selectedRow.ve_installation_address}</div>

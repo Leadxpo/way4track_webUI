@@ -46,6 +46,7 @@ const RequestRaise = () => {
           branchName: item.branchName,
           branchId: item.req_branch_id,
           requestType: item.requestType,
+          RequestTo: item.RequestTo,
           requestDate: item.requestDate,
           status: item.status,
         }));
@@ -215,10 +216,10 @@ const RequestRaise = () => {
                         branchName
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        branchId
+                        requestType
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
-                        requestType
+                        requestTo
                       </th>
                       <th className="px-4 py-3 border capitalize whitespace-nowrap min-w-[120px]">
                         requestData
@@ -260,10 +261,10 @@ const RequestRaise = () => {
                             {record.branchName || '-'}
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                            {record.branchId}
+                            {record.requestType}
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                            {record.requestType}
+                            {record.RequestTo}
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
                             {DateConvert(record.requestDate) }

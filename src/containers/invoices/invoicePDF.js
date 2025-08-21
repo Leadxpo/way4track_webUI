@@ -161,7 +161,7 @@ export const InvoicePDF = ({ data }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    console.log("rrr :", data)
+    console.log("pdf rrrr :", data)
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
@@ -225,7 +225,7 @@ export const InvoicePDF = ({ data }) => {
           <View style={styles.detailsRow}>
             <View style={styles.detailsColumnLeft}>
               <Text style={styles.detailsText}>Invoice No.: {data.invoiceId}</Text>
-              <Text style={styles.detailsText}>Pro Forma Invoice Date: {formatDate(data.estimateDate)}</Text>
+              <Text style={styles.detailsText}>Invoice Date: {formatDate(data.estimateDate)}</Text>
             </View>
             <View style={styles.detailsColumnRight}>
               <Text style={styles.detailsText}>Place of Supply: {data.supplyState}</Text>
@@ -238,6 +238,7 @@ export const InvoicePDF = ({ data }) => {
               <Text style={styles.detailsText}>Bill To</Text>
               <Text style={styles.detailsText}>{data.clientName}</Text>
               <Text style={styles.detailsText}>{data.buildingAddress}</Text>
+              <Text style={styles.detailsText}>{data.clientGST}</Text>
             </View>
             <View style={styles.detailsColumnRight}>
               <Text style={styles.detailsText}>Shipping To</Text>
@@ -400,14 +401,15 @@ export const InvoicePDF = ({ data }) => {
             </View>
 
             <View style={styles.footerRight}>
-            <Text style={styles.footerTitle}>{parseFloat(data.totalAmount).toFixed(2)} RS</Text>
-              {data.isTDS && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.tdsPercentage) / 100).toFixed(2)} Rs</Text>}
-              {(data.taxableState !== data.supplyState && data.isGST) && <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
+              <Text style={styles.footerTitle}>{parseFloat(totalCost).toFixed(2)} RS</Text>
+              {data.isTDS && <Text style={styles.footerTitle}>{(totalCost * parseFloat(data?.tdsPercentage) / 100).toFixed(2)} Rs</Text>}
+              {(data.taxableState !== data.supplyState && data.isGST) && <Text style={styles.footerTitle}>{(totalCost * parseFloat(data?.cgstPercentage) / 100).toFixed(2)} Rs</Text>}
               {(data.taxableState === data.supplyState && data.isGST) &&
                 <>
-                  <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.cgstPercentage) / 100).toFixed(2)} Rs</Text>
-                  <Text style={styles.footerTitle}>{(data.totalAmount * parseFloat(data.scstPercentage) / 100).toFixed(2)} Rs</Text>
+                  <Text style={styles.footerTitle}>{(totalCost * parseFloat(data?.cgstPercentage) / 100).toFixed(2)} Rs</Text>
+                  <Text style={styles.footerTitle}>{(totalCost * parseFloat(data?.scstPercentage) / 100).toFixed(2)} Rs</Text>
                 </>}
+
               <Text style={styles.amountDue}>Amount Due: {totalAmount.toFixed(2)} RS</Text>
 
               <View style={styles.signatureBlock}>

@@ -82,7 +82,7 @@ const AddEditInvoice = () => {
     estimateDate: '',
     expiryDate: '',
     cgstPercentage: '',
-    scstPercentage: '',
+    scstPercentage: '9',
     tdsPercentage: '',
     includeTax: '',
     invoicePrefix: '',
@@ -268,6 +268,24 @@ const AddEditInvoice = () => {
       }));
     }
   };
+
+  useEffect(()=>{
+    if (formData.supplyState===formData.taxableState) {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '9',
+        scstPercentage: '9',
+      }));
+      
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        cgstPercentage: '18',
+        scstPercentage: '',
+      }));
+    }
+  },[formData.supplyState,formData.taxableState,formData.isGST])
+  
   const handlePrefixChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -516,9 +534,10 @@ const AddEditInvoice = () => {
     setFormData((prevData) => ({
       ...prevData,
       cgstPercentage: '',
-      scstPercentage: '',
+      scstPercentage:'',
       CGST: '',
       SCST: '',
+      isGST:false
     }));
   }, [formData.supplyState, formData.taxableState])
 
@@ -928,7 +947,7 @@ const AddEditInvoice = () => {
                   setFormData((prevData) => ({
                     ...prevData,
                     cgstPercentage: '',
-                    scstPercentage: '',
+                    scstPercentage: '9',
                     CGST: '',
                     SCST: '',
                     isGST: !formData.isGST

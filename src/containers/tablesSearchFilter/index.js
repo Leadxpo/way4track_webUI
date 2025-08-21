@@ -32,6 +32,9 @@ const TableWithSearchFilter = ({
   const [searchID, setSearchID] = useState('');
   const [searchName, setSearchName] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [branchFilter, setBranchFilter] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -52,18 +55,18 @@ const TableWithSearchFilter = ({
   }, []);
   const ticketData = location.state?.ticketsData || {};
   const hiringData = location.state?.hiringData || {};
-  if (hiringData) {
-    console.log('fgsgs hiringData', hiringData);
-  }
   const voucherData = location.state?.voucherData || {};
 
   const getSearchDetailClient = useCallback(async () => {
+    console.log("rrr:"+fromDate)
     try {
       const response = await ApiService.post(
         '/dashboards/getSearchDetailClient',
         {
           clientId: searchID,
-          branchName: localStorage.getItem("branchName"),
+          branchName:branchFilter,
+          fromDate:fromDate,
+          toDate:toDate,
           name: searchName,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
@@ -76,28 +79,15 @@ const TableWithSearchFilter = ({
           name: item.name,
           phoneNumber: item.phoneNumber,
           clientId: item.clientId,
-          userName: item.userName,
-          clientPhoto: item.clientPhoto,
-          branchName: item.branchName,
+          branchName: item.branch,
           email: item.email,
           address: item.address,
           state: item.state,
-          companyCode: item.companyCode,
-          unitCode: item.unitCode,
           status: item.status,
-          GSTNumber: item.GSTNumber,
+          GSTNumber: item.gstNumber,
         }));
 
         setFilteredData(rrr)
-        // Assuming the structure is as expected
-        // const filteredClients = response.data.map(client => ({
-        //   clientId: client.clientId,
-        //   name: client.name,
-        //   email: client.email,
-        //   phoneNumber: client.phoneNumber,
-        // }));
-
-        // setFilteredData(filteredClients);
       } else {
         alert(response.data.message || 'Failed to fetch client details.');
       }
@@ -105,33 +95,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName, clientData?.branchName]);
-
-  // const getHiringSearchDetails = useCallback(async () => {
-  //   try {
-  //     const response = await ApiService.post('/hiring/getHiringSearchDetails', {
-  //       hiringId: searchID,
-  //       candidateName: searchName,
-  //       status: status,
-  //       companyCode: initialAuthState?.companyCode,
-  //       unitCode: initialAuthState?.unitCode,
-  //     });
-  // console.log("jkl",response);
-  //     // console.log("qazwsxedc",searchID, searchName, hiringData?.status);
-  //     if (response.status) {
-  //       console.log(response.data, 'Response Data'); // Log data to verify it
-  //       const filteredData = response.data.map(
-  //         ({ qualifications, ...rest }) => rest
-  //       );
-  //       setFilteredData(filteredData);
-  //     } else {
-  //       alert(response.data.message || 'Failed to fetch client details.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching client details:', error);
-  //     alert('Failed to fetch client details.');
-  //   }
-  // }, [searchID, searchName, status]);
+  }, [searchID, searchName,fromDate,toDate, branchFilter]);
 
   const getHiringSearchDetails = useCallback(async () => {
     try {
@@ -157,7 +121,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName, status, initialAuthState]);
+  }, [searchID, searchName, status,fromDate,toDate]);
 
 
 
@@ -229,7 +193,7 @@ const TableWithSearchFilter = ({
       const response = await ApiService.post('/dashboards/getReceiptData', {
         voucherId: searchID,
         clientName: searchName,
-        branchName: ticketData?.branchName,
+        branchName: branchFilter,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
       });
@@ -243,7 +207,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching vendor details:', error);
       alert('Failed to fetch vendor details.');
     }
-  }, [searchID, searchName, voucherData?.branchName]);
+  }, [searchID, searchName,fromDate,toDate, branchFilter]);
 
   const getWorkDetailsAgainstSearch = useCallback(async () => {
     try {
@@ -407,7 +371,7 @@ const TableWithSearchFilter = ({
     };
 
     fetchBranches();
-  }, []);
+  }, [branchFilter]);
 
   const handleStatus = (e) => {
     console.log('Selected status:', e.target.value);
@@ -446,6 +410,13 @@ const TableWithSearchFilter = ({
 
     setFilteredData(filtered);
   };
+
+  const handleBranchChange = (e) => {
+    const inputName = e.target.value;
+    setBranchFilter(inputName);
+
+  };
+
   const handleSearch = async () => {
     switch (type) {
       case 'clients':
@@ -536,9 +507,32 @@ const TableWithSearchFilter = ({
           </button>
         )}
       </div>
-      <div className="flex mb-4">
+      <div className="flex mb-4 grid grid-cols-3 gap-2" >
         {/* Search by Client ID or Ticket ID */}
         <div className="flex-grow mr-2">
+          
+          <input
+            type="date"
+            value={fromDate}
+            placeholder='From Data'
+            onChange={(e) => setFromDate(e.target.value)}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
+        </div>
+        <div className="flex-grow mr-2">
+          
+          <input
+            type="date"
+            value={toDate}
+            placeholder='To Data'
+            onChange={(e) => setToDate(e.target.value)}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
+        </div>
+        <div className="flex-grow mr-2">
+
           <input
             type="text"
             value={searchID}
@@ -588,7 +582,7 @@ const TableWithSearchFilter = ({
             {showStatusFilter && (
               <select
                 value={status}
-                onChange={handleStatus}
+                onChange={handleHiringSearch}
                 className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
               >
                 <option value="">All Statuses</option>
@@ -609,11 +603,11 @@ const TableWithSearchFilter = ({
 
         }
         <select
-          value={statusFilter}
-          onChange={type === "hiring" ? handleHiringSearch : handleStatusChange}
-          className="h-12 block w-[200px] mx-4 border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+          value={branchFilter}
+          onChange={handleBranchChange}
+          className="h-12 block mr-2  border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
         >
-          <option value="branch" disabled>
+          <option value="" >
             Select a Branch
           </option>
           {branches.map((branch) => (
