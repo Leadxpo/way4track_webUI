@@ -20,6 +20,8 @@ const AddClient = () => {
   };
 
 
+
+
   const [formData, setFormData] = useState(initialFormData);
   const [branches, setBranches] = useState([]);
   const [image, setImage] = useState('');
@@ -28,6 +30,12 @@ const AddClient = () => {
   const [isGST, setIsGST] = useState(true);
   const [gstData, setGstData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    const rrr=localStorage.getItem('branch_id');
+    console.log("rrr:",rrr)
+    setFormData({ ...formData, branch: rrr });
+  },[])
 
   const handleFetchGSTData = async () => {
     const gstNumber = formData.GSTNumber;

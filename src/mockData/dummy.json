@@ -811,3 +811,174 @@
         }
     ]
 }
+
+[
+    {
+        "add": false,
+        "edit": false,
+        "name": "branch",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "assets",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "appointments",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "staff",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "client",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "vendor",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "subdealer",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "hiring",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "bank",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "product",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "productassign",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": true,
+        "edit": true,
+        "name": "tickets",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "voucher",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": true,
+        "edit": true,
+        "name": "work-allocation",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "estimate",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "attendance",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": true,
+        "edit": true,
+        "name": "requests",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "product-type",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "invoice",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "backend-support",
+        "view": false,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "service",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "vehicle",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": true,
+        "edit": true,
+        "name": "sales-visit",
+        "view": true,
+        "delete": false
+    },
+    {
+        "add": false,
+        "edit": false,
+        "name": "dispatch",
+        "view": true,
+        "delete": false
+    }
+]

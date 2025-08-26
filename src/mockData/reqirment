@@ -70,35 +70,27 @@ receipt -
 (finish)    reset password for the individual staff
 (finish)    insurence company name add in add/edit staff 
 (finish)    staff terminated/resignation person should higylight in the table
-(finish)    report for backend supoort/warehouse/branch mananger/hr --day4
+(finish)    report for backend supoort/warehouse/branch mananger/hr
 (finish)    add client respective branch name should reflect automatic
 (finish)    IGST-18%    /CGST/SGST=9% in estimate and invoice
-(finish)    in invoce PDF remove pro forma --day7
-notification should add to work allocation --day5
-workallocating add description to staff allocation for work while staus change to allocated
-add not intersted in salevisit
-appointment status need to change --day-6
+(finish)    in invoce PDF remove pro forma
+(finish)    notification should add to work allocation
+(finish)    workallocating add description to staff allocation for work while staus change to allocated
+(finish)    add not intersted in salevisit
 
+(finish)    date of assign and assigned by should mentioned in the app works (mobile)
+(finish)    seggment tab funtionality should done (mobile)
+(finish)    add not intersted in salevisit (mobile)
+(finish)    services not showing to some people
 
-date of assign and assigned by should mentioned in the app works (mobile)
-seggment tab funtionality should done (mobile)
-add not intersted in salevisit (mobile) --day8
-services not showing to some people
-
-
-add/edit appointment mulitple photo update (new update)
-add/edit appointment should add new entity inbond/outbond (new update)
-add/edit appointment service dropdown(renewal/sale pitching/follow up) (new update)
-createdBy user should add in client/vendor/staff/branch/appointment (new update) --day9
+(finish)    appointment status need to change
+(finish)    add/edit appointment mulitple photo update (new update)
+(finish)    add/edit appointment should add new entity inbond/outbond (new update)
+(finish)    add/edit appointment service dropdown(renewal/sale pitching/follow up) (new update)
 
 status change should be mentioned with user and time stamp (new update)
 product tracking history need to maintained with time/user stamp
 Asserts tracking history need to maintained with time/user stamp
+createdBy user should add in client/vendor/staff/branch/appointment (new update) --day9
 ticket should be forward to the other person/staff if its status is "in progress" until it is in "completed"
 respective payslips can download by thier own option must be give in payroll screen
-
-
-website
-portal data screen should replace with biog image in all products
-remove leadxpo in footer
-school bus product theme replace onclick with onhover in whychoose us

@@ -474,7 +474,7 @@ const EditInvoice = () => {
         }
       );
       alert('Estimate updated successfully!');
-      // navigate('/invoice');
+      navigate('/invoice');
     } catch (err) {
       console.error('Failed to save estimate:', err);
       alert('Failed to save estimate!', err);

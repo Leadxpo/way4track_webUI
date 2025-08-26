@@ -35,13 +35,13 @@ const EditRequestRaise = () => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
+
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setImagePreviews((prev) => [...(prev || []), ...newPreviews]); // ensure imagePreviews is array
-  
+
     setSelectedFiles(files);
   };
-    
+
   const handleReplaceImage = (index) => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -155,30 +155,30 @@ const EditRequestRaise = () => {
     try {
 
       const formDataToSend = new FormData();
-      console.log("eee",selectedFiles)
+      console.log("eee", selectedFiles)
       selectedFiles.length > 0 && (
         selectedFiles.forEach((file) => {
           formDataToSend.append('photo', file);
         })
-    )
-    if (formData.photo && formData.photo.length > 0) {
+      )
+      if (formData.photo && formData.photo.length > 0) {
         await Promise.all(
-            formData.photo?.map(async (item) => {
-              console.log("rrr",item)
-                const response = await fetch(item);
-                const blob = await response.blob();
-                const filename = item.split('/').pop();
-                const file = new File([blob], filename, { type: blob.type });
-                formDataToSend.append("photo", file);
-            })
+          formData.photo?.map(async (item) => {
+            console.log("rrr", item)
+            const response = await fetch(item);
+            const blob = await response.blob();
+            const filename = item.split('/').pop();
+            const file = new File([blob], filename, { type: blob.type });
+            formDataToSend.append("photo", file);
+          })
         );
-    }
+      }
 
       formDataToSend.append('id', requestData.requestId);
       formDataToSend.append('requestId', requestData.requestNumber);
       formDataToSend.append('requestType', formData.requestType);
       formDataToSend.append('requestTo', formData.requestTo);
-      formDataToSend.append('requestFrom',  formData.requestFrom);
+      formDataToSend.append('requestFrom', formData.requestFrom);
       formDataToSend.append('branch', formData.branch);
       formDataToSend.append('companyCode', initialAuthState.companyCode);
       formDataToSend.append('unitCode', initialAuthState.unitCode);
@@ -204,7 +204,7 @@ const EditRequestRaise = () => {
         alert('Request updated successfully');
         navigate('/requests');
       } else {
-        alert('failed to raise request');  
+        alert('failed to raise request');
       }
     } catch (error) {
       console.error(error);
@@ -485,31 +485,31 @@ const EditRequestRaise = () => {
 
         </div>
         <div className="flex flex-col">
-                  <label className="font-semibold mb-2">Package Images:</label>
-                  <input
-                    type="file"
-                    multiple
-                    name="photo"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-                  />
-                  <div className="flex flex-wrap gap-4 mt-4">
-                    {imagePreviews?.map((src, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={src}
-                          alt={`Preview ${index}`}
-                          className="w-24 h-24 object-cover rounded-md cursor-pointer"
-                          onClick={() => handleReplaceImage(index)}
-                        />
-                        <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
-                          Click to Replace
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <label className="font-semibold mb-2">Package Images:</label>
+          <input
+            type="file"
+            multiple
+            name="photo"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          />
+          <div className="flex flex-wrap gap-4 mt-4">
+            {imagePreviews?.map((src, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={src}
+                  alt={`Preview ${index}`}
+                  className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                  onClick={() => handleReplaceImage(index)}
+                />
+                <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                  Click to Replace
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">

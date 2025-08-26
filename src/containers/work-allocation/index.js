@@ -204,10 +204,11 @@ const WorkAllocation = () => {
   };
 
   const handleSave = async (e) => {
+    const myStaffPrimID=localStorage.getItem("Id")
     e.preventDefault();
     const payload = selectedWorkAllocation.id
       ? { ...selectedWorkAllocation }
-      : { ...selectedWorkAllocation, fromStaffId: localStorage.getItem('id') };
+      : { ...selectedWorkAllocation, fromStaffId: myStaffPrimID,allocatedBy:myStaffPrimID,allocatedDate:new Date().toISOString() };
 
     try {
       const endpoint = selectedWorkAllocation.id

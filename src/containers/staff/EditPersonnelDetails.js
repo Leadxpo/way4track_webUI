@@ -8,8 +8,6 @@ const EditPersonnelDetails = () => {
   const navigate = useNavigate();
   const stateData = location.state?.data || location.state || {}; // Extract data properly
 
-  console.log(stateData, 'stateData11111');
-
   const [data, setData] = useState({
     staffId: '',
     name: '',
@@ -21,10 +19,11 @@ const EditPersonnelDetails = () => {
     email: '',
     aadharNumber: '',
     panCardNumber: '',
+    drivingLicence: '',
     drivingLicenceNumber: '',
     address: '',
-    uanNumber: '',
-    esicNumber: '',
+    UANNumber: '',
+    ESICNumber: '',
     bloodGroup: '',
     staffPhoto: null,
   });
@@ -68,28 +67,6 @@ const EditPersonnelDetails = () => {
     }));
   };
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const formData = new FormData();
-  //     Object.keys(data).forEach((key) => {
-  //       formData.append(key, data[key]);
-  //     });
-
-  //     const response = await ApiService.post("/staff/handleStaffDetails", formData, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-
-  //     if (response.status) {
-  //       alert("Personnel details updated successfully!");
-  //     } else {
-  //       alert("Failed to update personnel details.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating personnel details:", error);
-  //     alert("An error occurred while updating personnel details.");
-  //   }
-  // };
-
   const handleSubmit = async () => {
     try {
       const payload = new FormData();
@@ -103,11 +80,11 @@ const EditPersonnelDetails = () => {
       payload.append('email', data.email);
       payload.append('aadharNumber', data.aadharNumber);
       payload.append('panCardNumber', data.panCardNumber);
-
+      payload.append('drivingLicence', data.drivingLicence);
       payload.append('drivingLicenceNumber', data.drivingLicenceNumber);
       payload.append('address', data.address);
-      payload.append('uanNumber', data.uanNumber);
-      payload.append('esicNumber', data.esicNumber);
+      payload.append('uanNumber', data.UANNumber);
+      payload.append('esicNumber', data.ESICNumber);
       payload.append('bloodGroup', data.bloodGroup);
       payload.append('id', data.id);
 
@@ -187,7 +164,7 @@ const EditPersonnelDetails = () => {
       {/* Form Fields */}
       <div className="space-y-6">
         {Object.keys(data)
-          .filter((key) => key !== 'staffPhoto')
+          .filter((key) => key !== 'staffPhoto' && key !== 'id' && key !== 'drivingLicence' && key !== 'drivingLicenceNumber')
           .map((key) => (
             <div key={key} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1 capitalize">
@@ -203,6 +180,33 @@ const EditPersonnelDetails = () => {
               />
             </div>
           ))}
+        <div className="flex flex-col">
+          <label className="text-gray-700 font-medium mb-1 capitalize">
+            Driving Licence (Yes/No)
+          </label>
+          <select
+            className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none text-gray-700"
+            name="drivingLicence"
+            onChange={handleChange}
+          >
+            <option value="">Select Is Driving Licence</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-gray-700 font-medium mb-1 capitalize"> Driving Licence Number</label>
+          <input
+            type='text'
+            name='drivingLicenceNumber'
+            value={data.drivingLicenceNumber}
+            onChange={handleChange}
+            placeholder="Driving Licence Number"
+            className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none text-gray-700"
+          />
+        </div>
+
       </div>
 
       <button

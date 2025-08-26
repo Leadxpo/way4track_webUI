@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -7,14 +7,18 @@ const AddAppointment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const appointmentDetails = location.state?.appointmentDetails || null;
-
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const fileInputRef = useRef(null);        // Ref to trigger file input
   const [formData, setFormData] = useState({
     appointmentType: appointmentDetails?.appointmentType || '',
     name: appointmentDetails?.appointment_name || '',
+    callType: appointmentDetails?.callType || '',
+    service: appointmentDetails?.service || '',
     id: appointmentDetails?.appointment_id || null,
     status: appointmentDetails?.status || 'pending',
-    assignedTo: appointmentDetails?.assignedTo || '',
-    date: appointmentDetails?.date || '',
+    assignedTo: appointmentDetails?.staffId || '',
+    date: appointmentDetails?.date.split("T")[0] || '',
     slot: appointmentDetails?.slot || '00:00',
     period: appointmentDetails?.period || 'AM',
     branchId: appointmentDetails?.branchId || '',
@@ -23,9 +27,12 @@ const AddAppointment = () => {
     clientPhoneNumber: appointmentDetails?.clientPhoneNumber || '',
     clientAddress: appointmentDetails?.clientAddress || '',
     description: appointmentDetails?.description || '',
+    photo: appointmentDetails?.image || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
+
+
 
   const [branchData, setBranchData] = useState([]);
   const [client, setClient] = useState([]);
@@ -37,6 +44,45 @@ const AddAppointment = () => {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...(prev || []), ...newPreviews]); // ensure imagePreviews is array
+
+    setSelectedFiles(files);
+  };
+
+  const handleReplaceImage = (index) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setFormData((prev) => {
+          const updated = [...prev.photo];
+          updated[index] = file;
+          return { ...prev, photo: updated };
+        });
+        setImagePreviews((prev) => {
+          const updated = [...prev];
+          updated[index] = URL.createObjectURL(file);
+          return updated;
+        });
+      }
+    };
+    fileInput.click();
+  };
+
+  const removeImage = (index) => {
+    const updatedImages = [...formData.photo];
+    updatedImages.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      photo: updatedImages,
     }));
   };
 
@@ -59,6 +105,9 @@ const AddAppointment = () => {
   // Fetch branch data
 
   useEffect(() => {
+    if (appointmentDetails) {
+      setImagePreviews(appointmentDetails?.image)
+    }
     const fetchBranches = async () => {
       try {
         const response = await ApiService.post('/branch/getBranchNamesDropDown');
@@ -115,19 +164,48 @@ const AddAppointment = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const myID = localStorage.getItem("Id")
     const combinedDateTime = combineDateTime();
+    const formDataToSend = new FormData();
+    selectedFiles.length > 0 && (
+      selectedFiles.forEach((file) => {
+        formDataToSend.append('photo', file);
+      })
+    )
 
+    if (formData.photo && Array.isArray(formData.photo)) {
+      await Promise.all(
+        formData.photo?.map(async (item) => {
+          if (typeof item === 'string') {
+            const response = await fetch(item);
+            const blob = await response.blob();
+            const filename = item?.split('/').pop();
+            const file = new File([blob], filename, { type: blob.type });
+            formDataToSend.append("photo", file);
+          }else{
+            formDataToSend.append("photo", item);
+          }
+        })
+      );
+    }
+
+    // Append all fields
     const payload = {
       ...formData,
       dateTime: combinedDateTime,
-      // staffId:
+      createdBy: myID,
     };
 
+    for (let key in payload) {
+      if (payload[key] !== undefined && payload[key] !== null && key !== 'photo') {
+        formDataToSend.append(key, payload[key]);
+      }
+    }
     try {
       const endpoint = formData.id
         ? '/appointment/handleAppointmentDetails'
         : '/appointment/handleAppointmentDetails';
-      const response = await ApiService.post(endpoint, payload);
+      const response = await ApiService.post(endpoint, formDataToSend);
 
       if (response.status) {
         alert(
@@ -135,7 +213,7 @@ const AddAppointment = () => {
             ? 'Appointment updated successfully!'
             : 'Appointment created successfully!'
         );
-        navigate('/customer-care-home');
+        navigate('/appointments');
       } else {
         alert('Failed to save appointment details. Please try again.');
       }
@@ -168,6 +246,39 @@ const AddAppointment = () => {
           </option>
           <option value="Service">Service</option>
           <option value="Product">Product</option>
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Select Call Type:</label>
+        <select
+          name="callType"
+          value={formData.callType}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        >
+          <option value="" disabled>
+            Select Call Type
+          </option>
+          <option value="INBOND">INBOND</option>
+          <option value="OUTBOND">OUTBOND</option>
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Select Service Type:</label>
+        <select
+          name="service"
+          value={formData.service}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        >
+          <option value="" disabled>
+            Select Service Type
+          </option>
+          <option value="RENEWAL">RENEWAL</option>
+          <option value="SALE_PITCHING">SALE_PITCHING</option>
+          <option value="FOLLOW_UP">FOLLOW_UP</option>
         </select>
       </div>
 
@@ -301,7 +412,32 @@ const AddAppointment = () => {
           placeholder="Enter Description"
         ></textarea>
       </div>
-
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Package Images:</label>
+        <input
+          type="file"
+          multiple
+          name="photo"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        />
+        <div className="flex flex-wrap gap-4 mt-4">
+          {imagePreviews?.map((src, index) => (
+            <div key={index} className="relative">
+              <img
+                src={src}
+                alt={`Preview ${index}`}
+                className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                onClick={() => handleReplaceImage(index)}
+              />
+              <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                Click to Replace
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
       {/* Submit */}
       <button
         type="submit"
@@ -314,269 +450,3 @@ const AddAppointment = () => {
 };
 
 export default AddAppointment;
-
-
-
-
-
-
-
-
-
-// import { useEffect, useState } from "react";
-// import ApiService, { initialAuthState } from "../../services/ApiService";
-// import { useNavigate } from "react-router";
-
-// export default function AddAppointment() {
-//   const navigate = useNavigate();
-//   const [formData, setFormData] = useState({
-//     clientPhonenumber: null,
-//     clientName:"",
-//     clientId:null,
-//     appointmentType:"",
-//     branchId:null,
-//     appointmentDate:null,
-//     appointmentTime:null,
-//     description: "",
-//   });
-  
-//   const [branchData, setBranchData] = useState([]);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const payload = {
-      
-//     name:formData.clientName,
-//     clientId:Number(formData.clientId),
-//     // clientPhonenumber:formData.clientPhonenumber,
-//     appointmentType:formData.appointmentType,
-//     branchId:Number(formData.branchId),
-//     date:formData.appointmentDate,
-//     slot:formData.appointmentTime,
-//       description: formData.description,
-//       // teleCallerId:Number(localStorage.getItem("id")),
-//       companyCode: initialAuthState.companyCode,
-//       unitCode: initialAuthState.unitCode,
-//     }
-
-
-//     if(payload){
-//       console.log("====+++",payload);
-//     }
-//     try {
-//       const res = await ApiService.post("/appointment/handleAppointmentDetails", payload, {
-//         headers: { 'Content-Type': 'application/json' }
-//       });
-//       if (res.status) {
-//         alert("Appointment submitted successfully!");
-//         setFormData({
-//           clientPhonenumber: null,
-//           clientName:"",
-//           clientId:null,
-//           appointmentType:"",
-//           branchId:null,
-//           appointmentDate:null,
-//           description: "",
-//         });
-//         navigate("/appointment-table");
-//       }
-
-     
-//     } catch (error) {
-//       console.error("Error submitting form:", error);
-//       alert("Failed to submit vehicle.");
-//     }
-//   };
-
-// const fetchClients = async (phoneNumber) => {
-//   try {
-//     const res = await ApiService.post("/client/getClientDetails");
-//     const matchedClient = res.data?.find(client => client.phoneNumber === phoneNumber); 
-
-//     if (matchedClient) {
-//       const { id, name } = matchedClient; 
-//       setFormData((prev) => ({
-//         ...prev,
-//         clientId:id,
-//         clientName: name,
-//       }));
-//     } else {
-//       setFormData((prev) => ({ ...prev, clientId: null, clientName: "" })); 
-//     }
-    
-
-//   } catch (err) {
-//     console.error("Failed to fetch client details:", err);
-
-//   }
-// };
-
-
-
-
-// const handlePhoneNumber = (e) => {
-//   const value = e.target.value;
-
-//   setFormData(prev => ({ ...prev, clientPhonenumber: value }));
-
-//   if (value.length === 10) {
-//     fetchClients(value);
-//   } else {
-
-//     setFormData(prev => ({ ...prev, clientName: "", clientId: null }));
-//   }
-// };
-
-//     useEffect(() => {
-//       const fetchBranches = async () => {
-//         try {
-//           const response = await ApiService.post('/branch/getBranchNamesDropDown');
-//           if (response.status) {
-//             setBranchData(response.data); // Set branches to state
-//           } else {
-//             console.error('Failed to fetch branches');
-//           }
-//         } catch (error) {
-//           console.error('Error fetching branches:', error);
-//         }
-//       };
-//       fetchBranches();
-//     }, []);
-// if(branchData){
-// }
-
-//   return (
-//     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-//       <h2 className="text-xl font-bold mb-4">Appointment Form</h2>
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         <div>
-//           <label className="block text-sm font-medium">Client Phone Number</label>
-//           <input
-//             type="number"
-//             name="clientPhonenumber"
-//             placeholder="client Phonenumber"
-//             value={formData.clientPhonenumber}
-//             onChange={handlePhoneNumber}
-//             required
-//             className="w-full p-2 border rounded-md"
-//           />
-//         </div>
-
-//           <div className="flex flex-col">
-//             <label className="font-semibold mb-2">Client Name:</label>
-//             <input
-//             type="text"
-//             name="clientName"
-//             placeholder="client name"
-//             value={formData.clientName}
-//             // onChange={handlePhoneNumber}
-//             required
-//             className="w-full p-2 border rounded-md"
-//           />
-//           </div>
-
-
-//         <div className="flex flex-col">
-//           <label className="font-semibold mb-2">Select Type:</label>
-//           <select
-//             name="appointmentType"
-//             value={formData.appointmentType}
-//             onChange={handleChange}
-//             className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-//           >
-//             <option value="" disabled>
-//               Select Type
-//             </option>
-//             <option value="service">Service</option>
-//             <option value="product">Product</option>
-//           </select>
-//         </div>
-
-//           <div className="flex flex-col">
-//             <label className="font-semibold mb-2">Branch:</label>
-//             <select
-//               name="branchId"
-//               value={formData?.branchId}
-//               onChange={handleChange}
-//               className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-//             >
-//               <option value="" disabled>
-//                 Select Branch
-//               </option>
-//               {branchData.map((branchItem) => (
-//                 <option key={branchItem.id} value={branchItem.id}>
-//                   {branchItem.branchName}
-//                 </option>
-//               ))}
-//             </select>
-//           </div>
-
-//         {/* <div>
-//           <label className="block text-sm font-medium">Appointment Date</label>
-//           <input
-//             type="datetime-local"
-//             name="appointmentDate"
-//             placeholder="date"
-//             value={formData.date}
-//             onChange={handleChange}
-//             required
-//             className="w-full p-2 border rounded-md"
-//           />
-//         </div> */}
-//         <div className="flex items-center gap-4">
-//   {/* Date Input */}
-//   <div className="flex-1">
-//     <label className="block text-sm font-medium">Appointment Date</label>
-//     <input
-//       type="date"
-//       name="appointmentDate"
-//       placeholder="Select date"
-//       value={formData.appointmentDate}
-//       onChange={handleChange}
-//       required
-//       className="w-full p-2 border rounded-md"
-//     />
-//   </div>
-
-//   {/* Time Input */}
-//   <div className="flex-1">
-//     <label className="block text-sm font-medium">Appointment Time</label>
-//     <input
-//       type="time"
-//       name="appointmentTime"
-//       placeholder="Select time"
-//       value={formData.appointmentTime}
-//       onChange={handleChange}
-//       required
-//       className="w-full p-2 border rounded-md"
-//     />
-//   </div>
-// </div>
-
-
-//         <div>
-//           <label className="block text-sm font-medium">Description</label>
-//           <textarea
-//             name="description"
-//             placeholder="description"
-//             value={formData.description}
-//             onChange={handleChange}
-//             required
-//             className="w-full p-2 border rounded-md"
-//           ></textarea>
-//         </div>
-
-//         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md">
-//           Submit
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }

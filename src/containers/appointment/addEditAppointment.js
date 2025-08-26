@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
@@ -7,10 +7,14 @@ const AddEditAppointmentForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const appointmentDetails = location.state?.appointmentDetails || null;
-
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const fileInputRef = useRef(null);        // Ref to trigger file input
   const [formData, setFormData] = useState({
     appointmentType: appointmentDetails?.appointmentType || '',
     name: appointmentDetails?.appointment_name || '',
+    callType: appointmentDetails?.callType || '',
+    service: appointmentDetails?.service || '',
     id: appointmentDetails?.appointment_id || null,
     status: appointmentDetails?.status || 'pending',
     assignedTo: appointmentDetails?.staffId || '',
@@ -23,9 +27,12 @@ const AddEditAppointmentForm = () => {
     clientPhoneNumber: appointmentDetails?.clientPhoneNumber || '',
     clientAddress: appointmentDetails?.clientAddress || '',
     description: appointmentDetails?.description || '',
+    photo: appointmentDetails?.image || '',
     companyCode: initialAuthState.companyCode,
     unitCode: initialAuthState.unitCode,
   });
+
+
 
   const [branchData, setBranchData] = useState([]);
   const [client, setClient] = useState([]);
@@ -37,6 +44,45 @@ const AddEditAppointmentForm = () => {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...(prev || []), ...newPreviews]); // ensure imagePreviews is array
+
+    setSelectedFiles(files);
+  };
+
+  const handleReplaceImage = (index) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setFormData((prev) => {
+          const updated = [...prev.photo];
+          updated[index] = file;
+          return { ...prev, photo: updated };
+        });
+        setImagePreviews((prev) => {
+          const updated = [...prev];
+          updated[index] = URL.createObjectURL(file);
+          return updated;
+        });
+      }
+    };
+    fileInput.click();
+  };
+
+  const removeImage = (index) => {
+    const updatedImages = [...formData.photo];
+    updatedImages.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      photo: updatedImages,
     }));
   };
 
@@ -59,6 +105,9 @@ const AddEditAppointmentForm = () => {
   // Fetch branch data
 
   useEffect(() => {
+    if (appointmentDetails) {
+      setImagePreviews(appointmentDetails?.image)
+    }
     const fetchBranches = async () => {
       try {
         const response = await ApiService.post('/branch/getBranchNamesDropDown');
@@ -115,19 +164,48 @@ const AddEditAppointmentForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const myID = localStorage.getItem("Id")
     const combinedDateTime = combineDateTime();
+    const formDataToSend = new FormData();
+    selectedFiles.length > 0 && (
+      selectedFiles.forEach((file) => {
+        formDataToSend.append('photo', file);
+      })
+    )
 
+    if (formData.photo && Array.isArray(formData.photo)) {
+      await Promise.all(
+        formData.photo?.map(async (item) => {
+          if (typeof item === 'string') {
+            const response = await fetch(item);
+            const blob = await response.blob();
+            const filename = item?.split('/').pop();
+            const file = new File([blob], filename, { type: blob.type });
+            formDataToSend.append("photo", file);
+          }else{
+            formDataToSend.append("photo", item);
+          }
+        })
+      );
+    }
+
+    // Append all fields
     const payload = {
       ...formData,
       dateTime: combinedDateTime,
-      // staffId:
+      createdBy: myID,
     };
 
+    for (let key in payload) {
+      if (payload[key] !== undefined && payload[key] !== null && key !== 'photo') {
+        formDataToSend.append(key, payload[key]);
+      }
+    }
     try {
       const endpoint = formData.id
         ? '/appointment/handleAppointmentDetails'
         : '/appointment/handleAppointmentDetails';
-      const response = await ApiService.post(endpoint, payload);
+      const response = await ApiService.post(endpoint, formDataToSend);
 
       if (response.status) {
         alert(
@@ -168,6 +246,39 @@ const AddEditAppointmentForm = () => {
           </option>
           <option value="Service">Service</option>
           <option value="Product">Product</option>
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Select Call Type:</label>
+        <select
+          name="callType"
+          value={formData.callType}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        >
+          <option value="" disabled>
+            Select Call Type
+          </option>
+          <option value="INBOND">INBOND</option>
+          <option value="OUTBOND">OUTBOND</option>
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Select Service Type:</label>
+        <select
+          name="service"
+          value={formData.service}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        >
+          <option value="" disabled>
+            Select Service Type
+          </option>
+          <option value="RENEWAL">RENEWAL</option>
+          <option value="SALE_PITCHING">SALE_PITCHING</option>
+          <option value="FOLLOW_UP">FOLLOW_UP</option>
         </select>
       </div>
 
@@ -300,6 +411,32 @@ const AddEditAppointmentForm = () => {
           rows={4}
           placeholder="Enter Description"
         ></textarea>
+      </div>
+      <div className="flex flex-col">
+        <label className="font-semibold mb-2">Package Images:</label>
+        <input
+          type="file"
+          multiple
+          name="photo"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        />
+        <div className="flex flex-wrap gap-4 mt-4">
+          {imagePreviews?.map((src, index) => (
+            <div key={index} className="relative">
+              <img
+                src={src}
+                alt={`Preview ${index}`}
+                className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                onClick={() => handleReplaceImage(index)}
+              />
+              <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                Click to Replace
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {formData.id && <div className="flex flex-col">

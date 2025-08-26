@@ -5,26 +5,27 @@ import { useLocation, useNavigate } from 'react-router';
 const EditEmployerDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const [data, setData] = useState({
     id: '',
     staffId: '',
-    branch:null,
+    branch: null,
     branchName: '',
     joiningDate: null,
     designation: '',
     department: '',
     monthlySalary: '',
+    mailAllocation:'No',
     officeEmail: '',
     officePhoneNumber: '',
     bikeAllocation: 'No',
     bikeName: '',
     bikeNumber: '',
     mobileAllocation: 'No',
-    mobileBrand:'',
+    mobileBrand: '',
     terminationDate: null,
     resignationDate: null,
     finalSettlementDate: null,
+    finalSettlementAmt: "",
     insuranceCompanyName: '',
     insuranceNumber: '',
     insuranceEligibilityDate: null,
@@ -35,12 +36,13 @@ const EditEmployerDetails = () => {
 
   useEffect(() => {
     if (location.state?.data) {
+      console.log("emplyee Details :",location.state.data)
       setData(location.state.data);
     }
   }, [location.state]);
   const [branches, setBranches] = useState([]);
   const [designations, setDesignations] = useState([]);
- 
+
 
   // Fetch Branches
   const fetchBranches = async () => {
@@ -132,7 +134,7 @@ const EditEmployerDetails = () => {
     const payload = {
       id: data.id ?? '',
       // staffId: "SFp-0002",
-      branch:data?.branch ,
+      branch: data?.branch,
       branchName: data.branchName ?? '',
       designation: data.designation ?? '',
       department: data.department ?? '',
@@ -141,6 +143,7 @@ const EditEmployerDetails = () => {
       officePhoneNumber: data.officePhoneNumber ?? '',
       bikeAllocation: data.bikeAllocation ?? '',
       bikeNumber: data.bikeNumber ?? '',
+      mailAllocation: data.mailAllocation ?? '',
       mobileAllocation: data.mobileAllocation ?? '',
       mobileBrand: data.mobileBrand ?? '',
       insuranceNumber: data.insuranceNumber ?? '',
@@ -154,6 +157,8 @@ const EditEmployerDetails = () => {
       insuranceEligibilityDate: formatDate(data.insuranceEligibilityDate),
       insuranceExpiryDate: formatDate(data.insuranceExpiryDate),
     };
+
+    console.log("rrr:",payload)
 
     try {
       const endpoint = '/staff/handleStaffDetails';
@@ -212,41 +217,24 @@ const EditEmployerDetails = () => {
       {/* Branch Dropdown */}
       <div className="mb-4">
         <label className="block font-medium mb-1">Branch Name</label>
-        {/* <select
-          name="branchName"
-          value={data.branchName}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
-        >
-          <option value="">Select a Branch</option>
-          {branches.map((branch) => (
-            <option key={branch.id} value={branch.branchName}>
-              {branch.branchName}
-            </option>
-          ))}
-        </select> */}
-
-      <select
+        <select
           name="branch"
           value={data.branch}
           onChange={(e) => {
             const selectedId = e.target.value;
-            console.log("gggg",e.target.value,branches)
-            const selectedBranch = branches.find(
-              (branch) => branch.id.toString() === selectedId
-            );
+            const selectedName = e.target.options[e.target.selectedIndex].text;;
 
             setData((prevData) => ({
               ...prevData,
-              branch: selectedBranch?.id || '',
-              branchName: selectedBranch?.branchName || '',
+              branch: selectedId || '',
+              branchName:selectedName==="Select a Branch" ? null: selectedName || '',
             }));
           }}
           className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none"
         >
           <option value="">Select a Branch</option>
           {branches.map((branch) => (
-            <option key={branch.id} value={branch.id}>
+            <option key={branch.id} value={branch.id} >
               {branch.branchName}
             </option>
           ))}
@@ -278,6 +266,21 @@ const EditEmployerDetails = () => {
         <select
           name="mobileAllocation"
           value={data.mobileAllocation}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        >
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block font-medium mb-1">
+          Mail Allocation (Yes/No)
+        </label>
+        <select
+          name="mailAllocation"
+          value={data.mailAllocation}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-lg"
         >

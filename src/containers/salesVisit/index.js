@@ -51,6 +51,7 @@ const SalesVisit = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [paidAmt, setPaidAmt] = useState(0);
+  const [description, setDescription] = useState('');
   const [updatedLeadStatus, setUpdatedLeadStatus] = useState('');
   const [selectedStaffId, setSelectedStaffId] = useState('');
   const [staffList, setStaffList] = useState([]); // You can fetch this from API if needed
@@ -180,10 +181,11 @@ const SalesVisit = () => {
   };
 
   const handleSubmitLeadUpdate = async () => {
+    const allocatedStaff=localStorage.getItem("Id")
     const payload = {
       id: selectedLead.id,
       leadStatus: updatedLeadStatus,
-      ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId }),
+      ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId,description:description,allocatedBy:allocatedStaff,allocatedDate:new Date().toISOString()}),
       ...((updatedLeadStatus === 'partiallyPaid' || updatedLeadStatus === 'completed') && {
         paidAmount: paidAmt,
         paidDate: new Date(), // backend should expect this in ISO string format
@@ -219,6 +221,7 @@ const SalesVisit = () => {
       name: workData?.name || '',
       address: workData?.address || '',
       branchId: workData?.branchId || '',
+      description: description || '',
       companyCode: initialAuthState.companyCode,
       unitCode: initialAuthState.unitCode,
     };
@@ -530,6 +533,7 @@ const SalesVisit = () => {
               <option value="paymentPending">PAYMENT_PENDING</option>
               <option value="partiallyPaid">PARTIALLY_PAID</option>
               <option value="completed">COMPLETED</option>
+              <option value="notInterested">NOT_INTERESTED</option>
             </select>
 
             {updatedLeadStatus === 'allocated' && (
@@ -547,6 +551,15 @@ const SalesVisit = () => {
                     </option>
                   ))}
                 </select>
+
+                <label className="block mb-2">Description</label>
+                <textarea
+                  type="text"
+                  name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="px-4 py-2 w-full mb-4 border rounded-lg bg-gray-50" style={{}}
+                />
               </>
             )}
 

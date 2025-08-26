@@ -167,8 +167,8 @@ const StaffDetails = () => {
             address: staff.address || '',
             // uanNumber: staff.uanNumber || '',
             // esicNumber: staff.esicNumber || '',
-            'UAN Number': (staff.uanNumber || '').toUpperCase(),
-            'ESIC Number': (staff.esicNumber || '').toUpperCase(),
+            'UANNumber': (staff.uanNumber || '').toUpperCase(),
+            'ESICNumber': (staff.esicNumber || '').toUpperCase(),
             bloodGroup: staff.bloodGroup || '',
           },
           educationDetails: {
@@ -186,6 +186,7 @@ const StaffDetails = () => {
           },
           employerDetails: {
             id: staff.id,
+            branch:staff.branch,
             branchName: staff.branchName || '',
             joiningDate: staff.joiningDate || '',
             designation: staff.designation || '',
