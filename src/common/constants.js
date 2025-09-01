@@ -26,6 +26,13 @@ var RoleHome = (role) => {
         route: '/warehouse-manager-home',
       }
       break;
+    case "inventory operational analyst":
+      return {
+        name: 'Home',
+        icon: <img src="./home.png" />,
+        route: '/warehouse-manager-home',
+      }
+      break;
     case "branch manager":
       return {
         name: 'Home',

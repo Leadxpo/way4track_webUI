@@ -92,6 +92,9 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
       case 'Warehouse Manager':
         navigate('/warehouse-manager-home');
         break;
+      case 'Inventory Operational Analyst':
+        navigate('/warehouse-manager-home');
+        break;
       case 'sub dealer':
         navigate('/sub-dealer-home');
         break;

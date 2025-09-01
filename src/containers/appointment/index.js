@@ -194,7 +194,7 @@ const Appointments = () => {
         showDetails={hasPermission(permission, "appointments", "view")}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onDetails={handleDetails}
+        onDetails={handleDetails} 
         loading={loading}
       />
     </div>

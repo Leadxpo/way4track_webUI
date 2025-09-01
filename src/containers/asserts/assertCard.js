@@ -10,6 +10,12 @@ const AssertCard = ({ asset,permission }) => {
       className="bg-white rounded-lg shadow-md p-4 flex flex-row items-center"
       style={{ height: '150px',  borderRadius: '22px' }}
     >
+      <p
+          className="text-gray-600"
+          style={{ fontSize: '15px',alignSelf:'center',textAlign:"center",width:25,height:25,borderRadius:5,right:-300, fontWeight: '400', color: '#f3f3f3',top:-50,position:'relative',background:"#7FE65A" }}
+        >
+          {asset.quantity || 0}
+        </p>
       <img
         src={asset.assetPhoto}
         alt={asset.assertsName}
@@ -28,6 +34,7 @@ const AssertCard = ({ asset,permission }) => {
         >
           {asset.branchId ? asset.branchId.branchName : 'Branch not available'}
         </p>
+        
         <p
           className={`mt-1 ${asset.statusColor} font-medium`}
           style={{ fontSize: '11px', fontWeight: '400', color: '#FF0000' }}
