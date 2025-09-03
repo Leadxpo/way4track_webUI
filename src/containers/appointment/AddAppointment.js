@@ -2,6 +2,7 @@ import React, { useState,useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import StaffAppointmentAutocomplete from '../../components/StaffAppointmentAutoComplet';
 
 const AddAppointment = () => {
   const location = useLocation();
@@ -298,6 +299,13 @@ const AddAppointment = () => {
       {/* Assign To */}
       {staff.length > 0 && (
         <div className="flex flex-col">
+          <div>
+          <StaffAppointmentAutocomplete
+            staffData={staff}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        </div>
           <label className="font-semibold mb-2">Assign To:</label>
           <select
             name="assignedTo"

@@ -16,6 +16,7 @@ const Vouchers = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [permissions, setPermissions] = useState({});
+  const [isSearch, setIsSearch] = useState(false);
 
   useEffect(() => {
     const perms = getPermissions('vendor');
@@ -35,6 +36,7 @@ const Vouchers = () => {
     });
 
     setFilteredData(filtered);
+    setIsSearch(true)
   };
 
   const handleNavigation = () => {
@@ -160,17 +162,6 @@ const Vouchers = () => {
             backgroundColor: '#F1F1F1',
           }}
         >
-          {/* <button
-            className="block px-4 py-1 text-left w-full hover:bg-gray-100"
-            style={{ fontSize: '13px', color: '#000000', fontWeight: '400' }}
-            onClick={() => handleEdit(popupData.item)}
-          >
-            Edit
-          </button> */}
-
-          {/* Horizontal Line */}
-          {/* <hr className="border-gray-300 my-1" /> */}
-
           {permissions.edit &&<button
             className="block px-4 py-1 text-left w-full hover:bg-gray-100"
             onClick={() => handleEdit(popupData.item)}
@@ -190,7 +181,7 @@ const Vouchers = () => {
       )}
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border">
+       {isSearch && <table className="min-w-full border">
           <thead>
             <tr className="bg-gray-100 text-left">
               <th className="p-3">Voucher ID</th>
@@ -229,7 +220,7 @@ const Vouchers = () => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table>}
       </div>
       {showModal && selectedVoucher && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

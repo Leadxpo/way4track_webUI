@@ -1,14 +1,12 @@
-import { FaList, FaTh, FaPlus, FaSearch } from 'react-icons/fa';
+import { FaList, FaTh, FaPlus, FaSearch,FaDownload } from 'react-icons/fa';
 import DropdownCard from '../../components/DropdownCard';
-import TableWithDateFilter from '../tablesDateFilter';
-import Table from '../../components/Table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState, useCallback } from 'react';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
-import { getPermissions } from '../../common/commonUtils';
 import AssertCard from './assertCard';
 import hasPermission from '../../common/permission'
+import * as XLSX from 'xlsx';
 
 const Asserts = () => {
   const navigate = useNavigate();
@@ -31,6 +29,16 @@ const Asserts = () => {
   const location = useLocation();
   const assetDetailsFromState = location.state?.assetsData || {};
 
+  const downloadAssets=()=>{
+    let filename =  "Assert_output.xlsx";
+
+    const worksheet = XLSX.utils.json_to_sheet(filterProducts);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'assert');
+    XLSX.writeFile(workbook, filename);
+
+  }
+
   // Fetch data for branches and asset counts
   const fetchData = async (branchName) => {
     try {
@@ -45,7 +53,7 @@ const Asserts = () => {
       const res = await ApiService.post('/dashboards/assertsCardData', payload);
       if (res.status) {
         const {
-          groupedBranches,
+          groupedBranches, 
           totalAsserts,
           officeAsserts,
           transportAsserts,
@@ -178,7 +186,15 @@ const Asserts = () => {
         >
           Assets
         </h2>
-
+        <div className="flex justify-between items-center">
+          <button
+            onClick={() => downloadAssets()}
+            className="bg-green-700 text-white px-4 py-2 mx-5 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
+          >
+            <FaDownload className="text-white" />
+            Download Assert Excel Sheet
+          </button>
+        </div>
         {/* Right: Icons and Add Staff Button */}
         <div className="flex items-center space-x-4">
           {/* Add Assert Button */}

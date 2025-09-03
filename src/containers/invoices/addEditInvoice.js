@@ -241,6 +241,28 @@ const AddEditInvoice = () => {
     }));
   };
 
+  const handleClientNumberChange = (e) => {
+    const selectedNumber = Number(e.target.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      clientNumber: selectedNumber,
+    }));
+
+    const selectedClient = clients.find((client) => String(client.phoneNumber) === String(selectedNumber));
+    if (!selectedClient) return;
+    setFormData((prevData) => ({
+      ...prevData,
+      client: selectedClient.id,
+      clientName: selectedClient.name || '',
+      clientNumber: selectedNumber || '',
+      email: selectedClient.email || '',
+      clientAddress: selectedClient.address || '',
+      billingAddress: selectedClient.address,
+      shippingAddress: selectedClient.address,
+      clientId: selectedClient.clientId || '',
+    }));
+  };
+
   // Handle field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -269,14 +291,14 @@ const AddEditInvoice = () => {
     }
   };
 
-  useEffect(()=>{
-    if (formData.supplyState===formData.taxableState) {
+  useEffect(() => {
+    if (formData.supplyState === formData.taxableState) {
       setFormData((prevData) => ({
         ...prevData,
         cgstPercentage: '9',
         scstPercentage: '9',
       }));
-      
+
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -284,8 +306,8 @@ const AddEditInvoice = () => {
         scstPercentage: '',
       }));
     }
-  },[formData.supplyState,formData.taxableState,formData.isGST])
-  
+  }, [formData.supplyState, formData.taxableState, formData.isGST])
+
   const handlePrefixChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -534,10 +556,10 @@ const AddEditInvoice = () => {
     setFormData((prevData) => ({
       ...prevData,
       cgstPercentage: '',
-      scstPercentage:'',
+      scstPercentage: '',
       CGST: '',
       SCST: '',
-      isGST:false
+      isGST: false
     }));
   }, [formData.supplyState, formData.taxableState])
 
@@ -605,6 +627,19 @@ const AddEditInvoice = () => {
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
+              <label className="block text-sm font-semibold mb-1">
+                Client Number
+              </label>
+              <input
+                type="text"
+                name="clientNumber"
+                value={formData.clientNumber}
+                onChange={handleClientNumberChange}
+                placeholder="Client Number"
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
               <select
                 name="client"
@@ -620,20 +655,7 @@ const AddEditInvoice = () => {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">
-                Client Number
-              </label>
-              <input
-                type="text"
-                name="clientNumber"
-                value={formData.clientNumber}
-                onChange={handleInputChange}
-                placeholder="Client Number"
-                className="w-full p-2 border rounded-md"
-                readOnly
-              />
-            </div>
+
             <div>
               <label className="block text-sm font-semibold mb-1">
                 Email ID

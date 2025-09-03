@@ -7,7 +7,7 @@ const Invoices = () => {
   const navigate = useNavigate();
   const [permissions, setPermissions] = useState({});
   useEffect(() => {
-    const perms = getPermissions('invoice');
+    const perms = getPermissions('estimate');
     setPermissions(perms);
   }, [permissions]); 
 

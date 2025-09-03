@@ -132,21 +132,19 @@ const RequestRaise = () => {
     <div>
       <div className="flex space-x-4 mb-4 border-b-2 pb-2">
         <button
-          className={`px-4 py-2 font-semibold ${
-            activeTab === 'myRequests'
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-500'
-          }`}
+          className={`px-4 py-2 font-semibold ${activeTab === 'myRequests'
+            ? 'border-b-2 border-blue-600 text-blue-600'
+            : 'text-gray-500'
+            }`}
           onClick={() => setActiveTab('myRequests')}
         >
           My Requests
         </button>
         <button
-          className={`px-4 py-2 font-semibold ${
-            activeTab === 'requests'
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-500'
-          }`}
+          className={`px-4 py-2 font-semibold ${activeTab === 'requests'
+            ? 'border-b-2 border-blue-600 text-blue-600'
+            : 'text-gray-500'
+            }`}
           onClick={() => setActiveTab('requests')}
         >
           Requests
@@ -241,7 +239,7 @@ const RequestRaise = () => {
                         const matchesStatus =
                           !requestStatusFilter ||
                           record.status?.toLowerCase() ===
-                            requestStatusFilter.toLowerCase();
+                          requestStatusFilter.toLowerCase();
                         return matchesBranch && matchesStatus;
                       })
                       .map((record, index) => (
@@ -267,7 +265,7 @@ const RequestRaise = () => {
                             {record.RequestTo}
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
-                            {DateConvert(record.requestDate) }
+                            {DateConvert(record.requestDate)}
                           </td>
                           <td className="border-b border-gray-300 px-4 py-2 text-sm text-gray-600">
                             {record.status}
@@ -282,24 +280,28 @@ const RequestRaise = () => {
                               </button>
                               {dropdownOpen === record.requestId && (
                                 <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                                  <button
-                                    onClick={() => {
-                                      handleVendorEdit(record);
-                                      setDropdownOpen(null);
-                                    }}
-                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      handleDelete(record);
-                                      setDropdownOpen(null);
-                                    }}
-                                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                                  >
-                                    Delete
-                                  </button>
+                                  {record.status === 'pending' && (
+                                    <button
+                                      onClick={() => {
+                                        handleVendorEdit(record);
+                                        setDropdownOpen(null);
+                                      }}
+                                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                      Edit
+                                    </button>
+                                  )}
+                                  {record.status === 'pending' && (
+                                    <button
+                                      onClick={() => {
+                                        handleDelete(record);
+                                        setDropdownOpen(null);
+                                      }}
+                                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                    >
+                                      Delete
+                                    </button>
+                                  )}
                                   <button
                                     onClick={() => {
                                       handleDetails(record);
@@ -325,8 +327,8 @@ const RequestRaise = () => {
       {activeTab === 'requests' && (
         <div>
           <TableWithDateFilter
-            type="requests" 
-            onEdit={handleVendorEdit} showEdit={true}
+            type="requests"
+            onEdit={handleVendorEdit} showEdit={false}
             onDelete={handleDelete} showDelete={false}
             onDetails={handleDetails}
             showDateFilters={false}

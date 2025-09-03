@@ -203,11 +203,11 @@ Warranty Claims:
   const fetchClients = async () => {
     try {
       const res = await ApiService.post('/client/getClientDetails');
-      setClients(res.data || []);
+      setClients(res.data || []); 
     } catch (err) {
       console.error('Failed to fetch client details:', err);
-      setClients([]);
-    }
+      setClients([]); 
+    } 
   };
 
   const fetchProducts = async () => {
@@ -244,6 +244,28 @@ Warranty Claims:
       client: selectedId,
       clientName: selectedClient.name || '',
       clientNumber: selectedClient.phoneNumber || '',
+      email: selectedClient.email || '',
+      clientAddress: selectedClient.address || '',
+      billingAddress: selectedClient.address,
+      shippingAddress: selectedClient.address,
+      clientId: selectedClient.clientId || '',
+    }));
+  };
+
+  const handleClientNumberChange = (e) => {
+    const selectedNumber = Number(e.target.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      clientNumber: selectedNumber,
+    }));
+   
+    const selectedClient = clients.find((client) => String(client.phoneNumber) === String(selectedNumber));
+    if (!selectedClient) return;
+    setFormData((prevData) => ({
+      ...prevData,
+      client: selectedClient.id,
+      clientName: selectedClient.name || '',
+      clientNumber:selectedNumber || '',
       email: selectedClient.email || '',
       clientAddress: selectedClient.address || '',
       billingAddress: selectedClient.address,
@@ -599,6 +621,20 @@ Warranty Claims:
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+              <label className="block text-sm font-semibold mb-1">
+                Client Number
+              </label>
+              <input
+                type="text"
+                name='clientNumber'
+                maxLength={10}
+                value={formData.clientNumber}
+                onChange={handleClientNumberChange}
+                placeholder="Client Number"
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
             <div>
               <label className="block text-sm font-semibold mb-1">Client</label>
               <select
@@ -615,20 +651,7 @@ Warranty Claims:
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">
-                Client Number
-              </label>
-              <input
-                type="text"
-                name="clientNumber"
-                value={formData.clientNumber}
-                onChange={handleInputChange}
-                placeholder="Client Number"
-                className="w-full p-2 border rounded-md"
-                readOnly
-              />
-            </div>
+            
             <div>
               <label className="block text-sm font-semibold mb-1">
                 Email ID

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
+import StaffAppointmentAutocomplete from '../../components/StaffAppointmentAutoComplet';
 
 const AddEditAppointmentForm = () => {
   const location = useLocation();
@@ -298,7 +299,12 @@ const AddEditAppointmentForm = () => {
       {/* Assign To */}
       {staff.length > 0 && (
         <div className="flex flex-col">
-          <label className="font-semibold mb-2">Assign To:</label>
+           <StaffAppointmentAutocomplete
+            staffData={staff}
+            formData={formData}
+            setFormData={setFormData}
+          />
+          {/* <label className="font-semibold mb-2">Assign To:</label>
           <select
             name="assignedTo"
             value={formData.assignedTo}
@@ -313,7 +319,7 @@ const AddEditAppointmentForm = () => {
                 {staffMember.name}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
       )}
 

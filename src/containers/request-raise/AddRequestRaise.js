@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import StaffAutocomplete from '../../components/StaffAutoComplet';
 
 const AddRequestRaise = () => {
   const location = useLocation();
@@ -260,29 +261,12 @@ const AddRequestRaise = () => {
             </select>
           </div>
           <div>
-            <div className="flex flex-col">
-              <label className="font-semibold mb-2">Request To:</label>
-              <select
-                name="requestTo"
-                value={formData.requestTo}
-                onChange={handleInputChange}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              >
-                <option value="" disabled>
-                  Select Request To
-                </option>
-                {staffData.map((staffMember) => (
-                  <option key={staffMember.id} value={staffMember.id}>
-                    {staffMember.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <StaffAutocomplete
+              staffData={staffData}
+              formData={formData}
+              setFormData={setFormData}
+            />
           </div>
-          <div>
-          </div>
-
-
           <div>
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Branch</label>
@@ -311,7 +295,7 @@ const AddRequestRaise = () => {
 
                   {/* Product Field */}
                   <div className="flex-1">
-                    <h1 className='m-3' style={{fontWeight:'bold'}}>Request For</h1>
+                    <h1 className='m-3' style={{ fontWeight: 'bold' }}>Request For</h1>
                     <label className="font-semibold">Product:</label>
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
                       <select
@@ -376,7 +360,7 @@ const AddRequestRaise = () => {
                 />
               </div>
             )}
-                
+
           {formData.requestType === "leaveRequest" && (
             <>
               <div className="mt-4">
@@ -402,31 +386,31 @@ const AddRequestRaise = () => {
               </div>
             </>)
           }
-                <div className="flex flex-col">
-                  <label className="font-semibold mb-2">Package Images:</label>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+          <div className="flex flex-col">
+            <label className="font-semibold mb-2">Package Images:</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+            />
+            <div className="flex flex-wrap gap-4 mt-4">
+              {imagePreviews.map((src, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={src}
+                    alt={`Preview ${index}`}
+                    className="w-24 h-24 object-cover rounded-md cursor-pointer"
+                    onClick={() => handleReplaceImage(index)}
                   />
-                  <div className="flex flex-wrap gap-4 mt-4">
-                    {imagePreviews.map((src, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={src}
-                          alt={`Preview ${index}`}
-                          className="w-24 h-24 object-cover rounded-md cursor-pointer"
-                          onClick={() => handleReplaceImage(index)}
-                        />
-                        <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
-                          Click to Replace
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  <span className="text-xs absolute bottom-1 left-1 bg-white/80 px-1 rounded-sm">
+                    Click to Replace
+                  </span>
                 </div>
+              ))}
+            </div>
+          </div>
         </div>
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">

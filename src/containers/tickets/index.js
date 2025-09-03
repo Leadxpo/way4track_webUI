@@ -56,13 +56,13 @@ const Tickets = () => {
 
     const filtered = allTickets.filter((ticket) => {
       const currentUserId = ticket.staffId ?? ticket.subDealerId;
-      const reportingStaff = ticket.reportingStaffId ;
+      const reportingStaff = ticket.reportingStaffId;
 
       if (activeTab === 'myTickets') {
         return currentUserId === Number(userDbId);
       } else {
         return (
-           reportingStaff === Number(userDbId)
+          reportingStaff === Number(userDbId)
         );
       }
     });
@@ -129,7 +129,7 @@ const Tickets = () => {
     <div className="m-2">
       <div className="flex justify-between items-center py-4">
         <h2 className="text-2xl font-semibold text-gray-800">Tickets</h2>
-       {permissions.add && <button
+        {permissions.add && <button
           className="bg-green-700 text-white px-4 py-2 rounded-md"
           onClick={() => navigate('/add-ticket')}
         >
@@ -140,21 +140,19 @@ const Tickets = () => {
       {/* Tabs */}
       <div className="flex space-x-4 mb-4">
         <button
-          className={`px-4 py-2 rounded-md ${
-            activeTab === 'myTickets'
+          className={`px-4 py-2 rounded-md ${activeTab === 'myTickets'
               ? 'bg-green-700 text-white'
               : 'bg-gray-200'
-          }`}
+            }`}
           onClick={() => setActiveTab('myTickets')}
         >
           My Tickets
         </button>
         <button
-          className={`px-4 py-2 rounded-md ${
-            activeTab === 'receivedTickets'
+          className={`px-4 py-2 rounded-md ${activeTab === 'receivedTickets'
               ? 'bg-green-700 text-white'
               : 'bg-gray-200'
-          }`}
+            }`}
           onClick={() => setActiveTab('receivedTickets')}
         >
           Tickets
@@ -225,9 +223,9 @@ const Tickets = () => {
                       {dropdownOpen === item.id && (
                         <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded-md min-w-[150px] z-50">
                           <ul className="text-left">
-                            {permissions.edit && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>}
-                            {permissions.delete &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => handleDelete(item.id)}>Delete</li>}
-                            {permissions.view &&<li className="p-2 hover:bg-gray-100 cursor-pointer"  onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>}
+                            {permissions.edit && item.ticketStatus === 'pending' && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/edit-ticket", { state: { ticket: item } })}>Edit</li>}
+                            {permissions.delete && item.ticketStatus === 'pending' && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</li>}
+                            {permissions.view && <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate("/view-ticket", { state: { ticket: item } })}>More Details</li>}
                           </ul>
                         </div>
                       )}

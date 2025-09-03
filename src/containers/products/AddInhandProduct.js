@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import * as XLSX from 'xlsx';
+import StaffInhandAutocomplete from '../../components/StaffInhandAutoComplet';
 
 const AddInhandProduct = () => {
   const [formData, setFormData] = useState({
@@ -18,34 +19,34 @@ const AddInhandProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Fetch Staff List
-  const fetchEmployees = async () => {
-    const branchName =localStorage.getItem("branchName");
-    try {
-      const response = await ApiService.post(
-        '/dashboards/getTotalStaffDetails',
-        {
-          branchName: branchName,
-          companyCode: initialAuthState?.companyCode,
-          unitCode: initialAuthState?.unitCode,
-        }
-      );
-      if (response.data) {
-        setStaffList(
-          response.data.staff.filter(
-            (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
-          )
-        );
-      } else {
-        console.log('Failed to fetch employee data.');
-      }
-    } catch (error) {
-      console.error('Error fetching employees:', error);
-    }
-  };
+  // const fetchEmployees = async () => {
+  //   const branchName =localStorage.getItem("branchName");
+  //   try {
+  //     const response = await ApiService.post(
+  //       '/dashboards/getTotalStaffDetails',
+  //       {
+  //         companyCode: initialAuthState?.companyCode,
+  //         unitCode: initialAuthState?.unitCode,
+  //         ...(branchName && { branchName }),
+  //       }
+  //     );
+  //     if (response.data) {
+  //       setStaffList(
+  //         response.data.staff.filter(
+  //           (staff) => staff.staffDesignation === 'Technician' || staff.staffDesignation === 'Sr.Technician'
+  //         )
+  //       );
+  //     } else {
+  //       console.log('Failed to fetch employee data.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching employees:', error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+  // useEffect(() => {
+  //   fetchEmployees();
+  // }, []);
 
   // Handle input change
   const handleChange = (e) => {
@@ -76,7 +77,7 @@ const AddInhandProduct = () => {
 
     const payload = new FormData();
     payload.append('staffId', formData.staffId);
-    payload.append('isReturn',false);
+    payload.append('isReturn', false);
     payload.append('assignTime', formData.assignTime);
     payload.append('productTypeId', formData.productTypeId);
     payload.append('companyCode', initialAuthState.companyCode);
@@ -182,21 +183,10 @@ const AddInhandProduct = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Staff Selection */}
         <div>
-          <label className="block text-sm font-medium">Staff</label>
-          <select
-            name="staffId"
-            value={formData.staffId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          >
-            <option value="">Select Staff</option>
-            {staffList.map((staff) => (
-              <option key={staff.staffId} value={staff.id}>
-                {staff.staffName}
-              </option>
-            ))}
-          </select>
+          <StaffInhandAutocomplete
+            formData={formData}
+            setFormData={setFormData}
+          />
         </div>
 
         {/* Assign Time */}
@@ -232,22 +222,6 @@ const AddInhandProduct = () => {
               ))}
           </select>
         </div>
-
-        {/* Number of Products */}
-        {/* <div>
-          <label className="block text-sm font-medium">
-            Number of Products
-          </label>
-          <input
-            type="number"
-            name="numberOfProducts"
-            value={formData.numberOfProducts}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div> */}
-
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
           onClick={generateExcel}

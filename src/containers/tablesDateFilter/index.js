@@ -45,6 +45,7 @@ const TableWithDateFilter = ({
   const [columnNames, setColumnNames] = useState([]);
   const [branchFilter, setBranchFilter] = useState('');
   const [requestList, setRequestList] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -86,6 +87,7 @@ useEffect(()=>{
         )
       );
       setFilteredData(filteredData);
+      setIsSearch(true)
     }
   };
 
@@ -129,6 +131,7 @@ const handleSearchInvoice = () => {
   });
 
   setFilteredData(filtered);
+  setIsSearch(true);
 };
     
   const getVendorData = useCallback(async () => {
@@ -313,7 +316,6 @@ const handleSearchInvoice = () => {
         const rrr = response?.data?.map(item => ({
           id: item.id,
           invoiceId: item.invoiceId,
-          // estimateId: item.estimateId,
           clientName: item.clientName,
           PhoneNumber: item.clientPhoneNumber,
           branchName: item.branchName,
@@ -461,6 +463,7 @@ const handleSearchInvoice = () => {
   };
 
   const handleSearch = async () => {
+    setIsSearch(true)
     switch (type) {
       case 'vendors':
         await getVendorData();
@@ -676,7 +679,7 @@ const handleSearchInvoice = () => {
 
       {/* Table Row */}
       <div className="mt-8">
-        <Table
+       {isSearch && <Table
           columns={columns}
           columnNames={columnNames}
           data={filteredData}
@@ -690,7 +693,7 @@ const handleSearchInvoice = () => {
           editText={editText} // Custom edit button text
           deleteText={deleteText} // Custom delete button text
           detailsText={detailsText} // Custom details button text
-        />
+        />}
       </div>
     </div>
   );

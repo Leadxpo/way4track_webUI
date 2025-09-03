@@ -46,6 +46,7 @@ const TableWithSearchFilter = ({
   const workData = location.state?.workData || {};
   const [columnNames, setColumnNames] = useState([])
   const [qualifiedCount, setQualifiedCount] = useState(0);
+  const [isSearch, setIsSearch] = useState(false);
 
   useEffect(() => {
     const countQualified = filteredData.filter(
@@ -438,6 +439,7 @@ const TableWithSearchFilter = ({
         getWorkDetailsAgainstSearch();
         break;
     }
+    setIsSearch(true)
   };
 
   const handleCreateNew = () => {
@@ -489,7 +491,8 @@ const TableWithSearchFilter = ({
 
       </div>
       <div className="flex justify-end mb-4">
-        {showDetails && <div className="flex justify-between items-center">
+        {showDetails && 
+        <div className="flex justify-between items-center">
           <button
             onClick={() => handleDownload(type)}
             className="bg-green-700 text-white px-4 py-2 mx-5 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
@@ -497,7 +500,8 @@ const TableWithSearchFilter = ({
             <FaDownload className="text-white" />
             Download {type} Excel Sheet
           </button>
-        </div>}
+        </div>
+        }
         {showCreateBtn && (
           <button
             className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
@@ -625,7 +629,7 @@ const TableWithSearchFilter = ({
       </div>
 
       <div className="mt-8">
-        <Table
+        {isSearch && <Table
           columns={columns}
           columnNames={columnNames}
           data={filteredData}
@@ -639,7 +643,7 @@ const TableWithSearchFilter = ({
           deleteText={deleteText}
           showActionColumn={showActionColumn}
           detailsText={detailsText}
-        />
+        />}
       </div>
     </div>
   );

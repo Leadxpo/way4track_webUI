@@ -23,6 +23,7 @@ const Staff = () => {
   const [profiles, setProfiles] = useState([]);
   const [columns, setColumns] = useState([]);
   const [permissions, setPermissions] = useState({});
+  const [isSearch, setIsSearch] = useState(false);
 
   const columnNames = [
     'ID',
@@ -63,7 +64,7 @@ const Staff = () => {
           email: 'Email',
           branch_name: 'Branch Name',
           address: 'address',
-          status:'status'
+          status: 'status'
         };
 
         // Reorder the columns based on `columnNames`
@@ -121,7 +122,7 @@ const Staff = () => {
         profile['Staff Name']?.toLowerCase().includes(staffName.toLowerCase())
       );
     }
-
+    setIsSearch(true);
     setProfiles(filteredProfiles);
   };
 
@@ -239,7 +240,7 @@ const Staff = () => {
         </button>
       </div>
       {/* Staff Table */}
-      <Table
+      {isSearch && <Table
         columns={columns}
         columnNames={columnNames}
         onDelete={handleDelete}
@@ -256,7 +257,7 @@ const Staff = () => {
             )
             : []
         }
-      />
+      />}
       {/* )}{' '} */}
     </div>
   );
@@ -366,25 +367,24 @@ const Table = ({
             <tbody>
               {data.map((row, rowIndex) => (
                 <tr
-                key={rowIndex}
-                className={`${
-                  row.status === "INACTIVE"
-                    ? "bg-red-50" // 👈 highlight inactive rows (change color as you like)
-                    : rowIndex % 2 === 0
-                    ? "bg-white"
-                    : "bg-gray-50"
-                }`}
+                  key={rowIndex}
+                  className={`${row.status === "INACTIVE"
+                      ? "bg-red-50" // 👈 highlight inactive rows (change color as you like)
+                      : rowIndex % 2 === 0
+                        ? "bg-white"
+                        : "bg-gray-50"
+                    }`}
                 // onClick={() => {
                 //   setSelectedRowData(row);
                 //   setShowRowPopup(true);
                 // }}
-              >
+                >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
                       className={`border-b border-gray-300 px-4 py-2 text-sm text-gray-600 ${checkColumn(column)
-                          ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
-                          : ''
+                        ? `${getStatusStyle(row[column]).textColor} ${getStatusStyle(row[column]).backgroundColor}`
+                        : ''
                         } ${column === 'Staff ID' ? 'cursor-pointer hover:underline text-blue-600 hover:bg-blue-500 hover:text-white' : ''}`}
                       onClick={
                         column === 'Staff ID'

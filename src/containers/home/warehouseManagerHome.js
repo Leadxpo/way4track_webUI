@@ -137,19 +137,12 @@ const WarehouseManagerHome = () => {
           '/products/productAssignDetails ',
           payload
         );
-        console.log('API Response:???????', response);
-
         if (response.status && response.data) {
           setProductsData(response.data.
             branchDetails);
             setFilterProductsData(response.data.
               branchDetails);
 
-          if (response.data.length > 0) {
-            console.log("////??????", response.data)
-            // setProductsData(response.data[0])
-            // setSelectedBranch(response.data[0].branchName); // Auto-select first branch
-          }
         } else {
           setProductsData([]);
           alert('No data found');
@@ -164,26 +157,6 @@ const WarehouseManagerHome = () => {
   }, []);
 
 
-  const downloadExcel = () => {
-    const ws = XLSX.utils.json_to_sheet();
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Requests");
-    XLSX.writeFile(wb, "requests.xlsx");
-  };
-
-  const formatExcelData = (data) => {
-    return data.map((item) => ({
-      "Emp ID": item.staffId,
-      "Name of the Employee": item.name,
-      "Designation": item.designation,
-      "Branch": item.branchName || "",
-      "Contact Number": item.phoneNumber,
-
-    }));
-  };
-
-
-
   const handleRequestDownload = () => {
     const data = filterRequestsData.flatMap(item =>
       item.requests.map(req => ({
@@ -193,7 +166,7 @@ const WarehouseManagerHome = () => {
       }))
     );
 
-    if (data.length === 0) {
+    if (data?.length === 0) {
       alert("No data available for download.");
       return;
     }
@@ -205,13 +178,13 @@ const WarehouseManagerHome = () => {
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-    saveAs(blob, "product_requests.xlsx");
+    saveAs(blob, "requests.xlsx");
   };
 
   const handleProductDownload = () => {
-    const data =filterProductsData
+    const data =filterProductsData ?? []
 
-    if (data.length === 0) {
+    if (data?.length === 0) {
       alert("No data available for download.");
       return;
     }
@@ -245,13 +218,14 @@ const WarehouseManagerHome = () => {
 
   const handleProductSearch = (event) => {
     const selectedValue = event.target.value;
+    console.log("rrr ::",event.target.value)
     setSelectedProductBranch(selectedValue);
 
     if (selectedValue === '') {
       // If nothing is selected, show all data or clear
       setFilterProductsData(productData);
     } else {
-      const filtered = productData.filter((item) => item.branchName === selectedValue);
+      const filtered = productData.filter((item) => String(item.branchName )=== String(selectedValue));
       setFilterProductsData(filtered);
     }
   };
@@ -328,7 +302,7 @@ const WarehouseManagerHome = () => {
             </tr>
           </thead>
           <tbody>
-            {filterRequestsData.length > 0 ? (
+            {filterRequestsData?.length > 0 ? (
               filterRequestsData.map((item, index) => (
                 item.requests.map((req, i) => (
                   <tr key={`${index}-${i}`} className={(index + i) % 2 === 0 ? "bg-white" : "bg-gray-200"}>
@@ -349,53 +323,17 @@ const WarehouseManagerHome = () => {
         </table>
       </div>
 
-
-
-      {/* <div className="bg-white p-4 rounded-xl shadow-md mb-4 flex gap-4 mt-10">
-
-
-      <select
-  id="branch"
-  value={selectedBranch}
-  onChange={handleChange}
-  className="border rounded px-4 py-2 w-96"
->
-  <option value="">-- Select Branch --</option>
-  {branches.map((branch, index) => (
-    <option key={index} value={branch.id}>
-      {branch.branchName} ({branch.branchNumber})
-    </option>
-  ))}
-</select>
-
-    
-
-        <button
-          onClick={downloadExcel}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
-        >
-          Search
-        </button>
-
-        <button
-          onClick={handleProductDownload}
-          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
-        >
-          <FaFileDownload className="mr-2" />  Download
-        </button>
-      </div> */}
-
       <div className="bg-white p-4 rounded-xl shadow-md mb-4 mt-10 flex justify-between items-center">
   {/* Left: Branch Select */}
   <select
     id="branch"
-    value={selectedBranch}
-    onChange={handleChange}
+    value={selectedProductBranch}
+    onChange={handleProductSearch}
     className="border rounded px-4 py-2 w-96"
   >
     <option value="">-- Select Branch --</option>
     {branches.map((branch, index) => (
-      <option key={index} value={branch.id}>
+      <option key={index} value={branch.branchName}>
         {branch.branchName} ({branch.branchNumber})
       </option>
     ))}
@@ -403,13 +341,6 @@ const WarehouseManagerHome = () => {
 
   {/* Right: Buttons */}
   <div className="flex gap-3">
-    <button
-      onClick={downloadExcel}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
-    >
-      Search
-    </button>
-
     <button
       onClick={handleProductDownload}
       className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
@@ -444,7 +375,7 @@ const WarehouseManagerHome = () => {
             </tr>
           </thead>
           <tbody>
-            {filterProductsData.length > 0 ? (
+            {filterProductsData?.length > 0 ? (
               filterProductsData.map((item, index) => (
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                   <td className="p-3">{String(index + 1).padStart(2, "0")}</td>

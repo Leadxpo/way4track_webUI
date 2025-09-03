@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
 import hasPermission from '../../common/permission'
+
 const Appointments = () => {
   const navigate = useNavigate();
   const [selectedBranch, setSelectedBranch] = useState('All');

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { useNavigate } from 'react-router';
+import StaffAutocomplete from '../../components/StaffAutoComplet';
+import StaffTicketAutocomplete from '../../components/StaffTicketAutoComplet';
 
 export default function AddTicket() {
   const navigate = useNavigate();
@@ -170,22 +172,13 @@ export default function AddTicket() {
           />
         </div>
 
-        <label className="block mb-2">Reporting Staff</label>
-        <select
-          value={selectedStaffId}
-          name={'reportingStaffId'}
-          onChange={(e) => {setSelectedStaffId(e.target.value)
-            setFormData((prev) => ({ ...prev, 'reportingStaffId': e.target.value }));
-          }}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-        >
-          <option value="">Select Staff</option>
-          {staffList?.map((staff) => (
-            <option key={staff.id} value={staff.id}>
-              {staff.staffName} ({staff.staffId})
-            </option>
-          ))}
-        </select>
+        <div>
+          <StaffTicketAutocomplete
+            staffData={staffList}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        </div>
         <div className="mb-4">
           <label className="block font-medium mb-1">Designation Relation</label>
           <select

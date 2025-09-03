@@ -13,7 +13,7 @@ const RequestDetails = () => {
   const [branch, setBranch] = useState([]);
 
   const requestData = location.state?.requestDetails || {};
-
+  const myId = localStorage.getItem("id")
 
   const [formData, setFormData] = useState({
     requestType: '',
@@ -181,22 +181,22 @@ const RequestDetails = () => {
     }
   };
 
-    const handleSave = async () => {
+  const handleSave = async () => {
     try {
 
       const formDataToSend = new FormData();
-    if (formData.photo && formData.photo.length > 0) {
+      if (formData.photo && formData.photo.length > 0) {
         await Promise.all(
-            formData.photo?.map(async (item) => {
-              console.log("rrr",item)
-                const response = await fetch(item);
-                const blob = await response.blob();
-                const filename = item.split('/').pop();
-                const file = new File([blob], filename, { type: blob.type });
-                formDataToSend.append("photo", file);
-            })
+          formData.photo?.map(async (item) => {
+            console.log("rrr", item)
+            const response = await fetch(item);
+            const blob = await response.blob();
+            const filename = item.split('/').pop();
+            const file = new File([blob], filename, { type: blob.type });
+            formDataToSend.append("photo", file);
+          })
         );
-    }
+      }
 
       formDataToSend.append('id', requestData.requestId);
       if (requestData?.requestNumber) {
@@ -206,7 +206,7 @@ const RequestDetails = () => {
       formDataToSend.append('description', formData.description);
       formDataToSend.append('requestType', formData.requestType);
       formDataToSend.append('requestTo', formData.requestTo);
-      formDataToSend.append('requestFrom',  formData.requestFrom);
+      formDataToSend.append('requestFrom', formData.requestFrom);
       formDataToSend.append('branch', formData.branch);
       formDataToSend.append('companyCode', initialAuthState.companyCode);
       formDataToSend.append('unitCode', initialAuthState.unitCode);
@@ -232,7 +232,7 @@ const RequestDetails = () => {
         alert('Request updated successfully');
         navigate('/requests');
       } else {
-        alert('failed to raise request');  
+        alert('failed to raise request');
       }
     } catch (error) {
       console.error(error);
@@ -325,7 +325,7 @@ const RequestDetails = () => {
                     <label className="font-semibold">Product:</label>
                     <div className="flex items-center border rounded-md p-2 bg-gray-100">
                       <input
-                        type="text"
+                        type="text" disabled
                         value={row.productType}
                         placeholder="Enter Product"
                         className="w-full bg-transparent outline-none"
@@ -337,7 +337,7 @@ const RequestDetails = () => {
                   <div className="flex-1">
                     <label className="font-semibold">Quantity:</label>
                     <input
-                      type="number"
+                      type="number" disabled
                       value={row.quantity}
                       placeholder="Enter Amount"
                       className="w-full border rounded-md p-2 bg-gray-100"
@@ -353,7 +353,7 @@ const RequestDetails = () => {
                 <p className="font-semibold mb-1">Request For</p>
                 <input
                   type="text"
-                  name="requestFor"
+                  name="requestFor" disabled
                   value={formData.requestFor}
                   placeholder="Enter Request For"
                   className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
@@ -363,26 +363,26 @@ const RequestDetails = () => {
 
           {formData?.requestType === "leaveRequest" && (
             <>
-            <div className="mt-4">
-            <p className="font-semibold mb-1">Leave From Date</p>
-            <input
-              type="date"
-              name="fromDate"
-              value={formData?.fromDate.slice(0, 10) || ""}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            />
-          </div>
+              <div className="mt-4">
+                <p className="font-semibold mb-1">Leave From Date</p>
+                <input
+                  type="date"
+                  name="fromDate" disabled
+                  value={formData?.fromDate.slice(0, 10) || ""}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+              </div>
 
-            <div className="mt-4">
-              <p className="font-semibold mb-1">Leave To Date</p>
-              <input
-                type="date"
-                name="toDate"
-                value={formData?.toDate.slice(0, 10) || ""}
-                className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-              />
-            </div>
-          </>)}
+              <div className="mt-4">
+                <p className="font-semibold mb-1">Leave To Date</p>
+                <input
+                  type="date"
+                  name="toDate" disabled
+                  value={formData?.toDate.slice(0, 10) || ""}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                />
+              </div>
+            </>)}
 
         </div>
         <div className="flex flex-col">
@@ -405,51 +405,55 @@ const RequestDetails = () => {
           </div>
         </div>
         {/* Address */}
-        <div>
-          <div className="flex flex-col">
-            <label className="font-semibold mb-2">Status</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={(e)=>handleInputChange(e)}
-              className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-            >
-              <option>
-                Select status
-              </option>
-              <option value="pending">  PENDING </option>
-              <option value="sent">  SENT </option>
-              <option value="rejected">  REJECTED </option>
-              <option value="accepted">  ACCEPTED </option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <p className="font-semibold mb-1">Remark</p>
-          <textarea
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={(e)=>handleInputChange(e)}
-            placeholder="Enter Remarks"
-            className="w-full p-3 border rounded-md bg-gray-200"
-          />
-        </div>
+        {String(formData.requestFrom) === String(myId) &&
+          (<>
+            <div>
+              <div className="flex flex-col">
+                <label className="font-semibold mb-2">Status</label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={(e) => handleInputChange(e)}
+                  className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+                >
+                  <option>
+                    Select status
+                  </option>
+                  <option value="pending">  PENDING </option>
+                  <option value="sent">  SENT </option>
+                  <option value="rejected">  REJECTED </option>
+                  <option value="accepted">  ACCEPTED </option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <p className="font-semibold mb-1">Remark</p>
+              <textarea
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange(e)}
+                placeholder="Enter Remarks"
+                className="w-full p-3 border rounded-md bg-gray-200"
+              />
+            </div>
 
-        <div className="flex justify-center space-x-4 mt-6">
-          <button
-            onClick={handleSave}
-            className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
-          >
-            Cancel
-          </button>
-        </div>
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                onClick={handleSave}
+                className="bg-red-600 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-red-600 transition-all"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-black text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-gray-800 transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </>)
+        }
 
       </div>
     </div>
