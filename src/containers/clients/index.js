@@ -26,17 +26,20 @@ const Clients = () => {
     navigate('/client-details', { state: { clientDetails } });
   };
   return (
-    <TableWithSearchFilter
-      type="clients"
-      showStatusFilter={true}
-      showCreateBtn={permissions.add}
-      showDelete={permissions.delete}
-      showEdit={permissions.edit}
-      showDetails={permissions.view}
-      onEdit={handleVendorEdit}
-      onDelete={handleDelete}
-      onDetails={handleDetails}
-    />
+    <div>
+
+      <TableWithSearchFilter
+        type="clients"
+        showStatusFilter={true}
+        showCreateBtn={permissions.add}
+        showDelete={permissions.delete}
+        showEdit={permissions.edit}
+        showDetails={permissions.view}
+        onEdit={handleVendorEdit}
+        onDelete={handleDelete}
+        onDetails={handleDetails}
+      />
+    </div>
   );
 };
 

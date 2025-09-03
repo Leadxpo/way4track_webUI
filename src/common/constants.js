@@ -213,11 +213,11 @@ export const menuOptions = [
     icon: <img src="./backend-work.png" />,
     route: '/backend-support-works',
   },
-  hasPermission(permission, "backend", "view") && {
-    name: 'Payments',
-    icon: <img src="./payments.png" />,
-    route: '/backend-support-payments',
-  },
+  // hasPermission(permission, "backend", "view") && {
+  //   name: 'Payments',
+  //   icon: <img src="./payments.png" />,
+  //   route: '/backend-support-payments',
+  // },
 
   hasPermission(permission, "backend", "view") && {
     name: 'Backend Support',

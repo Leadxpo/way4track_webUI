@@ -88,15 +88,25 @@ receipt -
 (finish)    add/edit appointment should add new entity inbond/outbond (new update)
 (finish)    add/edit appointment service dropdown(renewal/sale pitching/follow up) (new update)
 
+26-08-2025
+(finish)    remove edit/delete options 
+(finish)    all modules shold be blank on start ans only visible by search 
+(finish)    add report download in assert module
+(finish)    client should shot againest phonenumber/name/id in appointments
+
+(finish)    change assets quantity number color
+(finish)    change position of create request to myrequest
+(finish)    change the design og voucher branch pop page branched should be black and white comination
+(finish)    change edit icon to eye icon
+(finish)    remove save button
+(finish)    2 payments in side bar
+(finish)    convert to invoice not working
+(finish)    appointment table more side spaceing 
+
+
 status change should be mentioned with user and time stamp (new update)
 product tracking history need to maintained with time/user stamp
 Asserts tracking history need to maintained with time/user stamp
 createdBy user should add in client/vendor/staff/branch/appointment (new update) --day9
 ticket should be forward to the other person/staff if its status is "in progress" until it is in "completed"
 respective payslips can download by thier own option must be give in payroll screen
-
-26-08-2025
-(finish)    remove edit/delete options 
-(finish)    all modules shold be blank on start ans only visible by search 
-(finish)    add report download in assert module
-(finish)    client should shot againest phonenumber/name/id in appointments

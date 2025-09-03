@@ -180,7 +180,7 @@ const Vouchers = () => {
         </div>
       )}
 
-      <div className="overflow-x-auto">
+      <div className="overflow-y-auto">
        {isSearch && <table className="min-w-full border">
           <thead>
             <tr className="bg-gray-100 text-left">

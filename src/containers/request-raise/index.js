@@ -149,6 +149,12 @@ const RequestRaise = () => {
         >
           Requests
         </button>
+        {activeTab === 'myRequests' &&<button
+            className="h-12 px-4 bg-yellow-400 text-white font-bold rounded-md hover:cursor-pointer"
+            onClick={()=>navigate('/add-request')}
+          >
+            Create New
+          </button>}
       </div>
       {activeTab === 'myRequests' && (
         <div
@@ -331,7 +337,10 @@ const RequestRaise = () => {
             onEdit={handleVendorEdit} showEdit={false}
             onDelete={handleDelete} showDelete={false}
             onDetails={handleDetails}
+            showStatusFilter={true} 
+            showBranchFilter={false}
             showDateFilters={false}
+            showCreateBtn={false}
           />
         </div>
       )}

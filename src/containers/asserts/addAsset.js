@@ -241,7 +241,7 @@ const AddAsset = () => {
           style={{ fontWeight: '500', fontSize: '15px', color: '#646464' }}
         />
 
-        <p className="font-semibold mb-1">taxable Amount</p>
+        <p className="font-semibold mb-1">Taxable Amount</p>
         <input
           type="text"
           name="taxableAmount"
@@ -258,7 +258,7 @@ const AddAsset = () => {
           onChange={handleInputChange}
           className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
         >
-          <option value="">Select assetType</option>
+          <option value="">Select Asset Type</option>
           <option value="office asset">OFFICE_ASSET</option>
           <option value="transport asset">TRANSPORT_ASSET</option>
         </select>

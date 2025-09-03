@@ -10,12 +10,6 @@ const AssertCard = ({ asset,permission }) => {
       className="bg-white rounded-lg shadow-md p-4 flex flex-row items-center"
       style={{ height: '150px',  borderRadius: '22px' }}
     >
-      <p
-          className="text-gray-600"
-          style={{ fontSize: '15px',alignSelf:'center',textAlign:"center",width:25,height:25,borderRadius:5,right:-300, fontWeight: '400', color: '#f3f3f3',top:-50,position:'relative',background:"#7FE65A" }}
-        >
-          {asset.quantity || 0}
-        </p>
       <img
         src={asset.assetPhoto}
         alt={asset.assertsName}
@@ -26,13 +20,19 @@ const AssertCard = ({ asset,permission }) => {
           className="text-xl font-semibold mt-2"
           style={{ fontSize: '21px', fontWeight: '400', color: '#000000' }}
         >
-          {asset.assertsName}
+          {asset.assertsName}  
         </h2>
         <p
           className="text-gray-600"
           style={{ fontSize: '11px', fontWeight: '400', color: '#7A7A7A' }}
         >
           {asset.branchId ? asset.branchId.branchName : 'Branch not available'}
+        </p>
+        <p
+          className="text-green-600"
+          style={{ fontSize: '11px', fontWeight: '600' }}
+        >
+          Qty : {asset.quantity}
         </p>
         
         <p

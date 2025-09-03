@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
-import { FaSearch,FaEllipsisV } from 'react-icons/fa';
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import DateConvert from '../../components/dateConvert';
 
@@ -126,7 +126,7 @@ const SalesVisit = () => {
 
   useEffect(() => {
     const fetchStaff = async () => {
-      const branchName =localStorage.getItem("branchName");
+      const branchName = localStorage.getItem("branchName");
       try {
         const response = await ApiService.post(
           '/dashboards/getTotalStaffDetails',
@@ -143,7 +143,7 @@ const SalesVisit = () => {
             )
           );
         }
-        } catch (err) {
+      } catch (err) {
         console.error('Failed to fetch staff:', err);
         setStaffList([]);
       }
@@ -181,11 +181,11 @@ const SalesVisit = () => {
   };
 
   const handleSubmitLeadUpdate = async () => {
-    const allocatedStaff=localStorage.getItem("Id")
+    const allocatedStaff = localStorage.getItem("Id")
     const payload = {
       id: selectedLead.id,
       leadStatus: updatedLeadStatus,
-      ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId,description:description,allocatedBy:allocatedStaff,allocatedDate:new Date().toISOString()}),
+      ...(updatedLeadStatus === 'allocated' && { allocateStaffId: selectedStaffId, description: description, allocatedBy: allocatedStaff, allocatedDate: new Date().toISOString() }),
       ...((updatedLeadStatus === 'partiallyPaid' || updatedLeadStatus === 'completed') && {
         paidAmount: paidAmt,
         paidDate: new Date(), // backend should expect this in ISO string format
@@ -200,7 +200,7 @@ const SalesVisit = () => {
       if (data.status) {
         if (payload.leadStatus === "allocated") {
           createWorkAllocation(selectedLead, selectedStaffId);
-        }else{
+        } else {
           setIsReload(!isReload)
         }
       }
@@ -374,118 +374,121 @@ const SalesVisit = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
-  <input
-    type="text"
-    placeholder="Client Phone Number"
-    value={filters.phoneNumber}
-    onChange={(e) => handleFilterChange("phoneNumber", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  />
-  <input
-    type="text"
-    placeholder="Staff Name"
-    value={filters.staffName}
-    onChange={(e) => handleFilterChange("staffName", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  />
-  <input
-    type="text"
-    placeholder="Branch Name"
-    value={filters.branchName}
-    onChange={(e) => handleFilterChange("branchName", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  />
+        <input
+          type="text"
+          placeholder="Client Phone Number"
+          value={filters.phoneNumber}
+          onChange={(e) => handleFilterChange("phoneNumber", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        />
+        <input
+          type="text"
+          placeholder="Staff Name"
+          value={filters.staffName}
+          onChange={(e) => handleFilterChange("staffName", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        />
+        <input
+          type="text"
+          placeholder="Branch Name"
+          value={filters.branchName}
+          onChange={(e) => handleFilterChange("branchName", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        />
 
-  {/* 🔽 Lead Status Select */}
-  <select
-    value={filters.leadStatus}
-    onChange={(e) => handleFilterChange("leadStatus", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  >
-    <option value="">Select Status</option>
-    <option value="allocated">ALLOCATED</option>
-    <option value="customer agreed">CUSTOMER AGREED</option>
-    <option value="incomplete">INCOMPLETE</option>
-    <option value="paymentPending">PAYMENT_PENDING</option>
-    <option value="partiallyPaid">PARTIALLY_PAID</option>
-    <option value="completed">COMPLETED</option>
-  </select>
+        {/* 🔽 Lead Status Select */}
+        <select
+          value={filters.leadStatus}
+          onChange={(e) => handleFilterChange("leadStatus", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        >
+          <option value="">Select Status</option>
+          <option value="allocated">ALLOCATED</option>
+          <option value="customer agreed">CUSTOMER AGREED</option>
+          <option value="incomplete">INCOMPLETE</option>
+          <option value="paymentPending">PAYMENT_PENDING</option>
+          <option value="partiallyPaid">PARTIALLY_PAID</option>
+          <option value="completed">COMPLETED</option>
+        </select>
 
-  <input
-    type="date"
-    value={filters.fromDate}
-    onChange={(e) => handleFilterChange("fromDate", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  />
-  <input
-    type="date"
-    value={filters.toDate}
-    onChange={(e) => handleFilterChange("toDate", e.target.value)}
-    className="border border-gray-500 px-2 rounded h-10"
-  />
-  <button color='#333333' className='bg-green-300 h-10 p-2 my-2 rounded' onClick={()=>generateExcel()}>Generate Excel</button>
-</div>
+        <input
+          type="date"
+          value={filters.fromDate}
+          onChange={(e) => handleFilterChange("fromDate", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        />
+        <input
+          type="date"
+          value={filters.toDate}
+          onChange={(e) => handleFilterChange("toDate", e.target.value)}
+          className="border border-gray-500 px-2 rounded h-10"
+        />
+        <button color='#333333' className='bg-green-300 h-10 p-2 my-2 rounded' onClick={() => generateExcel()}>Generate Excel</button>
+      </div>
       <div className="overflow-x-auto" style={{ marginTop: '20px' }}>
         {salesDetails?.length === 0 ? (
           <div className="text-center text-gray-500 text-lg p-5">
             No Data Found
           </div>
         ) : (
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-            <thead>
-              <tr
-                className="bg-gray-200 text-left"
-                style={{ backgroundColor: '#FFFFFF' }}
-              >
-                <th className="p-3">No.</th>
-                <th className="p-3">Visit ID</th>
-                <th className="p-3">Client</th>
-                <th className="p-3">Contact</th>
-                <th className="p-3">Date of Visit</th>
-                <th className="p-3" >Estimate Date</th>
-                <th className="p-3">Staff</th>
-                <th className="p-3">Branch</th>
-                <th className="p-3">Lead Status</th>
-                <th className="p-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData?.map((item, index) => {
-                // const formatDate = (dateString) => {
-                //   const [year, month, day] = dateString.split("T")[0].split("-");
-                //   return `${day}-${month}-${year}`;
-                // };
-                return (
-                  <tr
-                    key={item.id}
-                    className={`border-b`}
-                    style={{
-                      backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#D0D0D0',
-                    }}
-                  >
-                    <td className="p-3 font-semibold">{item.id}</td>
-                    <td className="p-3">{item.visitingNumber}</td>
-                    <td className="p-3 font-semibold">{item.name}</td>
-                    <td className="p-3">{item.phoneNumber}</td>
-                    <td className="p-3 font-semibold" width={200}> {item.date ? DateConvert(item.date): "N/A"}</td>
-                    <td className="p-3" width={100}>{item.estimateDate ? DateConvert(item.estimateDate): "N/A"}</td>
-                    <td className="p-3">{item.staffName ? item.staffName : "N/A"}</td>
-                    <td className="p-3">{item.branchName ? item.branchName : "N/A"}</td>
-                    <td className="p-3" onClick={() => leadStatusUpdate(item)}>{item.leadStatus}</td>
-                    <td className=" p-2 relative">
-                      <button
-                        // onClick={(e) => handleOpenPopup(e, group.id)}
-                        onClick={(e) => handleActionClick(e, item)}
-                        className="p-2"
-                      >
-                        <FaEllipsisV />
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-y-auto" style={{ maxHeight: '500px', maxWidth: '100%' }}>
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+              <thead>
+                <tr
+                  className="bg-gray-200 text-left"
+                  style={{ backgroundColor: '#FFFFFF' }}
+                >
+                  <th className="p-3">No.</th>
+                  <th className="p-3">Visit ID</th>
+                  <th className="p-3">Client</th>
+                  <th className="p-3">Contact</th>
+                  <th className="p-3">Date of Visit</th>
+                  <th className="p-3" >Estimate Date</th>
+                  <th className="p-3">Staff</th>
+                  <th className="p-3">Branch</th>
+                  <th className="p-3">Lead Status</th>
+                  <th className="p-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData?.map((item, index) => {
+                  // const formatDate = (dateString) => {
+                  //   const [year, month, day] = dateString.split("T")[0].split("-");
+                  //   return `${day}-${month}-${year}`;
+                  // };
+                  return (
+                    <tr
+                      key={item.id}
+                      className={`border-b`}
+                      style={{
+                        backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#D0D0D0',
+                      }}
+                    >
+                      <td className="p-3 font-semibold">{item.id}</td>
+                      <td className="p-3">{item.visitingNumber}</td>
+                      <td className="p-3 font-semibold">{item.name}</td>
+                      <td className="p-3">{item.phoneNumber}</td>
+                      <td className="p-3 font-semibold" width={200}> {item.date ? DateConvert(item.date) : "N/A"}</td>
+                      <td className="p-3" width={100}>{item.estimateDate ? DateConvert(item.estimateDate) : "N/A"}</td>
+                      <td className="p-3">{item.staffName ? item.staffName : "N/A"}</td>
+                      <td className="p-3">{item.branchName ? item.branchName : "N/A"}</td>
+                      <td className="p-3" onClick={() => leadStatusUpdate(item)}>{item.leadStatus}</td>
+                      <td className=" p-2 relative">
+                        <button
+                          // onClick={(e) => handleOpenPopup(e, group.id)}
+                          onClick={(e) => handleActionClick(e, item)}
+                          className="p-2"
+                        >
+                          <FaEllipsisV />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+
         )}
       </div>
 

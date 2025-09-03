@@ -29,8 +29,8 @@ code {
 @layer utilities {
   /* For Webkit browsers (Chrome, Safari) */
   .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
+    width: 16px; /* For vertical scrollbar */
+    height: 16px;  }
   
   .scrollbar-thin::-webkit-scrollbar-track {
     background: #f1f1f1;
@@ -39,10 +39,14 @@ code {
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #c1c1c1;
     border-radius: 20px;
+  border: 3px solid #f0f0f0;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: #a1a1a1;
+    width: 16px; /* For vertical scrollbar */
+    height: 16px;  
+
   }
   
   /* Hide scrollbar while maintaining functionality */
@@ -52,7 +56,7 @@ code {
   }
   
   .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari and Opera */
+    display: none;  
   }
 }
 

@@ -7,7 +7,7 @@ const SelectBranch = () => {
   const navigate = useNavigate();
 
   const [branches, setBranches] = useState([]);
-
+  const [hoveredBranchId, setHoveredBranchId] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -63,36 +63,41 @@ const SelectBranch = () => {
 
     fetchBranches();
   }, []);
-
+  // #12A651
   return (
     <div className="p-10">
-      {branches?.map((branch) => (
-        <div key={branch.id}>
-          <p
-            onClick={() => handleBranchClick(branch.id, branch.branchName)}
-            style={{
-              backgroundColor: '#12A651',
-              color: '#FFFFFF',
-              marginTop: '15px',
-              marginBottom: '15px',
-              height: '55px',
-              paddingLeft: '20px',
-              paddingRight: '20px',
-              fontSize: '28px',
-              fontWeight: '600',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-            }}
-          >
-            {branch.branchName}
-            <span style={{ fontSize: '18px', marginLeft: '10px' }}>↓</span>
-          </p>
-        </div>
-      ))}
-
+      <>
+        {branches?.map((branch) => (
+          <div key={branch.id}>
+            <p
+              onClick={() => handleBranchClick(branch.id, branch.branchName)}
+              onMouseEnter={() => setHoveredBranchId(branch.id)}
+              onMouseLeave={() => setHoveredBranchId(null)}
+              style={{
+                backgroundColor:
+                  hoveredBranchId === branch.id ? 'green' : '#333333',
+                color: '#FFFFFF',
+                marginTop: '15px',
+                marginBottom: '15px',
+                height: '55px',
+                paddingLeft: '20px',
+                paddingRight: '20px',
+                fontSize: '28px',
+                fontWeight: '600',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s',
+              }}
+            >
+              {branch.branchName}
+              <span style={{ fontSize: '18px', marginLeft: '10px' }}>↓</span>
+            </p>
+          </div>
+        ))}
+      </>
       {isPopupOpen && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[99999]">
           <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg relative z-[100000]">

@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
-import { FaSearch } from 'react-icons/fa';
+import { FaEye, FaSearch } from 'react-icons/fa';
 import { FaEllipsisV } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import { FaPencil } from 'react-icons/fa6';
@@ -824,24 +824,6 @@ const WorkAllocation = () => {
                   );
                 })}
             </div>
-
-            {/* Save Button */}
-            <div className="flex justify-center mt-6">
-              <button
-                className="text-white font-semibold px-6 py-2 rounded-full shadow-md"
-                style={{
-                  backgroundColor: '#FF9900',
-                  width: '300px',
-                  height: '54px',
-                  borderRadius: '27px',
-                  color: '#000000',
-                  fontSize: '24px',
-                  fontWeight: '600',
-                }}
-              >
-                Save
-              </button>
-            </div>
           </div>
         </div>
       )}
@@ -1040,7 +1022,7 @@ const WorkAllocation = () => {
                     <button
                       onClick={(e) => handleMoreDetails(e, item)}
                       className="p-2" >
-                      <FaPencil />
+                      <FaEye />
                     </button>
                   </td>
                 </tr>

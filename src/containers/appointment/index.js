@@ -150,7 +150,7 @@ const Appointments = () => {
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full  mx-auto">
       <h2 className="text-xl font-semibold mb-4">Appointments</h2>
 
       {role !== 'Branch Manager' && (

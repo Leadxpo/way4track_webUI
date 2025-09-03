@@ -67,13 +67,14 @@ const TableWithDateFilter = ({
   }, []);
 
   const [searchSubdealer, setSearchSubdealer] = useState('');
+  const [searchVendor, setSearchVendor] = useState('');
   const [searchInvoice, setSearchInvoice] = useState('');
   const [subdealerList, setSubdealerList] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
 
-useEffect(()=>{
-  handleSearchSubdealer()
-},[subdealerList])
+  useEffect(() => {
+    handleSearchSubdealer()
+  }, [subdealerList])
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
@@ -90,50 +91,61 @@ useEffect(()=>{
       setIsSearch(true)
     }
   };
+  const handleSearchVendor = () => {
+    const searchQuery = searchVendor.toLowerCase().trim();
+
+      const filteredDatas = filteredData.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        )
+      );
+      setFilteredData(filteredDatas);
+      setIsSearch(true)
+  };
 
   const parseEstimateDate = (rawDateStr) => {
     if (!rawDateStr) return null;
-  
+
     try {
       const [datePart] = rawDateStr.split(';'); // e.g., "19/07/25"
       const [day, month, shortYear] = datePart.split('/');
-  
+
       const year = parseInt(shortYear, 10);
       const fullYear = year < 50 ? 2000 + year : 1900 + year; // e.g., "25" → 2025
-  
+
       return new Date(fullYear, parseInt(month, 10) - 1, parseInt(day, 10)); // month is 0-based
     } catch (err) {
       return null;
     }
   };
-  
-const handleSearchInvoice = () => {
-  const searchQuery = searchInvoice.toLowerCase().trim();
-  const fromDate = dateFrom ? new Date(dateFrom) : null;
-  const toDate = dateTo ? new Date(dateTo) : null;
 
-  const filtered = invoiceList.filter((item) => {
-    const matchesSearch =
-      searchQuery === '' ||
-      Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(searchQuery)
-      );
+  const handleSearchInvoice = () => {
+    const searchQuery = searchInvoice.toLowerCase().trim();
+    const fromDate = dateFrom ? new Date(dateFrom) : null;
+    const toDate = dateTo ? new Date(dateTo) : null;
 
-    const estimateDate = item.date ? parseEstimateDate(item.date) : null;
+    const filtered = invoiceList.filter((item) => {
+      const matchesSearch =
+        searchQuery === '' ||
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchQuery)
+        );
 
-    const matchesDate =
-      (!fromDate || (estimateDate && estimateDate >= fromDate)) &&
-      (!toDate || (estimateDate && estimateDate <= toDate));
+      const estimateDate = item.date ? parseEstimateDate(item.date) : null;
 
-      console.log("rrr:",matchesSearch)
+      const matchesDate =
+        (!fromDate || (estimateDate && estimateDate >= fromDate)) &&
+        (!toDate || (estimateDate && estimateDate <= toDate));
 
-    return matchesSearch && matchesDate;
-  });
+      console.log("rrr:", matchesSearch)
 
-  setFilteredData(filtered);
-  setIsSearch(true);
-};
-    
+      return matchesSearch && matchesDate;
+    });
+
+    setFilteredData(filtered);
+    setIsSearch(true);
+  };
+
   const getVendorData = useCallback(async () => {
     try {
       const response = await ApiService.post('/dashboards/getVendorData', {
@@ -180,12 +192,12 @@ const handleSearchInvoice = () => {
               : '',
           })
         );
-        console.log("formattedData :",formattedData);
+        console.log("formattedData :", formattedData);
         if (branchId) {
           const rrr = formattedData.filter((item) => (String(item.branch) === String(branchId)))
           setSubdealerList(rrr);
           setFilteredData(rrr);
-        }else{
+        } else {
           setSubdealerList(formattedData);
         }
       } else {
@@ -202,7 +214,7 @@ const handleSearchInvoice = () => {
       const response = await ApiService.post('/dashboards/getEstimates', {
         fromDate: dateFrom,
         toDate: dateTo,
-        branch:branchFilter,
+        branch: branchFilter,
         status: statusFilter,
         companyCode: initialAuthState?.companyCode,
         unitCode: initialAuthState?.unitCode,
@@ -210,7 +222,7 @@ const handleSearchInvoice = () => {
 
       if (response.status) {
         const filteredData = response.data.map(
-          ({ productDetails,estimateDate, expiryDate, ...rest }) => ({...rest,estimateDate:DateConvert(estimateDate),expiryDate:DateConvert(expiryDate)})
+          ({ productDetails, estimateDate, expiryDate, ...rest }) => ({ ...rest, estimateDate: DateConvert(estimateDate), expiryDate: DateConvert(expiryDate) })
         );
         setFilteredData(filteredData);
       } else {
@@ -220,7 +232,7 @@ const handleSearchInvoice = () => {
       console.error('Error fetching estimate details:', error);
       alert('Failed to fetch estimate details.');
     }
-  }, [dateFrom, dateTo, statusFilter,branchFilter]);
+  }, [dateFrom, dateTo, statusFilter, branchFilter]);
 
   const warehouseManagerId = localStorage.getItem('id');
   // const warehouseManagerId=43;
@@ -319,7 +331,7 @@ const handleSearchInvoice = () => {
           clientName: item.clientName,
           PhoneNumber: item.clientPhoneNumber,
           branchName: item.branchName,
-          date: DateConvert(item.estimateDate) ,
+          date: DateConvert(item.estimateDate),
           estimateAmount: item.totalAmount,
           shippingAddress: item.shippingAddress
         }));
@@ -514,7 +526,7 @@ const handleSearchInvoice = () => {
     <div className="p-10">
 
       <p className="font-bold text-xl">{pageTitle}</p>
-     {showDetails && <div className="flex justify-between items-center">
+      {showDetails && <div className="flex justify-between items-center">
         <button
           onClick={() => handleDownload(type)}
           className="bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-green-800 transition duration-200"
@@ -534,7 +546,7 @@ const handleSearchInvoice = () => {
           </button>
         )}
       </div>
- 
+
       {type === 'sub_dealers' && (
         <div className="flex mb-4">
           <div className="flex-grow mx-2">
@@ -549,6 +561,26 @@ const handleSearchInvoice = () => {
           </div>
           <button
             onClick={handleSearchSubdealer}
+            className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
+          >
+            <FaSearch className="mr-2" /> Search
+          </button>
+        </div>
+      )}
+      {type === 'vendors' && (
+        <div className="flex mb-4">
+          <div className="flex-grow mx-2">
+            <input
+              type="text"
+              name="name"
+              placeholder="Search by Vendor Id or Name"
+              value={searchVendor}
+              onChange={(e) => setSearchVendor(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
+            />
+          </div>
+          <button
+            onClick={handleSearchVendor}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
           >
             <FaSearch className="mr-2" /> Search
@@ -648,7 +680,7 @@ const handleSearchInvoice = () => {
                   </option>
                 ))}
               </select>
- } { showBranchFilter &&
+            } {showBranchFilter &&
               <div className="flex items-center space-x-2 mb-4">
                 <label className="text-gray-700 font-bold whitespace-nowrap">
                   Search by Branch :
@@ -668,7 +700,7 @@ const handleSearchInvoice = () => {
               </div>
             }
           </div>
-          {(showBranchFilter||showDateFilters||showStatusFilter)&&<button
+          {(showBranchFilter || showDateFilters || showStatusFilter) && <button
             onClick={handleSearch}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
           >
@@ -679,7 +711,7 @@ const handleSearchInvoice = () => {
 
       {/* Table Row */}
       <div className="mt-8">
-       {isSearch && <Table
+        {isSearch && <Table
           columns={columns}
           columnNames={columnNames}
           data={filteredData}
