@@ -31,6 +31,7 @@ const TableWithSearchFilter = ({
   const [pageTitle, setPageTitle] = useState('');
   const [searchID, setSearchID] = useState('');
   const [searchName, setSearchName] = useState('');
+  const [clientPhoneNumber, setClientPhoneNumber] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [branchFilter, setBranchFilter] = useState('');
   const [fromDate, setFromDate] = useState('');
@@ -69,6 +70,7 @@ const TableWithSearchFilter = ({
           fromDate:fromDate,
           toDate:toDate,
           name: searchName,
+          phoneNumber:clientPhoneNumber,
           companyCode: initialAuthState?.companyCode,
           unitCode: initialAuthState?.unitCode,
         }
@@ -96,7 +98,7 @@ const TableWithSearchFilter = ({
       console.error('Error fetching client details:', error);
       alert('Failed to fetch client details.');
     }
-  }, [searchID, searchName,fromDate,toDate, branchFilter]);
+  }, [searchID,clientPhoneNumber, searchName,fromDate,toDate, branchFilter]);
 
   const getHiringSearchDetails = useCallback(async () => {
     try {
@@ -581,6 +583,16 @@ const TableWithSearchFilter = ({
             style={{ paddingLeft: '8px' }}
           />
         </div>
+       {type==='clients' && <div className="flex-grow mx-2">
+          <input
+            type="text"
+            value={clientPhoneNumber}
+            placeholder={'Search with Client PhoneNumber'}
+            onChange={(e) => setClientPhoneNumber(e.target.value)}
+            className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+            style={{ paddingLeft: '8px' }}
+          />
+        </div>}
         {type === "hiring" &&
           <div className="flex-grow mx-2">
             {showStatusFilter && (
