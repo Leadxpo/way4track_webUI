@@ -1,0 +1,884 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background-color: white;
+}
+
+.mining-hero {
+  width: 100%;
+  padding: 4.3% 0;
+}
+
+.mining-hero-img {
+  width: 100%;
+  padding: 0 4%;
+}
+
+.mining-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 0 12%;
+}
+
+.mining-intro-heading h1 {
+  color: #60A442;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 60px;
+  text-align: center;
+}
+
+.mining-intro-text {
+  text-align: center;
+  color: black;
+  letter-spacing: -0.28px;
+  font-size: 15px;
+  font-weight: 510;
+}
+
+.mining-features {
+    display: flex;
+    margin-top: 5rem;
+    gap: 1rem;
+    padding: 0 5%;
+  }
+  
+  .mining-feature-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #F2F2F2;
+    padding: 20px;
+    width: 30%; /* Reduced from 40% */
+    border-radius: 20px;
+  }
+  
+  .mining-feature-icon {
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    padding: 1px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mining-feature-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .mining-feature-title p {
+    color: #60A342;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 32px;
+    letter-spacing: -0.48px;
+    margin: 0;
+  }
+  
+  .mining-feature-desc {
+    color: #666;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  
+  .mining-feature-desc p {
+    margin: 0;
+  }
+  
+  .mining-feature-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 68%;
+  }
+  
+  .mining-feature-top {
+    background-color: #F2F2F2;
+    padding: 35px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: auto;
+  }
+  
+  .mining-feature-top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .mining-feature-top-icon {
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    padding: 1px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mining-feature-top-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .mining-feature-top-title{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 1rem;
+  }
+
+  .mining-feature-top-title p {
+    color: #60A342;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 32px;
+    margin: 0;
+  }
+  
+  .mining-feature-top-desc {
+    color: #666;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  
+  .mining-feature-top-desc p {
+    margin: 0;
+  }
+  
+  .mining-feature-bottom {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .mining-feature-card {
+    background-color: #F2F2F2;
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
+  }
+  
+  .mining-feature-card-icon {
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    padding: 1px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mining-feature-card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .mining-feature-card-title p {
+    color: #60A342;
+    font-weight: 600;
+    font-size: 10px;
+    margin: 0;
+  }
+  
+  .mining-feature-card-desc {
+    color: #666;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  
+  .mining-feature-card-desc p {
+    margin: 0;
+  }
+
+.mining-feature-card-icon {
+  background-color: white;
+  width: 40px;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+.mining-gps-img {
+  margin-top: 5rem;
+  width: 100%;
+}
+
+.mining-gps-img img {
+  width: 100%;
+  display: block;
+}
+
+.mining-props {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap: 0.8rem; /* Reduced from 1rem */
+    padding: 0 4%; /* Reduced from 5% */
+    margin-top: 3rem; /* Reduced from 5rem */
+    align-items: stretch;
+  }
+
+  .mining-prop-left {
+    background-image: url("/public/images/miningProp1.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px; /* Reduced from 20px */
+    padding: 25px; /* Reduced from 35px */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    gap: 0.8rem; /* Reduced from 1rem */
+    min-height: 650px; /* Reduced from 910px */
+  }
+
+  .mining-prop-left h3 {
+    color: white;
+    font-size: 18px; /* Added for consistency */
+    margin: 0 0 10px 0; /* Added spacing control */
+  }
+  .mining-prop-left p {
+    font-size: 14px; /* Reduced from 16px */
+    line-height: 1.4; /* Added for better readability */
+  }
+
+  .mining-prop-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.8rem; /* Added gap for consistency */
+  }
+
+  .mining-prop-card-1 {
+    background-image: url("/public/images/miningProp2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px; /* Reduced from 20px */
+    padding: 25px; /* Reduced from 30px */
+    display: flex;
+    flex-direction: column;
+    min-height: 280px; /* Reduced from 390px */
+  }
+
+  .mining-prop-card-2 {
+    background-image: url("/public/images/miningProp3.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 16px; /* Reduced from 20px */
+    padding: 25px; /* Reduced from 30px */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8rem; /* Reduced from 15rem */
+    min-height: 280px; /* Added to control height */
+  }
+  .mining-prop-card-2 h3 {
+    color: white;
+    font-weight: 600;
+    font-size: 18px; /* Reduced from 22px */
+    margin: 0 0 10px 0;
+  }
+  
+  .mining-prop-card-2 p {
+    font-size: 14px; /* Reduced from 16px */
+    color: white;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .mining-prop-card-3 {
+    text-align: center;
+    padding: 15px; /* Added padding */
+    border-radius: 16px; /* Added rounding */
+  }
+  
+  .mining-prop-card-3 h3 {
+    color: #60A442;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .mining-prop-right {
+    background-image: url("/public/images/miningProp4.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px; /* Reduced from 20px */
+    padding: 25px; /* Reduced from 35px */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    gap: 0.8rem; /* Reduced from 1rem */
+    min-height: 650px; /* Added to match left side */
+  }
+  
+  .mining-prop-right h3 {
+    color: white;
+    font-weight: 600;
+    font-size: 18px; /* Reduced from 22px */
+    margin: 0 0 10px 0;
+  }
+
+.mining-prop-right p {
+  font-size: 16px;
+  color: white;
+  margin: 0;
+}
+
+.mining-prop-right p {
+    font-size: 14px; /* Reduced from 16px */
+    color: white;
+    margin: 0;
+    line-height: 1.4;
+  }
+  
+  .mining-prop-footer {
+    background-image: url("/public/images/miningProp5.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px; /* Reduced from 20px */
+    padding: 20px; /* Reduced from 30px */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 3rem 4% 0; /* Reduced from 5rem 5% */
+    box-sizing: border-box;
+    min-height: 220px; /* Reduced from 300px */
+  }
+  
+  .mining-prop-footer p {
+    font-size: 7px; /* Added for consistency */
+    line-height: 1.5;
+    max-width: 90%; /* Added to control text width */
+  }
+
+  .mining-product {
+    background-color: #F5F5F7;
+    display: flex;
+    width: 100%;
+    margin-top: 3rem; /* Reduced from 4rem */
+    padding: 20px 60px 20px 20px; /* Reduced from 30px 80px 30px 30px */
+  }
+
+  .mining-product h2 {
+    font-family: "Nunito", sans-serif;
+    font-size: 18px; /* Reduced from 37px */
+    color: black;
+    margin: 0 0 10px 0; /* Added margin control */
+  }
+  
+  .mining-product-price {
+    font-size: 15px; /* Reduced from 20px */
+    margin: 0 0 15px 0; /* Added margin */
+  }
+  
+  .mining-product-features {
+    margin: 0 0 20px 0; /* Added margin */
+  }
+  
+  .mining-product-features li {
+    font-weight: 600;
+    font-size: 10px; /* Reduced from 20px */
+    margin-bottom: 8px; /* Added spacing between items */
+  }
+
+  .mining-product p {
+    font-family: "Nunito", sans-serif;
+    margin: 0 0 10px 0; /* Added margin control */
+  }
+  
+  .mining-product-img {
+    width: 100%;
+    max-width: 300px; /* Added max-width constraint */
+  }
+
+  .mining-product-order {
+    background-color: #F8FEF2;
+    padding: 15px 6px 15px 15px; /* Reduced from 20px 8px 20px 20px */
+    border-radius: 10px; /* Reduced from 12px */
+  }
+  
+  .mining-product-network-btns {
+    display: flex;
+    gap: 0.6rem; /* Reduced from 0.8rem */
+    margin-bottom: 1.2rem; /* Reduced from 1.5rem */
+  }
+
+  .mining-product-network-btn button {
+    background-color: white;
+    border: none;
+    padding: 10px; /* Reduced from 12px */
+    border-radius: 6px; /* Reduced from 8px */
+    box-shadow: 1px 1px 6px rgba(55, 55, 55, 0.2); /* Reduced shadow */
+    color: inherit; 
+    transition: all 0.3s ease; 
+    font-size: 12px; /* Reduced from 14px */
+  }
+  
+  .mining-product-quantity-label {
+    font-size: 10px; /* Reduced from 11px */
+    color: #00000080;
+    margin-bottom: 6px; /* Reduced from 8px */
+  }
+  
+  .mining-product-network-btn button:hover {
+    background-color: #60A342; 
+    color: black; 
+    cursor: pointer;
+  }
+
+  .mining-product-final-price {
+    font-size: 16px; /* Reduced from 18px */
+    margin: 0 0 12px 0; /* Reduced from 15px */
+  }
+  
+  .mining-product-quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem; /* Reduced from 0.8rem */
+    margin-top: 0.6rem; /* Reduced from 0.8rem */
+  }
+
+  .mining-product-quantity-selector {
+    display: flex;
+    align-items: stretch;
+    background: #fff;
+    border-radius: 12px; /* Reduced from 14px */
+    box-shadow: 0 1px 4px rgba(96, 164, 66, 0.08); /* Reduced shadow */
+    border: 1px solid #e6e6e6;
+    overflow: hidden;
+    width: 95px; /* Reduced from 110px */
+    height: 50px; /* Reduced from 60px */
+  }
+  
+  .mining-product-quantity-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px; /* Reduced from 28px */
+    font-weight: 500;
+    color: #000;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  .mining-product-quantity-value p {
+    font-size: 18px; /* Reduced from 22px */
+    font-weight: 500;
+    margin: 0;
+    color: #111;
+    text-align: center;
+  }
+  
+  .mining-product-quantity-btns-container {
+    width: 30px; /* Reduced from 36px */
+    height: 100%;
+  }
+
+  .mining-product-quantity-btns-container button {
+    background: #F8FEF2;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    border-radius: 0;
+  }
+  
+
+.mining-product-quantity-btns-container button:hover {
+  background: #f2f2f2;
+}
+  
+.arrow-up, .arrow-down {
+    width: 14px; /* Reduced from 18px */
+    height: 14px; /* Reduced from 18px */
+  }
+
+  .mining-product-cart-btn button {
+    background-color: #60A442;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px; /* Reduced from 8px */
+    padding: 5px 50px; /* Reduced from 10px 100px */
+    margin-right: 0.6rem; /* Reduced from 0.8rem */
+    box-shadow: 0px 1px 4px rgba(96, 164, 66, 0.12); /* Reduced shadow */
+    transition: background 0.2s;
+    width: 100%;
+    height: 45px; /* Reduced from 60px */
+    font-size: 10px;
+  }
+
+.mining-product-cart-btn button:hover {
+  background-color: #4e8a36;
+}
+
+.mining-product-buy-btn button {
+    background-color: transparent;
+    color: black;
+    font-weight: 600;
+    border: 1px solid black;
+    border-radius: 8px; /* Reduced from 10px */
+    padding: 5px 25px; /* Reduced from 10px 40px */
+    box-shadow: 0px 1px 4px rgba(96, 164, 66, 0.08); /* Reduced shadow */
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+    height: 45px; 
+    font-size: 8px;
+  }
+
+.mining-product-buy-btn button:hover {
+  background-color: #f8fef2;
+  color: #4e8a36;
+}
+
+.mining-truck-info-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    background: #fff;
+    margin-top: 3rem; /* Reduced from 5rem */
+    padding: 0 4%; /* Reduced from 5% */
+    min-height: 240px; /* Reduced from 340px */
+  }
+
+  .mining-truck-info-left {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 20px 20px 20px; /* Reduced from 32px */
+    position: relative;
+  }
+  
+  .mining-truck-info-left::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px; /* Reduced from 2px */
+    height: 100%;
+    background: #F3C787;
+    border-radius: 1px; /* Reduced from 2px */
+    z-index: 1;
+  }
+
+  .mining-truck-info-block {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; /* Reduced from 24px */
+    color: #222;
+    margin-bottom: 0;
+    text-align: center;
+    line-height: 1.2; /* Reduced from 1.3 */
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px; /* Reduced from 120px */
+  }
+  
+  .mining-truck-info-divider {
+    border: none;
+    border-top: 1px solid #3D3D3D;
+    margin: 20px 0; /* Reduced from 32px */
+    width: calc(100% + 20px); /* Reduced from 32px */
+    position: relative;
+    left: -20px; /* Reduced from -32px */
+    z-index: 2;
+  }
+
+  .mining-truck-info-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 2%;
+  }
+  
+  .mining-truck-info-right img {
+    max-width: 85%; /* Reduced from 95% */
+    height: auto;
+    object-fit: contain;
+  }
+  .default-truck {
+    width: 500px; /* Reduced from 740px */
+    height: 350px; /* Reduced from 520px */
+  }
+  
+  .iphone-truck {
+    width: 250px; /* Reduced from 350px */
+  }
+
+  .mining-benefits-section {
+    background: #f7f8fa;
+    padding: 20px 0 20px 0; /* Reduced from 80px */
+  }
+  
+  .mining-benefits-section h3 {
+    color: #60A442;
+  }
+  
+
+  .mining-benefits-header {
+    color: #60A442;
+    font-size: 30px; /* Reduced from 56px */
+    font-weight: 600;
+    margin-left: 7%;
+    margin-bottom: 32px; /* Reduced from 48px */
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .mining-benefits-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 24px; /* Reduced from 40px */
+    justify-content: flex-start;
+    align-items: stretch;
+    margin-left: 7%;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 18px; /* Reduced from 24px */
+    scrollbar-width: none;
+  }
+
+.mining-benefits-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.mining-benefits-grid::-webkit-scrollbar-thumb {
+  background: #60A442;
+  border-radius: 4px;
+}
+
+.mining-benefits-grid::-webkit-scrollbar-track {
+  background: #f7f8fa;
+}
+
+.mining-benefit-card {
+    background: #fff;
+    border-radius: 18px; /* Reduced from 24px */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); /* Reduced shadow */
+    padding: 25px 25px 25px 25px; /* Reduced from 56px 48px 48px 48px */
+    min-width: 320px; /* Reduced from 440px */
+    max-width: 320px; /* Reduced from 440px */
+    height: 230px; /* Reduced from 380px */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: flex-start;
+    justify-content: flex-start;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .mining-benefit-icon {
+    margin-bottom: 18px; /* Reduced from 24px */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+
+  .mining-benefit-icon img {
+    width: 36px; /* Added size constraint */
+    height: 36px; /* Added size constraint */
+    object-fit: contain;
+  }
+  
+  .mining-benefit-title {
+    color: #60A442;
+    font-size: 17px; /* Reduced from 28px */
+    font-weight: 500;
+    margin-bottom: 14px; /* Reduced from 18px */
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
+  .mining-benefit-desc {
+    color: #222;
+    font-size: 13px; /* Reduced from 20px */
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 24px; /* Reduced from 32px */
+    text-align: left;
+    word-break: break-word;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4; /* Added for better readability */
+  }
+  
+  .mining-benefit-plus {
+    position: absolute;
+    right: 24px; /* Reduced from 32px */
+    bottom: 24px; /* Reduced from 32px */
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 36px; /* Reduced from 44px */
+    height: 36px; /* Reduced from 44px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px; /* Reduced from 28px */
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* Reduced shadow */
+    transition: background 0.2s;
+  }
+
+  .mining-benefit-plus:hover {
+    background: #60A442;
+  }
+
+  .mining-solutions-section {
+    background: #fff;
+    padding: 40px 40px 40px 40px; /* Reduced from 64px */
+    padding-left: 4%; /* Reduced from 5% */
+    padding-right: 4%; /* Reduced from 5% */
+  }
+  
+  .mining-solutions-header {
+    margin-left: 2%;
+    margin-bottom: 12px; /* Reduced from 16px */
+  }
+  
+
+.mining-solutions-subtitle {
+  color: #60A442;
+  font-size: 20px; /* Reduced from 24px */
+  font-weight: 500;
+  margin-bottom: 6px; /* Reduced from 8px */
+  font-family: 'Inter', sans-serif;
+}
+
+.mining-solutions-title {
+  color: #60A442;
+  font-size: 25px; /* Reduced from 40px */
+  font-weight: 600;
+  margin-bottom: 24px; /* Reduced from 32px */
+  font-family: 'Inter', sans-serif;
+}
+
+
+.mining-solutions-hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px; /* Reduced from 40px */
+  }
+  
+  .mining-solutions-hero img {
+    border-radius: 14px; /* Reduced from 16px */
+    max-width: 90%; /* Added constraint */
+  }
+  
+  .mining-solutions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 24px; /* Reduced from 32px */
+  }
+
+  .mining-solutions-card {
+    background: #f7f8fa;
+    border-radius: 16px; /* Reduced from 20px */
+    display: flex;
+    align-items: flex-start;
+    gap: 14px; /* Reduced from 18px */
+    padding: 20px 24px; /* Reduced from 28px 32px */
+    font-family: 'Inter', sans-serif;
+    font-size: 15px; /* Reduced from 25px */
+    color: #222;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04); /* Reduced shadow */
+  }
+  
+  .mining-solutions-icon {
+    width: 28px; /* Reduced from 32px */
+    height: 28px; /* Reduced from 32px */
+    object-fit: contain;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .mining-product-overview {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 40px 4%; /* Reduced from 80px 5% */
+    gap: 1.5rem; /* Reduced from 2rem */
+    margin-top: 3rem; /* Reduced from 5rem */
+    background-color: #F5F5F7;
+  }
+
+  .mining-product-overview-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .mining-product-overview-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem; /* Reduced from 3rem */
+    width: 50%;
+  }
+  
+
+  .mining-product-overview-text p {
+    font-size: 10px; /* Reduced from 18px */
+    line-height: 1.4; /* Added for better readability */
+  }
+  
+  .mining-product-overview-text h3 {
+    font-size: 15px; /* Reduced from 32px */
+    color: #60A442;
+    margin: 0 0 10px 0; /* Added spacing */
+  }
+  
+  .mining-product-overview-header h2 {
+    font-size: 22px; /* Reduced from 56px */
+    color: #60A442;
+    margin: 0 0 20px 0; /* Added spacing */
+  }
+  .mining-product-overview-image img {
+    max-width: 100%;
+    height: 30vh;
+  }

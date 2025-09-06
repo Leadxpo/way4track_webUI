@@ -175,6 +175,7 @@ const Login = ({ handleLoginFlag }) => {
       // Add custom roles
       const updatedDesignations = [
         ...fetchedData,
+        {designation: "CEO" },
         { designation: "sub dealer" },
         { designation: "sub dealer staff" },
       ];
