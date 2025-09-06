@@ -94,6 +94,8 @@ const productAppImages = Object.keys(imagePreviews)
       aminityImage11: imagePreviews.amenity10 || defaultImage,
       aminityImage12: imagePreviews.amenity11 || defaultImage,
       aminityImage13: imagePreviews.amenity12 || defaultImage,
+      aminityImage14: imagePreviews.amenity13 || defaultImage,
+      aminityImage15: imagePreviews.amenity14 || defaultImage,
 
       applicationImage1: imagePreviews.application0 || defaultImage,
       applicationImage2: imagePreviews.application1 || defaultImage,
@@ -101,6 +103,9 @@ const productAppImages = Object.keys(imagePreviews)
       applicationImage4: imagePreviews.application3 || defaultImage,
       applicationImage5: imagePreviews.application4 || defaultImage,
       applicationImage6: imagePreviews.application5 || defaultImage,
+      applicationImage7: imagePreviews.application6 || defaultImage,
+      applicationImage8: imagePreviews.application7 || defaultImage,
+      applicationImage9: imagePreviews.application8 || defaultImage,
       aminities: aminitiesData || [],
       application: applicationData || [],
       deviceData: deviceData || [],
