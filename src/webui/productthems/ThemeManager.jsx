@@ -24,11 +24,12 @@ function ThemeManager() {
   const [step5Items, setStep5Items] = useState([
     { name: '', shortDescription: '', points: [], photos: null },
   ]);
-
+  
   const [stepRepeatedItems, setStepRepeatedItems] = useState({
     1: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
     2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
-  });
+  }); 
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -46,6 +47,12 @@ function ThemeManager() {
     setStepsData([{ fields: { steps: [] }, images: [], points: [] }]);
     setCurrentStep(0);
     setImagePreviews({});
+    
+    const amenitiesCount = theme.id === 'theme1' ? 15 : 6;
+    setStepRepeatedItems({
+      1: Array.from({ length: amenitiesCount }, () => ({ name: '', desc: '', photos: null })),
+      2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
+    });
   };
 
   const handleFieldChange = (field, value) => {

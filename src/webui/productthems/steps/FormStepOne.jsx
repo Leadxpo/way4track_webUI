@@ -23,6 +23,8 @@ function FormStepOne({
     setStepsData(updatedSteps);
   };
 
+  console.log(stepsData);
+
   const addNewStep = () => {
     const updatedSteps = [...stepsData];
     const existingSteps = updatedSteps[0].fields.steps || [];
@@ -123,79 +125,82 @@ function FormStepOne({
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Full Description</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            value={stepsData[0].fields.description || ''}
-            onChange={(e) => handleFieldChange('description', e.target.value)}
-            placeholder="Detailed product description"
-          />
-        </div>
+        {selectedTheme.id !== 'theme1' && (
+          <div className="form-group">
+            <label className="form-label">Full Description</label>
+            <textarea
+              className="form-control"
+              rows="3"
+              value={stepsData[0].fields.description || ''}
+              onChange={(e) => handleFieldChange('description', e.target.value)}
+              placeholder="Detailed product description"
+            />
+          </div>
+        )}
       </section>
       {/* banners data */}
-      {selectedTheme.id !== 'theme4' && (
-        <section className="form-section">
-          <h3 className="section-title">Banner Images</h3>
-          <div className="form-row">
-            {Array.from({ length: selectedTheme?.images || 3 }).map(
-              (_, index) => (
-                <div className="form-group col-4" key={index}>
-                  <label className="form-label">Banner {index + 1}</label>
-                  <div className="image-upload-container">
-                    {imagePreviews[`image${index}`] ? (
-                      <div className="image-preview-container">
-                        <img
-                          src={imagePreviews[`image${index}`]}
-                          alt={`Banner ${index + 1}`}
-                          className="image-preview"
-                        />
-                        <button
-                          className="remove-image-btn"
-                          onClick={() => handleRemoveBannerImage(index)}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="image-upload-field">
-                        <input
-                          type="file"
-                          id={`banner-${index}`}
-                          className="file-input"
-                          accept="image/*"
-                          onChange={(e) =>
-                            handleImageChange(index, e.target.files[0])
-                          }
-                        />
-                        <label
-                          htmlFor={`banner-${index}`}
-                          className="file-label"
-                        >
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
+      {selectedTheme.id !== 'theme4' ||
+        ('theme1' && (
+          <section className="form-section">
+            <h3 className="section-title">Banner Images</h3>
+            <div className="form-row">
+              {Array.from({ length: selectedTheme?.images || 3 }).map(
+                (_, index) => (
+                  <div className="form-group col-4" key={index}>
+                    <label className="form-label">Banner {index + 1}</label>
+                    <div className="image-upload-container">
+                      {imagePreviews[`image${index}`] ? (
+                        <div className="image-preview-container">
+                          <img
+                            src={imagePreviews[`image${index}`]}
+                            alt={`Banner ${index + 1}`}
+                            className="image-preview"
+                          />
+                          <button
+                            className="remove-image-btn"
+                            onClick={() => handleRemoveBannerImage(index)}
                           >
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                          </svg>
-                          <span>Upload</span>
-                        </label>
-                      </div>
-                    )}
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="image-upload-field">
+                          <input
+                            type="file"
+                            id={`banner-${index}`}
+                            className="file-input"
+                            accept="image/*"
+                            onChange={(e) =>
+                              handleImageChange(index, e.target.files[0])
+                            }
+                          />
+                          <label
+                            htmlFor={`banner-${index}`}
+                            className="file-label"
+                          >
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                              <polyline points="17 8 12 3 7 8"></polyline>
+                              <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span>Upload</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )
-            )}
-          </div>
-        </section>
-      )}
+                )
+              )}
+            </div>
+          </section>
+        ))}
       {/* featurs data */}
       {selectedTheme.id !== 'theme4' && (
         <section className="form-section">
@@ -241,8 +246,29 @@ function FormStepOne({
               </div>
             </div>
           ))}
+          {(selectedTheme.id !== 'theme1' ||
+            stepsData[0]?.points?.length < 3) && (
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={addNewPoint}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Feature Point
+            </button>
+          )}
 
-          <button
+          {/* <button
             type="button"
             className="btn btn-outline-primary btn-sm"
             onClick={addNewPoint}
@@ -259,7 +285,7 @@ function FormStepOne({
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
             Add Feature Point
-          </button>
+          </button> */}
         </section>
       )}
       {/* how it works data */}
@@ -308,24 +334,78 @@ function FormStepOne({
           </div>
         ))}
 
-        <button
-          type="button"
-          className="btn btn-outline-primary btn-sm"
-          onClick={addNewStep}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+        {selectedTheme.id === 'theme1' &&
+          stepsData[0]?.fields?.steps?.length > 0 && (
+            <div className="form-group">
+              <label className="form-label">How It Works Banner</label>
+              <span className="image-size-info">
+                Recommended size: 1200 × 400 px
+              </span>
+              <div className="image-upload-container">
+                {imagePreviews[`image${0}`] ? (
+                  <div className="image-preview-container">
+                    <img
+                      src={imagePreviews[`image${0}`]}
+                      alt="Banner 1"
+                      className="image-preview"
+                    />
+                    <button
+                      className="remove-image-btn"
+                      onClick={() => handleRemoveBannerImage(0)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="image-upload-field">
+                    <input
+                      type="file"
+                      id="banner-0"
+                      className="file-input"
+                      accept="image/*"
+                      onChange={(e) => handleImageChange(0, e.target.files[0])}
+                    />
+                    <label htmlFor="banner-0" className="file-label">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span>Upload</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        {(selectedTheme.id !== 'theme1' ||
+          stepsData[0]?.fields?.steps?.length < 6) && (
+          <button
+            type="button"
+            className="btn btn-outline-primary btn-sm"
+            onClick={addNewStep}
           >
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Add New Step
-        </button>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add New Step
+          </button>
+        )}
       </section>
 
       {/* our solutions */}
@@ -359,11 +439,13 @@ function FormStepOne({
             className="form-control"
             rows="3"
             value={stepsData[0].fields.workDescription || ''}
-            onChange={(e) => handleFieldChange('workDescription', e.target.value)}
+            onChange={(e) =>
+              handleFieldChange('workDescription', e.target.value)
+            }
             placeholder="Detailed work description"
           />
         </div>
-           <div className="form-group">
+        <div className="form-group">
           <label className="form-label">Product Model</label>
           <input
             type="text"
@@ -373,7 +455,7 @@ function FormStepOne({
             placeholder="Enter product model"
           />
         </div>
-           <div className="form-group">
+        <div className="form-group">
           <label className="form-label">Solution Title</label>
           <input
             type="text"
@@ -383,7 +465,7 @@ function FormStepOne({
             placeholder="Enter solution title"
           />
         </div>
-           <div className="form-group">
+        <div className="form-group">
           <label className="form-label">Solution Description</label>
           <input
             type="text"
@@ -404,7 +486,9 @@ function FormStepOne({
         <div className="form-row">
           <div className="form-group col-4">
             <label className="form-label">Blog Image</label>
-            <span className="image-size-info">Recommended size: 800 × 600 px (4:3)</span>
+            <span className="image-size-info">
+              Recommended size: 800 × 600 px (4:3)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.blogImage ? (
                 <div className="image-preview-container">
@@ -453,7 +537,9 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Home Banner</label>
-            <span className="image-size-info">Recommended size: 1920 × 1080 px (16:9)</span>
+            <span className="image-size-info">
+              Recommended size: 1920 × 1080 px (16:9)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.homeBanner ? (
                 <div className="image-preview-container">
@@ -502,7 +588,9 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Footer Banner</label>
-            <span className="image-size-info">Recommended size: 1920 × 400 px (wide)</span>
+            <span className="image-size-info">
+              Recommended size: 1920 × 400 px (wide)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.footerBanner ? (
                 <div className="image-preview-container">
@@ -553,7 +641,9 @@ function FormStepOne({
         <div className="form-row">
           <div className="form-group col-4">
             <label className="form-label">Choose Image</label>
-            <span className="image-size-info">Recommended size: 600 × 600 px (1:1)</span>
+            <span className="image-size-info">
+              Recommended size: 600 × 600 px (1:1)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.chooseImage ? (
                 <div className="image-preview-container">
@@ -602,7 +692,9 @@ function FormStepOne({
 
           <div className="form-group col-4">
             <label className="form-label">Product Icon</label>
-            <span className="image-size-info">Recommended size: 256 × 256 px (square)</span>
+            <span className="image-size-info">
+              Recommended size: 256 × 256 px (square)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.productIcon ? (
                 <div className="image-preview-container">
@@ -648,9 +740,11 @@ function FormStepOne({
               )}
             </div>
           </div>
-           <div className="form-group col-4">
+          <div className="form-group col-4">
             <label className="form-label">Solution Image</label>
-            <span className="image-size-info">Recommended size: 800 × 600 px (4:3)</span>
+            <span className="image-size-info">
+              Recommended size: 800 × 600 px (4:3)
+            </span>
             <div className="image-upload-container">
               {imagePreviews.solutionImage ? (
                 <div className="image-preview-container">
