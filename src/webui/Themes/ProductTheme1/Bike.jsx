@@ -368,60 +368,79 @@ const Bike = ({ title, description, heroImage, stateData}) => {
 
 
     <div className="points-card-main">
-      <img src="/images/bike3.png" alt="" className="gps-tracking-img" />
+      {/* <img src="/images/bike3.png" alt="" className="gps-tracking-img" /> */}
+      <img src={stateData?.banner2 || ''} alt="" className="gps-tracking-img" />
       <div className="points-card-points-div">
         <div className="points-card-points-div-1-start">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" />  */}
+            <img src={stateData?.aminityImage10} alt="" className="logo-icon" />  
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Group Ride Tracking</p>
-            <p className="point-card-text">Track multiple bikes in group rides, ensuring no rider gets lost and improving coordination.</p>
+            {/* <p className="point-card-heading">Group Ride Tracking</p> */}
+            {/* <p className="point-card-text">Track multiple bikes in group rides, ensuring no rider gets lost and improving coordination.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[9]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[9]?.desc || ''}</p>
           </div>
         </div>
         <div className="points-card-points-div-1">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" /> */}
+            <img src={stateData?.aminityImage11} alt="" className="logo-icon" />              
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Personal Security</p>
-            <p className="point-card-text">Monitor the location of individuals, ensuring safety during travel or emergencies.</p>
+            {/* <p className="point-card-heading">Personal Security</p> */}
+            {/* <p className="point-card-text">Monitor the location of individuals, ensuring safety during travel or emergencies.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[10]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[10]?.desc || ''}</p>
           </div>
         </div>
         <div className="points-card-points-div-1">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" /> */}
+            <img src={stateData?.aminityImage12} alt="" className="logo-icon" />              
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Parking Location Finder</p>
-            <p className="point-card-text">Easily locate your parked bike in crowded areas with GPS pin-drop location sharing.</p>
+            {/* <p className="point-card-heading">Parking Location Finder</p> */}
+            {/* <p className="point-card-text">Easily locate your parked bike in crowded areas with GPS pin-drop location sharing.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[11]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[11]?.desc || ''}</p>
           </div>
         </div>
         <div className="points-card-points-div-1">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" /> */}
+            <img src={stateData?.aminityImage13} alt="" className="logo-icon" />              
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Maintenance Reminders</p>
-            <p className="point-card-text">Get smart alerts for regular bike servicing, oil changes, and battery health based on mileage and usage.</p>
+            {/* <p className="point-card-heading">Maintenance Reminders</p> */}
+            {/* <p className="point-card-text">Get smart alerts for regular bike servicing, oil changes, and battery health based on mileage and usage.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[12]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[12]?.desc || ''}</p>
           </div>
         </div>
         <div className="points-card-points-div-1">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" /> */}
+            <img src={stateData?.aminityImage14} alt="" className="logo-icon" />
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Insurance & Theft Claim Support</p>
-            <p className="point-card-text">Provide accurate trip and theft data logs to insurance companies for faster claim settlements.</p>
+            {/* <p className="point-card-heading">Insurance & Theft Claim Support</p> */}
+            {/* <p className="point-card-text">Provide accurate trip and theft data logs to insurance companies for faster claim settlements.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[13]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[13]?.desc || ''}</p>
           </div>
         </div>
         <div className="points-card-points-div-1">
           <div className="icon-background">
-            <img src="/images/token.png" alt="" className="logo-icon" /> {/* logo comes */}
+            {/* <img src="/images/token.png" alt="" className="logo-icon" />  */}
+            <img src={stateData?.aminityImage15} alt="" className="logo-icon" />
           </div>
           <div className="point-card-matter">
-            <p className="point-card-heading">Eco-Friendly Riding Insights</p>
-            <p className="point-card-text">Monitor fuel consumption, idle time, and riding patterns to encourage efficient and eco-friendly riding.</p>
+            {/* <p className="point-card-heading">Eco-Friendly Riding Insights</p> */}
+            {/* <p className="point-card-text">Monitor fuel consumption, idle time, and riding patterns to encourage efficient and eco-friendly riding.</p> */}
+            <p className="point-card-heading">{stateData?.aminities[14]?.name || ''}</p>
+            <p className="point-card-text">{stateData?.aminities[14]?.desc || ''}</p>
           </div>
         </div>
       </div>
@@ -433,32 +452,38 @@ const Bike = ({ title, description, heroImage, stateData}) => {
       <div className="three-cards">
         <div className="three-card-1 start">
           <center>
-          <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1>
+          {/* <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1> */}
+          <h1 className="three-cards-section-heading">{stateData?.application[6]?.name}</h1>
           </center>
-          <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP 
-with SMS backup for alerts.</p>
+          {/* <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP with SMS backup for alerts.</p> */}
+          <p className="three-cards-section-text">{stateData?.application[6]?.desc}</p>
         <center>
-        <img src="/images/bike4.png" alt="" className="three-cards-section-img" />
+        {/* <img src="/images/bike4.png" alt="" className="three-cards-section-img" /> */}
+        <img src={stateData?.applicationImage7 || '' } alt="" className="three-cards-section-img" />
         </center>
         </div>
         <div className="three-card-1">
           <center>
-          <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1>
+          {/* <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1> */}
+          <h1 className="three-cards-section-heading">{stateData?.application[7]?.name}</h1>
           </center>
-          <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP 
-with SMS backup for alerts.</p>
+          {/* <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP with SMS backup for alerts.</p> */}
+          <p className="three-cards-section-text">{stateData?.application[7]?.desc}</p>
        <center>
-        <img src="/images/bike5.png" alt="" className="three-cards-section-img bike5" />
+        {/* <img src="/images/bike5.png" alt="" className="three-cards-section-img bike5" /> */}
+        <img src={stateData?.applicationImage8 || '' } alt="" className="three-cards-section-img" />
         </center>
         </div>
         <div className="three-card-1">
           <center>
-          <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1>
+          {/* <h1 className="three-cards-section-heading">Sensors in BIKE GPS</h1> */}
+          <h1 className="three-cards-section-heading">{stateData?.application[8]?.name}</h1>
           </center>
-          <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP 
-with SMS backup for alerts.</p>
+          {/* <p className="three-cards-section-text">Supports 2G and 4G GSM/GPRS (850/900/1800/1900 MHz) with standard/micro SIM. Data via TCP/UDP with SMS backup for alerts.</p> */}
+          <p className="three-cards-section-text">{stateData?.application[8]?.desc}</p>
            <center>
-        <img src="/images/bike6.png" alt="" className="three-cards-section-img bike6" />
+        {/* <img src="/images/bike6.png" alt="" className="three-cards-section-img bike6" /> */}
+        <img src={stateData?.applicationImage9 || '' } alt="" className="three-cards-section-img" />
         </center>
         </div>
       </div>

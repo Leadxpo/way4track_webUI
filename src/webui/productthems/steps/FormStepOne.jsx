@@ -94,6 +94,7 @@ function FormStepOne({
       return updated;
     });
   };
+  console.log(selectedTheme);
 
   return (
     <div className="form-step">
@@ -407,6 +408,69 @@ function FormStepOne({
           </button>
         )}
       </section>
+
+      {selectedTheme.id === 'theme1' && (
+          <section className="form-section">
+            <h3 className="section-title">Banner Images</h3>
+            <div className="form-row">
+              {Array.from({ length: selectedTheme?.images || 3 })
+                .map((_, index) => index)
+                .filter((index) => index > 0)
+                .map((index) => (
+                  <div className="form-group col-4" key={index}>
+                    <label className="form-label">Banner {index + 1}</label>
+                    <div className="image-upload-container">
+                      {imagePreviews[`image${index}`] ? (
+                        <div className="image-preview-container">
+                          <img
+                            src={imagePreviews[`image${index}`]}
+                            alt={`Banner ${index + 1}`}
+                            className="image-preview"
+                          />
+                          <button
+                            className="remove-image-btn"
+                            onClick={() => handleRemoveBannerImage(index)}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="image-upload-field">
+                          <input
+                            type="file"
+                            id={`banner-${index}`}
+                            className="file-input"
+                            accept="image/*"
+                            onChange={(e) =>
+                              handleImageChange(index, e.target.files[0])
+                            }
+                          />
+                          <label
+                            htmlFor={`banner-${index}`}
+                            className="file-label"
+                          >
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                              <polyline points="17 8 12 3 7 8"></polyline>
+                              <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span>Upload</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </section>
+        )}
 
       {/* our solutions */}
       <section className="form-section">

@@ -49,9 +49,10 @@ function ThemeManager() {
     setImagePreviews({});
     
     const amenitiesCount = theme.id === 'theme1' ? 15 : 6;
+    const applicationsCount = theme.id === 'theme1' ? 9 : 6;
     setStepRepeatedItems({
       1: Array.from({ length: amenitiesCount }, () => ({ name: '', desc: '', photos: null })),
-      2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
+      2: Array.from({ length: applicationsCount }, () => ({ name: '', desc: '', photos: null })),
     });
   };
 
