@@ -11,7 +11,8 @@ const StaffDropdown = ({ setStaffDetails }) => {
   // Fetch staff dropdown list
   useEffect(() => {
     axios
-      .post("http://localhost:3000/api/staff/getStaffNamesDropDown")
+      .post("https://sharontelematics.org/api/staff/getStaffNamesDropDown")
+      // .post("http://localhost:3000/api/staff/getStaffNamesDropDown")
       .then((response) => {
         if (response.data.status) {
           setStaffList(response.data.data);
@@ -41,7 +42,8 @@ const StaffDropdown = ({ setStaffDetails }) => {
   // Fetch staff details by ID
   const fetchStaffDetails = (staffId) => {
     axios
-      .post("http://localhost:3000/api/staff/getStaffDetailsById", {
+        .post("https://sharontelematics.org/api/staff/getStaffDetailsById", {
+        // .post("http://localhost:3000/api/staff/getStaffDetailsById", {
         staffId: staffId,
         companyCode: "WAY4TRACK",
         unitCode: "WAY4",

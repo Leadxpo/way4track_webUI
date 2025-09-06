@@ -28,14 +28,7 @@ function ThemeManager() {
   const [stepRepeatedItems, setStepRepeatedItems] = useState({
     1: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
     2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
-  });
-  
-  //16
-  
-  //6(present)
-  //9 = 15
-  
-  
+  }); 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
