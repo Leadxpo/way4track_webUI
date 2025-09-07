@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import './Mining.css';
 
-function Mining() {
+function Mining({ title, description, heroImage, stateData}) {
   const [selectedTruckInfo, setSelectedTruckInfo] = useState(null);
   const [quantity, setQuantity] = useState(1);
+
+  console.log(title)
 
   // Quantity control functions
   const incrementQuantity = () => {
@@ -28,7 +30,7 @@ function Mining() {
       {/* Header Content */}
       <div className="mining-intro">
         <div className="mining-intro-heading">
-          <h1>Curious to know about AIS-140 GPS Tracker ?</h1>
+          <h1>Curious to know about?</h1>
         </div>
         <div className="mining-intro-text">
           <p>

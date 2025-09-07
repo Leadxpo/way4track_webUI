@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import '../styles/PreviewPanel.css';
 import ProductTheme1 from '../Themes/ProductTheme1/Index';
-import ProductTheme2 from '../Themes/ProductTheme2';
+import ProductTheme2 from '../Themes/ProductTheme2/Index';
 import ProductTheme3 from '../Themes/ProductTheme3/Index';
 import ProductTheme4 from '../Themes/ProductTheme4/index';
 
@@ -21,7 +21,7 @@ function PreviewPanel({
 // Get keys starting with 'application' from imagePreviews
 
 const defaultImage =
-'https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+'https://media.istockphoto.com/id/1973365581/vector/sample-ink-rubber-stamp.jpg?s=612x612&w=0&k=20&c=_m6hNbFtLdulg3LK5LRjJiH6boCb_gcxPvRLytIz0Ws=';
 
 const deviceImages = Object.keys(imagePreviews)
   .filter(key => key.startsWith('device'))

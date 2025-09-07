@@ -30,7 +30,11 @@ function App({data}) {
       <SolutionsSection stateData={data}/>
       <FeaturesSection stateData={data}/>
       <FooterBanner stateData={data}/> */}
-      <Mining />
+      <Mining
+      title={data.name} 
+        description={data.shortDescription} 
+        heroImage={data.blogImage}
+        stateData={data} />
     </div>
   )
 }

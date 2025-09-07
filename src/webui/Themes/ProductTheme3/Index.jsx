@@ -15,7 +15,11 @@ import SchoolBus from './SchoolBus';
 const LandingPage = ({ data }) => {
   return (
     <div className="landing-page bg-gradient-to-b from-white to-amber-50">
-      <SchoolBus />
+      <SchoolBus 
+      title={data.name} 
+        description={data.shortDescription} 
+        heroImage={data.blogImage}
+        stateData={data} />
       {/* <HeroSection stateData={data} /> */}
       {/* <div className="container-fluid"> */}
         {/* <FeaturesSection stateData={data} /> */}
