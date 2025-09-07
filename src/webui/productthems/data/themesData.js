@@ -16,7 +16,7 @@ const themesData = [
     title: 'Professional Grid',
     description: 'Structured layout with grid-based sections for detailed product information',
     fields: ['name', 'shortDescription', 'description'],
-    images: 2,
+    images: 3,
     stepFields: {
       2: ['name', 'desc', 'image'],
       3: ['name', 'desc', 'image'],

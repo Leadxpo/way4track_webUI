@@ -109,11 +109,11 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                 <div className="step4_formGroup step4_col6">
                   <label className="step4_formLabel">Base Price</label>
                   <div className="step4_inputGroup">
-                    <span className="step4_inputGroupText">$</span>
+                    <span className="step4_inputGroupText">₹</span>
                     <input
                       type="number"
                       className="step4_formControl"
-                      value={item.amount || 0}
+                      value={item.amount || ''}
                       onChange={(e) => handleStep4FieldChange(index, 'amount', parseFloat(e.target.value))}
                       placeholder="0.00"
                     />
@@ -126,7 +126,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     <input
                       type="number"
                       className="step4_formControl"
-                      value={item.discount || 0}
+                      value={item.discount || ''}
                       onChange={(e) => handleStep4FieldChange(index, 'discount', parseFloat(e.target.value))}
                       placeholder="0"
                     />

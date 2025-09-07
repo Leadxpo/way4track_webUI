@@ -139,9 +139,9 @@ function FormStepOne({
           </div>
         )}
       </section>
+
       {/* banners data */}
-      {selectedTheme.id !== 'theme4' ||
-        ('theme1' && (
+        {(selectedTheme.id === 'theme2' || selectedTheme.id === 'theme3') && (
           <section className="form-section">
             <h3 className="section-title">Banner Images</h3>
             <div className="form-row">
@@ -201,7 +201,7 @@ function FormStepOne({
               )}
             </div>
           </section>
-        ))}
+        )}
       {/* featurs data */}
       {selectedTheme.id !== 'theme4' && (
         <section className="form-section">
@@ -247,26 +247,26 @@ function FormStepOne({
               </div>
             </div>
           ))}
-          {(selectedTheme.id !== 'theme1' ||
-            stepsData[0]?.points?.length < 3) && (
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm"
-              onClick={addNewPoint}
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+          {(selectedTheme.id !== 'theme1' || stepsData[0]?.points?.length < 3) &&
+           (selectedTheme.id !== 'theme2' || stepsData[0]?.points?.length < 4) && (
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+                onClick={addNewPoint}
               >
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Add Feature Point
-            </button>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add Feature Point
+             </button>
           )}
 
           {/* <button
