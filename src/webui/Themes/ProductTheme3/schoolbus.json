@@ -1,0 +1,537 @@
+{
+  "managerApp": {
+    "title": "The Manager App",
+    "intro": "Your data, your input, your pace — all in one place. Finally, care that fits how life actually works.",
+    "features": [
+      {
+        "img": "/images/dashboard_icon.png",
+        "alt": "Dashboard",
+        "title": "Dashboard",
+        "desc": "Gives managers a high-level overview of fleet status, trip analytics, and user engagement for better planning."
+      },
+      {
+        "img": "/images/trip_dashboard_icon.png",
+        "alt": "Trip Dashboard",
+        "title": "Trip Dashboard",
+        "desc": "Centralized platform to monitor ongoing trips, track statuses, and optimize performance in real time."
+      },
+      {
+        "img": "/images/live_tracking_icon.png",
+        "alt": "Live Tracking",
+        "title": "Live Tracking",
+        "desc": "Provides map-based, real-time vehicle visibility with geofencing, alerts, and detailed reports."
+      },
+      {
+        "img": "/images/trip_management_icon.png",
+        "alt": "Trip Management",
+        "title": "Trip Management",
+        "desc": "Automates scheduling, route adjustments, and student <br />pickups with flexible trip creation methods."
+      },
+      {
+        "img": "/images/route_optimization_icon.png",
+        "alt": "Route Optimization",
+        "title": "Route Optimization",
+        "desc": "Reduces travel time and fuel costs by using intelligent, <br />customizable routing."
+      },
+      {
+        "img": "/images/guide_overview_icon.png",
+        "alt": "Manager's Guide Overview",
+        "title": "Manager's Guide Overview",
+        "desc": "Simplifies school transportation by streamlining <br />operations, real-time monitoring, and providing actionable insights."
+      }
+    ],
+    "key_advantages": {
+      "title": "Key Advantages for Manager App",
+      "desc": "Benefits like enhanced safety, real-time transparency, cost efficiency, and easy management for <br/> school transportation. It also emphasizes features such as automation, data insights, seamless <br/> communication, scalability, 24/7 safety monitoring, and a user-friendly interface."
+    },
+    "advantages_grid": [
+      {
+        "img": "/images/adv_safety.png",
+        "alt": "Enhanced Safety",
+        "title": "Enhanced Safety",
+        "desc": "Instant SOS alerts, quick trip adjustments, and driver monitoring improve student safety."
+      },
+      {
+        "img": "/images/adv_dashboard.png",
+        "alt": "Dashboard & Live Tracking",
+        "title": "Dashboard & Live Tracking",
+        "desc": "Managers gain complete visibility of fleet status, trip progress, and driver assignments."
+      },
+      {
+        "img": "/images/adv_route.png",
+        "alt": "Route Optimization",
+        "title": "Route Optimization",
+        "desc": "Optimized routing reduces fuel and operational costs while maximizing fleet use."
+      },
+      {
+        "img": "/images/adv_trip.png",
+        "alt": "Trip Management",
+        "title": "Trip Management",
+        "desc": "Simple scheduling, flexible trip creation, and automated student allocation."
+      }
+    ],
+    "features_adv": [
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "End-to-End Automation",
+        "title": "End-to-End Automation",
+        "number": "01",
+        "desc": "Automates trip scheduling, <br/> monitoring, and alerts."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Data-Driven Insights",
+        "title": "Data-Driven Insights",
+        "number": "02",
+        "desc": "Provides analytics on fleet <br/> usage, failures, and engagement."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "24/7 Safety Monitoring",
+        "title": "24/7 Safety Monitoring",
+        "number": "03",
+        "desc": "Continuous tracking with instant <br/> emergency alerts."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Seamless Communication",
+        "title": "Seamless Communication",
+        "number": "04",
+        "desc": "Notifications via SMS, email, and push <br/> alerts."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Scalable Solution",
+        "title": "Scalable Solution",
+        "number": "05",
+        "desc": "Adapts to schools of any size <br/> and fleet capacity."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "User-Friendly Interface",
+        "title": "User-Friendly Interface",
+        "number": "06",
+        "desc": "Simple dashboards for managers <br/> and parents."
+      }
+    ],
+    "manager_app_image_section": {
+      "img": "/images/manager_app_image.png",
+      "alt": "Manager App Overview"
+    },
+    "attendance_alerts": {
+      "attendance": {
+        "title": "Attendance Management",
+        "desc": "Digital attendance using RFID with instant student <br/> check-in and reporting."
+      },
+      "driver_management": {
+        "title": "Driver & Attendant Management",
+        "desc": "Centralized record-keeping, license verification, and <br/> availability tracking."
+      },
+      "alerts": {
+        "title": "Alerts & Reminders",
+        "desc": "Timely notifications for delays, missed pickups, SOS, and maintenance schedules.",
+        "button": "GET TO KNOW MORE",
+        "button_icon": "/images/check_icon.png"
+      }
+    },
+    "reports_emergency": {
+      "reports": {
+        "title": "Detailed Reports",
+        "desc": "Comprehensive reports on students, vehicles, <br/> trips, and driver performance."
+      },
+      "emergency": {
+        "title": "Emergency Handling",
+        "desc": "Instant SOS alerts and quick trip adjustments during critical situations."
+      }
+    },
+    "apis_fees": [
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Customizable APIs",
+        "title": "Customizable APIs",
+        "desc": "Flexible APIs for trips, billing, and student management with seamless integration."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Transport Fees Management",
+        "title": "Transport Fees Management",
+        "desc": "Automated fee setup, reminders, and distance-based pricing for accurate billing."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Better Resource Utilization",
+        "title": "Better Resource Utilization",
+        "desc": "Optimizes allocation of buses, staff, and routes for maximum efficiency."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Improved Safety Standards",
+        "title": "Improved Safety Standards",
+        "desc": "Compliance checks, geofencing alerts, and continuous monitoring for safety."
+      }
+    ],
+    "product_image_section": {
+      "img": "/images/manager_app_image.png",
+      "alt": "Manager App Product"
+    }
+  },
+
+
+
+  "driverApp": {
+    "title": "The Driver App",
+    "intro": "Your data, your input, your pace — all in one place. Finally, care that fits how life actually works.",
+    "features": [
+      {
+        "img": "/images/no_crash.png",
+        "alt": "Smart Navigation",
+        "title": "Smart Navigation",
+        "desc": "Turn-by-turn navigation with optimized routes for time and fuel efficiency."
+      },
+      {
+        "img": "/images/admin_panel_settings.png",
+        "alt": "Student Attendance",
+        "title": "Student Attendance",
+        "desc": "Mark student check-ins and check-outs in real time using RFID integration."
+      },
+      {
+        "img": "/images/notifications_active.png",
+        "alt": "Alerts & Notifications",
+        "title": "Alerts & Notifications",
+        "desc": "Receive reminders for stops, safety alerts, and compliance checks."
+      },
+      {
+        "img": "/images/conversion_path.png",
+        "alt": "Route Guidance",
+        "title": "Route Guidance",
+        "desc": "Accurate route details with clear instructions for pickups and drop-offs."
+      },
+      {
+        "img": "/images/demography.png",
+        "alt": "Attendance Management",
+        "title": "Attendance Management",
+        "desc": "Digital tools for marking attendance instantly via RFID, QR codes, or biometrics."
+      },
+      {
+        "img": "/images/assistant_direction (1).png",
+        "alt": "Navigation Assistance",
+        "title": "Navigation Assistance",
+        "desc": "Turn-by-turn navigation with live traffic updates and rerouting options."
+      }
+    ],
+    "key_advantages": {
+      "title": "Key Advantages for Driver App",
+      "desc": "Features like safety-first measures, smart navigation, transparent attendance, and instant communication for school buses. It also highlights foolproof attendance, proactive alerts, safety enhancements, emergency handling, and simplified workflows to ensure efficiency and security."
+    },
+    "advantages_grid": [
+      {
+        "img": "/images/Image.png",
+        "alt": "Safety First",
+        "title": "Safety First",
+        "desc": "SOS button and emergency assistance ensure immediate response during critical situations."
+      },
+      {
+        "img": "/images/Image (1).png",
+        "alt": "Smart Navigation",
+        "title": "Smart Navigation",
+        "desc": "No missed stops with real-time routing and detour alerts."
+      },
+      {
+        "img": "/images/Image (2).png",
+        "alt": "Transparent Attendance",
+        "title": "Transparent Attendance",
+        "desc": "Quick digital attendance improves accuracy and saves time."
+      },
+      {
+        "img": "/images/Image (3).png",
+        "alt": "Instant Communication",
+        "title": "Instant Communication",
+        "desc": "Fast alerts and reporting tools keep drivers connected with managers."
+      }
+    ],
+    "features_adv": [
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Foolproof Attendance",
+        "title": "Foolproof Attendance",
+        "number": "01",
+        "desc": "Digital attendance prevents errors and confirms every student boards the right bus."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Navigation Support",
+        "title": "Navigation Support",
+        "number": "02",
+        "desc": "Live route guidance and traffic updates help avoid delays."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Proactive Alerts",
+        "title": "Proactive Alerts",
+        "number": "03",
+        "desc": "Warnings for speeding, missed stops, and emergencies keep drivers informed."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Safety Enhancements",
+        "title": "Safety Enhancements",
+        "number": "04",
+        "desc": "Lane departure, collision warning, and blind-spot detection minimize accidents."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Emergency Handling",
+        "title": "Emergency Handling",
+        "number": "05",
+        "desc": "SOS button and quick notification system allow immediate action in crises."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Simplified Workflow",
+        "title": "Simplified Workflow",
+        "number": "06",
+        "desc": "Digital checklists, instant reporting, and assistance tools reduce stress for drivers."
+      }
+    ],
+
+    "manager_app_image_section": {
+      "img": "/images/Rectangle 1117.png",
+      "alt": "Manager App Overview"
+    },
+
+    "attendance_alerts": {
+      "attendance": {
+        "title": "Digital Attendance",
+        "desc": "RFID, QR, and biometric options make marking attendance fast and reliable."
+      },
+      "driver_management": {
+        "title": "Turn-by-Turn Navigation",
+        "desc": "Drivers receive real-time instructions and updates for smooth trips."
+      },
+      "alerts": {
+        "title": "Driver Assistance Tools",
+        "desc": "Intelligent features like lane departure and blind-spot warnings improve safety.",
+        "button": " GET TO KNOW MORE",
+        "button_icon": "/images/check_icon.png"
+      }
+    },
+    "reports_emergency": {
+      "reports": {
+        "title": "Emergency SOS",
+        "desc": "One-tap SOS feature sends alerts to authorities and parents instantly."
+      },
+      "emergency": {
+        "title": "Real-Time Alerts",
+        "desc": "Notifications for route deviations, overspeeding, and emergencies keep trips under control."
+      }
+    },
+    "apis_fees": [
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Enhanced Safety",
+        "title": "Enhanced Safety",
+        "desc": "Built-in protection tools ensure safe journeys every time."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Efficiency on the Road",
+        "title": "Efficiency on the Road",
+        "desc": "Optimized navigation and proactive alerts minimize delays."
+      },  
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Transparent Operations",
+        "title": "Transparent Operations",
+        "desc": "Instant attendance and reporting create trust and accuracy."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Seamless Connectivity",
+        "title": "Seamless Connectivity",
+        "desc": "Real-time communication between drivers, managers, and parents."
+      }
+    ],
+    "product_image_section": {
+      "img": "/images/manager_app_image.png",
+      "alt": "Manager App Product"
+    }
+  },
+
+  "parentApp": {
+    "title": "The Parent App",
+    "intro": "Your data, your input, your pace — all in one place. Finally, care that fits how life actually works.",
+    "features": [
+      {
+        "img": "/images/transition_fade.png",
+        "alt": "Transparency",
+        "title": "Transparency",
+        "desc": "Real-time bus tracking with accurate ETA for complete peace of mind."
+      },
+      {
+        "img": "/images/app_registration.png",
+        "alt": "Customization",
+        "title": "Customization",
+        "desc": "Personalized settings for notifications, pickup, and drop preferences."
+      },
+      {
+        "img": "/images/add_alert.png",
+        "alt": "Alerts & Updates",
+        "title": "Alerts & Updates",
+        "desc": "Live notifications for arrivals, delays, and emergencies."
+      },
+      {
+        "img": "/images/sentiment_content.png",
+        "alt": "Flexibility & Usability",
+        "title": "Flexibility & Usability",
+        "desc": "Simple interface for easy access to transport details anytime."
+      },
+      {
+        "img": "/images/approval.png",
+        "alt": "Pickup & Drop Changes",
+        "title": "Pickup & Drop Changes",
+        "desc": "Change bus stops instantly without paperwork or delays."
+      },
+      {
+        "img": "/images/alarm.png",
+        "alt": "Configurable Alerts",
+        "title": "Configurable Alerts",
+        "desc": "Distance and time-based alerts for better planning and convenience."
+      }
+    ],
+    "key_advantages": {
+      "title": "Key Advantages for Parents App",
+      "desc": "Features like live tracking, smart notifications, video streaming, and emergency updates for student safety. It also emphasizes automation, data-driven insights, seamless communication, scalability, 24/7 monitoring, and a user-friendly interface."
+    },
+    "advantages_grid": [
+      {
+        "img": "/images/Image (4).png",
+        "alt": "Live Tracking",
+        "title": "Live Tracking",
+        "desc": "Always know where your child is with real-time bus location."
+      },
+      {
+        "img": "/images/Image (5).png",
+        "alt": "Smart Notifications",
+        "title": "Smart Notifications",
+        "desc": "Get timely alerts for arrivals, delays, and emergencies."
+      },
+      {
+        "img": "/images/Image (6).png",
+        "alt": "Smart Notifications",
+        "title": "Video Streaming",
+        "desc": "Access in-bus CCTV footage for added security and assurance."
+      },
+      {
+        "img": "/images/Image (7).png",
+        "alt": "Emergency Updates",
+        "title": "Emergency Updates",
+        "desc": "Instant alerts during unexpected incidents or route changes."
+      }
+    ],
+    "features_adv": [
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "End-to-End Automation",
+        "title": "End-to-End Automation",
+        "number": "01",
+        "desc": "From route planning to attendance, everything is digital and automated."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Data-Driven Insight",
+        "title": "Data-Driven Insight",
+        "number": "02",
+        "desc": "Use analytics for better decision-making and cost savings."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "24/7 Safety Monitoring",
+        "title": "24/7 Safety Monitoring",
+        "number": "03",
+        "desc": "Instant alerts for any deviations or emergencies"
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Seamless Communication",
+        "title": "Seamless Communication",
+        "number": "04",
+        "desc": "Connect managers, drivers, and parents through integrated apps."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "Scalable Solution",
+        "title": "Scalable Solution",
+        "number": "05",
+        "desc": "Manage thousands of students and trips effortlessly."
+      },
+      {
+        "img": "/images/automation_icon.png",
+        "alt": "User-Friendly Interface",
+        "title": "User-Friendly Interface",
+        "number": "06",
+        "desc": "Simple design for quick adoption by staff and parents."
+      }
+    ],
+    "manager_app_image_section": {
+      "img": "/images/Rectangle 1118.png",
+      "alt": "Manager App Overview"
+    },
+    "attendance_alerts": {
+      "attendance": {
+        "title": "Live Bus Tracking",
+        "desc": "Real-time map view with accurate ETAs for every stop."
+      },
+      "driver_management": {
+        "title": "Configurable Alerts",
+        "desc": "Set distance or time-based notifications to avoid long waits."
+      },
+      "alerts": {
+        "title": "Pickup & Drop Flexibility",
+        "desc": "Change your child’s stops in just a few clicks.",
+        "button": "GET TO KNOW MORE",
+        "button_icon": "/images/check_icon.png"
+      }
+    },
+    "reports_emergency": {
+      "reports": {
+        "title": "Safety Notifications",
+        "desc": "Instant alerts for reckless driving, overspeeding, or harsh braking."
+      },
+      "emergency": {
+        "title": "CCTV Video Access",
+        "desc": "Watch live in-bus footage for complete security assurance."
+      }
+    },
+    "apis_fees": [
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Time Saving",
+        "title": "Time Saving",
+        "desc": "ETAs and alerts make daily planning easy and efficient."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Peace of Mind",
+        "title": "Peace of Mind",
+        "desc": "Full visibility and emergency updates keep parents worry-free."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Better Control",
+        "title": "Better Control",
+        "desc": "Flexible stop changes and alert settings for personalized experience."
+      },
+      {
+        "img": "/images/api_icon.png",
+        "alt": "Ultimate Safety",
+        "title": "Ultimate Safety",
+        "desc": "Video streaming, alerts, and live tracking ensure child protection."
+      }
+    ],
+    "product_image_section": {
+      "img": "/images/manager_app_image.png",
+      "alt": "Parent App Product"
+    }
+   
+  }
+}

@@ -8,7 +8,7 @@ import React from 'react';
 // import MonitoringSection from './MonitoringSection';
 // import DriverAppSection from './DriverAppSection';
 // import SupportedTrackersSection from './SupportedTrackersSection';
-import SchoolBus from './SchoolBus';
+import SchoolBus from './SchoolBus.jsx';
 
 
 
