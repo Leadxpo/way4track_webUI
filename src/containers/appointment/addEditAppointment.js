@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../../services/ApiService';
 import { initialAuthState } from '../../services/ApiService';
 import StaffAppointmentAutocomplete from '../../components/StaffAppointmentAutoComplet';
+import ClientAutocomplete from '../../components/ClientAutoComplet';
 
 const AddEditAppointmentForm = () => {
   const location = useLocation();
@@ -183,7 +184,7 @@ const AddEditAppointmentForm = () => {
             const filename = item?.split('/').pop();
             const file = new File([blob], filename, { type: blob.type });
             formDataToSend.append("photo", file);
-          }else{
+          } else {
             formDataToSend.append("photo", item);
           }
         })
@@ -299,7 +300,7 @@ const AddEditAppointmentForm = () => {
       {/* Assign To */}
       {staff.length > 0 && (
         <div className="flex flex-col">
-           <StaffAppointmentAutocomplete
+          <StaffAppointmentAutocomplete
             staffData={staff}
             formData={formData}
             setFormData={setFormData}
@@ -387,22 +388,11 @@ const AddEditAppointmentForm = () => {
       {/* Client Details */}
       {client.length > 0 && (
         <div className="flex flex-col">
-          <label className="font-semibold mb-2">Client:</label>
-          <select
-            name="clientId"
-            value={formData.clientId}
-            onChange={handleDropdownChange}
-            className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-          >
-            <option value="" disabled>
-              Select Client
-            </option>
-            {client.map((clientItem) => (
-              <option key={clientItem.id} value={clientItem.id}>
-                {clientItem.name}
-              </option>
-            ))}
-          </select>
+          <ClientAutocomplete
+            client={client} // Array of clients
+            formData={formData}
+            setFormData={setFormData}
+          />
         </div>
       )}
 

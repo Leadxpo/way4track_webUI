@@ -187,11 +187,11 @@ const ViewBackendWorkDetails = () => {
 
   const vehiclePhotos = workRecord
     ? [
-        workRecord.vehiclePhoto1,
-        workRecord.vehiclePhoto2,
-        workRecord.vehiclePhoto3,
-        workRecord.vehiclePhoto4,
-      ].filter(Boolean)
+      workRecord.vehiclePhoto1,
+      workRecord.vehiclePhoto2,
+      workRecord.vehiclePhoto3,
+      workRecord.vehiclePhoto4,
+    ].filter(Boolean)
     : [];
 
   const handleSend = async () => {
@@ -366,15 +366,15 @@ const ViewBackendWorkDetails = () => {
             </button>
 
             <div>
-            {hasPermission(permission, "backend", "edit") &&
+              {hasPermission(permission, "backend", "edit") &&
 
-              <button
-                onClick={isEditing ? handleSave : handleEdit}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                {isEditing ? 'Save' : 'Edit'}
-              </button>
-}
+                <button
+                  onClick={isEditing ? handleSave : handleEdit}
+                  className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  {isEditing ? 'Save' : 'Edit'}
+                </button>
+              }
               <button
                 onClick={generatePDF}
                 className="mb-4 px-4 py-2 ml-2 bg-green-600 text-white rounded"
@@ -395,9 +395,21 @@ const ViewBackendWorkDetails = () => {
               options={serviceOptions}
             />
             <DetailRow
+              label="UserName"
+              value={editedRecord.userName}
+              onChange={handleChange}
+              field="userName"
+            />
+
+            <DetailRow
+              label="Application"
+              value={editedRecord.applicationId.name}
+              onChange={handleChange}
+              field="application"
+            />
+            <DetailRow
               label="Work Status"
               value={editedRecord.workStatus}
-              // editable={isEditing}
               onChange={handleChange}
               field="workStatus"
             />
@@ -594,7 +606,7 @@ const ViewBackendWorkDetails = () => {
                 src={editedRecord.screenShot}
                 alt="Payment Screenshot"
                 isEditing={isEditing}
-                // onDeleteImage={() => handleDeleteImage(index)}
+              // onDeleteImage={() => handleDeleteImage(index)}
               />
             )}
           </Section>
@@ -628,7 +640,7 @@ const ViewBackendWorkDetails = () => {
                   src={editedRecord.screenShot}
                   alt="Payment Screenshot"
                   isEditing={isEditing}
-                  // onDeleteImage={() => handleDeleteImage(index)}
+                // onDeleteImage={() => handleDeleteImage(index)}
                 />
               )}
             </Section>
@@ -649,11 +661,10 @@ const ViewBackendWorkDetails = () => {
                     className={`flex flex-col ${isLoggedInUser ? 'items-end' : 'items-start'}`}
                   >
                     <div
-                      className={`rounded-lg p-3 max-w-[75%] shadow space-y-2 ${
-                        isLoggedInUser
-                          ? 'bg-blue-100 text-blue-900'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
+                      className={`rounded-lg p-3 max-w-[75%] shadow space-y-2 ${isLoggedInUser
+                        ? 'bg-blue-100 text-blue-900'
+                        : 'bg-gray-100 text-gray-800'
+                        }`}
                     >
                       <p className="text-sm">{remark.desc}</p>
 

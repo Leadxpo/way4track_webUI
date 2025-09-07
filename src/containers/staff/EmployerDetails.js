@@ -155,7 +155,7 @@ const EmployerDetails = ({ setEmployerDetails ,employerDetails}) => {
         <label className="block font-medium mb-1">Branch</label>
         <select
           name="branchId"
-          value={data.branch} // Store branchId as a number
+          value={data?.branch?.id} // Store branchId as a number
           onChange={(e) => {
             const selectedBranch = branches.find(
               (branch) => branch.id === Number(e.target.value)

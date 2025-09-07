@@ -391,6 +391,19 @@ const ViewWork = () => {
               options={serviceOptions}
             />
             <DetailRow
+              label="UserName"
+              value={editedRecord.userName}
+              onChange={handleChange}
+              field="userName"
+            />
+
+            <DetailRow
+              label="Application"
+              value={editedRecord.applicationId.name}
+              onChange={handleChange}
+              field="application"
+            />
+            <DetailRow
               label="Work Status"
               value={editedRecord.workStatus}
               // editable={isEditing}

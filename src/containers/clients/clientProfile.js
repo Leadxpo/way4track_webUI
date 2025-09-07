@@ -190,7 +190,7 @@ const ClientProfile = () => {
   <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center overflow-auto p-4">
     <div className="bg-white rounded-lg w-full max-w-4xl p-6 shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Customer Purchase Details</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700" style={{paddingTop:100}}>
         <div><strong>Client Name:</strong> {selectedRow.clientName}</div>
         <div><strong>Phone Number:</strong> {selectedRow.phoneNumber}</div>
         <div><strong>Email:</strong> {selectedRow.ve_email}</div>

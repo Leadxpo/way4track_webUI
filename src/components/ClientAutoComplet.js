@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const ClientAutocomplete = ({ clientData, formData, setFormData }) => {
+const ClientAutocomplete = ({ client, formData, setFormData }) => {
   const [inputValue, setInputValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef(null);
 
-  // When formData.requestTo changes (e.g., on form load), update inputValue
+  // Set input field to selected client's name on form load or update
   useEffect(() => {
-    const selected = clientData.find((client) => client.id === formData.requestTo);
+    const selected = client.find((c) => c.id === formData.clientId);
     setInputValue(selected ? selected.name : '');
-  }, [formData.requestTo, clientData]);
+  }, [formData.clientId, client]);
 
-  // Close dropdown if clicked outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -23,21 +23,25 @@ const ClientAutocomplete = ({ clientData, formData, setFormData }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Filter clients on input
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    const filtered = clientData.filter((client) =>
-      client.name.toLowerCase().includes(value.toLowerCase())
+
+    const filtered = client.filter((c) =>
+      c.name?.toLowerCase().includes(value?.toLowerCase())
     );
+
     setFilteredOptions(filtered);
     setShowDropdown(true);
   };
 
-  const handleOptionClick = (client) => {
-    setInputValue(client.name);
+  // Handle selection from dropdown
+  const handleOptionClick = (selectedClient) => {
+    setInputValue(selectedClient.name);
     setFormData((prev) => ({
       ...prev,
-      requestTo: client.id, // Save the ID only
+      clientId: selectedClient.id, // Save the ID only
     }));
     setShowDropdown(false);
   };
@@ -50,21 +54,21 @@ const ClientAutocomplete = ({ clientData, formData, setFormData }) => {
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => {
-          setFilteredOptions(clientData);
+          setFilteredOptions(client);
           setShowDropdown(true);
         }}
         className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
-        placeholder="Select Request To"
+        placeholder="Select Client"
       />
       {showDropdown && filteredOptions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border mt-1 max-h-60 overflow-auto shadow-md rounded-md" style={{top:80}}>
-          {filteredOptions.map((client) => (
+        <ul className="absolute z-10 w-full bg-white border max-h-60 overflow-auto shadow-md rounded-md" style={{marginTop:90}}>
+          {filteredOptions.map((clientItem) => (
             <li
-              key={client.id}
-              onClick={() => handleOptionClick(client)}
+              key={clientItem.id}
+              onClick={() => handleOptionClick(clientItem)}
               className="p-2 hover:bg-gray-100 cursor-pointer"
             >
-              {client.name}
+              {clientItem.name}
             </li>
           ))}
         </ul>

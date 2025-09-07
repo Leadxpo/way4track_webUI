@@ -92,27 +92,7 @@ const ViewStaffDetails = () => {
   const handleEdit = (path, data) => {
     navigate(path, { state: { data } });
   };
-
-  const fetchStaffDetails = async () => {
-    try {
-      const response = await ApiService.post('/staff/getStaffDetailsById', {
-        staffId: state.staffDetails.staffId,
-        companyCode: initialAuthState.companyCode,
-        unitCode: initialAuthState.unitCode,
-      });
-
-      console.log('API Response:', response);
-
-      if (response.errorCode === 200) {
-        const staff = response.data;
-      }
-    } catch (error) {
-      console.error('Error fetching staff details:', error);
-    }
-    // useEffect(() => {
-    //   fetchStaffDetails();
-    // }, []);
-  };
+  
   return (
     <div className="m-6">
       <h3 className="text-2xl font-bold mb-6">Staff Details</h3>

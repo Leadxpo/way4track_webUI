@@ -152,7 +152,6 @@ const StaffDetails = () => {
           personnelDetails: {
             id: staff.id,
             staffId: staff.staffId || '',
-            staffPhoto: staff?.staffPhoto,
             name: staff.name || '',
             dob: staff.dob || '',
             gender: staff.gender || '',
@@ -186,7 +185,7 @@ const StaffDetails = () => {
           },
           employerDetails: {
             id: staff.id,
-            branch:staff.branch,
+            branch:staff?.branch?.id,
             branchName: staff.branchName || '',
             joiningDate: staff.joiningDate || '',
             designation: staff.designation || '',
