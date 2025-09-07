@@ -549,7 +549,7 @@ function FormStepOne({
 
         <div className="form-row">
           <div className="form-group col-4">
-            <label className="form-label">Blog Image</label>
+            <label className="form-label">Hero Poster</label>
             <span className="image-size-info">
               Recommended size: 800 × 600 px (4:3)
             </span>

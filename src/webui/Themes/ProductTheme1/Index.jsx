@@ -1,12 +1,12 @@
 import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import DashboardDemo from './DashboardDemo';
-import TrackingFeatures from './TrackingFeatures';
-import FeatureGrid from './FeatureGrid';
-import CTASection from './CTASection';
+// import HeroSection from './HeroSection';
+// import FeaturesSection from './FeaturesSection';
+// import DashboardDemo from './DashboardDemo';
+// import TrackingFeatures from './TrackingFeatures';
+// import FeatureGrid from './FeatureGrid';
+// import CTASection from './CTASection';
 // import './styles/App.css';
 import Bike from './Bike';
 
