@@ -5,6 +5,9 @@ function Mining({ title, description, heroImage, stateData}) {
   const [selectedTruckInfo, setSelectedTruckInfo] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
+
+  console.log(stateData)
+
   // Quantity control functions
   const incrementQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -30,14 +33,11 @@ function Mining({ title, description, heroImage, stateData}) {
       {/* Header Content */}
       <div className="mining-intro">
         <div className="mining-intro-heading">
-          <h1>Curious to know about?</h1>
+          <h1>Curious to know about {title}?</h1>
         </div>
         <div className="mining-intro-text">
           <p>
-            AIS-140 is a mandate by the Government of India that requires
-            vehicles to have GPS tracking and an emergency button. In mining
-            vehicles, it is mainly used for real-time tracking and ensuring
-            worker safety within mining zones.
+            {stateData.shortDescription}
           </p>
         </div>
       </div>
@@ -143,6 +143,7 @@ function Mining({ title, description, heroImage, stateData}) {
       <div className="mining-props">
         {/* Left */}
         <div className="mining-prop-left">
+
           {/* <h3>Panic/SOS Button Support</h3> */}
           {/* <p>
             In the event of an emergency, the system instantly transmits
@@ -151,8 +152,10 @@ function Mining({ title, description, heroImage, stateData}) {
             minimizes risks, and significantly enhances the safety and security
             of passengers, drivers, and vehicles at all times.
           </p> */}
-          <h3>{stateData?.points[0]?.title || ''}</h3>
-          <p>{stateData?.points[0]?.description || ''}</p>
+          <h3>{`${stateData?.points[0]?.title || 'TITLE 1'}`}</h3>
+          <p>
+            {`${stateData?.points[0]?.description || 'DESCRIPTION 1'}`}
+          </p>
         </div>
 
         {/* Middle */}
@@ -160,6 +163,7 @@ function Mining({ title, description, heroImage, stateData}) {
           <div className="mining-prop-card-1"></div>
           <div className="mining-prop-card-2">
             <div>
+
               {/* <h3>Inbuilt eSIM Support</h3> */}
               <h3>{stateData?.points[1]?.title || ''}</h3>
             </div>
@@ -175,11 +179,22 @@ function Mining({ title, description, heroImage, stateData}) {
           <div className="mining-prop-card-3">
             {/* <h3>e-SIM Slots for Uninterrupted Tracking</h3> */}
             <h3>{stateData?.points[2]?.title || ''}</h3>
+              <h3>{`${stateData?.points[1]?.title || 'TITLE 2'}`}</h3>
+            </div>
+            <div>
+              <p>
+                {`${stateData?.points[1]?.description || 'DESCRIPTION 2'}`}
+              </p>
+            </div>
+          </div>
+          <div className="mining-prop-card-3">
+            <h3>{`${stateData?.points[2]?.title || 'TITLE 4'}`}</h3>
           </div>
         </div>
 
         {/* Right */}
         <div className="mining-prop-right">
+
           {/* <h3>Cloud Data Storage</h3> */}
           <h3>{stateData?.points[3]?.title || ''}</h3>
           {/* <p>
@@ -201,6 +216,16 @@ function Mining({ title, description, heroImage, stateData}) {
           highways, or remote areas.
         </p> */}
         <p>{stateData?.points[2]?.description || ''}</p>
+          <h3>{`${stateData?.points[3]?.title || 'TITLE 3'}`}</h3>
+          <p>
+            {`${stateData?.points[2]?.description || 'DESCRIPTION 3'}`}
+          </p>
+        </div>
+      </div>
+      <div className="mining-prop-footer">
+        <p>
+          {`${stateData?.points[3]?.description || 'DESCRIPTION 4'}`}
+        </p>
       </div>
 
       <div className="mining-product">
@@ -354,7 +379,7 @@ function Mining({ title, description, heroImage, stateData}) {
       {/* Benefits Section */}
     <div className="mining-benefits-section">
         <h2 className="mining-benefits-header">
-          Benefits of AIS-140 GPS Tracker
+          Benefits of {title}
         </h2>
         <div className="mining-benefits-grid">
           <div className="mining-benefit-card">
@@ -470,7 +495,7 @@ function Mining({ title, description, heroImage, stateData}) {
         <div className="mining-solutions-header">
           <p className="mining-solutions-subtitle">Our solutions</p>
           <h2 className="mining-solutions-title">
-            AIS-140 IRNSS Certified GPS Tracker!
+            {title}
           </h2>
         </div>
         <div className="mining-solutions-hero">
@@ -485,65 +510,32 @@ function Mining({ title, description, heroImage, stateData}) {
         </div>
         <div className="mining-solutions-grid">
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="Govt Approved"
-              className="mining-solutions-icon"
-            />
             <span>
-              Govt Approved (AIS-140 Certified) – Mandatory for all mining
-              vehicles.
+              {`${stateData?.steps[0]?.description || 'Key point 1'}`}
             </span>
           </div>
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="Real-Time Tracking"
-              className="mining-solutions-icon"
-            />
             <span>
-              Real-Time Tracking & Route Playback – Always know where your
-              vehicle is.
+              {`${stateData?.steps[1]?.description || 'Key point 2'}`}
             </span>
           </div>
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="Dual eSIM"
-              className="mining-solutions-icon"
-            />
             <span>
-              Dual eSIM Support – Continuous connectivity without interruptions.
+              {`${stateData?.steps[2]?.description || 'Key point 3'}`}
             </span>
           </div>
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="SOS/Panic"
-              className="mining-solutions-icon"
-            />
             <span>
-              SOS/Panic Button – Instant emergency alerts to control centers.
+              {`${stateData?.steps[3]?.description || 'Key point 4'}`}
             </span>
           </div>
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="Waterproof"
-              className="mining-solutions-icon"
-            />
             <span>
-              Even in rain or wet environments, waterproof GPS ensures
-              uninterrupted real-time tracking of mining vehicles.
+              {`${stateData?.steps[4]?.description || 'Key point 5'}`}
             </span>
           </div>
           <div className="mining-solutions-card">
-            <img
-              src="/images/emergency_share.png"
-              alt="Backup Battery"
-              className="mining-solutions-icon"
-            />
-            <span>4 Hours Backup Battery – Works even during power cuts.</span>
+            <span>{`${stateData?.steps[5]?.description || 'Key point 6'}`}.</span>
           </div>
         </div>
       </div>
@@ -557,19 +549,13 @@ function Mining({ title, description, heroImage, stateData}) {
         <div className="mining-product-overview-content">
           <div className="mining-product-overview-text">
             <div>
-              <h3>AIS-140 Mining GPS Tracker</h3>
+              <h3>{title}</h3>
               <p>
-                The AIS-140 GPS Tracker is a government-certified device
-                designed for compliance with MoRTH regulations in India. Built
-                for public transport, mining fleets, and commercial vehicles, it
-                ensures passenger safety, real-time monitoring, and legal
-                compliance. With dual communication support to both government
-                servers and user dashboards, it provides seamless control,
-                safety, and operational efficiency.
+                {stateData.description}
               </p>
             </div>
 
-            <div className="mining-product-overview-features">
+            {/* <div className="mining-product-overview-features">
               <p>
                 Why Choose AIS-140 GPS Tracker?
                 <br /> Government-Approved & Compliant – under AIS-140
@@ -581,7 +567,7 @@ function Mining({ title, description, heroImage, stateData}) {
                 Government-Certified Compliance-The AIS-140 GPS Tracker is
                 <br /> approved for meeting MoRTH regulations in India.
               </p>
-            </div>
+            </div> */}
           </div>
 
           <div className="mining-product-overview-image">
