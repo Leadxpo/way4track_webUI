@@ -48,8 +48,19 @@ function ThemeManager() {
     setCurrentStep(0);
     setImagePreviews({});
     
-    const amenitiesCount = theme.id === 'theme1' ? 15 : 6;
-    const applicationsCount = theme.id === 'theme1' ? 9 : 6;
+    let amenitiesCount, applicationsCount;
+
+    if (theme.id === 'theme1') {
+      amenitiesCount = 15;
+      applicationsCount = 9;
+    } else if (theme.id === 'theme2') {
+      amenitiesCount = 7;
+      applicationsCount = 6;
+    } else {
+      amenitiesCount = 6;
+      applicationsCount = 6;
+    }
+
     setStepRepeatedItems({
       1: Array.from({ length: amenitiesCount }, () => ({ name: '', desc: '', photos: null })),
       2: Array.from({ length: applicationsCount }, () => ({ name: '', desc: '', photos: null })),
@@ -330,7 +341,13 @@ function ThemeManager() {
         );
       case 3:
         return (
-          <FormStepFour step4Items={step4Items} setStep4Items={setStep4Items} />
+          <FormStepFour 
+            step4Items={step4Items} 
+            setStep4Items={setStep4Items} 
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
+            handleRemoveStep5Item={handleRemoveStep5Item}
+          />
         );
 
       case 4:
