@@ -347,17 +347,21 @@ function ThemeManager() {
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
             handleRemoveStep5Item={handleRemoveStep5Item}
+            selectedTheme={selectedTheme}
+            stepsData={stepsData}
           />
         );
 
       case 4:
         return (
           <FormStepFive
+            stepsData={stepsData}
             step5Items={step5Items}
             setStep5Items={setStep5Items}
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
             handleRemoveStep5Item={handleRemoveStep5Item}
+            selectedTheme={selectedTheme}
           />
         );
 
