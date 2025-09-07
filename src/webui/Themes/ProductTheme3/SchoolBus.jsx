@@ -1,7 +1,8 @@
 import './SchoolBus.css';
 
 
-function SchoolBus() {
+function SchoolBus({ title, description, heroImage, stateData}) {
+  console.log(stateData)
   return (
     <div className='schoolbus-body'>
       {/* <Navbar /> */}
