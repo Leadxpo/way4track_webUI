@@ -42,7 +42,7 @@ const StaffDropdown = ({ setStaffDetails }) => {
   // Fetch staff details by ID
   const fetchStaffDetails = (staffId) => {
     axios
-        .post("https://sharontelematics.org/api/staff/getStaffDetailsById", {
+      .post("https://sharontelematics.org/api/staff/getStaffDetailsById", {
         // .post("http://localhost:3000/api/staff/getStaffDetailsById", {
         staffId: staffId,
         companyCode: "WAY4TRACK",
