@@ -281,7 +281,6 @@ function ThemeManager() {
         if (item.photos) {
           step5Data.append('photos', item.photos, item.photos.name);
         }
-
         return ApiService.post('product-apps/handleBulkProductApp', step5Data);
       });
 

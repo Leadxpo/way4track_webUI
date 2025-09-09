@@ -122,6 +122,7 @@ const AddDashboardTheme = () => {
     });
 
     try {
+      console.log(payload)
       const response = await ApiService.post(
         'promotion/handlePromotionDetails',
         payload,
