@@ -1,7 +1,7 @@
 import React from 'react';
 // import "./FormStepFour.css";
 
-function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreviews }) {
+function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreviews, selectedTheme, stepsData }) {
   const handleStep4FieldChange = (index, field, value) => {
     const updated = [...step4Items];
     updated[index][field] = value;
@@ -21,6 +21,9 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
     updated.splice(index, 1);
     setStep4Items(updated);
   };
+  
+  // console.log("Selected Theme in Step Four:", selectedTheme);
+  // console.log("Steps Data in Step Four:", stepsData);
 
   return (
     <div className="step4_formStep">
@@ -109,11 +112,11 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                 <div className="step4_formGroup step4_col6">
                   <label className="step4_formLabel">Base Price</label>
                   <div className="step4_inputGroup">
-                    <span className="step4_inputGroupText">$</span>
+                    <span className="step4_inputGroupText">₹</span>
                     <input
                       type="number"
                       className="step4_formControl"
-                      value={item.amount || 0}
+                      value={item.amount || ''}
                       onChange={(e) => handleStep4FieldChange(index, 'amount', parseFloat(e.target.value))}
                       placeholder="0.00"
                     />
@@ -126,7 +129,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     <input
                       type="number"
                       className="step4_formControl"
-                      value={item.discount || 0}
+                      value={item.discount || ''}
                       onChange={(e) => handleStep4FieldChange(index, 'discount', parseFloat(e.target.value))}
                       placeholder="0"
                     />
@@ -240,10 +243,12 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
           </div>
         ))}
       </div>
-      
-      <button className="step4_btnOutlinePrimary" onClick={addStep4Item}>
-        Add Another Device
-      </button>
+
+      {(selectedTheme.id !== 'theme2' || stepsData[3]?.fields?.dynamicItems?.length < 1) && (
+        <button className="step4_btnOutlinePrimary" onClick={addStep4Item}>
+          Add Another Device
+        </button>
+      )}
     </div>
   );
 }

@@ -24,11 +24,12 @@ function ThemeManager() {
   const [step5Items, setStep5Items] = useState([
     { name: '', shortDescription: '', points: [], photos: null },
   ]);
-
+  
   const [stepRepeatedItems, setStepRepeatedItems] = useState({
     1: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
     2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
-  });
+  }); 
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -46,6 +47,24 @@ function ThemeManager() {
     setStepsData([{ fields: { steps: [] }, images: [], points: [] }]);
     setCurrentStep(0);
     setImagePreviews({});
+    
+    let amenitiesCount, applicationsCount;
+
+    if (theme.id === 'theme1') {
+      amenitiesCount = 15;
+      applicationsCount = 9;
+    } else if (theme.id === 'theme2') {
+      amenitiesCount = 7;
+      applicationsCount = 6;
+    } else {
+      amenitiesCount = 6;
+      applicationsCount = 6;
+    }
+
+    setStepRepeatedItems({
+      1: Array.from({ length: amenitiesCount }, () => ({ name: '', desc: '', photos: null })),
+      2: Array.from({ length: applicationsCount }, () => ({ name: '', desc: '', photos: null })),
+    });
   };
 
   const handleFieldChange = (field, value) => {
@@ -262,7 +281,6 @@ function ThemeManager() {
         if (item.photos) {
           step5Data.append('photos', item.photos, item.photos.name);
         }
-
         return ApiService.post('product-apps/handleBulkProductApp', step5Data);
       });
 
@@ -322,17 +340,27 @@ function ThemeManager() {
         );
       case 3:
         return (
-          <FormStepFour step4Items={step4Items} setStep4Items={setStep4Items} />
+          <FormStepFour 
+            step4Items={step4Items} 
+            setStep4Items={setStep4Items} 
+            handleImageChange={handleImageChange}
+            imagePreviews={imagePreviews}
+            handleRemoveStep5Item={handleRemoveStep5Item}
+            selectedTheme={selectedTheme}
+            stepsData={stepsData}
+          />
         );
 
       case 4:
         return (
           <FormStepFive
+            stepsData={stepsData}
             step5Items={step5Items}
             setStep5Items={setStep5Items}
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
             handleRemoveStep5Item={handleRemoveStep5Item}
+            selectedTheme={selectedTheme}
           />
         );
 

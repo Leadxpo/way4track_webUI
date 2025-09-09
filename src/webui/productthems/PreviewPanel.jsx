@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import '../styles/PreviewPanel.css';
 import ProductTheme1 from '../Themes/ProductTheme1/Index';
-import ProductTheme2 from '../Themes/ProductTheme2';
+import ProductTheme2 from '../Themes/ProductTheme2/Index';
 import ProductTheme3 from '../Themes/ProductTheme3/Index';
 import ProductTheme4 from '../Themes/ProductTheme4/index';
 
@@ -21,7 +21,7 @@ function PreviewPanel({
 // Get keys starting with 'application' from imagePreviews
 
 const defaultImage =
-'https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+'https://media.istockphoto.com/id/1973365581/vector/sample-ink-rubber-stamp.jpg?s=612x612&w=0&k=20&c=_m6hNbFtLdulg3LK5LRjJiH6boCb_gcxPvRLytIz0Ws=';
 
 const deviceImages = Object.keys(imagePreviews)
   .filter(key => key.startsWith('device'))
@@ -87,12 +87,25 @@ const productAppImages = Object.keys(imagePreviews)
       aminityImage4: imagePreviews.amenity3 || defaultImage,
       aminityImage5: imagePreviews.amenity4 || defaultImage,
       aminityImage6: imagePreviews.amenity5 || defaultImage,
+      aminityImage7: imagePreviews.amenity6 || defaultImage,
+      aminityImage8: imagePreviews.amenity7 || defaultImage,
+      aminityImage9: imagePreviews.amenity8 || defaultImage,
+      aminityImage10: imagePreviews.amenity9 || defaultImage,
+      aminityImage11: imagePreviews.amenity10 || defaultImage,
+      aminityImage12: imagePreviews.amenity11 || defaultImage,
+      aminityImage13: imagePreviews.amenity12 || defaultImage,
+      aminityImage14: imagePreviews.amenity13 || defaultImage,
+      aminityImage15: imagePreviews.amenity14 || defaultImage,
+
       applicationImage1: imagePreviews.application0 || defaultImage,
       applicationImage2: imagePreviews.application1 || defaultImage,
       applicationImage3: imagePreviews.application2 || defaultImage,
       applicationImage4: imagePreviews.application3 || defaultImage,
       applicationImage5: imagePreviews.application4 || defaultImage,
       applicationImage6: imagePreviews.application5 || defaultImage,
+      applicationImage7: imagePreviews.application6 || defaultImage,
+      applicationImage8: imagePreviews.application7 || defaultImage,
+      applicationImage9: imagePreviews.application8 || defaultImage,
       aminities: aminitiesData || [],
       application: applicationData || [],
       deviceData: deviceData || [],

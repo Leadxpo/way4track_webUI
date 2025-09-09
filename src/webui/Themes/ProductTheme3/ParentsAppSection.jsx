@@ -187,6 +187,7 @@ const ParentsAppSection = ({ stateData }) => {
           <span className="text-secondary text-uppercase small">WHY CHOOSE US?</span>
           <h2 className="fw-bold text-warning mt-2 fs-2 mb-4">Why is {stateData.name} choice?</h2>
           <div className="bg-white rounded-4 shadow-sm p-4">
+            {console.log(stateData)}
             {stateData.points?.map((item, index) => (
               <AccordionItem
                 key={index}

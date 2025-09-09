@@ -21,12 +21,12 @@ const AddDashboardTheme = () => {
     'Session-2',
     'Session-3',
     'Session-4',
-    'Session-5',
-    'Session-6',
-    'Session-7',
-    'Session-8',
-    'Session-9',
-    'Session-10',
+    // 'Session-5',
+    // 'Session-6',
+    // 'Session-7',
+    // 'Session-8',
+    // 'Session-9',
+    // 'Session-10',
   ];
 
   const handleBgFileChange = (e) => {
@@ -39,22 +39,25 @@ const AddDashboardTheme = () => {
 
   useEffect(() => {
     switch (formData.theme) {
+      case 'Session-1':
+        setList([{ photo: null, preview: null }]);
+        break;
       case 'Session-2':
         setList(
-          new Array(4)
+          new Array(5)
             .fill(null)
-            .map(() => ({ desc: '', photo: null, preview: null }))
+            .map(() => ({ name: '', desc: '', photo: null, preview: null }))
         );
         break;
       case 'Session-3':
         setList(
-          new Array(10)
+          new Array(4)
             .fill(null)
-            .map(() => ({ desc: '', photo: null, preview: null }))
+            .map(() => ({ name: '', desc: '', photo: null, preview: null }))
         );
         break;
       case 'Session-4':
-        setList([{ desc: '', photo: null, preview: null }]);
+        setList([{ photo: null, preview: null }]);
         break;
       case 'Session-5':
       case 'Session-6':
@@ -111,7 +114,7 @@ const AddDashboardTheme = () => {
       payload.append(`list[${index}][name]`, item.name || '');
 
       if (
-        ['Session-2', 'Session-3', 'Session-4'].includes(formData.theme) &&
+        ['Session-1','Session-2', 'Session-3', 'Session-4'].includes(formData.theme) &&
         item.photo
       ) {
         payload.append(`photo`, item.photo);
@@ -119,6 +122,7 @@ const AddDashboardTheme = () => {
     });
 
     try {
+      console.log(payload)
       const response = await ApiService.post(
         'promotion/handlePromotionDetails',
         payload,
@@ -161,7 +165,7 @@ const AddDashboardTheme = () => {
             {/* Form Section */}
             <div className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Name *
                   </label>
@@ -204,7 +208,7 @@ const AddDashboardTheme = () => {
                     rows="3"
                     placeholder="Enter a brief description"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -231,6 +235,7 @@ const AddDashboardTheme = () => {
                 </div>
 
                 {[
+                  'Session-1',
                   'Session-2',
                   'Session-3',
                   'Session-4',
@@ -241,11 +246,13 @@ const AddDashboardTheme = () => {
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-medium text-gray-900">
                         List Items ({list.length}{' '}
-                        {formData.theme === 'Session-4'
-                          ? 'dynamic cards'
-                          : ['Session-5', 'Session-6'].includes(formData.theme)
-                            ? 'text entries'
-                            : 'fixed cards'})
+                          {formData.theme === 'Session-1'
+                             ? 'dynamic cards'
+                              : formData.theme === 'Session-4'
+                               ? 'fixed card'
+                              : ['Session-5', 'Session-6'].includes(formData.theme)
+                                ? 'text entries'
+                                : 'fixed cards'})
                       </h3>
                     </div>
 
@@ -255,7 +262,7 @@ const AddDashboardTheme = () => {
                           key={index}
                           className="bg-gray-50 rounded-lg p-4 relative border border-gray-200"
                         >
-                          {['Session-5', 'Session-6'].includes(formData.theme) && (
+                          {['Session-2','Session-3','Session-5', 'Session-6'].includes(formData.theme) && (
                             <input
                               type="text"
                               placeholder="Title"
@@ -267,17 +274,19 @@ const AddDashboardTheme = () => {
                             />
                           )}
 
-                          <input
-                            type="text"
-                            placeholder="Description"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            value={item.desc}
-                            onChange={(e) =>
-                              handleListChange(index, 'desc', e.target.value)
-                            }
-                          />
+                          {['Session-2','Session-3','Session-5','Session-6'].includes(formData.theme) && (
+                            <input
+                              type="text"
+                              placeholder="Description"
+                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              value={item.desc}
+                              onChange={(e) =>
+                                handleListChange(index, 'desc', e.target.value)
+                              }
+                            />
+                          )}
 
-                          {['Session-2', 'Session-3', 'Session-4'].includes(
+                          {['Session-1','Session-2', 'Session-3', 'Session-4'].includes(
                             formData.theme
                           ) && (
                             <div className="mt-3 space-y-2">
@@ -336,7 +345,7 @@ const AddDashboardTheme = () => {
                             </div>
                           )}
 
-                          {(formData.theme === 'Session-4' ||
+                          {(formData.theme === 'Session-1' ||
                             ['Session-5', 'Session-6'].includes(
                               formData.theme
                             )) && (
@@ -356,7 +365,7 @@ const AddDashboardTheme = () => {
                       ))}
                     </div>
 
-                    {(formData.theme === 'Session-4' ||
+                    {(formData.theme === 'Session-1'  ||
                       ['Session-5', 'Session-6'].includes(formData.theme)) && (
                       <button
                         type="button"
@@ -364,7 +373,9 @@ const AddDashboardTheme = () => {
                         onClick={() =>
                           setList([
                             ...list,
-                            formData.theme === 'Session-4'
+                            formData.theme === 'Session-1'
+                              ? { photo: null, preview: null } // only image for Session-1
+                              : formData.theme === 'Session-4'
                               ? { desc: '', photo: null, preview: null }
                               : { name: '', desc: '' },
                           ])
@@ -377,7 +388,7 @@ const AddDashboardTheme = () => {
                   </div>
                 )}
 
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Main Image
@@ -459,7 +470,7 @@ const AddDashboardTheme = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <button
                   type="submit"

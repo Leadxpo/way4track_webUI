@@ -1,13 +1,14 @@
 import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import DashboardDemo from './DashboardDemo';
-import TrackingFeatures from './TrackingFeatures';
-import FeatureGrid from './FeatureGrid';
-import CTASection from './CTASection';
+// import HeroSection from './HeroSection';
+// import FeaturesSection from './FeaturesSection';
+// import DashboardDemo from './DashboardDemo';
+// import TrackingFeatures from './TrackingFeatures';
+// import FeatureGrid from './FeatureGrid';
+// import CTASection from './CTASection';
 // import './styles/App.css';
+import Bike from './Bike';
 
 function Landingpage1({data}) {
   // Mock data that would normally come from an API or CMS
@@ -23,20 +24,26 @@ function Landingpage1({data}) {
   // };
   return (
     <div className="bike-tracker-app bg-light">
-      <HeroSection 
+      {/* <HeroSection 
         title={data.name} 
         description={data.shortDescription}
         heroImage={data.blogImage}
         mobileAppImage={data.banner1}
-      />
+      /> */}
 
-      <div className="container-fluid">
-        <FeaturesSection stateData={data} />
+      {/* <div className="container-fluid"> */}
+        {/* <FeaturesSection stateData={data} /> */}
         {/* <DashboardDemo dashboardImage={data.dashboardImage1} /> */}
-        <TrackingFeatures stateData={data}/>
-        <FeatureGrid stateData={data}/>
-        <CTASection stateData={data}/>
-      </div>
+        {/* <TrackingFeatures stateData={data}/> */}
+        {/* <FeatureGrid stateData={data}/> */}
+        {/* <CTASection stateData={data}/> */}
+      {/* </div> */}
+      <Bike         
+        title={data.name} 
+        description={data.shortDescription} 
+        heroImage={data.blogImage}
+        stateData={data}
+      />
     </div>
   );
 }
