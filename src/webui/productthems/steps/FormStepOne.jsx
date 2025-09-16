@@ -126,7 +126,7 @@ function FormStepOne({
           />
         </div>
 
-        {selectedTheme.id !== 'theme1' && (
+        {selectedTheme.id !== 'theme1' && selectedTheme.id !== 'theme3' && (
           <div className="form-group">
             <label className="form-label">Full Description</label>
             <textarea
@@ -141,67 +141,67 @@ function FormStepOne({
       </section>
 
       {/* banners data */}
-        {(selectedTheme.id === 'theme2' || selectedTheme.id === 'theme3') && (
-          <section className="form-section">
-            <h3 className="section-title">Banner Images</h3>
-            <div className="form-row">
-              {Array.from({ length: selectedTheme?.images || 3 }).map(
-                (_, index) => (
-                  <div className="form-group col-4" key={index}>
-                    <label className="form-label">Banner {index + 1}</label>
-                    <div className="image-upload-container">
-                      {imagePreviews[`image${index}`] ? (
-                        <div className="image-preview-container">
-                          <img
-                            src={imagePreviews[`image${index}`]}
-                            alt={`Banner ${index + 1}`}
-                            className="image-preview"
-                          />
-                          <button
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveBannerImage(index)}
+      {(selectedTheme.id === 'theme2' || selectedTheme.id === 'theme3') && (
+        <section className="form-section">
+          <h3 className="section-title">Banner Images</h3>
+          <div className="form-row">
+            {Array.from({ length: selectedTheme?.images || 3 }).map(
+              (_, index) => (
+                <div className="form-group col-4" key={index}>
+                  <label className="form-label">Banner {index + 1}</label>
+                  <div className="image-upload-container">
+                    {imagePreviews[`image${index}`] ? (
+                      <div className="image-preview-container">
+                        <img
+                          src={imagePreviews[`image${index}`]}
+                          alt={`Banner ${index + 1}`}
+                          className="image-preview"
+                        />
+                        <button
+                          className="remove-image-btn"
+                          onClick={() => handleRemoveBannerImage(index)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="image-upload-field">
+                        <input
+                          type="file"
+                          id={`banner-${index}`}
+                          className="file-input"
+                          accept="image/*"
+                          onChange={(e) =>
+                            handleImageChange(index, e.target.files[0])
+                          }
+                        />
+                        <label
+                          htmlFor={`banner-${index}`}
+                          className="file-label"
+                        >
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           >
-                            ×
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="image-upload-field">
-                          <input
-                            type="file"
-                            id={`banner-${index}`}
-                            className="file-input"
-                            accept="image/*"
-                            onChange={(e) =>
-                              handleImageChange(index, e.target.files[0])
-                            }
-                          />
-                          <label
-                            htmlFor={`banner-${index}`}
-                            className="file-label"
-                          >
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                              <polyline points="17 8 12 3 7 8"></polyline>
-                              <line x1="12" y1="3" x2="12" y2="15"></line>
-                            </svg>
-                            <span>Upload</span>
-                          </label>
-                        </div>
-                      )}
-                    </div>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                          </svg>
+                          <span>Upload</span>
+                        </label>
+                      </div>
+                    )}
                   </div>
-                )
-              )}
-            </div>
-          </section>
-        )}
+                </div>
+              )
+            )}
+          </div>
+        </section>
+      )}
       {/* featurs data */}
       {selectedTheme.id !== 'theme4' && (
         <section className="form-section">
@@ -248,7 +248,7 @@ function FormStepOne({
             </div>
           ))}
           {(selectedTheme.id !== 'theme1' || stepsData[0]?.points?.length < 3) &&
-           (selectedTheme.id !== 'theme2' || stepsData[0]?.points?.length < 4) && (
+            (selectedTheme.id !== 'theme2' || stepsData[0]?.points?.length < 4) && (
               <button
                 type="button"
                 className="btn btn-outline-primary btn-sm"
@@ -266,8 +266,8 @@ function FormStepOne({
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
                 Add Feature Point
-             </button>
-          )}
+              </button>
+            )}
 
           {/* <button
             type="button"
@@ -388,89 +388,89 @@ function FormStepOne({
           )}
         {(selectedTheme.id !== 'theme1' ||
           stepsData[0]?.fields?.steps?.length < 6) && (
-          <button
-            type="button"
-            className="btn btn-outline-primary btn-sm"
-            onClick={addNewStep}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={addNewStep}
             >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add New Step
-          </button>
-        )}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add New Step
+            </button>
+          )}
       </section>
 
       {selectedTheme.id === 'theme1' && (
-          <section className="form-section">
-            <h3 className="section-title">Banner Images</h3>
-            <div className="form-row">
-              {Array.from({ length: selectedTheme?.images || 3 })
-                .map((_, index) => index)
-                .filter((index) => index > 0)
-                .map((index) => (
-                  <div className="form-group col-4" key={index}>
-                    <label className="form-label">Banner {index + 1}</label>
-                    <div className="image-upload-container">
-                      {imagePreviews[`image${index}`] ? (
-                        <div className="image-preview-container">
-                          <img
-                            src={imagePreviews[`image${index}`]}
-                            alt={`Banner ${index + 1}`}
-                            className="image-preview"
-                          />
-                          <button
-                            className="remove-image-btn"
-                            onClick={() => handleRemoveBannerImage(index)}
+        <section className="form-section">
+          <h3 className="section-title">Banner Images</h3>
+          <div className="form-row">
+            {Array.from({ length: selectedTheme?.images || 3 })
+              .map((_, index) => index)
+              .filter((index) => index > 0)
+              .map((index) => (
+                <div className="form-group col-4" key={index}>
+                  <label className="form-label">Banner {index + 1}</label>
+                  <div className="image-upload-container">
+                    {imagePreviews[`image${index}`] ? (
+                      <div className="image-preview-container">
+                        <img
+                          src={imagePreviews[`image${index}`]}
+                          alt={`Banner ${index + 1}`}
+                          className="image-preview"
+                        />
+                        <button
+                          className="remove-image-btn"
+                          onClick={() => handleRemoveBannerImage(index)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="image-upload-field">
+                        <input
+                          type="file"
+                          id={`banner-${index}`}
+                          className="file-input"
+                          accept="image/*"
+                          onChange={(e) =>
+                            handleImageChange(index, e.target.files[0])
+                          }
+                        />
+                        <label
+                          htmlFor={`banner-${index}`}
+                          className="file-label"
+                        >
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           >
-                            ×
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="image-upload-field">
-                          <input
-                            type="file"
-                            id={`banner-${index}`}
-                            className="file-input"
-                            accept="image/*"
-                            onChange={(e) =>
-                              handleImageChange(index, e.target.files[0])
-                            }
-                          />
-                          <label
-                            htmlFor={`banner-${index}`}
-                            className="file-label"
-                          >
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                              <polyline points="17 8 12 3 7 8"></polyline>
-                              <line x1="12" y1="3" x2="12" y2="15"></line>
-                            </svg>
-                            <span>Upload</span>
-                          </label>
-                        </div>
-                      )}
-                    </div>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                          </svg>
+                          <span>Upload</span>
+                        </label>
+                      </div>
+                    )}
                   </div>
-                ))}
-            </div>
-          </section>
-        )}
+                </div>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* our solutions */}
       <section className="form-section">
