@@ -28,9 +28,9 @@ function EditProductDetails() {
     productModal: null,
     solutionTitle: null,
     solutionDescription: null,
-    solutionImage: null
-    // points: [{ title: "", description: "" }],
-    // steps: [{ title: "", description: "" }]
+    solutionImage: null,
+    points: [{ title: "", description: "" }],
+    steps: [{ title: "", description: "" }]
   });
 
   const [originalProductDetails, setOriginalProductDetails] = useState({});
@@ -40,6 +40,7 @@ function EditProductDetails() {
     if (product) {
       setProductDetails({
         name: product.name || '',
+        layoutType: product.layoutType || '',
         shortDescription: product.shortDescription || '',
         companyCode: product.companyCode || '',
         unitCode: product.unitCode || '',
@@ -59,8 +60,8 @@ function EditProductDetails() {
         solutionTitle: product.solutionTitle || null,
         solutionDescription: product.solutionDescription || null,
         solutionImage: product.solutionImage || null,
-        // points: product.points?.length ? product.points : [{ title: "", description: "" }],
-        // steps: product.steps?.length ? product.steps : [{ title: "", description: "" }]
+        points: product.points?.length ? product.points : [{ title: "", description: "" }],
+        steps: product.steps?.length ? product.steps : [{ title: "", description: "" }]
       });
       setOriginalProductDetails({ ...product }); // Save original product details
     }
@@ -68,6 +69,42 @@ function EditProductDetails() {
 
   const handleFieldChange = (field, value) => {
     setProductDetails((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePointChange = (index, field, value) => {
+    const updatedPoints = [...productDetails.points];
+    updatedPoints[index][field] = value;
+    setProductDetails((prev) => ({ ...prev, points: updatedPoints }));
+  };
+
+  const addNewPoint = () => {
+    setProductDetails((prev) => ({
+      ...prev,
+      points: [...prev.points, { title: '', description: '' }]
+    }));
+  };
+
+  const removePoint = (index) => {
+    const updatedPoints = productDetails.points.filter((_, i) => i !== index);
+    setProductDetails((prev) => ({ ...prev, points: updatedPoints }));
+  };
+
+  const handleStepChange = (index, field, value) => {
+    const updatedSteps = [...productDetails.steps];
+    updatedSteps[index][field] = value;
+    setProductDetails((prev) => ({ ...prev, steps: updatedSteps }));
+  };
+
+  const addNewStep = () => {
+    setProductDetails((prev) => ({
+      ...prev,
+      steps: [...prev.steps, { title: '', description: '' }]
+    }));
+  };
+
+  const removeStep = (index) => {
+    const updatedSteps = productDetails.steps.filter((_, i) => i !== index);
+    setProductDetails((prev) => ({ ...prev, steps: updatedSteps }));
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +127,11 @@ function EditProductDetails() {
         if (productDetails[key] !== originalProductDetails[key]) {
           formData.append(key, productDetails[key]);
         }
-      } else if (productDetails[key]) {
+      }
+      else if (key === 'points' || key === 'steps') {
+        formData.append(key, JSON.stringify(productDetails[key]));
+      }
+      else if (productDetails[key]) {
         formData.append(key, productDetails[key]);
       }
     });
@@ -174,6 +215,111 @@ function EditProductDetails() {
             placeholder="Detailed product description"
           />
         </div>
+      </section>
+
+      <section className="form-section">
+        <h3 className="section-title">Product Features</h3>
+        <h4 className="subsection-title">Key Points</h4>
+        {productDetails.points.map((point, index) => (
+          <div className="feature-point" key={index}>
+            <div className="form-row">
+              <div className="form-group col-5">
+                <label className="form-label">Point Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={point.title}
+                  onChange={(e) => handlePointChange(index, 'title', e.target.value)}
+                  placeholder="Feature title"
+                />
+              </div>
+              <div className="form-group col-6">
+                <label className="form-label">Point Description</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={point.description}
+                  onChange={(e) => handlePointChange(index, 'description', e.target.value)}
+                  placeholder="Feature description"
+                />
+              </div>
+              <div className="form-group col-1">
+                <button
+                  type="button"
+                  className="btn btn-icon btn-danger"
+                  onClick={() => removePoint(index)}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+
+        {(productDetails.layoutType !== 'theme1' || productDetails?.points?.length < 3) &&
+          (productDetails.layoutType !== 'theme2' || productDetails?.points?.length < 4) && (
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={addNewPoint}
+            >
+              Add Feature Point
+            </button>
+          )}
+      </section>
+
+      <section className="form-section">
+        <h3 className="section-title">How It Works</h3>
+
+        {productDetails.steps.map((step, idx) => (
+          <div className="step-item" key={idx}>
+            <div className="step-number">{idx + 1}</div>
+            <div className="step-content">
+              <div className="form-row">
+                <div className="form-group col-5">
+                  <label className="form-label">Step Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={step.title}
+                    onChange={(e) => handleStepChange(idx, 'title', e.target.value)}
+                    placeholder="Step title"
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label className="form-label">Step Description</label>
+                  <textarea
+                    className="form-control"
+                    value={step.description}
+                    onChange={(e) => handleStepChange(idx, 'description', e.target.value)}
+                    placeholder="Step description"
+                  />
+                </div>
+                <div className="form-group col-1">
+                  <button
+                    type="button"
+                    className="btn btn-icon btn-danger"
+                    onClick={() => removeStep(idx)}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {(productDetails.layoutType !== 'theme1' ||
+          productDetails?.fields?.steps?.length < 6) && (
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={addNewStep}
+            >
+              Add Step
+            </button>
+          )}
       </section>
 
       <section className="form-section">
@@ -283,105 +429,6 @@ function EditProductDetails() {
           ))}
         </div>
       </section>
-
-      {/* <section className="form-section">
-        <h3 className="section-title">Product Features</h3>
-        <h4 className="subsection-title">Key Points</h4>
-        {productDetails.points.map((point, index) => (
-          <div className="feature-point" key={index}>
-            <div className="form-row">
-              <div className="form-group col-5">
-                <label className="form-label">Point Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={point.title}
-                  onChange={(e) => handlePointChange(index, 'title', e.target.value)}
-                  placeholder="Feature title"
-                />
-              </div>
-              <div className="form-group col-6">
-                <label className="form-label">Point Description</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={point.description}
-                  onChange={(e) => handlePointChange(index, 'description', e.target.value)}
-                  placeholder="Feature description"
-                />
-              </div>
-              <div className="form-group col-1">
-                <button
-                  type="button"
-                  className="btn btn-icon btn-danger"
-                  onClick={() => removePoint(index)}
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          className="btn btn-outline-primary btn-sm"
-          onClick={addNewPoint}
-        >
-          Add Feature Point
-        </button>
-      </section> */}
-
-      {/* <section className="form-section">
-        <h3 className="section-title">How It Works</h3>
-
-        {productDetails.steps.map((step, idx) => (
-          <div className="step-item" key={idx}>
-            <div className="step-number">{idx + 1}</div>
-            <div className="step-content">
-              <div className="form-row">
-                <div className="form-group col-5">
-                  <label className="form-label">Step Title</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={step.title}
-                    onChange={(e) => handleStepChange(idx, 'title', e.target.value)}
-                    placeholder="Step title"
-                  />
-                </div>
-                <div className="form-group col-6">
-                  <label className="form-label">Step Description</label>
-                  <textarea
-                    className="form-control"
-                    value={step.description}
-                    onChange={(e) => handleStepChange(idx, 'description', e.target.value)}
-                    placeholder="Step description"
-                  />
-                </div>
-                <div className="form-group col-1">
-                  <button
-                    type="button"
-                    className="btn btn-icon btn-danger"
-                    onClick={() => removeStep(idx)}
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          className="btn btn-outline-primary btn-sm"
-          onClick={addNewStep}
-        >
-          Add Step
-        </button>
-      </section>
- */}
 
       {/* Additional Media Section */}
       <section className="form-section">
