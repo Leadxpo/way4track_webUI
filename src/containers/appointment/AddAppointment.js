@@ -48,6 +48,7 @@ const AddAppointment = () => {
       [name]: value,
     }));
   };
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
 
@@ -56,6 +57,25 @@ const AddAppointment = () => {
 
     setSelectedFiles(files);
   };
+
+  const handleClientNumberChange = (e) => {
+    const selectedNumber = Number(e.target.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      clientPhoneNumber: selectedNumber,
+    }));
+
+    const selectedClient = client.find((client) => String(client.phoneNumber) === String(selectedNumber));
+    if (!selectedClient) return;
+    setFormData((prevData) => ({
+      ...prevData,
+      clientId: selectedClient.id,
+      clientName: selectedClient.name || '',
+      clientPhoneNumber: selectedNumber || '',
+      clientAddress: selectedClient.address || '',
+    }));
+  };
+
 
   const handleReplaceImage = (index) => {
     const fileInput = document.createElement('input');
@@ -386,7 +406,20 @@ const AddAppointment = () => {
           </select>
         </div>
       )}
-
+      <div  className="flex flex-col">
+        <label className="font-semibold mb-2">
+          Client Number
+        </label>
+        <input
+          type="text"
+          name='clientPhoneNumber'
+          maxLength={10}
+          value={formData.clientPhoneNumber}
+          onChange={handleClientNumberChange}
+          placeholder="Client Number"
+          className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
+        />
+      </div>
       {/* Client Details */}
       {client.length > 0 && (
         <div className="flex flex-col">

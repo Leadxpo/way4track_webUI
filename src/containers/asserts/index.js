@@ -90,7 +90,6 @@ const Asserts = () => {
 
           setProducts(response.data || []);
           setFilterProducts(response.data || []);
-          console.log(response.data, 'assets');
         } else {
           setProducts([]);
         }
@@ -123,7 +122,6 @@ const Asserts = () => {
   }, []);
 
   const handleMoreDetails = (assetDetails) => {
-    console.log(assetDetails, 'Navigating with this asset data');
     navigate('/asset-details', { state: { assetDetails } });
   };
 
@@ -155,25 +153,29 @@ const Asserts = () => {
     await getAssertDataByDate();
   };
 
-  const handleAssertSearch = () => {
+  const handleAssertSearch = useCallback(() => {
+    const searchTermLower = searchTerm?.toLowerCase() || '';
+    const assertTypeLower = assertType?.toLowerCase() || '';
+  console.log("rrr::",assertTypeLower)
     const filtered = products.filter((product) => {
-      const searchTermLower = searchTerm.toLowerCase();
-      const assertTypeLower = assertType;
+      const nameMatch =
+        !searchTerm ||
+        product?.assertsName?.toLowerCase().includes(searchTermLower) ||
+        String(product?.id).includes(searchTerm);
+        const typeMatch =
+        !assertType ||
+        product?.assetType?.toLowerCase().includes(assertTypeLower);
+        const branchMatch =
+        !selectedBranch ||
+        (product?.branchId?.branchName &&
+          String(product.branchId.branchName) === selectedBranch);
   
-      return (
-        (!searchTerm || product?.assertsName?.toLowerCase().includes(searchTermLower) || 
-         String(product?.id).includes(searchTerm)) && 
-        
-        (!assertType || product?.assetType?.toLowerCase().includes(assertTypeLower) || 
-         String(product?.assetType).toLowerCase().includes(assertTypeLower)) &&
-        
-        (!selectedBranch || product?.branchId?.branchName && String(product?.branchId?.branchName) === selectedBranch)
-      );
+      return nameMatch && typeMatch && branchMatch;
     });
-
+  
     setFilterProducts(filtered);
-  };
-
+  }, [searchTerm, assertType, selectedBranch, products]);
+  
   const truncateString = (str) =>
     str.length <= 80 ? str : str.slice(0, 80) + '...';
   return (

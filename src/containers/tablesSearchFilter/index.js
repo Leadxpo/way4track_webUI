@@ -88,6 +88,7 @@ const TableWithSearchFilter = ({
           state: item.state,
           status: item.status,
           GSTNumber: item.gstNumber,
+          createdDate: item.createdDate,
         }));
 
         setFilteredData(rrr)

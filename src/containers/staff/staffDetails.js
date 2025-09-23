@@ -651,7 +651,7 @@ const StaffDetails = () => {
                     onClick={async () => {
                       const  payload={
                         id: formData.personnelDetails.id,
-                        terminationDate: resignationData.resignationDate,
+                        resignationDate: resignationData.resignationDate,
                         finalSettlementAmt:  resignationData.finalSettlementAmt,
                         staffStatus: "INACTIVE"
                     }

@@ -40,8 +40,6 @@ const RequestDetails = () => {
       const response = await ApiService.post('/staff/getStaffNamesDropDown');
       if (response.status) {
         setStaffData(response.data);
-
-        console.log("fetchStaffData fetchStaffData", response.data)
       } else {
         console.error('Error fetching staff data');
       }
@@ -66,6 +64,7 @@ const RequestDetails = () => {
       console.error('Error fetching sub dealers', e);
     }
   };
+
   const fetchBranches = async () => {
     try {
       const response = await ApiService.post(
@@ -148,7 +147,6 @@ const RequestDetails = () => {
 
   const fetchRequestRaiseById = async () => {
     if (!requestData.requestId) return;
-
     try {
       const response = await ApiService.post('/requests/getRequestDetails', {
         id: requestData.requestId,
@@ -188,7 +186,6 @@ const RequestDetails = () => {
       if (formData.photo && formData.photo.length > 0) {
         await Promise.all(
           formData.photo?.map(async (item) => {
-            console.log("rrr", item)
             const response = await fetch(item);
             const blob = await response.blob();
             const filename = item.split('/').pop();
@@ -405,7 +402,7 @@ const RequestDetails = () => {
           </div>
         </div>
         {/* Address */}
-        {String(formData.requestFrom) === String(myId) &&
+        {String(formData.requestTo) === String(myId) &&
           (<>
             <div>
               <div className="flex flex-col">

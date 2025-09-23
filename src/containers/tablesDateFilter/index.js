@@ -11,6 +11,7 @@ import ApiService from '../../services/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import DateConvert from '../../components/dateConvert';
+import moment from 'moment';
 
 const TableWithDateFilter = ({
   type,
@@ -31,6 +32,7 @@ const TableWithDateFilter = ({
   const [pageTitle, setPageTitle] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [requestType, setRequestType] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -94,13 +96,27 @@ const TableWithDateFilter = ({
   const handleSearchVendor = () => {
     const searchQuery = searchVendor.toLowerCase().trim();
 
-      const filteredDatas = filteredData.filter((item) =>
-        Object.values(item).some((value) =>
-          String(value).toLowerCase().includes(searchQuery)
-        )
+    const from = dateFrom ? moment(dateFrom, 'YYYY-MM-DD') : null;
+    const to = dateTo ? moment(dateTo, 'YYYY-MM-DD').endOf('day') : null;
+
+    const filteredDatas = filteredData.filter((item) => {
+      const itemValuesMatch = Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(searchQuery)
       );
-      setFilteredData(filteredDatas);
-      setIsSearch(true)
+
+      const itemDate = item.createdAt
+        ? moment(item.createdAt, 'DD/MM/YYYY')
+        : null;
+
+      const isWithinDateRange =
+        (!from || itemDate.isSameOrAfter(from)) &&
+        (!to || itemDate.isSameOrBefore(to));
+
+      return itemValuesMatch && isWithinDateRange;
+    });
+
+    setFilteredData(filteredDatas);
+    setIsSearch(true);
   };
 
   const parseEstimateDate = (rawDateStr) => {
@@ -157,7 +173,14 @@ const TableWithDateFilter = ({
       });
 
       if (response.status) {
-        setFilteredData(response.data); // Assuming the structure is as expected
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          createdAt: item.createdAt
+            ? moment(item.createdAt).format('DD/MM/YYYY')
+            : '', // fallback if createdAt is missing
+        }));
+
+        setFilteredData(formattedData);
       } else {
         alert(response.data.message || 'Failed to fetch vendor details.');
       }
@@ -255,6 +278,16 @@ const TableWithDateFilter = ({
       if (requestData.branchName) {
         requestBody.branchName = requestData.branchName;
       }
+      console.log("requestType::", requestType)
+      if (dateFrom) {
+        requestBody.fromDate = dateFrom;
+      }
+      if (requestType) {
+        requestBody.requestType = requestType;
+      }
+      if (dateTo) {
+        requestBody.toDate = dateTo;
+      }
 
       const response = await ApiService.post(
         '/requests/getRequestsBySearch',
@@ -270,17 +303,12 @@ const TableWithDateFilter = ({
           branchName: item.branchName,
           requestType: item.requestType,
           RequestFrom: item.RequestFrom,
+          RequestDate: DateConvert(item.requestDate),
           status: item.status,
         }));
 
       setRequestList(cleanedData);
       setFilteredData(cleanedData);
-      // } else {
-      //   console.warn(
-      //     'Request failed:',
-      //     response?.data?.message || 'No data found'
-      //   );
-      // }
     } catch (error) {
       console.error('Error fetching request details:', error);
     }
@@ -288,6 +316,7 @@ const TableWithDateFilter = ({
     requestData.branchName,
     initialAuthState?.companyCode,
     initialAuthState?.unitCode,
+    dateFrom, dateTo,requestType
   ]);
 
   const getPaymentsData = useCallback(async () => {
@@ -579,6 +608,28 @@ const TableWithDateFilter = ({
               className="h-12 block w-full border-gray-300 rounded-md shadow-sm border px-1"
             />
           </div>
+          <div className="flex-grow mr-2">
+            <input
+              type="date"
+              id="dateFrom"
+              value={dateFrom}
+              placeholder="From"
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              style={{ paddingLeft: '8px' }}
+            />
+          </div>
+          <div className="flex-grow mx-2">
+            <input
+              type="date"
+              id="dateTo"
+              value={dateTo}
+              placeholder="To"
+              onChange={(e) => setDateTo(e.target.value)}
+              className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              style={{ paddingLeft: '8px' }}
+            />
+          </div>
           <button
             onClick={handleSearchVendor}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"
@@ -639,7 +690,7 @@ const TableWithDateFilter = ({
       {type === 'sub_dealers' || type === 'invoice' ? (
         ''
       ) : (
-        <div className="flex mb-4">
+        <div className="flex flex-wrap gap-4 mb-4">
           {showDateFilters && (
             <div className="flex-grow mr-2">
               <input
@@ -647,7 +698,11 @@ const TableWithDateFilter = ({
                 id="dateFrom"
                 value={dateFrom}
                 placeholder="From"
-                onChange={(e) => setDateFrom(e.target.value)}
+                onChange={(e) => {
+                  setDateFrom(e.target.value)
+                  console.log("rrr:::", dateFrom)
+
+                }}
                 className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
                 style={{ paddingLeft: '8px' }}
               />
@@ -680,7 +735,9 @@ const TableWithDateFilter = ({
                   </option>
                 ))}
               </select>
-            } {showBranchFilter &&
+            }
+
+            {showBranchFilter &&
               <div className="flex items-center space-x-2 mb-4">
                 <label className="text-gray-700 font-bold whitespace-nowrap">
                   Search by Branch :
@@ -700,6 +757,25 @@ const TableWithDateFilter = ({
               </div>
             }
           </div>
+          {type === 'requests' &&
+            <div className="flex items-center space-x-2 mb-4 mx-4" >
+
+              <select
+                value={requestType}
+                onChange={(e) => {
+                  setRequestType(e.target.value)
+                }}
+                className="h-12 block w-full border-gray-300 rounded-md shadow-sm border border-gray-500 px-1"
+              >
+                <option value="">request Type</option>
+                <option value="money"> Money </option>
+                <option value="assets"> Assert </option>
+                <option value="products"> Products </option>
+                <option value="personal"> Personal </option>
+                <option value="leaveRequest"> LeaveRequest </option>
+              </select>
+            </div>
+          }
           {(showBranchFilter || showDateFilters || showStatusFilter) && <button
             onClick={handleSearch}
             className="h-12 px-6 bg-green-700 text-white rounded-md flex items-center"

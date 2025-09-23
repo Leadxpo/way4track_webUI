@@ -161,7 +161,7 @@ const ClientProfile = () => {
                   <td className="py-2 px-4 text-center">{purchase.technicianNumber}</td>
                   <td className="py-2 px-4 text-center">{purchase.pt_type}</td>
                   <td className="py-2 px-4 text-center">{purchase.ve_vehicle_number}</td>
-                  <td className="py-2 px-4 text-center">{purchase.paidAmount}</td>
+                  <td className="py-2 px-4 text-center">{purchase.totalAmount || 0}</td>
                   <td className="py-2 px-4 text-center">{purchase.paymentStatus}</td>
                   <td className="py-2 px-4 text-center">
                     <button

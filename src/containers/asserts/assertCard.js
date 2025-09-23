@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import hasPermission from '../../common/permission'
 
 const AssertCard = ({ asset,permission }) => {
-  console.log(asset,"assetCard")
   const navigate = useNavigate();
   return (
     <div

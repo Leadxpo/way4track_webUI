@@ -5,6 +5,7 @@ import { initialAuthState } from '../../services/ApiService';
 import { formatString } from '../../common/commonUtils';
 import { useLocation, useNavigate } from 'react-router';
 import { getPermissions } from '../../common/commonUtils';
+import * as XLSX from "xlsx";
 
 const Payroll = () => {
   const [activeTab, setActiveTab] = useState('All');
@@ -17,8 +18,14 @@ const Payroll = () => {
     new Date().toISOString().split('T')[0]
   );
   const [permissions, setPermissions] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRangePayroll, setIsRangePayroll] = useState(false);
+  const [modalFromDate, setModalFromDate] = useState('');
+  const [modalToDate, setModalToDate] = useState('');
+  const [modalStaffId, setModalStaffId] = useState('');
+  const [rangePayrollData, setRangePayrollData] = useState([]);
   useEffect(() => {
-    const rrr=()=>{
+    const rrr = () => {
       const perms = getPermissions('attendance');
       setPermissions(perms);
     }
@@ -66,6 +73,31 @@ const Payroll = () => {
       setPayrollData([]);
     }
   };
+  const handlePreview = async () => {
+    if (!modalFromDate || !modalToDate || !modalStaffId) {
+      alert('Please fill all fields');
+      return;
+    }
+    try {
+      const response = await ApiService.post('/payroll/getPayDateRangeRoll',
+        {
+          staffId: modalStaffId,
+          fromDate: modalFromDate,
+          toDate: modalToDate,
+        });
+
+      setRangePayrollData(response.data || []);
+      if (response.data) {
+        console.log("rrr::",rangePayrollData.length)
+        setIsRangePayroll(true);
+      }
+      setIsModalOpen(false);
+
+    } catch (error) {
+      console.error('Error fetching payroll data:', error);
+    }
+  };
+
 
   useEffect(() => {
     fetchPayrollData(selectedBranch);
@@ -112,8 +144,17 @@ const Payroll = () => {
     // fetchPayrollData(branch);
   };
 
-  console.log(activeTab, 'active Tab');
-
+  const handleExcelDownload = () => {
+    if (rangePayrollData.length === 0) return;
+  
+    const ws = XLSX.utils.json_to_sheet(rangePayrollData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'PayrollData');
+  
+    XLSX.writeFile(wb, `Staff_Payroll_${modalStaffId}_${modalFromDate}_to_${modalToDate}.xlsx`);
+    setIsRangePayroll(false)
+  };
+  
   // Handle row edit
   const handleChangePayroll = (row) => {
     setSelectedRow(row);
@@ -125,6 +166,7 @@ const Payroll = () => {
     setIsPopupOpen(false);
     setSelectedRow(null);
   };
+
   const handleDownloadClick = () => {
     fetchPayrollData(selectedBranch, selectedDate);
   };
@@ -202,8 +244,8 @@ const Payroll = () => {
             key={branch.branchName} // Use branchName as the key
             onClick={() => handleTabClick(branch.branchName)} // Set active tab and branch
             className={`pb-2 text-sm font-semibold ${activeTab === branch.branchName
-                ? 'border-b-2 border-black text-black'
-                : 'text-gray-500'
+              ? 'border-b-2 border-black text-black'
+              : 'text-gray-500'
               }`}
           >
             {branch.branchName}
@@ -237,8 +279,13 @@ const Payroll = () => {
         >
           Search
         </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Staff PayRolls
+        </button>
       </div>
-
       {/* Table */}
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 whitespace-nowrap scrollbar-hide">
@@ -312,6 +359,94 @@ const Payroll = () => {
           </table>
         </div>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Fetch Staff Payroll</h2>
+
+            <input
+              type="date"
+              className="w-full mb-2 p-2 border rounded"
+              value={modalFromDate}
+              onChange={(e) => setModalFromDate(e.target.value)}
+              placeholder="From Date"
+            />
+            <input
+              type="date"
+              className="w-full mb-2 p-2 border rounded"
+              value={modalToDate}
+              onChange={(e) => setModalToDate(e.target.value)}
+              placeholder="To Date"
+            />
+            <input
+              type="text"
+              className="w-full mb-4 p-2 border rounded"
+              value={modalStaffId}
+              onChange={(e) => setModalStaffId(e.target.value)}
+              placeholder="Staff ID"
+            />
+
+            <div className="flex justify-between">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handlePreview}
+              >
+                Preview
+              </button>
+              <button
+                className="bg-gray-400 text-white px-4 py-2 rounded"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isRangePayroll && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-[90%]" style={{overflow:'scroll'}}>
+        <h3 className="text-lg font-bold mb-2">Staff Payroll Data</h3>
+            <table className="w-full border border-collapse border-gray-300 text-sm">
+              <thead>
+                <tr className="bg-gray-200">
+                  {Object.keys(rangePayrollData[0]).map((key) => (
+                    <th key={key} className="border px-4 py-2 capitalize">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rangePayrollData.map((item, idx) => (
+                  <tr key={idx} className="border">
+                    {Object.keys(item).map((k, i) => (
+                      <td key={i} className="border px-4 py-2">
+                        {item[k]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <button
+              className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+              onClick={handleExcelDownload}
+            >
+              Download Excel
+            </button>
+            <button
+              className="mt-4 bg-green-600 text-white px-4 py-2 mx-4 rounded"
+              onClick={()=>setIsRangePayroll(false)}
+            >
+              cancel
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

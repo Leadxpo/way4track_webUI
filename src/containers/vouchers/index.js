@@ -185,6 +185,7 @@ const Vouchers = () => {
           <thead>
             <tr className="bg-gray-100 text-left">
               <th className="p-3">Voucher ID</th>
+              <th className="p-3">Party Name</th>
               <th className="p-3">Branch</th>
               <th className="p-3">Voucher Type</th>
               <th className="p-3">Voucher ID</th>
@@ -201,6 +202,7 @@ const Vouchers = () => {
             {filteredData?.map((voucher, index) => (
               <tr key={index} className={index % 2 === 0 ? 'bg-gray-200' : ''}>
                 <td className="p-3">{voucher.voucherId}</td>
+                <td className="p-3">{voucher.ledgerName!=="Unknown"?voucher.ledgerName:"N/A"}</td>
                 <td className="p-3">{voucher.branchName}</td>
                 <td className="p-3">{voucher.voucherType}</td>
                 <td className="p-3 ">{voucher.invoiceId}</td>

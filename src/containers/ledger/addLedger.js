@@ -93,7 +93,7 @@ const CustomerForm = () => {
 
   useEffect(() => {
     fetchGroups();
-  }, [groupData]);
+  }, []);
 
   const handleGroupChange = (e) => {
     const selectedId = Number(e.target.value);

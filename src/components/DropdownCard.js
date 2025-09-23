@@ -23,7 +23,6 @@ const DropdownCard = ({
     bgColor === 'purple' ? { backgroundColor: '#A36AFF' } : 
     bgColor === 'pink' ? { backgroundColor: '#FFC0CB' } : 
     {};
-  console.log(branches);
   return (
     <>
     {/* Internal styles using <style> tag */}

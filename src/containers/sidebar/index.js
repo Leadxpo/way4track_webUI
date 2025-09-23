@@ -169,3 +169,24 @@ const Sidebar = ({ role, handleLogoutFlag }) => {
 };
 
 export default Sidebar;
+
+
+// const groupByBranch = (data) => {
+//   const grouped = {};
+
+//   data.forEach((item) => {
+//     const { branchId, branchName, productName, productCount } = item;
+
+//     if (!grouped[branchId]) {
+//       grouped[branchId] = {
+//         branchId,
+//         branchName,
+//         products: [],
+//       };
+//     }
+
+//     grouped[branchId].products.push({ productName, productCount });
+//   });
+
+//   return Object.values(grouped);
+// };

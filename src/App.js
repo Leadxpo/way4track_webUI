@@ -20,7 +20,6 @@ const App = () => {
 
   const handleLoginFlag = () => {
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('role', 'CEO');
     setRole(localStorage.getItem('role'));
     switch (localStorage.getItem('role')) {
       case 'CEO':

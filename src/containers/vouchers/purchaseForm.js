@@ -842,7 +842,7 @@ const PurchaseForm = () => {
                   Amount: ₹
                   {(
                     totalAmount *
-                    (1 + parseFloat(formData[tax.name] || 0) / 100)
+                    (parseFloat(formData[tax.name] || 0) / 100)
                   ).toFixed(2)}
                 </span>
               </div>

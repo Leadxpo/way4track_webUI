@@ -92,12 +92,11 @@ const Login = ({ handleLoginFlag }) => {
       };
 
       const response = await ApiService.post('/login/LoginDetails', payload);
-      console.log("Login response:", response);
-
-      if (response.data.status) {
+      console.log("Login response:", response.data.data.status);
+const rrr=response.data.data
+      if (rrr.status==='ACTIVE') {
         localStorage.setItem('userId', userId);
-        localStorage.setItem('role', role);
-        localStorage.setItem('password', password);
+        localStorage.setItem('role', rrr.designation);
         localStorage.setItem('userProfile', JSON.stringify(response.data));
 
         const isSubDealer = role === 'Sub Dealer';

@@ -33,7 +33,7 @@ const LedgerDetails = () => {
           setLedgerData(ledgerEntries);
 
           const rrr = ledgerEntries.vouchers?.filter(
-            (item) => item.voucherType !== "CONTRA" && item.voucherType !== "PURCHASE"
+            (item) => item.voucherType !== "CONTRA" 
           );
           setLedgerVoucherData(rrr)
         }

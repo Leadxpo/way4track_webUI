@@ -34,7 +34,8 @@ function Notifications() {
             branchName: branch.branchName,
           })),
         ]);
-        setNotifications(res.data.notifications || []);
+        const unreadNotifications = res.data.notifications.filter(item => item.isRead === 0);
+        setNotifications(unreadNotifications || []);
       } else {
         setBranches([{ branchName: 'All' }]);
         setNotifications([]);

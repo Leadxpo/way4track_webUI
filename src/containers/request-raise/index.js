@@ -339,7 +339,7 @@ const RequestRaise = () => {
             onDetails={handleDetails}
             showStatusFilter={true} 
             showBranchFilter={false}
-            showDateFilters={false}
+            showDateFilters={true}
             showCreateBtn={false}
           />
         </div>
