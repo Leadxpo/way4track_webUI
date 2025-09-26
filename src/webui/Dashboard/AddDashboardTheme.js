@@ -43,11 +43,7 @@ const AddDashboardTheme = () => {
         setList([{ photo: null, preview: null }]);
         break;
       case 'Session-2':
-        setList(
-          new Array(5)
-            .fill(null)
-            .map(() => ({ name: '', desc: '', link: '', photo: null, preview: null }))
-        );
+        setList([{ name: '', desc: '', link: '', photo: null, preview: null }]);
         break;
       case 'Session-3':
         setList(
@@ -362,9 +358,7 @@ const AddDashboardTheme = () => {
                               )}
 
                             {(formData.theme === 'Session-1' ||
-                              ['Session-5', 'Session-6'].includes(
-                                formData.theme
-                              )) && (
+                              ['Session-2', 'Session-5', 'Session-6'].includes(formData.theme)) && (
                                 <button
                                   type="button"
                                   className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
@@ -381,8 +375,10 @@ const AddDashboardTheme = () => {
                         ))}
                       </div>
 
-                      {(formData.theme === 'Session-1' ||
-                        ['Session-5', 'Session-6'].includes(formData.theme)) && (
+                      {(
+                        formData.theme === 'Session-1' ||
+                        ['Session-2'].includes(formData.theme)
+                      ) && (
                           <button
                             type="button"
                             className="w-full py-2 px-4 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-50 flex items-center justify-center"
@@ -390,10 +386,8 @@ const AddDashboardTheme = () => {
                               setList([
                                 ...list,
                                 formData.theme === 'Session-1'
-                                  ? { photo: null, preview: null } // only image for Session-1
-                                  : formData.theme === 'Session-4'
-                                    ? { desc: '', photo: null, preview: null }
-                                    : { name: '', desc: '' },
+                                  ? { photo: null, preview: null }
+                                  : { name: '', desc: '', link: '', photo: null, preview: null }
                               ])
                             }
                           >

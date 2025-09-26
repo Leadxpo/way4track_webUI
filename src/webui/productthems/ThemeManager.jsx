@@ -19,7 +19,7 @@ function ThemeManager() {
   const [currentStep, setCurrentStep] = useState(0);
   const [imagePreviews, setImagePreviews] = useState({});
   const [step4Items, setStep4Items] = useState([
-    { webProductName: '', photo: null, model: '' },
+    { webProductName: '', photos: [], model: '' },
   ]);
   const [step5Items, setStep5Items] = useState([
     { name: '', shortDescription: '', points: [], photos: null },
@@ -234,7 +234,12 @@ function ThemeManager() {
         step4Data.append('unitCode', item.unitCode || 'WAY4');
         step4Data.append('amount', item.amount?.toString() || '0');
 
-        if (item.photo) step4Data.append('photo', item.photo, item.photo.name);
+        if (item.photos && item.photos.length > 0) {
+          item.photos.forEach((photo) => {
+            step4Data.append("photos", photo, photo.name);
+          });
+        }
+
         if (item.model) step4Data.append('model', item.model);
         if (item.name) step4Data.append('name', item.name);
         if (typeof item.description === 'string')
@@ -253,6 +258,17 @@ function ThemeManager() {
           item.subscriptionYearlyAmt?.toString() || '0'
         );
         step4Data.append('discount', item.discount?.toString() || '0');
+
+        if (item.applications && item.applications.length > 0) {
+          item.applications.forEach((app, index) => {
+            step4Data.append(`applications[${index}][name]`, app.name || '');
+            step4Data.append(`applications[${index}][desc]`, app.desc || '');
+            step4Data.append(`applications[${index}][link]`, app.link || '');
+            if (app.photo) {
+              step4Data.append('applicationPhotos', app.photo, app.photo.name);
+            }
+          });
+        }
 
         return ApiService.post('device/handleDeviceDetails', step4Data);
       });
