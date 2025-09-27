@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import axios from "axios";
 import 'react-calendar/dist/Calendar.css'; // Required for calendar base styling
@@ -19,26 +19,40 @@ const MyAttendance = () => {
     const [staffAttendance, setStaffAttendance] = useState([]);
     const [selectedDate, setSelectedDate] = useState(null);
     const [attendancePercentage, setAttendancePercentage] = useState(0);
-    const timeFormate = (decimalTime) => {
+
+    const timeFormate = useCallback((decimalTime) => {
         // Check if it's a valid decimal number
         const num = parseFloat(decimalTime);
-      
+
         // Only format if it's a number AND a valid fractional day (less than 1)
         if (!isNaN(num) && num > 0 && num < 1) {
-          const totalSeconds = Math.round(num * 24 * 60 * 60);
-          const hours = Math.floor(totalSeconds / 3600);
-          const minutes = Math.floor((totalSeconds % 3600) / 60);
-          const seconds = totalSeconds % 60;
-      
-          return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const totalSeconds = Math.round(num * 24 * 60 * 60);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
-      
+
         // Not a valid decimal time – return original input
         return decimalTime;
-      };
-        const fetchData = async () => {
+    }, []);
+
+    const formatDateToYMD = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
+    
+
+    const fetchData = async () => {
         try {
             const staffId = localStorage.getItem("userId");
+            if (!staffId) {
+                console.warn("User ID not found in localStorage");
+                return;
+            }
 
             const payload = {
                 companyCode: "WAY4TRACK",
@@ -65,12 +79,15 @@ const MyAttendance = () => {
                     marks[entry.day] = entry;
                 }
             });
+            console.log("Marked dates:", Object.keys(marks));
 
             setMarkedDates(marks);
 
             const totalDays = data.length;
+            const isPresent = (status) => ["P", "Present"].includes(status);
+
             const presentDays = data.filter(
-                (record) => record.status === "P" || record.status === "Present"
+                (record) => isPresent(record.status)
             ).length;
 
             setAttendancePercentage(totalDays > 0 ? (presentDays / totalDays) * 100 : 0);
@@ -94,14 +111,12 @@ const MyAttendance = () => {
 
     const handleDayClick = (date) => {
         const today = new Date();
-        const selectedDate = new Date(date);
+        const clickedDate = new Date(date);
         const selectedAttendance = getTodayDate(date); // Convert Date to 'YYYY-MM-DD'
         setAttendenceDate(selectedAttendance);
 
-        if (selectedDate <= today) {
-            const attendanceRecord = staffAttendance?.find((item) => {
-                return(item.day === selectedAttendance)});
-            console.log("inTime:", attendanceRecord);
+        if (clickedDate <= today) {
+            const attendanceRecord = staffAttendance.find(item => item.day === selectedAttendance);
             setSelectedDate(attendanceRecord || null);
         }
     };
@@ -111,13 +126,27 @@ const MyAttendance = () => {
             <h3 style={styles.heading}>Attendance Calendar</h3>
             <Calendar
                 onClickDay={(date) => handleDayClick(date)}
+                calendarType="iso8601"
                 onActiveStartDateChange={({ activeStartDate }) => {
                     const newDate = getTodayDate(activeStartDate);
                     setAttendenceDate(newDate);
                 }}
-                
-                tileClassName={tileClassName}
-            />
+
+                tileContent={({ date, view }) => {
+                    const dateStr = formatDateToYMD(date); // custom function below
+                    const record = markedDates[dateStr];
+                    if (view === "month" && record) {
+                        
+                        if (record.status === "P" || record.status === "Present") {
+                            console.log("rrr::",record.day)
+                            console.log("status::",record.status)
+                            return <div style={{ fontSize: "1rem", color: "green" }}>✅</div>;
+                        } else {
+                            return <div style={{ fontSize: "1rem", color: "red" }}>❌</div>;
+                        }
+                    }
+                    return null;
+                }} />
 
 
             <p style={styles.percentageText}>Attendance: {attendancePercentage.toFixed(2)}%</p>

@@ -67,8 +67,14 @@ const AddSubDealer = () => {
       }
     });
 
-    console.log([...payload.entries()], '✅ Corrected Payload Before Sending');
-
+    const requiredFields = ["gstNumber", "aadharNumber",'startingDate'];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        setErrorMessage(`${field} is required`);
+        return;
+      }
+    }
+  
     try {
 
       const response = await ApiService.post('/subdealer/handleSubDealerDetails', payload, {
@@ -145,57 +151,66 @@ const AddSubDealer = () => {
               label: 'Dealer Name',
               name: 'name',
               type: 'text',
+              required:false,
               placeholder: 'Enter Name',
             },
             {
               label: 'Dealer Number',
               name: 'subDealerPhoneNumber',
               type: 'text',
+              required:false,
               placeholder: 'Enter Number',
             },
             {
               label: 'Alternate Mobile Number',
               name: 'alternatePhoneNumber',
               type: 'text',
+              required:false,
               placeholder: 'Enter Alternate Mobile Number',
             },
             {
               label: 'GST Number',
               name: 'gstNumber',
               type: 'text',
+              required:true,
               placeholder: 'Enter GST Number',
             },
             {
               label: 'Starting Date',
               name: 'startingDate',
               type: 'date',
+              required:false,
               placeholder: '',
             },
             {
               label: 'Email ID',
               name: 'emailId',
               type: 'email',
+              required:false,
               placeholder: 'Enter Email ID',
             },
             {
               label: 'Password',
               name: 'password',
               type: 'text',
+              required:false,
               placeholder: 'Enter Password',
             },
             {
               label: 'Aadhar Number',
               name: 'aadharNumber',
               type: 'text',
+              required:true,
               placeholder: 'Enter Aadhar Number',
             },
             {
               label: 'Address',
               name: 'address',
               type: 'text',
+              required:false,
               placeholder: 'Enter Address',
             },
-          ].map(({ label, name, type, placeholder }) => (
+          ].map(({ label, name, type, placeholder,required }) => (
             <div key={name}>
               <p className="font-semibold mb-1">{label}</p>
               <input
@@ -204,6 +219,7 @@ const AddSubDealer = () => {
                 value={formData[name]}
                 onChange={handleInputChange}
                 placeholder={placeholder}
+                required={required}
                 className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
               />
             </div>

@@ -439,7 +439,7 @@ const CustomHome = () => {
               </div>
 
               {/* Education Details Section */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <h4 className="text-lg font-semibold mb-2">Education Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
                   <div>
@@ -493,36 +493,36 @@ const CustomHome = () => {
                     )}
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Bank Details Section */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <h4 className="text-lg font-semibold mb-2">Bank Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
                   <p>
                     <strong>Bank Name:</strong> {selectedStaff.bankName}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Account Number:</strong>{' '}
                     {selectedStaff.accountNumber ?? 'N/A'}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Account Type:</strong> {selectedStaff.accountType}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Branch:</strong> {selectedStaff.accountBranch}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>IFSC Code:</strong>{' '}
                     {selectedStaff.ifscCode ?? 'N/A'}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                 </div>
-              </div>
+              </div> */}
 
               {/* Employer Details Section */}
               <div className="mb-6">
@@ -531,30 +531,30 @@ const CustomHome = () => {
                   <p>
                     <strong>Department:</strong> {selectedStaff.department}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Branch:</strong> {selectedStaff.branchName}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Joining Date:</strong> {selectedStaff.joiningDate}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
-                  <p>
+                 
+                  {/* <p>
                     <strong>Resignation Date:</strong>{' '}
                     {selectedStaff.resignationDate ?? 'N/A'}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                   <p>
                     <strong>Final Settlement Date:</strong>{' '}
                     {selectedStaff.finalSettlementDate ?? 'N/A'}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                  */}
                   <p>
                     <strong>Salary Date:</strong>{' '}
                     {selectedStaff.salaryDate ?? 'N/A'}
                   </p>{' '}
-                  {/* Changed from selectedVehicle */}
+                 
                 </div>
               </div>
 

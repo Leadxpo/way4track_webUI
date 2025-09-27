@@ -194,17 +194,18 @@ const AddDispatch = () => {
             </div>
 
             <div className="flex flex-col">
-                <label className="font-semibold mb-2">Receiver Name:</label>
+                <label className="font-semibold mb-2">Receiver ID:</label>
                 <input
                     type="text"
                     name="receiverName"
+                    placeholder='861XXXX'
                     value={formData.receiverName}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
             </div>
 
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
                 <label className="font-semibold mb-2">Dispatcher Name:</label>
                 <input
                     type="text"
@@ -213,7 +214,7 @@ const AddDispatch = () => {
                     onChange={handleChange}
                     className="w-full p-3 border rounded-md bg-gray-200 focus:outline-none"
                 />
-            </div>
+            </div> */}
 
             <div className="flex flex-col">
                 <label className="font-semibold mb-2">Tracking URL:</label>

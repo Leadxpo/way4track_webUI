@@ -9,6 +9,9 @@ const DayBook = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   ); // Default: Today's date
+  const [toDate, setToDate] = useState(
+    new Date().toISOString().split('T')[0]
+  ); // Default: Today's date
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,12 +19,12 @@ const DayBook = () => {
   const dayBook = location.state?.DayBook || {};
 
   useEffect(() => {
-    const getDayBookDataForReport = async () => {
-      console.log("rrr : ",selectedDate)
+    const getDayBookData = async () => {
       try {
         // const response = await ApiService.post('/dashboards/getDayBookData', {
         const response = await ApiService.post('/dashboards/getDayBookDataForReport', {
-          date: selectedDate,
+          fromDate:selectedDate,
+          toDate:toDate,
           branchName: dayBook?.branchName,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
@@ -38,8 +41,8 @@ const DayBook = () => {
       }
     };
 
-    getDayBookDataForReport();
-  }, [selectedDate]);
+    getDayBookData();
+  }, [selectedDate,toDate]);
 
   const handleRowClick = (index) => {
     setSelectedRow(index);
@@ -47,15 +50,16 @@ const DayBook = () => {
 
   const exportDayBookExcel = async () => {
     try {
-      const response = await ApiService.post(
-        '/dashboards/getDayBookDataForReport',
-        {
-          selectedDate,
-          companyCode: initialAuthState.companyCode,
-          unitCode: initialAuthState.unitCode,
-        }
-      );
-      const data = response.data;
+      // const response = await ApiService.post(
+      //   '/dashboards/getDayBookDataForReport',
+      //   {
+      //     fromDate:selectedDate,
+      //     toDate:toDate,
+      //     companyCode: initialAuthState.companyCode,
+      //     unitCode: initialAuthState.unitCode,
+      //   }
+      // );
+      // const data = response.data;
 
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet();
@@ -70,7 +74,7 @@ const DayBook = () => {
         { header: 'Debit Amount', key: 'debitAmount', width: 20 },
         { header: 'Balance Amount', key: 'balanceAmount', width: 20 },
       ];
-      data.forEach((row) => {
+      filterData.forEach((row) => {
         worksheet.addRow(row);
       });
 
@@ -89,21 +93,29 @@ const DayBook = () => {
   };
 
   const handleDownloadClick = async () => {
-    if (filterData.length === 0) {
       return await exportDayBookExcel();
-    }
-    navigate('/download', { state: { filterData } });
+    // navigate('/download', { state: { filterData } });
   };
 
   return (
     <div className="p-8 space-y-4">
       <h1 className="text-2xl font-bold">Day Book</h1>
       <div className="flex items-center space-x-4">
+      <label>From Date</label>
         <input
           type="date"
           value={selectedDate}
+          placeholder='From Date'
           onChange={(e) => setSelectedDate(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-1 py-2"
+        />
+        <label style={{marginLeft:50}}>To Date</label>
+        <input
+          type="date"
+          value={toDate}
+          placeholder='To Date'
+          onChange={(e) => setToDate(e.target.value)}
+          className="border rounded px-1 py-2"
         />
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-lg"

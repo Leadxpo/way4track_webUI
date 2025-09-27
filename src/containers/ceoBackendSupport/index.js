@@ -350,24 +350,24 @@ const CeoBackendSupportHome = () => {
   const filterlist = () => {
     return workRecords.filter((card) => {
       const statusOk = !selectedCardId || card.workStatus === selectedCardId;
-  
+
       const selectedBranch = selectedLocation;
       const branchOk =
         !selectedBranch ||
         (card.branchName ?? "").toLowerCase().trim() ===
-          selectedBranch.toLowerCase().trim();
-  
+        selectedBranch.toLowerCase().trim();
+
       const q = (searchPhone ?? "").toLowerCase().trim();
       const searchOk =
         !q ||
         (String(card.phoneNumber ?? "").toLowerCase().includes(q) ||
           String(card.vehicleNumber ?? "").toLowerCase().includes(q));
-  
+
       return statusOk && branchOk && searchOk;
     });
   };
-  
-  const filteredCards =filterlist() ||[]
+
+  const filteredCards = filterlist() || []
 
   return (
     <div className="p-6">
@@ -470,9 +470,9 @@ const CeoBackendSupportHome = () => {
               .filter(
                 (card) => {
 
-                  const statusOk =  card.workStatus === selectedCardId;
+                  const statusOk = card.workStatus === selectedCardId;
 
-                  const selectedBranch =  selectedLocation
+                  const selectedBranch = selectedLocation
 
                   const branchOk = (card.branchName ?? '').toLowerCase().trim() === selectedBranch.toLowerCase().trim();
 
@@ -495,11 +495,13 @@ const CeoBackendSupportHome = () => {
                   //     ?.toLowerCase()
                   //     .includes(searchPhone.toLowerCase())
                   // )
-                } 
+                }
               )
               .map((card, i) => {
                 const lastRemark = card?.remark?.[card.remark.length - 1]?.desc;
                 const lastRemarkName = card?.remark?.[card.remark.length - 1]?.name;
+                console.log("id ::",card.id )
+                console.log("id ::",card )
 
                 const cardBgColor =
                   {
@@ -525,7 +527,8 @@ const CeoBackendSupportHome = () => {
                     className={`border rounded-md p-2 shadow min-h-[120px] ${cardBgColor}`}
                   >
                     {card.staffName || card.subDealerName ? (
-                      <div className="flex flex-col h-full justify-between">
+                      <div className="flex flex-col h-full justify-between" onClick={()=>{
+                      }}>
                         <div className="flex justify-between items-center mb-2">
                           <span
                             className="text-lg font-semibold text-gray-700"

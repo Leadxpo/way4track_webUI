@@ -25,7 +25,6 @@ const Payments = () => {
       );
 
       if (response.status) {
-        console.log("tttttff",response.data);
         setPaymentRecords(response.data);
 
         // Extract unique branchId + branchName pairs

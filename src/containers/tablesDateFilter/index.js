@@ -74,15 +74,16 @@ const TableWithDateFilter = ({
   const [subdealerList, setSubdealerList] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
 
-  useEffect(() => {
-    handleSearchSubdealer()
-  }, [subdealerList])
+  // useEffect(() => {
+  //   handleSearchSubdealer()
+  // }, [subdealerList])
 
   const handleSearchSubdealer = () => {
     const searchQuery = searchSubdealer.toLowerCase().trim();
-
-    if (searchQuery === '') {
+        if (searchQuery === '') {
       setFilteredData(subdealerList); // Reset to original data
+      setIsSearch(true)
+
     } else {
       const filteredData = subdealerList.filter((item) =>
         Object.values(item).some((value) =>

@@ -409,6 +409,7 @@ const SalesVisit = () => {
           <option value="paymentPending">PAYMENT_PENDING</option>
           <option value="partiallyPaid">PARTIALLY_PAID</option>
           <option value="completed">COMPLETED</option>
+          <option value="notInterested">NOT_INTERESTED</option>
         </select>
 
         <input
