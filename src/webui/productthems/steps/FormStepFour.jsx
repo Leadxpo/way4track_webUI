@@ -2,7 +2,6 @@ import React from 'react';
 // import "./FormStepFour.css";
 import { Upload, X, Plus } from 'lucide-react';
 
-
 function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePreviews, selectedTheme, stepsData }) {
   const handleStep4FieldChange = (index, field, value) => {
     const updated = [...step4Items];
@@ -42,9 +41,6 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
     updated[deviceIndex].applications.splice(appIndex, 1);
     setStep4Items(updated);
   };
-
-  // console.log("Selected Theme in Step Four:", selectedTheme);
-  // console.log("Steps Data in Step Four:", stepsData);
 
   return (
     <div className="step4_formStep">
@@ -120,7 +116,7 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
                     </div>
                   ))}
 
-                  {/* Upload Field (like Add More button in Session-1) */}
+                  {/* Upload Field */}
                   <div className="flex items-center justify-center w-full">
                     <label
                       htmlFor={`device-photo-${index}-${item.photos?.length || 0}`}
@@ -168,13 +164,6 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
                         value={app.desc}
                         onChange={(e) => handleApplicationChange(index, appIndex, 'desc', e.target.value)}
                       />
-                      {/* <input
-                        type="text"
-                        placeholder="Link"
-                        className="step4_formControl mb-2"
-                        value={app.link}
-                        onChange={(e) => handleApplicationChange(index, appIndex, 'link', e.target.value)}
-                      /> */}
                     </div>
 
                     <div className="flex items-center justify-center w-full mb-2">
@@ -215,14 +204,13 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
                       type="button"
                       className="step4_btnIcon step4_btnDanger absolute top-2 right-2"
                       onClick={() => removeApplication(index, appIndex)}
-                    // disabled={(item.applications || []).length === 1}
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
 
-                {step4Items[index].applications.length < 10 && (
+                {(item.applications?.length || 0) < 10 && (
                   <button
                     type="button"
                     className="step4_btnOutlinePrimary flex items-center"
@@ -280,7 +268,7 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
 
                   {item.isRelay && (
                     <div className="step4_inputGroup step4_mt2">
-                      <span className="step4_inputGroupText">$</span>
+                      <span className="step4_inputGroupText">₹</span>
                       <input
                         type="number"
                         className="step4_formControl"
@@ -306,6 +294,39 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
                   </div>
                 </div>
               </div>
+
+              {/* Network Amount Fields - Show when Network Option is enabled */}
+              {item.isNetwork && (
+                <div className="step4_formRow">
+                  <div className="step4_formGroup step4_col6">
+                    <label className="step4_formLabel">4G Network Amount</label>
+                    <div className="step4_inputGroup">
+                      <span className="step4_inputGroupText">₹</span>
+                      <input
+                        type="number"
+                        className="step4_formControl"
+                        value={item.network4gAmt || ''}
+                        onChange={(e) => handleStep4FieldChange(index, 'network4gAmt', parseFloat(e.target.value))}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="step4_formGroup step4_col6">
+                    <label className="step4_formLabel">2G Network Amount</label>
+                    <div className="step4_inputGroup">
+                      <span className="step4_inputGroupText">₹</span>
+                      <input
+                        type="number"
+                        className="step4_formControl"
+                        value={item.network2gAmt || ''}
+                        onChange={(e) => handleStep4FieldChange(index, 'network2gAmt', parseFloat(e.target.value))}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="step4_formGroup">
                 <div className="step4_switchContainer">
@@ -366,17 +387,16 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
                 />
               </div>
             </div>
-          </div >
-        ))
-        }
-      </div >
+          </div>
+        ))}
+      </div>
 
       {(selectedTheme.id !== 'theme2' || stepsData[3]?.fields?.dynamicItems?.length < 1) && (
         <button className="step4_btnOutlinePrimary" onClick={addStep4Item}>
           Add Another Device
         </button>
       )}
-    </div >
+    </div>
   );
 }
 
