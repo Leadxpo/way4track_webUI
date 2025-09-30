@@ -236,7 +236,7 @@ function ThemeManager() {
 
         if (item.photos && item.photos.length > 0) {
           item.photos.forEach((photo) => {
-            step4Data.append("photos", photo, photo.name);
+            step4Data.append("mediaFiles", photo, photo.name);
           });
         }
 
@@ -259,13 +259,16 @@ function ThemeManager() {
         );
         step4Data.append('discount', item.discount?.toString() || '0');
 
+        step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
+        step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
+
+
         if (item.applications && item.applications.length > 0) {
           item.applications.forEach((app, index) => {
-            step4Data.append(`applications[${index}][name]`, app.name || '');
-            step4Data.append(`applications[${index}][desc]`, app.desc || '');
-            step4Data.append(`applications[${index}][link]`, app.link || '');
+            step4Data.append(`points[${index}].title`, app.name || '');
+            step4Data.append(`points[${index}].desc`, app.desc || '');
             if (app.photo) {
-              step4Data.append('applicationPhotos', app.photo, app.photo.name);
+              step4Data.append("pointFiles", app.photo, app.photo.name);
             }
           });
         }
