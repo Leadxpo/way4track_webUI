@@ -673,7 +673,7 @@ const CeoBackendSupportPayments = () => {
                           </p>
                         </div>
 
-                        <button
+                        {/* <button
                           onClick={() => handleInvoiceConversion(card)}
                           disabled={
                             card.paymentStatus !== 'COMPLETED' ||
@@ -689,7 +689,7 @@ const CeoBackendSupportPayments = () => {
                           {convertedInvoices.includes(card.id)
                             ? 'Invoice Converted'
                             : 'Convert to Invoice'}
-                        </button>
+                        </button> */}
 
                         <button
                           onClick={() =>

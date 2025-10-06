@@ -24,7 +24,7 @@ const FilteredWorkStatusDetails = () => {
 
   // **Filtering Logic**
   const filteredRecords = workRecords
-    .filter((item) => String(item.workStatus) === String(id)) // Filter by workStatus
+    .filter((item) => String(item?.workStatus) === String(id)) // Filter by workStatus
     .filter((item) => {
       if (!searchTerm || !searchColumn) return true;
       return item[searchColumn]
@@ -34,7 +34,7 @@ const FilteredWorkStatusDetails = () => {
     })
     .filter((item) => {
       if (!startDate || !endDate) return true;
-      const itemDate = new Date(item.date);
+      const itemDate = new Date(item?.date);
       return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
     });
 
@@ -149,38 +149,38 @@ const FilteredWorkStatusDetails = () => {
             <tbody>
               {filteredRecords.length > 0 ? (
                 filteredRecords.map((item) => (
-                  <tr key={item.id} className="bg-white border-b">
-                    <td className="px-4 py-2">{item.id}</td>
-                    <td className="px-4 py-2">{item.productName}</td>
-                    <td className="px-4 py-2">{item.service}</td>
-                    <td className="px-4 py-2">{item.staffName}</td>
-                    <td className="px-4 py-2">{item.branchName}</td>
-                    <td className="px-4 py-2">{item.clientName}</td>
-                    <td className="px-4 py-2">{item.phoneNumber}</td>
-                    <td className="px-4 py-2">{item.imeiNumber}</td>
-                    <td className="px-4 py-2">{item.simNumber}</td>
+                  <tr key={item?.id} className="bg-white border-b">
+                    <td className="px-4 py-2">{item?.id}</td>
+                    <td className="px-4 py-2">{item?.productName}</td>
+                    <td className="px-4 py-2">{item?.service}</td>
+                    <td className="px-4 py-2">{item?.staffName}</td>
+                    <td className="px-4 py-2">{item?.branchName}</td>
+                    <td className="px-4 py-2">{item?.clientName}</td>
+                    <td className="px-4 py-2">{item?.phoneNumber}</td>
+                    <td className="px-4 py-2">{item?.imeiNumber}</td>
+                    <td className="px-4 py-2">{item?.simNumber}</td>
                     <td className="px-4 py-2">
-                      {convertToIST(item.startDate)}
+                      {convertToIST(item?.startDate)}
                     </td>
                     <td
-                      className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
+                      className={`px-4 py-2 ${!item?.endDate ? 'text-red-500' : ''}`}
                     >
-                      {item.endDate ? convertToIST(item.endDate) : '-'}
+                      {item?.endDate ? convertToIST(item?.endDate) : '-'}
                     </td>
                     <td
-                      className={`px-4 py-2 ${!item.endDate ? 'text-red-500' : ''}`}
+                      className={`px-4 py-2 ${!item?.endDate ? 'text-red-500' : ''}`}
                     >
-                      {item.startDate
-                        ? `${calculateDuration(item.startDate, item.endDate)}`
+                      {item?.startDate
+                        ? `${calculateDuration(item?.startDate, item?.endDate)}`
                         : ''}
                     </td>
 
-                    <td className="px-4 py-2">{item.vehicleType}</td>
-                    <td className="px-4 py-2">{item.vehicleNumber}</td>
-                    <td className="px-4 py-2">{item.date}</td>
+                    <td className="px-4 py-2">{item?.vehicleType}</td>
+                    <td className="px-4 py-2">{item?.vehicleNumber}</td>
+                    <td className="px-4 py-2">{item?.date}</td>
                     <td className="px-4 py-2">
                       <select
-                        value={item.workStatus}
+                        value={item?.workStatus}
                         className="border rounded p-1"
                       >
                         {id === 'install' ? (

@@ -127,30 +127,30 @@ const ViewBackendWorkDetails = () => {
       const response = await ApiService.post(
         '/technician/handleTechnicianDetails',
         {
-          id: editedRecord.id,
+          id: editedRecord?.id,
           staffId: data.staffId,
           branchId: data.branchId,
           backSupporterId: data.backSupporterId,
-          service: editedRecord.service,
-          workStatus: editedRecord.workStatus,
-          paymentStatus: editedRecord.paymentStatus,
-          date: editedRecord.date,
-          attendedDate: editedRecord.attendedDate,
-          productName: editedRecord.productName,
-          imeiNumber: editedRecord.imeiNumber,
-          vehicleType: editedRecord.vehicleType,
-          vehicleNumber: editedRecord.vehicleNumber,
-          chassisNumber: editedRecord.chassisNumber,
-          engineNumber: editedRecord.engineNumber,
-          name: editedRecord.name,
-          email: editedRecord.email,
-          phoneNumber: editedRecord.phoneNumber,
-          address: editedRecord.address,
+          service: editedRecord?.service,
+          workStatus: editedRecord?.workStatus,
+          paymentStatus: editedRecord?.paymentStatus,
+          date: editedRecord?.date,
+          attendedDate: editedRecord?.attendedDate,
+          productName: editedRecord?.productName,
+          imeiNumber: editedRecord?.imeiNumber,
+          vehicleType: editedRecord?.vehicleType,
+          vehicleNumber: editedRecord?.vehicleNumber,
+          chassisNumber: editedRecord?.chassisNumber,
+          engineNumber: editedRecord?.engineNumber,
+          name: editedRecord?.name,
+          email: editedRecord?.email,
+          phoneNumber: editedRecord?.phoneNumber,
+          address: editedRecord?.address,
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
-          technicianNumber: editedRecord.technicianNumber,
-          amount: editedRecord.amount,
-          vehiclePhotos: editedRecord.vehiclePhotos,
+          technicianNumber: editedRecord?.technicianNumber,
+          amount: editedRecord?.amount,
+          vehiclePhotos: editedRecord?.vehiclePhotos,
         }
       );
 
@@ -289,59 +289,59 @@ const ViewBackendWorkDetails = () => {
 
     // General Information
     addSectionTitle('General Information');
-    addField('Service', editedRecord.service);
-    addField('Work Status', editedRecord.workStatus);
-    addField('Payment Status', editedRecord.paymentStatus);
-    addField('Date', new Date(editedRecord.date).toLocaleString());
+    addField('Service', editedRecord?.service);
+    addField('Work Status', editedRecord?.workStatus);
+    addField('Payment Status', editedRecord?.paymentStatus);
+    addField('Date', new Date(editedRecord?.date).toLocaleString());
     addField(
       'Attend Date',
-      new Date(editedRecord.attendedDate).toLocaleString()
+      new Date(editedRecord?.attendedDate).toLocaleString()
     );
 
     // Product Details
     addSectionTitle('Product Details');
-    addField('Product Name', editedRecord.productName);
-    addField('IMEI Number', editedRecord.imeiNumber);
-    addField('SIM Number', editedRecord.simNumber);
+    addField('Product Name', editedRecord?.productName);
+    addField('IMEI Number', editedRecord?.imeiNumber);
+    addField('SIM Number', editedRecord?.simNumber);
 
     // Vehicle Information
     addSectionTitle('Vehicle Information');
-    addField('Vehicle Type', editedRecord.vehicleType);
-    addField('Vehicle Number', editedRecord.vehicleNumber);
-    addField('Chassis Number', editedRecord.chassisNumber);
-    addField('Engine Number', editedRecord.engineNumber);
+    addField('Vehicle Type', editedRecord?.vehicleType);
+    addField('Vehicle Number', editedRecord?.vehicleNumber);
+    addField('Chassis Number', editedRecord?.chassisNumber);
+    addField('Engine Number', editedRecord?.engineNumber);
 
     // Client Details
     addSectionTitle('Client Details');
-    addField('Client Name', editedRecord.name);
-    addField('Email', editedRecord.email);
-    addField('Phone Number', editedRecord.phoneNumber);
-    addField('Address', editedRecord.address);
+    addField('Client Name', editedRecord?.name);
+    addField('Email', editedRecord?.email);
+    addField('Phone Number', editedRecord?.phoneNumber);
+    addField('Address', editedRecord?.address);
 
     // Company & Work Details
     addSectionTitle('Company & Work Details');
-    addField('Technician Number', editedRecord.technicianNumber);
-    addField('Amount', editedRecord.amount);
+    addField('Technician Number', editedRecord?.technicianNumber);
+    addField('Amount', editedRecord?.amount);
 
     // Payment Details
     addSectionTitle('Payment Details');
-    addField('Amount', editedRecord.amount);
-    addField('Paid Amount', editedRecord.paidAmount);
-    addField('Payment Status', editedRecord.paymentStatus);
+    addField('Amount', editedRecord?.amount);
+    addField('Paid Amount', editedRecord?.paidAmount);
+    addField('Payment Status', editedRecord?.paymentStatus);
 
     // Backend Support Details
-    if (editedRecord.backEndStaffRelation) {
+    if (editedRecord?.backEndStaffRelation) {
       addSectionTitle('Backend Support Details');
-      addField('ID', editedRecord.backEndStaffRelation.id);
-      addField('Name', editedRecord.backEndStaffRelation.name);
-      addField('Phone Number', editedRecord.backEndStaffRelation.phoneNumber);
+      addField('ID', editedRecord?.backEndStaffRelation?.id);
+      addField('Name', editedRecord?.backEndStaffRelation?.name);
+      addField('Phone Number', editedRecord?.backEndStaffRelation?.phoneNumber);
     }
     // Remarks
     if (remarks && remarks.length) {
       addSectionTitle('Remarks');
       remarks.forEach((remark) => {
         addField(
-          `${remark.name} (${new Date(remark.date).toLocaleString()})`,
+          `${remark?.name} (${new Date(remark.date).toLocaleString()})`,
           remark.desc
         );
       });
@@ -388,7 +388,7 @@ const ViewBackendWorkDetails = () => {
             {/* <DetailRow label="ID" value={workRecord.id} editable={false} /> */}
             <DetailRow
               label="Service"
-              value={editedRecord.service}
+              value={editedRecord?.service}
               editable={isEditing}
               onChange={handleChange}
               field="service"
@@ -396,40 +396,40 @@ const ViewBackendWorkDetails = () => {
             />
             <DetailRow
               label="UserName"
-              value={editedRecord.userName}
+              value={editedRecord?.userName}
               onChange={handleChange}
               field="userName"
             />
 
             <DetailRow
               label="Application"
-              value={editedRecord.applicationId.name}
+              value={editedRecord?.applicationId?.name}
               onChange={handleChange}
               field="application"
             />
             <DetailRow
               label="Work Status"
-              value={editedRecord.workStatus}
+              value={editedRecord?.workStatus}
               onChange={handleChange}
               field="workStatus"
             />
             <DetailRow
               label="Payment Status"
-              value={editedRecord.paymentStatus}
+              value={editedRecord?.paymentStatus}
               // editable={isEditing}
               onChange={handleChange}
               field="paymentStatus"
             />
             <DetailRow
               label="Date"
-              value={new Date(editedRecord.date).toLocaleString()}
+              value={new Date(editedRecord?.date).toLocaleString()}
               // editable={isEditing}
               onChange={handleChange}
               field="date"
             />
             <DetailRow
               label="Attend Date"
-              value={new Date(editedRecord.attendedDate).toLocaleString()}
+              value={new Date(editedRecord?.attendedDate).toLocaleString()}
               // editable={isEditing}
               onChange={handleChange}
               field="attendedDate"
@@ -439,21 +439,21 @@ const ViewBackendWorkDetails = () => {
           <Section title="Product Details">
             <DetailRow
               label="Product Name"
-              value={editedRecord.productName}
+              value={editedRecord?.productName}
               editable={isEditing}
               onChange={handleChange}
               field="productName"
             />
             <DetailRow
               label="IMEI Number"
-              value={editedRecord.imeiNumber}
+              value={editedRecord?.imeiNumber}
               editable={isEditing}
               onChange={handleChange}
               field="imeiNumber"
             />
             <DetailRow
               label="SIM Number"
-              value={editedRecord.simNumber}
+              value={editedRecord?.simNumber}
               editable={isEditing}
               onChange={handleChange}
               field="simNumber"
@@ -463,7 +463,7 @@ const ViewBackendWorkDetails = () => {
           <Section title="Vehicle Information">
             <DetailRow
               label="Vehicle Type"
-              value={editedRecord.vehicleType}
+              value={editedRecord?.vehicleType}
               editable={isEditing}
               onChange={handleChange}
               field="vehicleType"
@@ -471,21 +471,21 @@ const ViewBackendWorkDetails = () => {
             />
             <DetailRow
               label="Vehicle Number"
-              value={editedRecord.vehicleNumber}
+              value={editedRecord?.vehicleNumber}
               editable={isEditing}
               onChange={handleChange}
               field="vehicleNumber"
             />
             <DetailRow
               label="Chassis Number"
-              value={editedRecord.chassisNumber}
+              value={editedRecord?.chassisNumber}
               editable={isEditing}
               onChange={handleChange}
               field="chassisNumber"
             />
             <DetailRow
               label="Engine Number"
-              value={editedRecord.engineNumber}
+              value={editedRecord?.engineNumber}
               editable={isEditing}
               onChange={handleChange}
               field="engineNumber"
@@ -495,28 +495,28 @@ const ViewBackendWorkDetails = () => {
           <Section title="Client Details">
             <DetailRow
               label="Client Name"
-              value={editedRecord.name}
+              value={editedRecord?.name}
               editable={isEditing}
               onChange={handleChange}
               field="name"
             />
             <DetailRow
               label="Email"
-              value={editedRecord.email}
+              value={editedRecord?.email}
               editable={isEditing}
               onChange={handleChange}
               field="email"
             />
             <DetailRow
               label="Phone Number"
-              value={editedRecord.phoneNumber}
+              value={editedRecord?.phoneNumber}
               editable={isEditing}
               onChange={handleChange}
               field="phoneNumber"
             />
             <DetailRow
               label="Address"
-              value={editedRecord.address}
+              value={editedRecord?.address}
               editable={isEditing}
               onChange={handleChange}
               field="address"
@@ -526,28 +526,28 @@ const ViewBackendWorkDetails = () => {
           <Section title="Company & Work Details">
             {/* <DetailRow
               label="Company Code"
-              value={editedRecord.companyCode}
+              value={editedRecord?.companyCode}
               editable={isEditing}
               onChange={handleChange}
               field="companyCode"
             />
             <DetailRow
               label="Unit Code"
-              value={editedRecord.unitCode}
+              value={editedRecord?.unitCode}
               editable={isEditing}
               onChange={handleChange}
               field="unitCode"
             /> */}
             <DetailRow
               label="Technician Number"
-              value={editedRecord.technicianNumber}
+              value={editedRecord?.technicianNumber}
               editable={isEditing}
               onChange={handleChange}
               field="technicianNumber"
             />
             <DetailRow
               label="Amount"
-              value={editedRecord.amount}
+              value={editedRecord?.amount}
               editable={isEditing}
               onChange={handleChange}
               field="amount"
@@ -581,29 +581,29 @@ const ViewBackendWorkDetails = () => {
           <Section title="Payment Details">
             <DetailRow
               label="Amount"
-              value={editedRecord.amount}
+              value={editedRecord?.amount}
               editable={isEditing}
               onChange={handleChange}
               field="amount"
             />
             <DetailRow
               label="Paid Amount"
-              value={editedRecord.paidAmount}
+              value={editedRecord?.paidAmount}
               editable={isEditing}
               onChange={handleChange}
               field="paidAmount"
             />
             <DetailRow
               label="Payment Status"
-              value={editedRecord.paymentStatus}
+              value={editedRecord?.paymentStatus}
               editable={isEditing}
               onChange={handleChange}
               field="paymentStatus"
             />
 
-            {editedRecord.screenShot && (
+            {editedRecord?.screenShot && (
               <ImageBox
-                src={editedRecord.screenShot}
+                src={editedRecord?.screenShot}
                 alt="Payment Screenshot"
                 isEditing={isEditing}
               // onDeleteImage={() => handleDeleteImage(index)}
@@ -611,33 +611,33 @@ const ViewBackendWorkDetails = () => {
             )}
           </Section>
 
-          {editedRecord.backEndStaffRelation && (
+          {editedRecord?.backEndStaffRelation && (
             <Section title="Backend Support Details">
               <DetailRow
                 label="id"
-                value={editedRecord.backEndStaffRelation.id}
+                value={editedRecord?.backEndStaffRelation?.id}
                 editable={isEditing}
                 onChange={handleChange}
                 field="id"
               />
               <DetailRow
                 label="name"
-                value={editedRecord.backEndStaffRelation.name}
+                value={editedRecord?.backEndStaffRelation?.name}
                 editable={isEditing}
                 onChange={handleChange}
                 field="name"
               />
               <DetailRow
                 label="Phone Nmuber"
-                value={editedRecord.backEndStaffRelation.phoneNumber}
+                value={editedRecord?.backEndStaffRelation?.phoneNumber}
                 editable={isEditing}
                 onChange={handleChange}
                 field="phoneNumber"
               />
 
-              {editedRecord.screenShot && (
+              {editedRecord?.screenShot && (
                 <ImageBox
-                  src={editedRecord.screenShot}
+                  src={editedRecord?.screenShot}
                   alt="Payment Screenshot"
                   isEditing={isEditing}
                 // onDeleteImage={() => handleDeleteImage(index)}
@@ -651,7 +651,7 @@ const ViewBackendWorkDetails = () => {
             {/* Scrollable Chat Area */}
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
               {remarks?.map((remark, index) => {
-                const isLoggedInUser = remark.name === userName;
+                const isLoggedInUser = remark?.name === userName;
                 const isImage = remark?.file?.name === 'Image' && remark.image;
                 const isVideo = remark?.file?.name === 'Video' && remark.video;
 
@@ -709,7 +709,7 @@ const ViewBackendWorkDetails = () => {
                       )}
                     </div>
                     <span className="text-xs text-gray-500 mt-1">
-                      {remark.name} • {new Date(remark.date).toLocaleString()}
+                      {remark?.name} • {new Date(remark.date).toLocaleString()}
                     </span>
                   </div>
                 );
@@ -808,7 +808,7 @@ const DetailRow = ({
           <option value="">Select {label}</option>
           {options?.map((opt) => (
             <option key={opt.id} value={opt}>
-              {opt.name}
+              {opt?.name}
             </option>
           ))}
         </select>
@@ -981,7 +981,7 @@ export default ViewBackendWorkDetails;
 
 //           {/* Client Details */}
 //           <Section title="Client Details">
-//             <DetailRow label="Client Name" value={workRecord.name || 'N/A'} />
+//             <DetailRow label="Client Name" value={workRecord?.name || 'N/A'} />
 //             <DetailRow label="Email" value={workRecord.email || 'N/A'} />
 //             <DetailRow
 //               label="Phone Number"
