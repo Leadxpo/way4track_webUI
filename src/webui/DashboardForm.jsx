@@ -81,28 +81,25 @@ const DashboardForm = ({
 
   const updateListBasedOnTheme = (theme) => {
     switch (theme) {
+      case 'Session-1':
+        setList([{ photo: null, preview: null }]);
+        break;
       case 'Session-2':
-        setList(
-          new Array(4).fill(null).map(() => ({
-            desc: '',
-            photo: null,
-            preview: null,
-            // photoUrl: null,
-          }))
-        );
+        setList([{ name: '', desc: '', link: '', photo: null, preview: null }]);
         break;
       case 'Session-3':
         setList(
-          new Array(10).fill(null).map(() => ({
+          new Array(4).fill(null).map(() => ({
+            name: '',
             desc: '',
+            link: '',
             photo: null,
             preview: null,
-            // photoUrl: null,
           }))
         );
         break;
       case 'Session-4':
-        setList([{ desc: '', photo: null, preview: null }]);
+        setList([{ photo: null, preview: null }]);
         break;
       case 'Session-5':
       case 'Session-6':
@@ -112,6 +109,7 @@ const DashboardForm = ({
         setList([]);
     }
   };
+
 
   useEffect(() => {
     if (!initialData || !initialData.list) {
@@ -317,6 +315,10 @@ const DashboardForm = ({
           payload.append(`list[${index}][name]`, item.name || '');
         }
 
+        if (item.link !== undefined) {
+          payload.append(`list[${index}][link]`, item.link || '');
+        }
+
         if (item.photo instanceof File) {
           payload.append(`photo`, item.photo);
         } else if (item.photo) {
@@ -369,7 +371,6 @@ const DashboardForm = ({
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.name}
             onChange={handleChange}
-            required
             placeholder="Enter theme name"
           />
         </div>
@@ -384,7 +385,6 @@ const DashboardForm = ({
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.header}
             onChange={handleChange}
-            required
             placeholder="Enter header text"
           />
         </div>
@@ -398,7 +398,6 @@ const DashboardForm = ({
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.shortDescription}
             onChange={handleChange}
-            required
             rows={3}
             placeholder="Enter a brief description"
           />
@@ -413,7 +412,6 @@ const DashboardForm = ({
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={formData.theme}
             onChange={handleChange}
-            required
             disabled={isEdit}
           >
             <option value="">Select Session</option>
@@ -425,24 +423,17 @@ const DashboardForm = ({
           </select>
         </div>
 
-        {[
-          'Session-2',
-          'Session-3',
-          'Session-4',
-          'Session-5',
-          'Session-6',
-        ].includes(formData.theme) &&
+        {['Session-1', 'Session-2', 'Session-3', 'Session-4', 'Session-5', 'Session-6'].includes(formData.theme) &&
           formData.theme && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">
-                  List Items ({list.length}{' '}
-                  {formData.theme === 'Session-4'
-                    ? 'dynamic cards'
-                    : ['Session-5', 'Session-6'].includes(formData.theme)
-                      ? 'text entries'
-                      : 'fixed cards'}
-                  )
+                  {formData.theme === 'Session-2'
+                    ? 'Unlimited Cards (Add / Remove)'
+                    : formData.theme === 'Session-3'
+                      ? 'Limited to 4 Cards'
+                      : 'List Items'}{' '}
+                  ({list.length})
                 </h3>
               </div>
 
@@ -452,107 +443,126 @@ const DashboardForm = ({
                     key={index}
                     className="bg-gray-50 rounded-lg p-4 relative border border-gray-200"
                   >
-                    {['Session-5', 'Session-6'].includes(formData.theme) && (
-                      <input
-                        type="text"
-                        placeholder="Title"
-                        className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        value={item.name || ''}
-                        onChange={(e) =>
-                          handleListChange(index, 'name', e.target.value)
-                        }
-                      />
+                    {/* Name field for Sessions 2, 3, 5, 6 */}
+                    {/* Show name, desc, link fields conditionally */}
+                    {['Session-2', 'Session-3', 'Session-5', 'Session-6'].includes(formData.theme) && (
+                      <>
+                        <input
+                          type="text"
+                          placeholder="Name"
+                          className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                          value={item.name || ''}
+                          onChange={(e) => handleListChange(index, 'name', e.target.value)}
+                        />
+
+                        <input
+                          type="text"
+                          placeholder="Description"
+                          className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                          value={item.desc || ''}
+                          onChange={(e) => handleListChange(index, 'desc', e.target.value)}
+                        />
+
+                        {['Session-2', 'Session-3'].includes(formData.theme) && (
+                          <input
+                            type="text"
+                            placeholder="Link"
+                            className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                            value={item.link || ''}
+                            onChange={(e) => handleListChange(index, 'link', e.target.value)}
+                          />
+                        )}
+                      </>
                     )}
 
-                    <input
-                      type="text"
-                      placeholder="Description"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={item.desc}
-                      onChange={(e) =>
-                        handleListChange(index, 'desc', e.target.value)
-                      }
-                    />
-
-                    {['Session-2', 'Session-3', 'Session-4'].includes(
-                      formData.theme
-                    ) && (
-                        <div className="mt-3 space-y-2">
-                          <div className="flex items-center justify-center w-full">
-                            <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-50">
-                              <div className="flex items-center justify-center">
-                                <Upload className="h-6 w-6 text-gray-400" />
-                                <span className="ml-2 text-sm text-gray-500">
-                                  {item.photo || item.photoUrl
-                                    ? 'Change image'
-                                    : 'Click to upload image'}
-                                </span>
-                              </div>
-                              <input
-                                type="file"
-                                className="hidden"
-                                accept="image/*"
-                                onChange={(e) => handleListFileChange(index, e)}
-                              />
-                            </label>
-                          </div>
-                          {(item.photo || item.photoUrl) && (
-                            <div className="relative">
-                              <img
-                                src={item.preview || item.photo || ''}
-                                alt="preview"
-                                className="w-full h-40 object-cover rounded-lg"
-                              />
-                              <button
-                                type="button"
-                                className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
-                                onClick={() => {
-                                  const updated = [...list];
-                                  updated[index] = {
-                                    ...updated[index],
-                                    photo: isEdit
-                                      ? initialData.list[index].photo
-                                      : null, // Restore original if editing
-                                    preview: null,
-                                  };
-                                  setList(updated);
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
+                    {/* Image upload logic */}
+                    {['Session-1', 'Session-2', 'Session-3', 'Session-4'].includes(formData.theme) && (
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center justify-center w-full">
+                          <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-50">
+                            <div className="flex items-center justify-center">
+                              <Upload className="h-6 w-6 text-gray-400" />
+                              <span className="ml-2 text-sm text-gray-500">
+                                {item.photo ? 'Change image' : 'Click to upload image'}
+                              </span>
                             </div>
-                          )}
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) => handleListFileChange(index, e)}
+                            />
+                          </label>
                         </div>
-                      )}
+
+                        {item.photo && (
+                          <div className="relative">
+                            <img
+                              src={
+                                item.preview ||
+                                (item.photo instanceof File
+                                  ? URL.createObjectURL(item.photo)
+                                  : typeof item.photo === 'string'
+                                    ? item.photo
+                                    : '')
+                              }
+                              alt="Preview"
+                              className="w-full h-40 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
+                              onClick={() => {
+                                const updated = [...list];
+                                updated[index].photo = null;
+                                updated[index].preview = null;
+                                setList(updated);
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+
+                    {/* Delete button for Session-2 (unlimited) */}
+                    {(['Session-1', 'Session-2', 'Session-5', 'Session-6'].includes(formData.theme)) && list.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setList(list.filter((_, i) => i !== index))}
+                        className="mt-3 text-red-500 hover:underline text-sm"
+                      >
+                        Remove Card
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
 
-              {(formData.theme === 'Session-4' ||
-                ['Session-5', 'Session-6'].includes(formData.theme)) && (
+              {/* Add More Button */}
+              {(['Session-1', 'Session-2', 'Session-4', 'Session-5', 'Session-6'].includes(formData.theme))
+                && (
                   <button
                     type="button"
                     className="w-full py-2 px-4 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-50 flex items-center justify-center"
-                    onClick={() =>
-                      setList([
-                        ...list,
-                        formData.theme === 'Session-4'
-                          ? {
-                            desc: '',
-                            photo: null,
-                            preview: null,
-                            photoUrl: null,
-                          }
-                          : { name: '', desc: '' },
-                      ])
-                    }
+                    onClick={() => {
+                      if (formData.theme === 'Session-1' || formData.theme === 'Session-4') {
+                        setList([...list, { photo: null, preview: null }]);
+                      } else if (formData.theme === 'Session-2') {
+                        setList([...list, { name: '', desc: '', link: '', photo: null, preview: null }]);
+                      } else {
+                        setList([...list, { name: '', desc: '' }]);
+                      }
+                    }}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add More
+                    <Plus className="h-4 w-4 mr-2" /> Add More
                   </button>
                 )}
             </div>
           )}
+
 
         <div className="space-y-4">
           <div>
