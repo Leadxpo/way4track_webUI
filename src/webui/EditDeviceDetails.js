@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ApiService from '../services/ApiService';
 import AddDevicePopup from './AddDevicePopup';
+import { Upload, X, Plus } from 'lucide-react';
 
 function EditDeviceDetails() {
   const location = useLocation();
@@ -18,8 +19,8 @@ function EditDeviceDetails() {
         name: d.name || '',
         model: d.model || '',
         description: d.description || '',
-        image: null,
-        imagePreview: d.image || '',
+        photos: Array.isArray(d.image) ? [...d.image] : (d.image ? [d.image] : []),
+        imagePreviews: Array.isArray(d.image) ? [...d.image] : (d.image ? [d.image] : []),
         isRelay: !!d.isRelay,
         relayAmt: d.relayAmt || '',
         amount: d.amount || '',
@@ -27,7 +28,16 @@ function EditDeviceDetails() {
         subscriptionMonthlyAmt: d.subscriptionMonthlyAmt || '',
         subscriptionYearlyAmt: d.subscriptionYearlyAmt || '',
         isNetwork: !!d.isNetwork,
+        network4gAmt: d.network4gAmt || '',
+        network2gAmt: d.network2gAmt || '',
         discount: d.discount || '',
+        applications: d.points ? d.points.map(point => ({
+          name: point.title || '',
+          desc: point.desc || '',
+          photo: null,
+          preview: point.file || '',
+          existingFile: point.file
+        })) : []
       }));
       setDeviceDetails(filledDevices);
 
@@ -50,15 +60,95 @@ function EditDeviceDetails() {
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleImageChange = (index, file) => {
-    const preview = file ? URL.createObjectURL(file) : '';
+  const handleImageChange = (index, files) => {
     setDeviceDetails((prev) => {
       const updated = [...prev];
-      updated[index].image = file;
-      updated[index].imagePreview = preview;
+      const newPhotos = [...(updated[index].photos || [])];
+      const newPreviews = [...(updated[index].imagePreviews || [])];
+
+      Array.from(files).forEach(file => {
+        newPhotos.push(file);
+        newPreviews.push(URL.createObjectURL(file));
+      });
+
+      updated[index].photos = newPhotos;
+      updated[index].imagePreviews = newPreviews;
       return updated;
     });
   };
+
+  // Remove specific image
+  const handleRemoveImage = (deviceIndex, imageIndex) => {
+    setDeviceDetails((prev) => {
+      const updated = [...prev];
+      // updated[deviceIndex].photos.splice(imageIndex, 1);
+      // updated[deviceIndex].imagePreviews.splice(imageIndex, 1);
+      // return updated;
+
+      const newPhotos = [...updated[deviceIndex].photos];
+      const newPreviews = [...updated[deviceIndex].imagePreviews];
+
+      newPhotos.splice(imageIndex, 1);
+      newPreviews.splice(imageIndex, 1);
+
+      updated[deviceIndex].photos = newPhotos;
+      updated[deviceIndex].imagePreviews = newPreviews;
+
+      return updated;
+    });
+  };
+
+  // Handle application changes
+  const handleApplicationChange = (deviceIndex, appIndex, field, value) => {
+    setDeviceDetails((prev) => {
+      const updated = [...prev];
+      if (!updated[deviceIndex].applications) {
+        updated[deviceIndex].applications = [];
+      }
+      updated[deviceIndex].applications[appIndex][field] = value;
+      return updated;
+    });
+  };
+
+  // Add new application
+  const addApplication = (deviceIndex) => {
+    setDeviceDetails((prev) => {
+      const updated = [...prev];
+      if (!updated[deviceIndex].applications) {
+        updated[deviceIndex].applications = [];
+      }
+      updated[deviceIndex].applications.push({
+        name: '',
+        desc: '',
+        photo: null,
+        preview: null
+      });
+      return updated;
+    });
+  };
+
+  // Remove application
+  const removeApplication = (deviceIndex, appIndex) => {
+    setDeviceDetails((prev) => {
+      const updated = [...prev];
+      updated[deviceIndex].applications.splice(appIndex, 1);
+      return updated;
+    });
+  };
+
+  // Handle application image upload
+  const handleApplicationImageChange = (deviceIndex, appIndex, file) => {
+    if (file) {
+      setDeviceDetails((prev) => {
+        const updated = [...prev];
+        updated[deviceIndex].applications[appIndex].photo = file;
+        updated[deviceIndex].applications[appIndex].preview = URL.createObjectURL(file);
+        return updated;
+      });
+    }
+  };
+
+  console.log(deviceDetails, 'deviceDetails');
 
   const handleSingleSubmit = async (device) => {
     const formData = new FormData();
@@ -90,10 +180,31 @@ function EditDeviceDetails() {
       Number(device.subscriptionYearlyAmt)
     );
     formData.append('isNetwork', device.isNetwork ? Number(1) : Number(0));
-    formData.append('discount', device.discount);
+    formData.append('discount', device.discount === '' ? 0 : Number(device.discount) || 0);
 
-    if (device.image) {
-      formData.append('photo', device.image);
+    formData.append('network4gAmt', Number(device.network4gAmt) || 0);
+    formData.append('network2gAmt', Number(device.network2gAmt) || 0);
+
+    if (device.photos && device.photos.length > 0) {
+      device.photos.forEach((photo) => {
+        if (photo instanceof File) {
+          formData.append("mediaFiles", photo, photo.name);
+        } else if (typeof photo === "string" && photo.startsWith("http")) {
+          formData.append("image", photo);
+        }
+      });
+    }
+
+    if (device.applications && device.applications.length > 0) {
+      device.applications.forEach((app, index) => {
+        formData.append(`points[${index}].title`, app.name || '');
+        formData.append(`points[${index}].desc`, app.desc || '');
+        formData.append(`points[${index}].file`, app.preview || '');
+
+        if (app.photo) {
+          formData.append("pointFiles", app.photo, app.photo.name);
+        }
+      });
     }
 
     try {
@@ -121,6 +232,7 @@ function EditDeviceDetails() {
         name: '',
         model: '',
         description: '',
+        photos: [],
         image: null,
         imagePreview: '',
         isRelay: false,
@@ -130,7 +242,10 @@ function EditDeviceDetails() {
         subscriptionMonthlyAmt: '',
         subscriptionYearlyAmt: '',
         isNetwork: false,
+        network4gAmt: '',
+        network2gAmt: '',
         discount: '',
+        applications: []
       },
     ]);
   };
@@ -146,7 +261,7 @@ function EditDeviceDetails() {
       });
       console.log(`Device ${id} deleted successfully:`, res.data);
       alert(`Device "${id}" deleted successfully`);
-      navigate('/ceoui');
+      // navigate('/ceoui');
     } catch (error) {
       console.error(`Failed to update device ${id}:`, error);
       alert(`Failed to update device "${id}"`);
@@ -217,6 +332,126 @@ function EditDeviceDetails() {
                 }
                 className="mt-1 block w-full border p-2 rounded-md"
               />
+            </div>
+
+            {/* Device Images */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Device Images</label>
+              <div className="space-y-4">
+                {device.imagePreviews && device.imagePreviews.map((preview, photoIndex) => (
+                  <div key={photoIndex} className="relative border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="relative">
+                      <img
+                        src={preview}
+                        alt={`Device ${index + 1} - Image ${photoIndex + 1}`}
+                        className="w-full h-40 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                        onClick={() => handleRemoveImage(index, photoIndex)}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Upload Field */}
+                <div className="flex items-center justify-center w-full">
+                  <label
+                    htmlFor={`device-photo-${index}`}
+                    className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-50"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Upload className="h-5 w-5 text-gray-400" />
+                      <span className="ml-2 text-sm text-gray-500">Add Device Image</span>
+                    </div>
+                    <input
+                      type="file"
+                      id={`device-photo-${index}`}
+                      className="hidden"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleImageChange(index, e.target.files)}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Applications */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Applications</label>
+              {device.applications && device.applications.map((app, appIndex) => (
+                <div key={appIndex} className="bg-gray-50 rounded-lg p-4 relative border border-gray-200 mb-3">
+                  <div className="flex flex-col mb-2">
+                    <input
+                      type="text"
+                      placeholder="Application Name"
+                      className="mt-1 block w-full border p-2 rounded-md mb-2"
+                      value={app.name}
+                      onChange={(e) => handleApplicationChange(index, appIndex, 'name', e.target.value)}
+                    />
+                    <textarea
+                      placeholder="Description"
+                      className="mt-1 block w-full border p-2 rounded-md mb-2"
+                      value={app.desc}
+                      onChange={(e) => handleApplicationChange(index, appIndex, 'desc', e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-center w-full mb-2">
+                    <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-50">
+                      <div className="flex items-center justify-center">
+                        <Upload className="h-5 w-5 text-gray-400" />
+                        <span className="ml-2 text-sm text-gray-500">Add Application Image</span>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => handleApplicationImageChange(index, appIndex, e.target.files[0])}
+                      />
+                    </label>
+                  </div>
+
+                  {app.preview && (
+                    <div className="relative mb-2">
+                      <img src={app.preview} alt="Application" className="w-full h-40 object-cover rounded-md" />
+                      <button
+                        type="button"
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                        onClick={() => {
+                          handleApplicationChange(index, appIndex, 'photo', null);
+                          handleApplicationChange(index, appIndex, 'preview', null);
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                    onClick={() => removeApplication(index, appIndex)}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+
+              {(device.applications?.length || 0) < 10 && (
+                <button
+                  type="button"
+                  className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition"
+                  onClick={() => addApplication(index)}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Application
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -349,44 +584,39 @@ function EditDeviceDetails() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Image</label>
-              <label className="cursor-pointer block">
-                <div className="border-dashed border-2 border-gray-300 rounded-md p-4 flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50 transition">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mx-auto mb-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"
-                    />
-                  </svg>
-                  <span className="font-medium">Upload</span>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(index, e.target.files[0])}
-                  className="hidden"
-                />
-              </label>
-
-              {device.imagePreview && (
-                <div className="mt-2">
-                  <img
-                    src={device.imagePreview}
-                    alt="Preview"
-                    className="h-24 rounded border border-gray-300 object-cover"
+            {device.isNetwork && (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium">
+                    2G Network Amount
+                  </label>
+                  <input
+                    type="number"
+                    value={device.network2gAmt}
+                    onChange={(e) =>
+                      handleChange(index, 'network2gAmt', e.target.value)
+                    }
+                    className="mt-1 block w-full border p-2 rounded-md"
+                    placeholder="0.00"
                   />
                 </div>
-              )}
-            </div>
+                <div>
+                  <label className="block text-sm font-medium">
+                    4G Network Amount
+                  </label>
+                  <input
+                    type="number"
+                    value={device.network4gAmt}
+                    onChange={(e) =>
+                      handleChange(index, 'network4gAmt', e.target.value)
+                    }
+                    className="mt-1 block w-full border p-2 rounded-md"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+            )}
+
 
             {/* Save button for this specific device */}
             {/* <div className="pt-2">

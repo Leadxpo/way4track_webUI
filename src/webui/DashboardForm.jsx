@@ -172,11 +172,11 @@ const DashboardForm = ({
         prev.map((item, i) =>
           i === index
             ? {
-                ...item,
-                photo: file,
-                preview: URL.createObjectURL(file),
-                // Keep existing photoUrl until upload succeeds
-              }
+              ...item,
+              photo: file,
+              preview: URL.createObjectURL(file),
+              // Keep existing photoUrl until upload succeeds
+            }
             : item
         )
       );
@@ -335,11 +335,12 @@ const DashboardForm = ({
         }
       );
 
-      if (response.data.status) {
+      console.log('API response:', response);
+      if (response.status) {
         onSuccess?.();
-        navigate('ceoui');
+        navigate('/ceoui');
       } else {
-        setError(response.data.internalMessage || 'Unknown error occurred');
+        setError(response.internalMessage || 'Unknown error occurred');
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -476,80 +477,80 @@ const DashboardForm = ({
                     {['Session-2', 'Session-3', 'Session-4'].includes(
                       formData.theme
                     ) && (
-                      <div className="mt-3 space-y-2">
-                        <div className="flex items-center justify-center w-full">
-                          <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-50">
-                            <div className="flex items-center justify-center">
-                              <Upload className="h-6 w-6 text-gray-400" />
-                              <span className="ml-2 text-sm text-gray-500">
-                                {item.photo || item.photoUrl
-                                  ? 'Change image'
-                                  : 'Click to upload image'}
-                              </span>
-                            </div>
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept="image/*"
-                              onChange={(e) => handleListFileChange(index, e)}
-                            />
-                          </label>
-                        </div>
-                        {(item.photo || item.photoUrl) && (
-                          <div className="relative">
-                            <img
-                              src={item.preview || item.photo || ''}
-                              alt="preview"
-                              className="w-full h-40 object-cover rounded-lg"
-                            />
-                            <button
-                              type="button"
-                              className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
-                              onClick={() => {
-                                const updated = [...list];
-                                updated[index] = {
-                                  ...updated[index],
-                                  photo: isEdit
-                                    ? initialData.list[index].photo
-                                    : null, // Restore original if editing
-                                  preview: null,
-                                };
-                                setList(updated);
-                              }}
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
+                        <div className="mt-3 space-y-2">
+                          <div className="flex items-center justify-center w-full">
+                            <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-50">
+                              <div className="flex items-center justify-center">
+                                <Upload className="h-6 w-6 text-gray-400" />
+                                <span className="ml-2 text-sm text-gray-500">
+                                  {item.photo || item.photoUrl
+                                    ? 'Change image'
+                                    : 'Click to upload image'}
+                                </span>
+                              </div>
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={(e) => handleListFileChange(index, e)}
+                              />
+                            </label>
                           </div>
-                        )}
-                      </div>
-                    )}
+                          {(item.photo || item.photoUrl) && (
+                            <div className="relative">
+                              <img
+                                src={item.preview || item.photo || ''}
+                                alt="preview"
+                                className="w-full h-40 object-cover rounded-lg"
+                              />
+                              <button
+                                type="button"
+                                className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
+                                onClick={() => {
+                                  const updated = [...list];
+                                  updated[index] = {
+                                    ...updated[index],
+                                    photo: isEdit
+                                      ? initialData.list[index].photo
+                                      : null, // Restore original if editing
+                                    preview: null,
+                                  };
+                                  setList(updated);
+                                }}
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                   </div>
                 ))}
               </div>
 
               {(formData.theme === 'Session-4' ||
                 ['Session-5', 'Session-6'].includes(formData.theme)) && (
-                <button
-                  type="button"
-                  className="w-full py-2 px-4 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-50 flex items-center justify-center"
-                  onClick={() =>
-                    setList([
-                      ...list,
-                      formData.theme === 'Session-4'
-                        ? {
+                  <button
+                    type="button"
+                    className="w-full py-2 px-4 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-50 flex items-center justify-center"
+                    onClick={() =>
+                      setList([
+                        ...list,
+                        formData.theme === 'Session-4'
+                          ? {
                             desc: '',
                             photo: null,
                             preview: null,
                             photoUrl: null,
                           }
-                        : { name: '', desc: '' },
-                    ])
-                  }
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add More
-                </button>
-              )}
+                          : { name: '', desc: '' },
+                      ])
+                    }
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add More
+                  </button>
+                )}
             </div>
           )}
 
@@ -650,9 +651,8 @@ const DashboardForm = ({
           <button
             type="submit"
             disabled={loading}
-            className={`flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${
-              loading ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
+            className={`flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
           >
             {loading ? 'Saving...' : isEdit ? 'Update Theme' : 'Submit Theme'}
           </button>

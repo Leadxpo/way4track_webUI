@@ -23,6 +23,8 @@ function EditProductAppDetails() {
           app.points?.map((p) => ({
             title: p.title || '',
             desc: p.desc || '',
+            file: null,
+            filePreview: p.file || '',
           })) || [],
       }));
       setProductApps(filledApps);
@@ -37,6 +39,14 @@ function EditProductAppDetails() {
   const handleAppChange = (index, field, value) => {
     const updated = [...productApps];
     updated[index][field] = value;
+    setProductApps(updated);
+  };
+
+  const handlePointFileChange = (appIndex, pointIndex, file) => {
+    const preview = file ? URL.createObjectURL(file) : '';
+    const updated = [...productApps];
+    updated[appIndex].points[pointIndex].file = file;
+    updated[appIndex].points[pointIndex].filePreview = preview;
     setProductApps(updated);
   };
 
@@ -70,20 +80,30 @@ function EditProductAppDetails() {
   };
 
   const handleSaveNewApp = (newApp) => {
+    delete newApp.id;
     setProductApps([...productApps, newApp]);
     handleSubmitSingleApp(newApp)
   };
 
   const handleSubmitSingleApp = async (app, index) => {
     const formData = new FormData();
+    if (app.id) {
+      formData.append('id', app.id);
+    }
     formData.append('name', app.name);
     formData.append('shortDescription', app.shortDescription);
     formData.append('companyCode', productMeta.companyCode);
     formData.append('unitCode', productMeta.unitCode);
     formData.append('webProductId', productMeta.webProductId);
-    formData.append('points', JSON.stringify(app.points));
-    if (app.id) formData.append('id', app.id);
     if (app.image) formData.append('photo', app.image);
+
+    (app.points || []).forEach((p, pIndex) => {
+      formData.append(`points[${pIndex}].title`, p.title || '');
+      formData.append(`points[${pIndex}].desc`, p.desc || '');
+      if (p.file) {
+        formData.append(`points[${pIndex}].file`, p.file, p.file.name);
+      }
+    });
 
     try {
       setLoadingIndex(index);
@@ -247,6 +267,30 @@ function EditProductAppDetails() {
                     }
                     className="block w-full p-2 rounded-md border border-gray-300"
                   />
+
+                  {/* Upload Image */}
+                  <label className="cursor-pointer block mb-2">
+                    <div className="border-dashed border-2 border-gray-300 rounded-md p-2 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition">
+                      Upload Point Image
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handlePointFileChange(index, pointIndex, e.target.files[0])}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {/* Show Preview */}
+                  {point.filePreview && (
+                    <div className="mt-2">
+                      <img
+                        src={point.filePreview}
+                        alt="Point Preview"
+                        className="h-20 rounded border object-cover"
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -256,9 +300,8 @@ function EditProductAppDetails() {
                 type="button"
                 onClick={() => handleSubmitSingleApp(app, index)}
                 disabled={loadingIndex === index}
-                className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg ${
-                  loadingIndex === index ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg ${loadingIndex === index ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
               >
                 {loadingIndex === index ? 'Saving...' : 'Update'}
               </button>

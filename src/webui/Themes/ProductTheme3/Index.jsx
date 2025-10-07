@@ -15,19 +15,19 @@ import SchoolBus from './SchoolBus.jsx';
 const LandingPage = ({ data }) => {
   return (
     <div className="landing-page bg-gradient-to-b from-white to-amber-50">
-      <SchoolBus 
-      title={data.name} 
-        description={data.shortDescription} 
+      <SchoolBus
+        title={data.name}
+        description={data.shortDescription}
         heroImage={data.blogImage}
         stateData={data} />
       {/* <HeroSection stateData={data} /> */}
       {/* <div className="container-fluid"> */}
-        {/* <FeaturesSection stateData={data} /> */}
-        {/* <GpsSection stateData={data} /> */}
-        {/* <ParentsAppSection stateData={data} /> */}
-        {/* <MonitoringSection stateData={data} />
+      {/* <FeaturesSection stateData={data} /> */}
+      {/* <GpsSection stateData={data} /> */}
+      {/* <ParentsAppSection stateData={data} /> */}
+      {/* <MonitoringSection stateData={data} />
         <DriverAppSection stateData={data} /> */}
-        {/* <SupportedTrackersSection stateData={data} /> */}
+      {/* <SupportedTrackersSection stateData={data} /> */}
       {/* </div> */}
     </div>
   );

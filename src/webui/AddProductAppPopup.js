@@ -1,4 +1,3 @@
-// components/AddProductAppPopup.jsx
 import React, { useState } from 'react';
 
 const AddProductAppPopup = ({ onClose, onSave }) => {
@@ -6,15 +5,25 @@ const AddProductAppPopup = ({ onClose, onSave }) => {
   const [shortDescription, setShortDescription] = useState('');
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
-  const [points, setPoints] = useState([{ title: '', desc: '' }]);
+  const [points, setPoints] = useState([
+    { title: '', desc: '', file: null, filePreview: '' },
+  ]);
 
   const handleAddPoint = () => {
-    setPoints([...points, { title: '', desc: '' }]);
+    setPoints([...points, { title: '', desc: '', file: null, filePreview: '' }]);
   };
 
   const handlePointChange = (index, field, value) => {
     const updated = [...points];
     updated[index][field] = value;
+    setPoints(updated);
+  };
+
+  const handlePointFileChange = (index, file) => {
+    const preview = file ? URL.createObjectURL(file) : '';
+    const updated = [...points];
+    updated[index].file = file;
+    updated[index].filePreview = preview;
     setPoints(updated);
   };
 
@@ -60,7 +69,7 @@ const AddProductAppPopup = ({ onClose, onSave }) => {
 
         <label className="block text-sm font-medium mb-1">Points</label>
         {points.map((point, i) => (
-          <div key={i} className="mb-2">
+          <div key={i} className="mb-4 border p-2 rounded">
             <input
               value={point.title}
               onChange={(e) => handlePointChange(i, 'title', e.target.value)}
@@ -71,11 +80,39 @@ const AddProductAppPopup = ({ onClose, onSave }) => {
               value={point.desc}
               onChange={(e) => handlePointChange(i, 'desc', e.target.value)}
               placeholder="Description"
-              className="w-full p-1 border rounded"
+              className="w-full p-1 mb-2 border rounded"
             />
+
+            {/* File Upload */}
+            <label className="cursor-pointer block mb-1">
+              <div className="border-dashed border-2 border-gray-300 rounded-md p-2 text-center text-gray-500 hover:bg-gray-50 transition">
+                Upload Point Image
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  handlePointFileChange(i, e.target.files[0])
+                }
+                className="hidden"
+              />
+            </label>
+
+            {/* Preview */}
+            {point.filePreview && (
+              <img
+                src={point.filePreview}
+                alt="Point Preview"
+                className="h-20 mt-2 rounded border object-cover"
+              />
+            )}
           </div>
         ))}
-        <button onClick={handleAddPoint} className="text-blue-500 text-sm mb-4">
+
+        <button
+          onClick={handleAddPoint}
+          className="text-blue-500 text-sm mb-4"
+        >
           + Add Point
         </button>
 
