@@ -233,12 +233,16 @@ function EditProductAppDetails() {
                   updated[index].points.push({ title: '', desc: '' });
                   setProductApps(updated);
                 }}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-blue-600 hover:underline text-sm mb-3"
               >
                 + Add Point
               </button>
               {app.points.map((point, pointIndex) => (
                 <div key={pointIndex} className="mb-2">
+                  <div className="font-semibold text-gray-700 mb-1">
+                    Point {pointIndex + 1}
+                  </div>
+                  <hr className="mb-2" />
                   <input
                     type="text"
                     placeholder="Title"
@@ -251,7 +255,7 @@ function EditProductAppDetails() {
                         e.target.value
                       )
                     }
-                    className="block w-full mb-1 p-2 rounded-md border border-gray-300"
+                    className="block w-full mb-2 p-2 rounded-md border border-gray-300"
                   />
                   <input
                     type="text"
@@ -265,11 +269,11 @@ function EditProductAppDetails() {
                         e.target.value
                       )
                     }
-                    className="block w-full p-2 rounded-md border border-gray-300"
+                    className="block w-full mb-2 p-2 rounded-md border border-gray-300"
                   />
 
                   {/* Upload Image */}
-                  <label className="cursor-pointer block mb-2">
+                  <label className="cursor-pointer block mb-3">
                     <div className="border-dashed border-2 border-gray-300 rounded-md p-2 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition">
                       Upload Point Image
                     </div>

@@ -94,24 +94,29 @@ function FormStepFive({ step5Items, setStep5Items, handleImageChange, imagePrevi
           <h5>Points</h5>
           {(item.points || []).map((point, pIndex) => (
             <div key={pIndex} className="d-flex gap-2">
-              <input
-                type="text"
-                placeholder="Title"
-                value={point.title}
-                onChange={(e) =>
-                  handlePointChange(index, pIndex, 'title', e.target.value)
-                }
-                className="form-control my-2"
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={point.desc}
-                onChange={(e) =>
-                  handlePointChange(index, pIndex, 'desc', e.target.value)
-                }
-                className="form-control my-2"
-              />
+
+              {pIndex !== 16 && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    value={point.title}
+                    onChange={(e) =>
+                      handlePointChange(index, pIndex, 'title', e.target.value)
+                    }
+                    className="form-control my-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={point.desc}
+                    onChange={(e) =>
+                      handlePointChange(index, pIndex, 'desc', e.target.value)
+                    }
+                    className="form-control my-2"
+                  />
+                </>
+              )}
               <input
                 type="file"
                 onChange={(e) => {
