@@ -7,6 +7,7 @@ function EditProductAppDetails() {
   const location = useLocation();
   const [productApps, setProductApps] = useState([]);
   const [productMeta, setProductMeta] = useState({});
+  const [product, setProduct] = useState(null);
   const [loadingIndex, setLoadingIndex] = useState(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
 
@@ -27,6 +28,7 @@ function EditProductAppDetails() {
             filePreview: p.file || '',
           })) || [],
       }));
+      setProduct(product);
       setProductApps(filledApps);
       setProductMeta({
         companyCode: product.companyCode,
@@ -243,34 +245,28 @@ function EditProductAppDetails() {
                     Point {pointIndex + 1}
                   </div>
                   <hr className="mb-2" />
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={point.title}
-                    onChange={(e) =>
-                      handlePointChange(
-                        index,
-                        pointIndex,
-                        'title',
-                        e.target.value
-                      )
-                    }
-                    className="block w-full mb-2 p-2 rounded-md border border-gray-300"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={point.desc}
-                    onChange={(e) =>
-                      handlePointChange(
-                        index,
-                        pointIndex,
-                        'desc',
-                        e.target.value
-                      )
-                    }
-                    className="block w-full mb-2 p-2 rounded-md border border-gray-300"
-                  />
+                  {!(product?.layoutType === 'theme3' && pointIndex === 16) && (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Title"
+                        value={point.title}
+                        onChange={(e) =>
+                          handlePointChange(index, pointIndex, 'title', e.target.value)
+                        }
+                        className="block w-full mb-2 p-2 rounded-md border border-gray-300"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        value={point.desc}
+                        onChange={(e) =>
+                          handlePointChange(index, pointIndex, 'desc', e.target.value)
+                        }
+                        className="block w-full mb-2 p-2 rounded-md border border-gray-300"
+                      />
+                    </>
+                  )}
 
                   {/* Upload Image */}
                   <label className="cursor-pointer block mb-3">

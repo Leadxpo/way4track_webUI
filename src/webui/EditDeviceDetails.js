@@ -186,13 +186,21 @@ function EditDeviceDetails() {
     formData.append('network2gAmt', Number(device.network2gAmt) || 0);
 
     if (device.photos && device.photos.length > 0) {
-      device.photos.forEach((photo) => {
+      for (const photo of device.photos) {
         if (photo instanceof File) {
           formData.append("mediaFiles", photo, photo.name);
         } else if (typeof photo === "string" && photo.startsWith("http")) {
-          formData.append("image", photo);
+          try {
+            const response = await fetch(photo);
+            const blob = await response.blob();
+            const randomFileName = `image_${Date.now()}_${Math.floor(Math.random() * 1000)}.png`;
+            const file = new File([blob], randomFileName, { type: blob.type });
+            formData.append("mediaFiles", file, randomFileName);
+          } catch (error) {
+            console.error(`Failed to fetch image from ${photo}:`, error);
+          }
         }
-      });
+      }
     }
 
     if (device.applications && device.applications.length > 0) {
