@@ -27,9 +27,11 @@ function EditDeviceDetails() {
         isSubscription: !!d.isSubscription,
         subscriptionMonthlyAmt: d.subscriptionMonthlyAmt || '',
         subscriptionYearlyAmt: d.subscriptionYearlyAmt || '',
-        isNetwork: !!d.isNetwork,
-        network4gAmt: d.network4gAmt || '',
-        network2gAmt: d.network2gAmt || '',
+        isNetwork: (d.network2gAmt >= 0 || d.network4gAmt >= 0) ? true : false,
+        is2G: d.network2gAmt >= 0,
+        is4G: d.network4gAmt >= 0,
+        network2gAmt: d.network2gAmt >= 0 ? d.network2gAmt : '',
+        network4gAmt: d.network4gAmt >= 0 ? d.network4gAmt : '',
         discount: d.discount || '',
         applications: d.points ? d.points.map(point => ({
           name: point.title || '',
@@ -182,8 +184,17 @@ function EditDeviceDetails() {
     formData.append('isNetwork', device.isNetwork ? Number(1) : Number(0));
     formData.append('discount', device.discount === '' ? 0 : Number(device.discount) || 0);
 
-    formData.append('network4gAmt', Number(device.network4gAmt) || 0);
-    formData.append('network2gAmt', Number(device.network2gAmt) || 0);
+    if (device.is2G) {
+      formData.append('network2gAmt', Number(device.network2gAmt) || 0);
+    } else {
+      formData.append('network2gAmt', -1);
+    }
+
+    if (device.is4G) {
+      formData.append('network4gAmt', Number(device.network4gAmt) || 0);
+    } else {
+      formData.append('network4gAmt', -1);
+    }
 
     if (device.photos && device.photos.length > 0) {
       for (const photo of device.photos) {
@@ -593,34 +604,57 @@ function EditDeviceDetails() {
             </div>
 
             {device.isNetwork && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium">
-                    2G Network Amount
-                  </label>
-                  <input
-                    type="number"
-                    value={device.network2gAmt}
-                    onChange={(e) =>
-                      handleChange(index, 'network2gAmt', e.target.value)
-                    }
-                    className="mt-1 block w-full border p-2 rounded-md"
-                    placeholder="0.00"
-                  />
+              <div className="grid grid-cols-2 gap-4 mt-2">
+                {/* 2G Network */}
+                <div className="border border-gray-200 rounded-md p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">2G Network</label>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={device.is2G || false}
+                        onChange={(e) => handleChange(index, 'is2G', e.target.checked)}
+                      />
+                      <div className="w-10 h-5 bg-gray-300 peer-checked:bg-green-500 rounded-full relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-4 after:w-4 after:rounded-full after:transition-all peer-checked:after:translate-x-5"></div>
+                    </label>
+                  </div>
+
+                  {device.is2G && (
+                    <input
+                      type="number"
+                      placeholder="Enter 2G Amount"
+                      className="mt-1 block w-full border p-2 rounded-md"
+                      value={device.network2gAmt || ''}
+                      onChange={(e) => handleChange(index, 'network2gAmt', e.target.value)}
+                    />
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium">
-                    4G Network Amount
-                  </label>
-                  <input
-                    type="number"
-                    value={device.network4gAmt}
-                    onChange={(e) =>
-                      handleChange(index, 'network4gAmt', e.target.value)
-                    }
-                    className="mt-1 block w-full border p-2 rounded-md"
-                    placeholder="0.00"
-                  />
+
+                {/* 4G Network */}
+                <div className="border border-gray-200 rounded-md p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">4G Network</label>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={device.is4G || false}
+                        onChange={(e) => handleChange(index, 'is4G', e.target.checked)}
+                      />
+                      <div className="w-10 h-5 bg-gray-300 peer-checked:bg-green-500 rounded-full relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-4 after:w-4 after:rounded-full after:transition-all peer-checked:after:translate-x-5"></div>
+                    </label>
+                  </div>
+
+                  {device.is4G && (
+                    <input
+                      type="number"
+                      placeholder="Enter 4G Amount"
+                      className="mt-1 block w-full border p-2 rounded-md"
+                      value={device.network4gAmt || ''}
+                      onChange={(e) => handleChange(index, 'network4gAmt', e.target.value)}
+                    />
+                  )}
                 </div>
               </div>
             )}

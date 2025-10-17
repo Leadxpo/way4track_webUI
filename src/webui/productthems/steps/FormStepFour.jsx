@@ -16,6 +16,8 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
     ]);
   };
 
+  console.log(step4Items)
+
   const removeStep4Item = (index) => {
     if (step4Items.length === 1) return;
     const updated = [...step4Items];
@@ -299,32 +301,61 @@ function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePrevi
               {item.isNetwork && (
                 <div className="step4_formRow">
                   <div className="step4_formGroup step4_col6">
-                    <label className="step4_formLabel">4G Network Amount</label>
-                    <div className="step4_inputGroup">
-                      <span className="step4_inputGroupText">₹</span>
-                      <input
-                        type="number"
-                        className="step4_formControl"
-                        value={item.network4gAmt || ''}
-                        onChange={(e) => handleStep4FieldChange(index, 'network4gAmt', parseFloat(e.target.value))}
-                        placeholder="0.00"
-                      />
+                    <label className="step4_formLabel">2G Network</label>
+                    <div className="step4_formLabel step4_switchContainer">
+                      <label className="step4_switch">
+                        <input
+                          type="checkbox"
+                          checked={item.is2G || false}
+                          onChange={(e) => handleStep4FieldChange(index, 'is2G', e.target.checked)}
+                        />
+                        <span className="step4_slider step4_round"></span>
+                      </label>
+                      <span className="step4_switchLabel">Enable 2G</span>
                     </div>
+
+                    {item.is2G && (
+                      <div className="step4_inputGroup">
+                        <span className="step4_inputGroupText">₹</span>
+                        <input
+                          type="number"
+                          className="step4_formControl"
+                          value={item.network2gAmt || ''}
+                          onChange={(e) => handleStep4FieldChange(index, 'network2gAmt', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="step4_formGroup step4_col6">
+                    <label className="step4_formLabel">4G Network</label>
+                    <div className="step4_formLabel step4_switchContainer">
+                      <label className="step4_switch">
+                        <input
+                          type="checkbox"
+                          checked={item.is4G || false}
+                          onChange={(e) => handleStep4FieldChange(index, 'is4G', e.target.checked)}
+                        />
+                        <span className="step4_slider step4_round"></span>
+                      </label>
+                      <span className="step4_switchLabel">Enable 4G</span>
+                    </div>
+
+                    {item.is4G && (
+                      <div className="step4_inputGroup">
+                        <span className="step4_inputGroupText">₹</span>
+                        <input
+                          type="number"
+                          className="step4_formControl"
+                          value={item.network4gAmt || ''}
+                          onChange={(e) => handleStep4FieldChange(index, 'network4gAmt', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  <div className="step4_formGroup step4_col6">
-                    <label className="step4_formLabel">2G Network Amount</label>
-                    <div className="step4_inputGroup">
-                      <span className="step4_inputGroupText">₹</span>
-                      <input
-                        type="number"
-                        className="step4_formControl"
-                        value={item.network2gAmt || ''}
-                        onChange={(e) => handleStep4FieldChange(index, 'network2gAmt', parseFloat(e.target.value))}
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
+
                 </div>
               )}
 

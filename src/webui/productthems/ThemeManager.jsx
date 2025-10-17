@@ -259,8 +259,20 @@ function ThemeManager() {
         );
         step4Data.append('discount', item.discount?.toString() || '0');
 
-        step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
-        step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
+        if (item.is2G) {
+          step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
+        } else {
+          step4Data.append('network2gAmt', -1);
+        }
+
+        if (item.is4G) {
+          step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
+        } else {
+          step4Data.append('network4gAmt', -1);
+        }
+
+        // step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
+        // step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
 
 
         if (item.applications && item.applications.length > 0) {
