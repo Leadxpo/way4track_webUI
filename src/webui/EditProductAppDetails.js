@@ -99,13 +99,25 @@ function EditProductAppDetails() {
     formData.append('webProductId', productMeta.webProductId);
     if (app.image) formData.append('photo', app.image);
 
-    (app.points || []).forEach((p, pIndex) => {
+    const convertUrlToBlob = async (url) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const filename = url.split('/').pop().split('?')[0] || 'file.jpg';
+      return new File([blob], filename, { type: blob.type });
+    };
+
+    for (let pIndex = 0; pIndex < (app.points || []).length; pIndex++) {
+      const p = app.points[pIndex];
       formData.append(`points[${pIndex}].title`, p.title || '');
       formData.append(`points[${pIndex}].desc`, p.desc || '');
+
       if (p.file) {
         formData.append(`points[${pIndex}].file`, p.file, p.file.name);
+      } else if (p.filePreview && p.filePreview.startsWith('https')) {
+        const fileBlob = await convertUrlToBlob(p.filePreview);
+        formData.append(`points[${pIndex}].file`, fileBlob, fileBlob.name);
       }
-    });
+    }
 
     try {
       setLoadingIndex(index);
