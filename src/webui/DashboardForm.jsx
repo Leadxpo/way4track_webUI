@@ -69,6 +69,7 @@ const DashboardForm = ({
           initialData.list.map((item) => ({
             desc: item.desc || '',
             name: item.name || '',
+            link: item.link || '',
             photo: item.photo || null, // Store directly in photo
             preview: null,
           }))
