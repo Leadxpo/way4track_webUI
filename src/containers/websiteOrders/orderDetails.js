@@ -25,6 +25,7 @@ const OrderDetails = () => {
           companyCode: initialAuthState.companyCode,
           unitCode: initialAuthState.unitCode,
         });
+        console.log("RESPONSE : ",  response)
         if (response.status) {
           setOrder(response.data);
         } else {
@@ -57,6 +58,9 @@ const OrderDetails = () => {
     unitCode,
     refund,
   } = order;
+
+  console.log("ORDER : ", orderItems)
+
 
   const handleUpdateStatus = async (refundId, newStatus) => {
     try {
@@ -134,8 +138,9 @@ const OrderDetails = () => {
           <h2 className="order-details-section-title">Items</h2>
           <div className="order-details-items-list">
             {orderItems?.map((item, index) => {
+              console.log("REFUND : ", refund)
               const associatedRefund = refund?.find(
-                (r) => r.deviceId.id === item.deviceId
+                (r) => r.id === item.deviceId
               );
               return (
                 <div key={index} className="order-details-item-card">
