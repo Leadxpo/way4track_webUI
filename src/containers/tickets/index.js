@@ -183,7 +183,7 @@ const Tickets = () => {
       {loading ? (
         <p className="text-center text-gray-600">Loading...</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-auto max-h-[600px] w-full">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr className="border-b bg-blue-500 text-white text-left">

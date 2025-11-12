@@ -148,7 +148,7 @@ export const menuOptions = [
   // role?.toLowerCase() === "branch manager" && { name: 'Reports', icon: <img src="./reports.png" />, route: '/reports' },
   // role?.toLowerCase() === "warehouse manager" || role?.toLowerCase() === "inventory operational analyst" &&
    {
-     name: 'Reports', icon: <img src="./reports.png" />, route: '/products-inventory' 
+     name: 'Work Reports', icon: <img src="./reports.png" />, route: '/products-inventory' 
     },
   role?.toLowerCase() === "accountant" && {
     name: 'Reports',

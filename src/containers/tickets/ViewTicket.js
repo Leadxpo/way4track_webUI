@@ -5,17 +5,19 @@ import ApiService, { initialAuthState } from "../../services/ApiService";
 export default function ViewTicket() {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const myId = localStorage.getItem("id")
   const ticket = location.state?.ticket;
-
+  const [reportingStaffID,setReportingStaffID]=useState("")
   const [formData, setFormData] = useState({
     problem: "",
     remark: "",
     date: new Date().toISOString().split("T")[0],
     ticketNumber: "",
+    reportingStaff: "",
     workStatus: "",
     description: "",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -24,7 +26,7 @@ export default function ViewTicket() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await ApiService.post("/tickets/handleTicketDetails", {id:ticket.id,remark:formData.remark,workStatus:formData.workStatus}, {
+      const res = await ApiService.post("/tickets/handleTicketDetails", { id: ticket.id, remark: formData.remark, workStatus: formData.workStatus }, {
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -51,14 +53,16 @@ export default function ViewTicket() {
       if (response.status && response.data) {
         const ticketData = response.data;
         setFormData({
-          problem: ticketData.problem || "",
-          remark: ticketData.remark || "",
-          date: ticketData.date ? ticketData.date.split("T")[0] : new Date().toISOString().split("T")[0],
-          designationRelation: ticketData.designationRelation.designation,
-          ticketNumber: ticketData.ticketNumber || "",
-          workStatus: ticketData.workStatus || "",
-          description: ticketData.description || "",
+          problem: ticketData?.problem || "",
+          remark: ticketData?.remark || "",
+          date: ticketData?.date ? ticketData?.date.split("T")[0] : new Date().toISOString().split("T")[0],
+          designationRelation: ticketData?.designationRelation?.designation,
+          reportingStaff: ticketData?.reportingStaff.name,
+          ticketNumber: ticketData?.ticketNumber || "",
+          workStatus: ticketData?.workStatus || "",
+          description: ticketData?.description || "",
         });
+        setReportingStaffID(ticketData?.reportingStaff?.id)
       } else {
         console.error("Error: API response is invalid or no data found");
       }
@@ -100,6 +104,16 @@ export default function ViewTicket() {
         />
       </div>
       <div>
+        <label className="block text-sm font-medium">Reporting Staff</label>
+        <input
+          type="text"
+          name="reportingStaff"
+          value={formData.reportingStaff}
+          required
+          className="w-full p-2 border rounded-md"
+        />
+      </div>
+      <div>
         <label className="block text-sm font-medium">Designation Relation</label>
         <input
           type="text"
@@ -129,43 +143,45 @@ export default function ViewTicket() {
         ></textarea>
       </div>
 
+      {String(reportingStaffID) === String(myId) &&
+        (
+          <div className="p-6 bg-primary rounded-lg shadow-md">
+            <h1 className="m-3 text-l text-white font-bold" style={{ fontWeight: 'bold' }}>Update Status</h1>
+            <label className="block text-sm font-medium text-white ">Work Status</label>
+            <select
+              name="workStatus"
+              value={formData.workStatus}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Select Status</option>
+              <option value="pending">Pending</option>
+              <option value="Processing">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="allocated">Allocated</option>
+              <option value="incomplete">Incomplete</option>
+              <option value="install">Install</option>
+              <option value="accept">Accept</option>
+              <option value="activate">Activate</option>
+            </select>
 
-      <div className="p-6 bg-primary rounded-lg shadow-md">
-        <h1 className="m-3 text-l text-white font-bold" style={{fontWeight:'bold'}}>Update Status</h1>
-        <label className="block text-sm font-medium text-white ">Work Status</label>
-        <select
-          name="workStatus"
-          value={formData.workStatus}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded-md"
-        >
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="Processing">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="allocated">Allocated</option>
-          <option value="incomplete">Incomplete</option>
-          <option value="install">Install</option>
-          <option value="accept">Accept</option>
-          <option value="activate">Activate</option>
-        </select>
+            <div>
+              <label className="block text-sm font-medium text-white ">Remark</label>
+              <textarea
+                name="remark"
+                value={formData.remark}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border rounded-md"
+              ></textarea>
+            </div>
+            <button type="button" className="w-50 mt-3 text-black p-2 rounded-md" style={{ backgroundColor: 'white' }} onClick={(e) => handleSubmit(e)}>
+              Update
+            </button>
 
-        <div>
-          <label className="block text-sm font-medium text-white ">Remark</label>
-          <textarea
-            name="remark"
-            value={formData.remark}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded-md"
-          ></textarea>
-        </div>
-        <button type="button" className="w-50 mt-3 text-black p-2 rounded-md" style={{backgroundColor:'white'}} onClick={(e)=>handleSubmit(e)}>
-          Update
-        </button>
-
-      </div>
+          </div>
+        )}
     </div>
   );
 }

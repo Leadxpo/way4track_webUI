@@ -289,7 +289,7 @@ const Payroll = () => {
       {/* Table */}
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 whitespace-nowrap scrollbar-hide">
-        <div className='className="overflow-hidden"'>
+        <div className="overflow-auto max-h-[600px] w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-blue-500 text-white text-left">

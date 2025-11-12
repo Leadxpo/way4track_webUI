@@ -10,6 +10,7 @@ import totalPurchases from '../../mockData/mockTotalPurchases.json';
 import ApiService, { initialAuthState } from '../../services/ApiService';
 import { getPermissions } from '../../common/commonUtils';
 import * as XLSX from 'xlsx';
+import moment from 'moment';
 
 const TableWithSearchFilter = ({
   type,
@@ -88,7 +89,7 @@ const TableWithSearchFilter = ({
           state: item.state,
           status: item.status,
           GSTNumber: item.gstNumber,
-          createdDate: item.createdDate,
+          createdDate: moment(item.createdDate).format("DD/MM/YYYY"),
         }));
 
         setFilteredData(rrr)

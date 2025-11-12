@@ -46,7 +46,7 @@ const ClientProfile = () => {
           unitCode: initialAuthState.unitCode,
         });
         if (response.status) {
-          console.log("yyyypppp",response.data);
+          console.log("yyyypppp", response.data);
           const client = response.data;
           setClientDetails({
             name: client.name,
@@ -137,8 +137,8 @@ const ClientProfile = () => {
         </div>
       </div>
 
-       {/* Client Purchases Table */}
-       <p className="font-bold text-xl mb-2">Customer Purchases</p>
+      {/* Client Purchases Table */}
+      <p className="font-bold text-xl mb-2">Customer Purchases</p>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
           <thead>
@@ -185,67 +185,73 @@ const ClientProfile = () => {
       </div>
 
 
- {/* Modal */}
- {showModal && selectedRow && (
-  <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center overflow-auto p-4">
-    <div className="bg-white rounded-lg w-full max-w-4xl p-6 shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Customer Purchase Details</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700" style={{paddingTop:100}}>
-        <div><strong>Client Name:</strong> {selectedRow.clientName}</div>
-        <div><strong>Phone Number:</strong> {selectedRow.phoneNumber}</div>
-        <div><strong>Email:</strong> {selectedRow.ve_email}</div>
-        <div><strong>Work Id:</strong> {selectedRow.technicianNumber}</div>
-        <div><strong>Vehicle Number:</strong> {selectedRow.ve_vehicle_number}</div>
-        <div><strong>Vehicle Type:</strong> {selectedRow.ve_vehicle_type || 'N/A'}</div>
-        <div><strong>Chassis Number:</strong> {selectedRow.ve_chassis_number}</div>
-        <div><strong>Engine Number:</strong> {selectedRow.ve_engine_number}</div>
-        <div><strong>Vehicle IMEI:</strong> {selectedRow.ve_imei_number}</div>
-        <div><strong>Product Name:</strong> {selectedRow.productName}</div>
-        <div><strong>Product Type:</strong> {selectedRow.pt_type || 'N/A'}</div>
-        <div><strong>Service:</strong> {selectedRow.service || 'N/A'}</div>
-        <div><strong>Technician:</strong> {selectedRow.staff_name +"( "+selectedRow.staff_staff_id+" )" || 'N/A'}</div>
-        <div><strong>Total Amount:</strong> {selectedRow.totalAmount ?? 'N/A'}</div>
-        <div><strong>Paid Amount:</strong> {selectedRow.paidAmount ?? 'N/A'}</div>
-        <div><strong>Payment Status:</strong> {selectedRow.paymentStatus}</div>
-        <div><strong>Work Status:</strong> {selectedRow.workStatus}</div>
-        <div><strong>Start Date:</strong> {new Date(selectedRow.ve_start_date).toLocaleString()}</div>
-        <div><strong>Installation Address:</strong> {selectedRow.ve_installation_address}</div>
-        <div><strong>User Name:</strong> {selectedRow.userName}</div>
-        <div><strong>Application Name:</strong> {selectedRow.applicationName || 'N/A'}</div>
-      </div>
+      {/* Modal */}
+      {showModal && selectedRow && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center overflow-auto p-4">
+          <div className="bg-white rounded-lg w-full max-w-4xl p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Customer Purchase Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700" style={{ paddingTop: 100 }}>
+              <div><strong>Client Name:</strong> {selectedRow.clientName}</div>
+              <div><strong>Phone Number:</strong> {selectedRow.phoneNumber}</div>
+              <div><strong>Email:</strong> {selectedRow.ve_email}</div>
+              <div><strong>Work Id:</strong> {selectedRow.technicianNumber}</div>
+              <div><strong>Vehicle Number:</strong> {selectedRow.ve_vehicle_number}</div>
+              <div><strong>Vehicle Type:</strong> {selectedRow.ve_vehicle_type || 'N/A'}</div>
+              <div><strong>Chassis Number:</strong> {selectedRow.ve_chassis_number}</div>
+              <div><strong>Engine Number:</strong> {selectedRow.ve_engine_number}</div>
+              <div><strong>Vehicle IMEI:</strong> {selectedRow.ve_imei_number}</div>
+              <div><strong>Product Name:</strong> {selectedRow.productName}</div>
+              <div><strong>Product Type:</strong> {selectedRow.pt_type || 'N/A'}</div>
+              <div><strong>Service:</strong> {selectedRow.service || 'N/A'}</div>
+              <div><strong>Technician:</strong> {selectedRow.staff_name + "( " + selectedRow.staff_staff_id + " )" || 'N/A'}</div>
+              <div><strong>Total Amount:</strong> {selectedRow.totalAmount ?? 'N/A'}</div>
+              <div><strong>Paid Amount:</strong> {selectedRow.paidAmount ?? 'N/A'}</div>
+              <div><strong>Payment Status:</strong> {selectedRow.paymentStatus}</div>
+              <div><strong>Work Status:</strong> {selectedRow.workStatus}</div>
+              <div><strong>Start Date:</strong> {new Date(selectedRow.ve_start_date).toLocaleString()}</div>
+              <div><strong>Installation Address:</strong> {selectedRow.ve_installation_address}</div>
+              <div><strong>User Name:</strong> {selectedRow.userName}</div>
+              <div><strong>Application Name:</strong> {selectedRow.applicationName || 'N/A'}</div>
+            </div>
 
-      {/* Display vehicle images if available */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2">Vehicle Photos</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[...Array(10)].map((_, i) => {
-            const key = `ve_vehicle_photo_${i + 1}`;
-            const url = selectedRow[key];
-            return (
-              url && (
-                <img
-                  key={i}
-                  src={url}
-                  alt={`Vehicle ${i + 1}`}
-                  className="w-full h-40 object-cover rounded border"
-                />
-              )
-            );
-          })}
+            {/* Display vehicle images if available */}
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2">Vehicle Photos</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[...Array(10)].map((_, i) => {
+                  const key = `ve_vehicle_photo_${i + 1}`;
+                  const url = selectedRow[key];
+                  return (
+                    url && (
+                      <>
+
+                        <a href={url} download="vehicle_photo.jpg">
+                          <img
+                            key={i}
+                            src={url}
+                            alt={`Vehicle ${i + 1}`}
+                            className="w-full h-40 object-cover rounded-lg shadow-md cursor-pointer rounded border"
+                          />
+                        </a>
+
+                      </>
+                    )
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="text-right mt-6">
+              <button
+                onClick={handleCloseModal}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="text-right mt-6">
-        <button
-          onClick={handleCloseModal}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   );

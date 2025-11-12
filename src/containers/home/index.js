@@ -44,7 +44,6 @@ const Home = () => {
   const [branchdetails, setBranchDetails] = useState([]);
   const [branchesData, setBranchesData] = useState([]);
 
-
   const [cardData, setCardData] = useState([
     {
       id: 1,
@@ -791,7 +790,7 @@ const Home = () => {
         <div className="mt-8">
           {
           }
-          <Table columnNames={tableColumns} columns={tableColumns} data={tableData} />
+          <Table columnNames={tableColumns} columns={tableColumns} data={tableData} showDelete={false} showEdit={false} showDetails={false}/>
         </div>
       </div>
 

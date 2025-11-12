@@ -130,7 +130,7 @@ const DayBook = () => {
             <tr className="bg-blue-200 text-gray-800 font-semibold">
               <th className="py-3 px-4">Date</th>
               <th className="py-3 px-4">Voucher Id</th>
-              <th className="py-3 px-4">Product Type</th>
+              <th className="py-3 px-4">Party Name</th>
               <th className="py-3 px-4">Voucher Type</th>
               <th className="py-3 px-4">Purpose</th>
               <th className="py-3 px-4">Credit Amount</th>
@@ -147,7 +147,7 @@ const DayBook = () => {
               >
                 <td className="py-2 px-4">{record.date}</td>
                 <td className="py-2 px-4">{record.voucherId}</td>
-                <td className="py-2 px-4">{record.productType}</td>
+                <td className="py-2 px-4">{record.name}</td>
                 <td className="py-2 px-4">{record.voucherType}</td>
                 <td className="py-2 px-4">{record.purpose}</td>
                 <td className="py-2 px-4">{record.creditAmount}</td>

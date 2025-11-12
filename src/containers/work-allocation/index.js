@@ -856,7 +856,7 @@ const WorkAllocation = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto" style={{ marginTop: '40px' }}>
+      <div className="overflow-auto max-h-[500px] w-full" style={{ marginTop: '40px' }}>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200" style={{ backgroundColor: '#FFFFFF' }}>
