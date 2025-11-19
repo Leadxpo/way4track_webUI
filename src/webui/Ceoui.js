@@ -105,12 +105,12 @@ const Ceoui = () => {
         >
           Dashboard
         </button>
-        {/* <button
+        <button
           className="btn btn-outline-secondary"
           onClick={() => navigate('/BlogPage')}
         >
           Blog
-        </button> */}
+        </button>
       </div>
 
       <div className="d-flex justify-content-end mb-3">

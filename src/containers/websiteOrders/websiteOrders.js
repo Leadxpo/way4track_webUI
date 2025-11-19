@@ -67,7 +67,7 @@ export default function WebsiteOrders() {
             {orders.map((order) => (
               <tr key={order.id} className="website-orders-row">
                 <td className="website-orders-td">{order.id}</td>
-                <td className="website-orders-td">{order?.name}</td>
+                <td className="website-orders-td">{order?.deliveryAddressId?.name}</td>
                 <td className="website-orders-td">
                   {new Date(order.orderDate).toLocaleDateString()}
                 </td>
