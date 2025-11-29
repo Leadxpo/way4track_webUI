@@ -14,69 +14,6 @@ const Login = ({ handleLoginFlag }) => {
   const [designations, setDesignations] = useState([]);
 
   const navigate = useNavigate();
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-  //   setLoading(true);
-
-  //   try {
-  //     const payload = {
-  //       staffId: userId,
-  //       password: password,
-  //       designation: role,
-  //       companyCode: initialAuthState.companyCode,
-  //       unitCode: initialAuthState.unitCode,
-  //     };
-
-  //     const response = await ApiService.post('/login/LoginDetails', payload);
-  //     console.log("ramesh login", response)
-
-
-
-  //     if (response.data.status) {
-  //       const userProfile = response.data;
-  //       console.log("response data", response.data);
-
-  //       localStorage.setItem('userId', userId);
-  //       localStorage.setItem('password', password);
-  //       localStorage.setItem('role', role);
-  //       localStorage.setItem('userProfile', JSON.stringify(userProfile));
-  //       // Fetch branch name separately if needed
-  //       console.log("===========", userProfile.data)
-  //       let branchName = userProfile.data.branch?.branchName;
-  //       localStorage.setItem('branchName', branchName);
-  //       localStorage.setItem('branch_id', userProfile.data.branch?.id);
-  //       localStorage.setItem('id', userProfile.data?.id);
-
-  //       const subDealerData = response.data.date?.[0]; // safely access first item
-  //       if (subDealerData) {
-  //         localStorage.setItem('role', 'Sub Dealer');
-  //         localStorage.setItem('userId', subDealerData.subDealerId); // ✅ this is what you'll use later
-  //         localStorage.setItem('companyCode', subDealerData.companyCode);
-  //         localStorage.setItem('unitCode', subDealerData.unitCode);
-  //       }
-  //       await fetchUserPermissions(
-  //         userId,
-  //         initialAuthState.companyCode,
-  //         initialAuthState.unitCode
-  //       );
-
-  //       handleLoginFlag();
-  //     } else {
-  //       alert("Please enter correct login details");
-  //       setError(response?.internalMessage || 'Invalid login credentials.');
-  //     }
-  //   } catch (err) {
-  //     setError(
-  //       err?.response?.data?.internalMessage ||
-  //       'Failed to login. Please check your credentials.'
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -97,6 +34,7 @@ const rrr=response.data.data
       if (rrr.status==='ACTIVE') {
         localStorage.setItem('userId', userId);
         localStorage.setItem('role', rrr.designation);
+        localStorage.setItem('password', password);
         localStorage.setItem('userProfile', JSON.stringify(response.data));
 
         const isSubDealer = role === 'Sub Dealer';
