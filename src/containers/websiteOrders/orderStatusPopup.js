@@ -51,7 +51,7 @@ const OrderStatusPopup = ({ order, onClose, onUpdate }) => {
 
     try {
       const response = await ApiService.post(
-        '/order/handleCreateOrder',
+        '/order/UpdateOrder',
         payload
       );
 
