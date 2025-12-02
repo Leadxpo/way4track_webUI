@@ -206,6 +206,8 @@ import ViewWork from '../appointment/ViewWork.js';
 import CreateInvoice from '../backendSupport/createInvoice.js';
 import MyAttendance from '../attendance/myAttendence.js';
 import DemoLeads from '../demo-leads/index.js';
+import GmeetLink from '../gmeet-link/index.jsx';
+import TermsAndConditions from '../t_and_c/t_and_c.jsx';
 import { useNotificationContext } from '../../common/notoficationsContext.js';
 
 const BodyLayout = ({ children }) => {
@@ -744,6 +746,8 @@ const BodyLayout = ({ children }) => {
           <Route path="/view-work" element={<ViewWork />} />
           <Route path="/create-invoice" element={<CreateInvoice />} />
           <Route path="/demo-leads" element={<DemoLeads />} />
+          <Route path='/gmeet-link' element={<GmeetLink />} />
+          <Route path='/t-and-c' element={<TermsAndConditions />} />
         </Routes>
       </div>
     </div>
