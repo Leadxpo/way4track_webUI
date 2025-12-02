@@ -333,6 +333,16 @@ export const menuOptions = [
     icon: <img src="./payroll.png" />,
     route: '/demo-leads',
   },
+  role?.toLowerCase() === 'ceo' && {
+    name: 'Gmeet Link',
+    icon: <img src="./payroll.png" />,
+    route: '/gmeet-link',
+  },
+  role?.toLowerCase() === 'ceo' && {
+    name: 'T&C',
+    icon: <img src="./payroll.png" />,
+    route: '/t-and-c',
+  }
 ];
 
 export const formattedPaths = {
