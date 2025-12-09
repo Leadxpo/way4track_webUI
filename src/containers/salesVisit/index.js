@@ -73,11 +73,26 @@ const SalesVisit = () => {
   });
 
   const [filteredData, setFilteredData] = useState(salesDetails);
-
-  const [isOpen, setIsOpen] = useState(false);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "asc",
+  });
+    const [isOpen, setIsOpen] = useState(false);
   const [popupData, setPopupData] = useState(null);
 
   //Sales Data fetching
+
+  const handleSort = (columnKey) => {
+    let direction = "asc";
+  
+    // If already sorted by this column → reverse direction
+    if (sortConfig.key === columnKey && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+  
+    setSortConfig({ key: columnKey, direction });
+  };
+  
 
   useEffect(() => {
     let data = [...salesDetails];
@@ -116,8 +131,22 @@ const SalesVisit = () => {
       });
     }
 
+      // ------- SORTING -------//
+
+    if (sortConfig.key) {
+      data.sort((a, b) => {
+        const valA = new Date(a[sortConfig.key]);
+        const valB = new Date(b[sortConfig.key]);
+  
+        if (sortConfig.direction === "asc") {
+          return valA - valB;
+        } else {
+          return valB - valA;
+        }
+      });
+    }
     setFilteredData(data);
-  }, [filters, salesDetails]);
+  }, [filters, salesDetails,sortConfig]);
 
   // 📌 Helper for updating filters
   const handleFilterChange = (key, value) => {
@@ -443,8 +472,22 @@ const SalesVisit = () => {
                   <th className="p-3">Visit ID</th>
                   <th className="p-3">Client</th>
                   <th className="p-3">Contact</th>
-                  <th className="p-3">Date of Visit</th>
-                  <th className="p-3" >Estimate Date</th>
+                  <th
+  className="p-3 cursor-pointer"
+  onClick={() => handleSort("date")}
+>
+  Date of Visit
+  {sortConfig.key === "date" && (sortConfig.direction === "asc" ? " ▲" : " ▼")}
+</th>
+
+<th
+  className="p-3 cursor-pointer"
+  onClick={() => handleSort("estimateDate")}
+>
+  Estimate Date
+  {sortConfig.key === "estimateDate" && (sortConfig.direction === "asc" ? " ▲" : " ▼")}
+</th>
+
                   <th className="p-3">Staff</th>
                   <th className="p-3">Branch</th>
                   <th className="p-3">Lead Status</th>
