@@ -208,6 +208,7 @@ import MyAttendance from '../attendance/myAttendence.js';
 import DemoLeads from '../demo-leads/index.js';
 import GmeetLink from '../gmeet-link/index.jsx';
 import TermsAndConditions from '../t_and_c/t_and_c.jsx';
+import OverallReviews from "../overall_reviews/overall_reviews.jsx";
 import { useNotificationContext } from '../../common/notoficationsContext.js';
 
 const BodyLayout = ({ children }) => {
@@ -748,6 +749,7 @@ const BodyLayout = ({ children }) => {
           <Route path="/demo-leads" element={<DemoLeads />} />
           <Route path='/gmeet-link' element={<GmeetLink />} />
           <Route path='/t-and-c' element={<TermsAndConditions />} />
+          <Route path='/overall_reviews' element={<OverallReviews />} />
         </Routes>
       </div>
     </div>
