@@ -342,7 +342,13 @@ export const menuOptions = [
     name: 'T&C',
     icon: <img src="./payroll.png" />,
     route: '/t-and-c',
+  },
+  role?.toLowerCase() === 'ceo' && {
+    name: 'Overall reviews',
+    icon: <img src="./payroll.png" />,
+    route: '/overall_reviews',
   }
+  
 ];
 
 export const formattedPaths = {
