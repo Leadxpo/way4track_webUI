@@ -5,6 +5,7 @@ import ApiService, { initialAuthState } from '../../services/ApiService';
 const BlogPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [blogName, setBlogName] = useState('');
+  const [description, setDescription] = useState(''); // 🆕 Added Description
   const [productName, setProductName] = useState('');
   const [webProductId, setWebProductId] = useState('');
   const [blogImage, setBlogImage] = useState(null);
@@ -26,7 +27,7 @@ const BlogPage = () => {
       setBlogs(
         res.data.map((b) => ({
           ...b,
-          blogImage: b.image, // for UI rendering
+          blogImage: b.image,
         }))
       );
     } catch (error) {
@@ -59,10 +60,12 @@ const BlogPage = () => {
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('title', blogName);
+    formData.append('description', description); // 🆕 Send Description
     formData.append('webProductId', webProductId);
     formData.append('webProductName', productName);
     formData.append('companyCode', initialAuthState.companyCode);
     formData.append('unitCode', initialAuthState.unitCode);
+
     if (editId) formData.append('id', editId);
     if (blogImage) formData.append('photo', blogImage);
     if (pdfFile) formData.append('pdf', pdfFile);
@@ -97,6 +100,7 @@ const BlogPage = () => {
 
   const resetForm = () => {
     setBlogName('');
+    setDescription(''); // 🆕 Reset Description
     setProductName('');
     setWebProductId('');
     setBlogImage(null);
@@ -105,6 +109,11 @@ const BlogPage = () => {
     setExistingImage(null);
     setExistingPdf(null);
   };
+
+  const truncateText = (text, maxLength = 50) => {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
 
   return (
     <div className="p-6">
@@ -129,10 +138,12 @@ const BlogPage = () => {
             >
               ×
             </button>
+
             <h2 className="text-lg font-semibold mb-4">
               {editId ? 'EDIT' : 'ADD'} BLOG
             </h2>
 
+            {/* Blog Name */}
             <label className="block mb-2">Blog Name:</label>
             <input
               type="text"
@@ -142,6 +153,17 @@ const BlogPage = () => {
               onChange={(e) => setBlogName(e.target.value)}
             />
 
+            {/* 🆕 Description Field */}
+            <label className="block mb-2">Description:</label>
+            <textarea
+              className="w-full border px-3 py-2 mb-4 rounded"
+              placeholder="Enter blog description"
+              rows="3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+
+            {/* Product Select */}
             <label className="block mb-2">Product Name:</label>
             <select
               className="w-full border px-3 py-2 mb-4 rounded"
@@ -165,6 +187,7 @@ const BlogPage = () => {
               ))}
             </select>
 
+            {/* Image Upload */}
             <label className="block mb-2">Upload Image:</label>
             {existingImage && !blogImage && (
               <img
@@ -180,6 +203,7 @@ const BlogPage = () => {
               onChange={(e) => setBlogImage(e.target.files[0])}
             />
 
+            {/* PDF Upload */}
             <label className="block mb-2">Upload PDF:</label>
             {existingPdf && !pdfFile && (
               <a
@@ -208,11 +232,13 @@ const BlogPage = () => {
         </div>
       )}
 
+      {/* Table */}
       <table className="w-full border mt-6 text-center">
         <thead>
           <tr className="bg-gray-200">
             <th className="border px-4 py-2">S.No</th>
             <th className="border px-4 py-2">Blog Name</th>
+            <th className="border px-4 py-2">Description</th> {/* 🆕 */}
             <th className="border px-4 py-2">Product Name</th>
             <th className="border px-4 py-2">Blog Image</th>
             <th className="border px-4 py-2">PDF</th>
@@ -224,7 +250,9 @@ const BlogPage = () => {
             <tr key={blog.id}>
               <td className="border px-4 py-2">{index + 1}</td>
               <td className="border px-4 py-2">{blog.title}</td>
+              <td className="border px-4 py-2">{truncateText(blog.description, 60)}</td> {/* 🆕 */}
               <td className="border px-4 py-2">{blog.webProductName}</td>
+
               <td className="border px-4 py-2">
                 {blog.blogImage && (
                   <img
@@ -234,6 +262,7 @@ const BlogPage = () => {
                   />
                 )}
               </td>
+
               <td className="border px-4 py-2">
                 {blog.pdfFile && (
                   <a
@@ -246,15 +275,19 @@ const BlogPage = () => {
                   </a>
                 )}
               </td>
+
               <td className="border px-4 py-2 space-x-2">
                 <button
                   className="text-blue-600 hover:text-blue-800"
                   onClick={() => {
                     setBlogName(blog.title);
+                    setDescription(blog.description); // 🆕 Load into edit
                     setProductName(blog.webProductName);
+
                     const product = products.find(
                       (p) => p.name === blog.webProductName
                     );
+
                     setWebProductId(product ? product.id : '');
                     setEditId(blog.id);
                     setExistingImage(blog.image || null);
@@ -264,6 +297,7 @@ const BlogPage = () => {
                 >
                   <FaEdit />
                 </button>
+
                 <button
                   className="text-red-600 hover:text-red-800"
                   onClick={() => {
@@ -280,9 +314,10 @@ const BlogPage = () => {
               </td>
             </tr>
           ))}
+
           {blogs.length === 0 && (
             <tr>
-              <td colSpan="6" className="py-4 text-gray-500">
+              <td colSpan="7" className="py-4 text-gray-500">
                 No blogs found.
               </td>
             </tr>

@@ -205,6 +205,10 @@ import EditVoucher from '../vouchers/editVoucher.js';
 import ViewWork from '../appointment/ViewWork.js';
 import CreateInvoice from '../backendSupport/createInvoice.js';
 import MyAttendance from '../attendance/myAttendence.js';
+import DemoLeads from '../demo-leads/index.js';
+import GmeetLink from '../gmeet-link/index.jsx';
+import TermsAndConditions from '../t_and_c/t_and_c.jsx';
+import OverallReviews from "../overall_reviews/overall_reviews.jsx";
 import { useNotificationContext } from '../../common/notoficationsContext.js';
 
 const BodyLayout = ({ children }) => {
@@ -414,31 +418,10 @@ const BodyLayout = ({ children }) => {
             <div>
               {role === 'Sub Dealer' ? (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <button style={{ position: 'relative' }} onClick={() => navigate('/sub-dealer-notifications')} >
-                    🔔
-                    {total > 0 && (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          top: -5,
-                          right: -5,
-                          backgroundColor: 'red',
-                          color: 'white',
-                          borderRadius: '50%',
-                          fontSize: '10px',
-                          padding: '2px 6px',
-                        }}
-                      >
-                        {total}
-                      </span>
-                    )}
-                  </button>
-
-                </div>
-
-              ) : (<>
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <button style={{ position: 'relative' }} onClick={() => navigate('/notifications')}>
+                  <button
+                    style={{ position: 'relative' }}
+                    onClick={() => navigate('/sub-dealer-notifications')}
+                  >
                     🔔
                     {total > 0 && (
                       <span
@@ -458,7 +441,35 @@ const BodyLayout = ({ children }) => {
                     )}
                   </button>
                 </div>
-              </>
+              ) : (
+                <>
+                  <div
+                    style={{ position: 'relative', display: 'inline-block' }}
+                  >
+                    <button
+                      style={{ position: 'relative' }}
+                      onClick={() => navigate('/notifications')}
+                    >
+                      🔔
+                      {total > 0 && (
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: -5,
+                            right: -5,
+                            backgroundColor: 'red',
+                            color: 'white',
+                            borderRadius: '50%',
+                            fontSize: '10px',
+                            padding: '2px 6px',
+                          }}
+                        >
+                          {total}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -735,6 +746,10 @@ const BodyLayout = ({ children }) => {
           <Route path="/edit-voucher" element={<EditVoucher />} />
           <Route path="/view-work" element={<ViewWork />} />
           <Route path="/create-invoice" element={<CreateInvoice />} />
+          <Route path="/demo-leads" element={<DemoLeads />} />
+          <Route path='/gmeet-link' element={<GmeetLink />} />
+          <Route path='/t-and-c' element={<TermsAndConditions />} />
+          <Route path='/overall_reviews' element={<OverallReviews />} />
         </Routes>
       </div>
     </div>

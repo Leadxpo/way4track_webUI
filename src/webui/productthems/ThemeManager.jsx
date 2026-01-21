@@ -19,16 +19,16 @@ function ThemeManager() {
   const [currentStep, setCurrentStep] = useState(0);
   const [imagePreviews, setImagePreviews] = useState({});
   const [step4Items, setStep4Items] = useState([
-    { webProductName: '', photo: null, model: '' },
+    { webProductName: '', photos: [], model: '' },
   ]);
   const [step5Items, setStep5Items] = useState([
     { name: '', shortDescription: '', points: [], photos: null },
   ]);
-  
+
   const [stepRepeatedItems, setStepRepeatedItems] = useState({
     1: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
     2: Array.from({ length: 6 }, () => ({ name: '', desc: '', photos: null })),
-  }); 
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -47,7 +47,7 @@ function ThemeManager() {
     setStepsData([{ fields: { steps: [] }, images: [], points: [] }]);
     setCurrentStep(0);
     setImagePreviews({});
-    
+
     let amenitiesCount, applicationsCount;
 
     if (theme.id === 'theme1') {
@@ -141,21 +141,21 @@ function ThemeManager() {
         step1Data.append('chooseImage', stepsData[0].fields.chooseImage);
       if (stepsData[0]?.fields?.productIcon)
         step1Data.append('productIcon', stepsData[0].fields.productIcon);
-       if (stepsData[0]?.fields?.workTitle)
+      if (stepsData[0]?.fields?.workTitle)
         step1Data.append('workTitle', stepsData[0].fields.workTitle);
-         if (stepsData[0]?.fields?.workFor)
+      if (stepsData[0]?.fields?.workFor)
         step1Data.append('workFor', stepsData[0].fields.workFor);
-        if (stepsData[0]?.fields?.workDescription)
+      if (stepsData[0]?.fields?.workDescription)
         step1Data.append('workDescription', stepsData[0].fields.workDescription);
-       if (stepsData[0]?.fields?.productModal)
+      if (stepsData[0]?.fields?.productModal)
         step1Data.append('productModal', stepsData[0].fields.productModal);
-         if (stepsData[0]?.fields?.solutionTitle)
+      if (stepsData[0]?.fields?.solutionTitle)
         step1Data.append('solutionTitle', stepsData[0].fields.solutionTitle);
-         if (stepsData[0]?.fields?.solutionDescription)
+      if (stepsData[0]?.fields?.solutionDescription)
         step1Data.append('solutionDescription', stepsData[0].fields.solutionDescription);
       if (stepsData[0]?.fields?.blogImage)
         step1Data.append('blogImage', stepsData[0].fields.blogImage);
-         if (stepsData[0]?.fields?.solutionImage)
+      if (stepsData[0]?.fields?.solutionImage)
         step1Data.append('solutionImage', stepsData[0].fields.solutionImage);
 
       // Points array
@@ -234,7 +234,12 @@ function ThemeManager() {
         step4Data.append('unitCode', item.unitCode || 'WAY4');
         step4Data.append('amount', item.amount?.toString() || '0');
 
-        if (item.photo) step4Data.append('photo', item.photo, item.photo.name);
+        if (item.photos && item.photos.length > 0) {
+          item.photos.forEach((photo) => {
+            step4Data.append("mediaFiles", photo, photo.name);
+          });
+        }
+
         if (item.model) step4Data.append('model', item.model);
         if (item.name) step4Data.append('name', item.name);
         if (typeof item.description === 'string')
@@ -254,6 +259,32 @@ function ThemeManager() {
         );
         step4Data.append('discount', item.discount?.toString() || '0');
 
+        if (item.is2G) {
+          step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
+        } else {
+          step4Data.append('network2gAmt', -1);
+        }
+
+        if (item.is4G) {
+          step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
+        } else {
+          step4Data.append('network4gAmt', -1);
+        }
+
+        // step4Data.append('network4gAmt', Number(item.network4gAmt) || 0);
+        // step4Data.append('network2gAmt', Number(item.network2gAmt) || 0);
+
+
+        if (item.applications && item.applications.length > 0) {
+          item.applications.forEach((app, index) => {
+            step4Data.append(`points[${index}].title`, app.name || '');
+            step4Data.append(`points[${index}].desc`, app.desc || '');
+            if (app.photo) {
+              step4Data.append("pointFiles", app.photo, app.photo.name);
+            }
+          });
+        }
+
         return ApiService.post('device/handleDeviceDetails', step4Data);
       });
 
@@ -264,24 +295,25 @@ function ThemeManager() {
         // step5Data.append('webProductId', webProductId);
 
         // Create dtoList for each item, including points
-        const dtoList = [
-          {
-            name: item.name || '',
-            description: item.shortDescription || '',
-            webProductId: webProductId, // Add webProductId for each app
-            points: item.points || [], // Correct: pass the array directly// Add points, ensuring it's a JSON string
-            companyCode: 'WAY4TRACK',
-            unitCode: 'WAY4',
-          },
-        ];
-
-        // Append the dtoList as a JSON string
-        step5Data.append('dtoList', JSON.stringify(dtoList));
+        step5Data.append('name', item.name || '');
+        step5Data.append('shortDescription', item.shortDescription || '');
+        step5Data.append('webProductId', webProductId);
+        step5Data.append('companyCode', 'WAY4TRACK');
+        step5Data.append('unitCode', 'WAY4');
 
         if (item.photos) {
-          step5Data.append('photos', item.photos, item.photos.name);
+          step5Data.append('photo', item.photos, item.photos.name);
         }
-        return ApiService.post('product-apps/handleBulkProductApp', step5Data);
+
+        (item.points || []).forEach((p, pIndex) => {
+          step5Data.append(`points[${pIndex}].title`, p.title || '');
+          step5Data.append(`points[${pIndex}].desc`, p.desc || '');
+          if (p.file) {
+            step5Data.append(`points[${pIndex}].file`, p.file, p.file.name);
+          }
+        });
+
+        await ApiService.post('product-apps/handleUpdateAppDetails', step5Data);
       });
 
       await Promise.all(appPromises);
@@ -340,9 +372,9 @@ function ThemeManager() {
         );
       case 3:
         return (
-          <FormStepFour 
-            step4Items={step4Items} 
-            setStep4Items={setStep4Items} 
+          <FormStepFour
+            step4Items={step4Items}
+            setStep4Items={setStep4Items}
             handleImageChange={handleImageChange}
             imagePreviews={imagePreviews}
             handleRemoveStep5Item={handleRemoveStep5Item}

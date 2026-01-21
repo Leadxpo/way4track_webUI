@@ -62,7 +62,7 @@ code {
 
 /* Ensure the html and body take full height */
 html, body, #root {
-  @apply h-full w-full m-0 p-0 overflow-hidden;
+  @apply h-full w-full m-0 p-0;
 }
 
 /* Apply the thin scrollbar to specific elements */

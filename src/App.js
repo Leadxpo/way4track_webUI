@@ -97,7 +97,7 @@ const App = () => {
           )}
 
           {/* Main Content */}
-          <div className="flex-1 h-screen overflow-auto w-full md:w-3/4 bg-white">
+          <div className="flex-1 overflow-auto w-full md:w-3/4 bg-white">
             {/* Mobile Menu Button */}
             <button
               className="fixed top-4 left-4 p-2 rounded bg-blue-500 text-white z-50 md:hidden"

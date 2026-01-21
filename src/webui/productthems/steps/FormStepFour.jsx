@@ -1,7 +1,8 @@
 import React from 'react';
 // import "./FormStepFour.css";
+import { Upload, X, Plus } from 'lucide-react';
 
-function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreviews, selectedTheme, stepsData }) {
+function FormStepFour({ step4Items, setStep4Items, handleImageChange, imagePreviews, selectedTheme, stepsData }) {
   const handleStep4FieldChange = (index, field, value) => {
     const updated = [...step4Items];
     updated[index][field] = value;
@@ -11,9 +12,11 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
   const addStep4Item = () => {
     setStep4Items([
       ...step4Items,
-      { webProductName: '', photo: null, model: '' },
+      { webProductName: '', photos: [], model: '', applications: [{ name: '', desc: '', link: '', photo: null, preview: null }] },
     ]);
   };
+
+  console.log(step4Items)
 
   const removeStep4Item = (index) => {
     if (step4Items.length === 1) return;
@@ -21,9 +24,25 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
     updated.splice(index, 1);
     setStep4Items(updated);
   };
-  
-  // console.log("Selected Theme in Step Four:", selectedTheme);
-  // console.log("Steps Data in Step Four:", stepsData);
+
+  const handleApplicationChange = (deviceIndex, appIndex, field, value) => {
+    const updated = [...step4Items];
+    updated[deviceIndex].applications[appIndex][field] = value;
+    setStep4Items(updated);
+  };
+
+  const addApplication = (deviceIndex) => {
+    const updated = [...step4Items];
+    if (!updated[deviceIndex].applications) updated[deviceIndex].applications = [];
+    updated[deviceIndex].applications.push({ name: '', desc: '', link: '', photo: null, preview: null });
+    setStep4Items(updated);
+  };
+
+  const removeApplication = (deviceIndex, appIndex) => {
+    const updated = [...step4Items];
+    updated[deviceIndex].applications.splice(appIndex, 1);
+    setStep4Items(updated);
+  };
 
   return (
     <div className="step4_formStep">
@@ -46,7 +65,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                 </button>
               )}
             </div>
-            
+
             <div className="step4_deviceBody">
               <div className="step4_formRow">
                 <div className="step4_formGroup step4_col6">
@@ -59,7 +78,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     placeholder="Enter device name"
                   />
                 </div>
-                
+
                 <div className="step4_formGroup step4_col6">
                   <label className="step4_formLabel">Model</label>
                   <input
@@ -71,43 +90,140 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                   />
                 </div>
               </div>
-              
+
               <div className="step4_formGroup">
-                <label className="step4_formLabel">Device Image</label>
-                <div className="step4_imageUploadContainer">
-                  {item.photo ? (
-                    <div className="step4_imagePreviewContainer">
-                      <img 
-                        src={URL.createObjectURL(item.photo)} 
-                        alt={`Device ${index + 1}`} 
-                        className="step4_imagePreview" 
-                      />
-                      <button 
-                        className="step4_removeImageBtn"
-                        onClick={() => handleStep4FieldChange(index, 'photo', null)}
-                      >
-                        ×
-                      </button>
+                <label className="step4_formLabel">Device Images</label>
+
+                <div className="space-y-4">
+                  {(item.photos || []).map((photo, photoIndex) => (
+                    <div key={photoIndex} className="relative border border-gray-200 rounded-lg p-4 bg-white">
+                      <div className="relative">
+                        <img
+                          src={URL.createObjectURL(photo)}
+                          alt={`Device ${index + 1} - Image ${photoIndex + 1}`}
+                          className="w-full h-40 object-cover rounded-md"
+                        />
+                        <button
+                          type="button"
+                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                          onClick={() => {
+                            const updatedPhotos = [...item.photos];
+                            updatedPhotos.splice(photoIndex, 1);
+                            handleStep4FieldChange(index, 'photos', updatedPhotos);
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="step4_imageUploadField">
+                  ))}
+
+                  {/* Upload Field */}
+                  <div className="flex items-center justify-center w-full">
+                    <label
+                      htmlFor={`device-photo-${index}-${item.photos?.length || 0}`}
+                      className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-50"
+                    >
+                      <div className="flex items-center justify-center">
+                        <Upload className="h-5 w-5 text-gray-400" />
+                        <span className="ml-2 text-sm text-gray-500">Add Device Image</span>
+                      </div>
                       <input
                         type="file"
-                        id={`device-photo-${index}`}
-                        className="step4_fileInput"
+                        id={`device-photo-${index}-${item.photos?.length || 0}`}
+                        className="hidden"
                         accept="image/*"
-                        onChange={(e) =>{
-                          handleImageChange(`device${index}`, e.target.files[0])
-                           handleStep4FieldChange(index, 'photo', e.target.files[0])}}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const updatedPhotos = [...(item.photos || []), file];
+                            handleStep4FieldChange(index, 'photos', updatedPhotos);
+                            handleImageChange(`device${index}-photo${updatedPhotos.length}`, file);
+                          }
+                        }}
                       />
-                      <label htmlFor={`device-photo-${index}`} className="step4_fileLabel">
-                        Upload
-                      </label>
-                    </div>
-                  )}
+                    </label>
+                  </div>
                 </div>
               </div>
-              
+
+              <div className="step4_formGroup">
+                <label className="step4_formLabel">Applications</label>
+                {(item.applications || []).map((app, appIndex) => (
+                  <div key={appIndex} className="bg-gray-50 rounded-lg p-4 relative border border-gray-200 mb-3">
+                    <div className="flex flex-col mb-2">
+                      <input
+                        type="text"
+                        placeholder="Application Name"
+                        className="step4_formControl mb-2"
+                        value={app.name}
+                        onChange={(e) => handleApplicationChange(index, appIndex, 'name', e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        className="step4_formControl mb-2"
+                        value={app.desc}
+                        onChange={(e) => handleApplicationChange(index, appIndex, 'desc', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-center w-full mb-2">
+                      <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:bg-gray-50">
+                        <div className="flex items-center justify-center">
+                          <Upload className="h-5 w-5 text-gray-400" />
+                          <span className="ml-2 text-sm text-gray-500">Add Application Image</span>
+                        </div>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              handleApplicationChange(index, appIndex, 'photo', file);
+                              handleApplicationChange(index, appIndex, 'preview', URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {app.preview && (
+                      <div className="relative mb-2">
+                        <img src={app.preview} alt="Application" className="w-full h-40 object-cover rounded-md" />
+                        <button
+                          type="button"
+                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                          onClick={() => handleApplicationChange(index, appIndex, 'photo', null) || handleApplicationChange(index, appIndex, 'preview', null)}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="step4_btnIcon step4_btnDanger absolute top-2 right-2"
+                      onClick={() => removeApplication(index, appIndex)}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+
+                {(item.applications?.length || 0) < 10 && (
+                  <button
+                    type="button"
+                    className="step4_btnOutlinePrimary flex items-center"
+                    onClick={() => addApplication(index)}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Application
+                  </button>
+                )}
+              </div>
+
               <div className="step4_formRow">
                 <div className="step4_formGroup step4_col6">
                   <label className="step4_formLabel">Base Price</label>
@@ -122,7 +238,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     />
                   </div>
                 </div>
-                
+
                 <div className="step4_formGroup step4_col6">
                   <label className="step4_formLabel">Discount (%)</label>
                   <div className="step4_inputGroup">
@@ -137,7 +253,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                   </div>
                 </div>
               </div>
-              
+
               <div className="step4_formRow">
                 <div className="step4_formGroup step4_col6">
                   <div className="step4_switchContainer">
@@ -151,10 +267,10 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     </label>
                     <span className="step4_switchLabel">Relay Option</span>
                   </div>
-                  
+
                   {item.isRelay && (
                     <div className="step4_inputGroup step4_mt2">
-                      <span className="step4_inputGroupText">$</span>
+                      <span className="step4_inputGroupText">₹</span>
                       <input
                         type="number"
                         className="step4_formControl"
@@ -165,7 +281,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                     </div>
                   )}
                 </div>
-                
+
                 <div className="step4_formGroup step4_col6">
                   <div className="step4_switchContainer">
                     <label className="step4_switch">
@@ -180,7 +296,69 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                   </div>
                 </div>
               </div>
-              
+
+              {/* Network Amount Fields - Show when Network Option is enabled */}
+              {item.isNetwork && (
+                <div className="step4_formRow">
+                  <div className="step4_formGroup step4_col6">
+                    <label className="step4_formLabel">2G Network</label>
+                    <div className="step4_formLabel step4_switchContainer">
+                      <label className="step4_switch">
+                        <input
+                          type="checkbox"
+                          checked={item.is2G || false}
+                          onChange={(e) => handleStep4FieldChange(index, 'is2G', e.target.checked)}
+                        />
+                        <span className="step4_slider step4_round"></span>
+                      </label>
+                      <span className="step4_switchLabel">Enable 2G</span>
+                    </div>
+
+                    {item.is2G && (
+                      <div className="step4_inputGroup">
+                        <span className="step4_inputGroupText">₹</span>
+                        <input
+                          type="number"
+                          className="step4_formControl"
+                          value={item.network2gAmt || ''}
+                          onChange={(e) => handleStep4FieldChange(index, 'network2gAmt', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="step4_formGroup step4_col6">
+                    <label className="step4_formLabel">4G Network</label>
+                    <div className="step4_formLabel step4_switchContainer">
+                      <label className="step4_switch">
+                        <input
+                          type="checkbox"
+                          checked={item.is4G || false}
+                          onChange={(e) => handleStep4FieldChange(index, 'is4G', e.target.checked)}
+                        />
+                        <span className="step4_slider step4_round"></span>
+                      </label>
+                      <span className="step4_switchLabel">Enable 4G</span>
+                    </div>
+
+                    {item.is4G && (
+                      <div className="step4_inputGroup">
+                        <span className="step4_inputGroupText">₹</span>
+                        <input
+                          type="number"
+                          className="step4_formControl"
+                          value={item.network4gAmt || ''}
+                          onChange={(e) => handleStep4FieldChange(index, 'network4gAmt', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+
+                </div>
+              )}
+
               <div className="step4_formGroup">
                 <div className="step4_switchContainer">
                   <label className="step4_switch">
@@ -193,7 +371,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                   </label>
                   <span className="step4_switchLabel">Subscription Option</span>
                 </div>
-                
+
                 {item.isSubscription && (
                   <div className="step4_subscriptionOptions">
                     <div className="step4_formRow">
@@ -210,7 +388,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                           />
                         </div>
                       </div>
-                      
+
                       <div className="step4_formGroup step4_col6">
                         <label className="step4_formLabel">Yearly Amount</label>
                         <div className="step4_inputGroup">
@@ -228,7 +406,7 @@ function FormStepFour({ step4Items, setStep4Items,handleImageChange,imagePreview
                   </div>
                 )}
               </div>
-              
+
               <div className="step4_formGroup">
                 <label className="step4_formLabel">Description</label>
                 <textarea
